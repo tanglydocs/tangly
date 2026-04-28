@@ -81,6 +81,24 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       manifest = await loadManifest();
     },
 
+    transform(code, id) {
+      // Pre-process Mintlify-specific MDX quirks before MDX parses JSX.
+      // <latex>...</latex> contains raw LaTeX whose curly braces would
+      // otherwise be parsed as JSX expressions, breaking the build.
+      if (id.endsWith(".mdx") || id.endsWith(".md")) {
+        if (/<latex>/i.test(code)) {
+          return {
+            code: code.replace(
+              /<latex>([\s\S]*?)<\/latex>/gi,
+              (_m, body) => `\n\n$$\n${(body as string).trim()}\n$$\n\n`,
+            ),
+            map: null,
+          };
+        }
+      }
+      return null;
+    },
+
     resolveId(id) {
       if (isVirtualId(id)) {
         return `${RESOLVED_PREFIX}${id}`;
