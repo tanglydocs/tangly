@@ -1,0 +1,56 @@
+{
+  "name": "tangly",
+  "version": "0.0.1",
+  "description": "Self-hosted, OSS docs framework. Renders Mintlify projects unmodified.",
+  "keywords": [
+    "astro",
+    "docs",
+    "documentation",
+    "mdx",
+    "mintlify",
+    "static-site"
+  ],
+  "homepage": "https://github.com/nikcub/tangly",
+  "bugs": "https://github.com/nikcub/tangly/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikcub/tangly.git",
+    "directory": "packages/tangly"
+  },
+  "bin": {
+    "tangly": "./bin/tangly.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "schema",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./content": {
+      "types": "./dist/content.d.ts",
+      "import": "./dist/content.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsgo --build",
+    "dev": "tsgo --build --watch",
+    "typecheck": "tsgo --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

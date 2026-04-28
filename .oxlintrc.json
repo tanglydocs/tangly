@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "import"],
+  "categories": {
+    "correctness": "error",
+    "perf": "warn",
+    "suspicious": "warn"
+  },
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    ".astro",
+    ".tangly",
+    "coverage",
+    "examples",
+    "**/*.astro"
+  ],
+  "rules": {
+    "no-console": "off",
+    "import/no-default-export": "off"
+  }
+}

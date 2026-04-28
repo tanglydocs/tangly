@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./packages/schema" },
+    { "path": "./packages/tangly" },
+    { "path": "./packages/theme-tang" },
+    { "path": "./packages/theme-pith" }
+  ]
+}
