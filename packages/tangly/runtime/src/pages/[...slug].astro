@@ -28,11 +28,14 @@ function findTemplate(name: string | undefined): unknown | null {
 }
 
 export async function getStaticPaths() {
+  const excluded = new Set<string>(manifest.excludedSlugs ?? []);
   const entries = await getCollection("docs");
-  return entries.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry },
-  }));
+  return entries
+    .filter((entry) => !excluded.has(entry.id))
+    .map((entry) => ({
+      params: { slug: entry.id },
+      props: { entry },
+    }));
 }
 
 const { entry } = Astro.props;
