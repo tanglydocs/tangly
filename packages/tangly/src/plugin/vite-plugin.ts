@@ -3,7 +3,13 @@ import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
 import { buildManifest } from "../manifest/index.js";
+import { scanPages } from "../manifest/scan-pages.js";
 import type { Manifest } from "../manifest/types.js";
+
+async function collectDraftSlugs(userRoot: string): Promise<string[]> {
+  const all = await scanPages(userRoot);
+  return all.filter((p) => Boolean(p.frontmatter?.draft)).map((p) => p.slug);
+}
 
 const VIRTUAL_PREFIX = "virtual:tangly/";
 const VIRTUAL_IDS = {
@@ -41,9 +47,16 @@ interface ManifestPayload {
   orphans: string[];
   warnings: Manifest["warnings"];
   root: string;
+  collections?: Manifest["collections"];
+  /**
+   * Slugs the runtime's `getStaticPaths` must exclude. Used to drop drafts
+   * from build output even though the docs content collection still loads
+   * every MDX file from disk.
+   */
+  excludedSlugs: string[];
 }
 
-function manifestToPayload(m: Manifest): ManifestPayload {
+function manifestToPayload(m: Manifest, excludedSlugs: string[]): ManifestPayload {
   return {
     config: m.config,
     pages: [...m.pages.entries()].map(([k, v]) => [k, v]),
@@ -51,6 +64,8 @@ function manifestToPayload(m: Manifest): ManifestPayload {
     orphans: m.orphans,
     warnings: m.warnings,
     root: m.root,
+    ...(m.collections ? { collections: m.collections } : {}),
+    excludedSlugs,
   };
 }
 
@@ -144,9 +159,19 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
 
       if (!manifest) manifest = await loadManifest();
 
+      // Compute slugs to exclude from the runtime catch-all. When drafts
+      // are NOT included (production mode), every disk page with
+      // `draft: true` must be dropped from getStaticPaths so it never
+      // becomes a static route.
+      const excludedSlugs: string[] = [];
+      if (!includeDrafts) {
+        const diskDrafts = await collectDraftSlugs(userRoot);
+        excludedSlugs.push(...diskDrafts);
+      }
+
       switch (realId) {
         case VIRTUAL_IDS.manifest:
-          return `export const manifest = ${JSON.stringify(manifestToPayload(manifest))};\nexport default manifest;`;
+          return `export const manifest = ${JSON.stringify(manifestToPayload(manifest, excludedSlugs))};\nexport default manifest;`;
         case VIRTUAL_IDS.config:
           return `export const config = ${JSON.stringify(manifest.config)};\nexport default config;`;
         case VIRTUAL_IDS.routes: {

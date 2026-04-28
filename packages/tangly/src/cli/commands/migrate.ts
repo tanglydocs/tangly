@@ -65,10 +65,19 @@ export const migrateCommand = defineCommand({
 
     writeFileSync(docsPath, JSON.stringify(docs, null, 2) + "\n", "utf8");
     if (!args["keep-source"]) {
-      const bak = resolve(userRoot, "mint.json.bak");
+      // Pick a unique backup name so re-running migrate never clobbers a
+      // previous backup. Try `mint.json.bak`, `mint.json.bak.1`, … until
+      // one is free.
+      let bak = resolve(userRoot, "mint.json.bak");
+      let n = 1;
+      while (existsSync(bak)) {
+        bak = resolve(userRoot, `mint.json.bak.${n}`);
+        n += 1;
+      }
       const { renameSync } = await import("node:fs");
       renameSync(mintPath, bak);
-      console.log(pc.dim(`  → mint.json renamed to mint.json.bak`));
+      const bakName = bak.split("/").pop() ?? "mint.json.bak";
+      console.log(pc.dim(`  → mint.json renamed to ${bakName}`));
     }
     console.log(pc.green(`✓ Wrote ${docsPath}`));
 

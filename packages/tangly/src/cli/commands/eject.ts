@@ -81,8 +81,10 @@ export const ejectCommand = defineCommand({
       };
       const deps = pkg.dependencies ?? {};
       const devDeps = pkg.devDependencies ?? {};
-      delete deps.tangly;
-      delete devDeps.tangly;
+      // Keep `tangly` (the plugin), `@tangly/schema`, and `@tangly/theme-tang`
+      // — the materialized astro.config still imports `tangly/plugin` and
+      // theme components. Add raw Astro deps users will likely want to
+      // tweak directly.
       const astroDeps = {
         astro: "^6",
         "@astrojs/mdx": "^5",
@@ -102,7 +104,9 @@ export const ejectCommand = defineCommand({
       pkg.scripts.build = `astro build --root ${args.out}`;
       pkg.scripts.preview = `astro preview --root ${args.out}`;
       writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
-      console.log(pc.dim("  → package.json: tangly replaced with astro deps"));
+      console.log(
+        pc.dim("  → package.json: astro deps added; tangly retained for plugin + theme"),
+      );
     }
 
     outro(
