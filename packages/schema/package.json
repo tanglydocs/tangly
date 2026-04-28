@@ -1,6 +1,7 @@
 {
   "name": "@tangly/schema",
   "version": "0.0.1",
+  "private": true,
   "description": "docs.json Zod schema + JSON Schema for Tangly.",
   "keywords": [
     "docs",
@@ -8,12 +9,12 @@
     "schema",
     "zod"
   ],
-  "homepage": "https://github.com/nikcub/tangly",
-  "bugs": "https://github.com/nikcub/tangly/issues",
+  "homepage": "https://github.com/tanglydocs/tangly",
+  "bugs": "https://github.com/tanglydocs/tangly/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nikcub/tangly.git",
+    "url": "git+https://github.com/tanglydocs/tangly.git",
     "directory": "packages/schema"
   },
   "files": [
@@ -31,16 +32,13 @@
     },
     "./docs.json": "./dist/docs.json"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "tsgo --build",
     "dev": "tsgo --build --watch",
     "typecheck": "tsgo --noEmit",
     "test": "vitest run --passWithNoTests"
   },
-  "peerDependencies": {
-    "zod": "^3.23.0"
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }
