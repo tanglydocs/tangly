@@ -11,8 +11,8 @@ export interface Props {
   path: string;
   baseUrl?: string;
   /** auth.method from docs.json `api.auth` */
-  authMethod?: "bearer" | "basic" | "key" | "cookie" | "none";
-  /** auth.name (header/cookie name when method=key/cookie) */
+  authMethod?: "bearer" | "basic" | "key" | "none";
+  /** auth.name (header name when method=key) */
   authName?: string;
 }
 
@@ -43,23 +43,36 @@ let loadError: string | null = null;
 let resolvedServers: string[] = [];
 
 try {
-  const url = spec.startsWith("http") ? spec : `https://${spec}`;
-  const res = await fetch(url, { redirect: "follow" });
-  if (!res.ok) {
-    loadError = `${res.status} ${res.statusText}`;
+  // Local-path-aware spec loading. Mirrors src/openapi/expand-spec.ts:
+  // http(s) → fetch; otherwise read from <userRoot>/<spec>.
+  let doc: {
+    paths?: Record<string, Record<string, OpenApiOp>>;
+    servers?: Array<{ url?: string }>;
+  } = {};
+  if (spec.startsWith("http://") || spec.startsWith("https://")) {
+    const res = await fetch(spec, { redirect: "follow" });
+    if (!res.ok) {
+      loadError = `${res.status} ${res.statusText}`;
+    } else {
+      doc = (await res.json()) as typeof doc;
+    }
   } else {
-    const doc = (await res.json()) as {
-      paths?: Record<string, Record<string, OpenApiOp>>;
-      servers?: Array<{ url?: string }>;
-    };
-    op = doc.paths?.[path]?.[methodLower] ?? null;
-    if (!op) loadError = `No operation found for ${methodLower.toUpperCase()} ${path}`;
-    resolvedServers = (doc.servers ?? [])
-      .map((s) => s.url ?? "")
-      .filter((u): u is string => u.length > 0);
+    const userRoot = process.env.TANGLY_USER_ROOT ?? "";
+    const { readFile } = await import("node:fs/promises");
+    const { resolve } = await import("node:path");
+    const abs = resolve(userRoot, spec.replace(/^\/+/, ""));
+    const raw = await readFile(abs, "utf8");
+    doc = JSON.parse(raw) as typeof doc;
   }
+  op = doc.paths?.[path]?.[methodLower] ?? null;
+  if (!loadError && !op) {
+    loadError = `No operation found for ${methodLower.toUpperCase()} ${path}`;
+  }
+  resolvedServers = (doc.servers ?? [])
+    .map((s) => s.url ?? "")
+    .filter((u): u is string => u.length > 0);
 } catch (err) {
-  loadError = `Failed to fetch ${spec}: ${(err as Error).message}`;
+  loadError = `Failed to load ${spec}: ${(err as Error).message}`;
 }
 
 // baseUrl prop wins; otherwise first server in the spec; otherwise empty.
@@ -153,7 +166,7 @@ const formId = `tangly-openapi-${Math.random().toString(36).slice(2, 9)}`;
                     {authMethod === "bearer" ? "Bearer token" :
                      authMethod === "basic" ? "Basic auth (user:pass)" :
                      authMethod === "key" ? `API key (${authName ?? "X-API-Key"})` :
-                     "Cookie value"}
+                     "Auth value"}
                   </span>
                   <input
                     type="password"
@@ -182,6 +195,27 @@ const formId = `tangly-openapi-${Math.random().toString(36).slice(2, 9)}`;
                       />
                     </label>
                   ))}
+                </fieldset>
+              ) : null}
+
+              {op.requestBody ? (
+                <fieldset class="border border-zinc-200 dark:border-zinc-800 rounded p-2 space-y-2">
+                  <legend class="px-1 text-xs text-zinc-500">
+                    Request body
+                    {op.requestBody.required ? <span class="text-rose-500"> · required</span> : null}
+                  </legend>
+                  {op.requestBody.description ? (
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">{op.requestBody.description}</p>
+                  ) : null}
+                  <textarea
+                    name="__body"
+                    rows={6}
+                    placeholder='{ "key": "value" }'
+                    class="w-full px-2 py-1 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs"
+                  ></textarea>
+                  <p class="text-xs text-zinc-500">
+                    JSON only. Sent as <code class="font-mono">application/json</code>.
+                  </p>
                 </fieldset>
               ) : null}
 
@@ -243,18 +277,36 @@ const formId = `tangly-openapi-${Math.random().toString(36).slice(2, 9)}`;
         headers.Authorization = `Basic ${btoa(authValue)}`;
       } else if (authMethod === "key" && authValue) {
         headers[authName || "X-API-Key"] = authValue;
-      } else if (authMethod === "cookie" && authValue) {
-        headers.Cookie = `${authName || "session"}=${authValue}`;
       }
 
       const qs = queryParams.toString();
       const url = `${base.replace(/\/+$/, "")}${path}${qs ? "?" + qs : ""}`;
 
+      // Body editor: render only when op.requestBody exists; only send when
+      // the method allows a body. We assume application/json.
+      const bodyTextarea = f.querySelector("textarea[name='__body']");
+      const upMethod = method.toUpperCase();
+      const allowsBody = !["GET", "HEAD"].includes(upMethod);
+      const fetchInit = { method: upMethod, headers, mode: "cors" };
+      if (bodyTextarea && allowsBody && bodyTextarea.value.trim()) {
+        try {
+          // Validate JSON before sending so the user gets a clear error
+          // instead of a server-side 400.
+          JSON.parse(bodyTextarea.value);
+          fetchInit.body = bodyTextarea.value;
+          headers["Content-Type"] = "application/json";
+        } catch (parseErr) {
+          out.classList.remove("hidden");
+          out.textContent = `✗ Body must be valid JSON: ${parseErr.message}`;
+          return;
+        }
+      }
+
       out.classList.remove("hidden");
-      out.textContent = `→ ${method.toUpperCase()} ${url}\n\nLoading…`;
+      out.textContent = `→ ${upMethod} ${url}\n\nLoading…`;
 
       try {
-        const res = await fetch(url, { method: method.toUpperCase(), headers, mode: "cors" });
+        const res = await fetch(url, fetchInit);
         const text = await res.text();
         let pretty = text;
         try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch {}

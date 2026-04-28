@@ -32,7 +32,7 @@ const id = `tangly-redoc-${Math.random().toString(36).slice(2, 9)}`;
       // Load Redoc standalone from CDN.
       await new Promise((res, rej) => {
         const s = document.createElement("script");
-        s.src = "https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js";
+        s.src = "https://cdn.redoc.ly/redoc/v2.5.0/bundles/redoc.standalone.js";
         s.onload = res;
         s.onerror = rej;
         document.head.appendChild(s);
