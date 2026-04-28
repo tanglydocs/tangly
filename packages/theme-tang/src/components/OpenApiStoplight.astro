@@ -25,12 +25,12 @@ const id = `tangly-stoplight-${Math.random().toString(36).slice(2, 9)}`;
       if (!document.querySelector('link[data-tangly-stoplight]')) {
         const css = document.createElement("link");
         css.rel = "stylesheet";
-        css.href = "https://unpkg.com/@stoplight/elements/styles.min.css";
+        css.href = "https://unpkg.com/@stoplight/elements@9.3.5/styles.min.css";
         css.dataset.tanglyStoplight = "true";
         document.head.appendChild(css);
         await new Promise((res, rej) => {
           const s = document.createElement("script");
-          s.src = "https://unpkg.com/@stoplight/elements/web-components.min.js";
+          s.src = "https://unpkg.com/@stoplight/elements@9.3.5/web-components.min.js";
           s.onload = res;
           s.onerror = rej;
           document.head.appendChild(s);

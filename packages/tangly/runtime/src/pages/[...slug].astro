@@ -96,15 +96,17 @@ if (openapiAttr) {
     const [method, ...rest] = parts;
     const path = rest.join(" ");
     const apiCfg = manifest.config.api;
-    // Resolve spec URL: top-level api.openapi → owning tab's openapi.
+    // Resolve spec URL: prefer the owning tab's openapi (covers
+    // tab-specific specs), then fall back to top-level api.openapi.
     const tabOpenapi = manifest.navigation.tabs.find(
       (t) => t.slug === page.tab?.slug,
     )?.openapi;
-    const spec = typeof apiCfg?.openapi === "string"
-      ? apiCfg.openapi
-      : Array.isArray(apiCfg?.openapi)
-        ? apiCfg.openapi[0]
-        : tabOpenapi;
+    const spec = tabOpenapi
+      ?? (typeof apiCfg?.openapi === "string"
+        ? apiCfg.openapi
+        : Array.isArray(apiCfg?.openapi)
+          ? apiCfg.openapi[0]
+          : undefined);
     if (spec) {
       openapi = { method: method!.toLowerCase(), path, spec };
       // Best-effort SSR fetch for title/description from operation.

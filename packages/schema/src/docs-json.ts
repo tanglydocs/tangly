@@ -154,7 +154,11 @@ const ApiSchema = z
     baseUrl: z.union([z.string(), z.array(z.string())]).optional(),
     auth: z
       .object({
-        method: z.enum(["bearer", "basic", "key", "cookie", "none"]).optional(),
+        // `cookie` removed: browser fetch can't set Cookie headers from
+        // user-supplied values. Same-origin requests already get the
+        // browser's cookies via credentials: "include" — exposed via the
+        // try-it-out form's "session" toggle, not as a separate auth mode.
+        method: z.enum(["bearer", "basic", "key", "none"]).optional(),
         name: z.string().optional(),
       })
       .strict()
