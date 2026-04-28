@@ -1,7 +1,9 @@
 // @ts-check
 import mdx from "@astrojs/mdx";
 import { defineConfig } from "astro/config";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeShiki from "rehype-shiki";
+import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
@@ -22,6 +24,18 @@ export default defineConfig({
     mdx({
       remarkPlugins: [remarkGfm],
       rehypePlugins: [
+        rehypeSlug,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: "append",
+            properties: {
+              className: ["tangly-heading-anchor"],
+              "aria-label": "Navigate to header",
+            },
+            content: { type: "text", value: "#" },
+          },
+        ],
         [
           rehypeShiki,
           {

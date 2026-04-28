@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
+    "@scalar/api-reference": "^1.53.1",
     "@tailwindcss/vite": "^4.2.4",
     "@tangly/schema": "workspace:*",
     "astro": "^6.1.10",

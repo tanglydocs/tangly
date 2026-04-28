@@ -57,7 +57,7 @@ const primary = config.navbar?.primary;
       <nav class="hidden md:flex items-center gap-1 ml-4">
         {tabs.map((t) => (
           <a
-            href={t.href ?? `/${t.slug}`}
+            href={t.href ?? (t.pages[0] ? `/${t.pages[0]}` : `/${t.slug}`)}
             data-active={t.slug === currentTabSlug ? "true" : "false"}
             class="px-3 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:bg-[var(--tangly-color-bg-elevated)] inline-flex items-center gap-1.5"
           >
