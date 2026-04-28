@@ -7,6 +7,12 @@
     "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules", "src/astro/template/**"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/astro/template/**",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts"
+  ],
   "references": [{ "path": "../schema" }]
 }
