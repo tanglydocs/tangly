@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
 import { buildManifest } from "../manifest/index.js";
@@ -141,11 +141,24 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       // Serve user's project static directories (images/, logo/, etc.) as
       // root-level paths. Mintlify projects reference `/images/foo.png`
       // expecting to find it at `<root>/images/foo.png`.
+      //
+      // SECURITY: decode and confine to the prefix dir. A request like
+      // `/images/../../../etc/passwd` must not escape `<userRoot>/images`.
       devServer.middlewares.use((req, res, next) => {
         const url = req.url ?? "";
         const m = url.match(/^\/(images|logo|public|static|assets)\/(.*)$/);
         if (!m) return next();
-        const filePath = resolve(userRoot, m[1]!, m[2]!.split("?")[0]!);
+        let suffix: string;
+        try {
+          suffix = decodeURIComponent(m[2]!.split("?")[0]!.split("#")[0]!);
+        } catch {
+          return next();
+        }
+        if (isAbsolute(suffix)) return next();
+        const prefixDir = resolve(userRoot, m[1]!);
+        const filePath = resolve(prefixDir, suffix);
+        const rel = relative(prefixDir, filePath);
+        if (rel.startsWith("..") || isAbsolute(rel)) return next();
         if (!existsSync(filePath)) return next();
         const ext = filePath.split(".").pop()?.toLowerCase();
         const types: Record<string, string> = {
@@ -174,7 +187,10 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
         if (!fav) return next();
         const favPath = typeof fav === "string" ? fav : (fav.light ?? fav.dark);
         if (!favPath) return next();
-        const filePath = resolve(userRoot, favPath.replace(/^\//, ""));
+        const cleaned = favPath.replace(/^\/+/, "");
+        const filePath = resolve(userRoot, cleaned);
+        const rel = relative(userRoot, filePath);
+        if (rel.startsWith("..") || isAbsolute(rel)) return next();
         if (!existsSync(filePath)) return next();
         res.setHeader("Content-Type", favPath.endsWith(".svg") ? "image/svg+xml" : "image/x-icon");
         import("node:fs").then(({ createReadStream }) => {

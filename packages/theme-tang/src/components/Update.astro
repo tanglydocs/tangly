@@ -1,13 +1,45 @@
 ---
-import Callout from "./_Callout.astro";
+/**
+ * Mintlify-compat <Update> — release block used in changelogs.
+ *
+ * Props:
+ *   label       — version (e.g. "v4.4.0"). Renders as the heading.
+ *   description — date or short subtitle.
+ *   tags        — optional list of tag chips.
+ */
+export interface Props {
+  label?: string;
+  description?: string;
+  tags?: string[];
+}
 
-export interface Props {}
+const { label, description, tags = [] } = Astro.props as Props;
 ---
-<Callout
-  icon="sparkles"
-  label="Update"
-  classes="bg-violet-50 border-l-violet-500 text-violet-900 dark:bg-violet-950/40 dark:border-l-violet-400 dark:text-violet-100"
-  iconClass="text-violet-600 dark:text-violet-400"
+
+<section
+  class="tangly-update my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5"
+  aria-label={label ? `Update ${label}` : "Update"}
 >
-  <slot />
-</Callout>
+  {(label || description || tags.length > 0) ? (
+    <header class="flex flex-wrap items-center gap-3 mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
+      {label ? (
+        <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 m-0">{label}</h2>
+      ) : null}
+      {description ? (
+        <span class="text-sm text-zinc-500 dark:text-zinc-400">{description}</span>
+      ) : null}
+      {tags.length > 0 ? (
+        <ul class="flex flex-wrap gap-1.5 list-none p-0 m-0 ml-auto">
+          {tags.map((tag) => (
+            <li class="text-xs px-2 py-0.5 rounded-full bg-violet-100 text-violet-800 dark:bg-violet-950/60 dark:text-violet-200">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </header>
+  ) : null}
+  <div class="tangly-update-body [&>:first-child]:mt-0 [&>:last-child]:mb-0">
+    <slot />
+  </div>
+</section>

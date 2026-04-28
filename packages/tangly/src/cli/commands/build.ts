@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { buildManifest } from "../../manifest/index.js";
 import { getRuntimeDir } from "../runtime-paths.js";
@@ -64,6 +65,10 @@ export const buildCommand = defineCommand({
       base: args.base,
     } as never);
 
+    // Copy Mintlify-style static directories (images/, logo/, etc.) and
+    // the configured favicon into the build output.
+    const assetsResult = await copyStaticAssets({ manifest, outDir });
+
     // Sitemap, llms.txt, llms-full.txt, robots.txt
     const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
     const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir };
@@ -71,6 +76,9 @@ export const buildCommand = defineCommand({
     writeBuildOutputs(opts);
 
     console.log(pc.green(`✓ Built → ${outDir}`));
+    if (assetsResult.copied.length > 0) {
+      console.log(pc.dim(`  Copied static: ${assetsResult.copied.join(", ")}`));
+    }
     console.log(pc.dim(`  Generated sitemap.xml, robots.txt, llms.txt, llms-full.txt`));
   },
 });

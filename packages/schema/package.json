@@ -33,7 +33,7 @@
     "./docs.json": "./dist/docs.json"
   },
   "scripts": {
-    "build": "tsgo --build",
+    "build": "tsgo --build && bun run scripts/emit-json-schema.ts",
     "dev": "tsgo --build --watch",
     "typecheck": "tsgo --noEmit",
     "test": "vitest run --passWithNoTests"
