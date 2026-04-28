@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/*
+ * Tangly's theme components live in this package's src/ directory, but the
+ * Astro runtime that renders the site lives in `tangly/runtime/`. Tailwind v4
+ * only auto-scans files relative to the CSS entrypoint's project, so we have
+ * to point it explicitly at every directory whose Astro/TS source contains
+ * utility classes.
+ */
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
