@@ -3,6 +3,9 @@ import { getCollection, render } from "astro:content";
 import { manifest } from "virtual:tangly/manifest";
 import Layout from "@tangly/theme-tang/Layout.astro";
 import OpenApiEndpoint from "@tangly/theme-tang/components/OpenApiEndpoint.astro";
+import OpenApiRedoc from "@tangly/theme-tang/components/OpenApiRedoc.astro";
+import OpenApiScalar from "@tangly/theme-tang/components/OpenApiScalar.astro";
+import OpenApiStoplight from "@tangly/theme-tang/components/OpenApiStoplight.astro";
 import PageShell from "@tangly/theme-tang/PageShell.astro";
 import type { PageEntry } from "tangly";
 import { mdxComponents } from "../lib/mdx-components.ts";
@@ -30,39 +33,62 @@ function findTemplate(name: string | undefined): unknown | null {
 export async function getStaticPaths() {
   const excluded = new Set<string>(manifest.excludedSlugs ?? []);
   const entries = await getCollection("docs");
-  return entries
+  const entrySlugs = new Set(entries.map((e) => e.id));
+
+  const mdxPaths = entries
     .filter((entry) => !excluded.has(entry.id))
     .map((entry) => ({
       params: { slug: entry.id },
-      props: { entry },
+      props: { entry, synthPage: null as null | (typeof manifest.pages)[number][1] },
     }));
+
+  // Synthesized OpenAPI pages have no MDX entry — emit a path per
+  // manifest page that isn't already covered by the docs collection.
+  const synthPaths = manifest.pages
+    .filter(([slug]) => !entrySlugs.has(slug) && !excluded.has(slug))
+    .map(([slug, page]) => ({
+      params: { slug },
+      props: { entry: null, synthPage: page },
+    }));
+
+  return [...mdxPaths, ...synthPaths];
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { entry, synthPage } = Astro.props;
+const { Content } = entry
+  ? await render(entry)
+  : ({ Content: null } as { Content: null });
 
-const pageMeta = manifest.pages.find(([s]) => s === entry.id);
+const pageMeta = manifest.pages.find(([s]) => s === (entry?.id ?? synthPage?.slug));
+
+const slugForPage = entry?.id ?? synthPage?.slug ?? "";
 
 const orphan: PageEntry = {
-  slug: entry.id,
+  slug: slugForPage,
   file: "",
   frontmatter: {
-    title: entry.data.title ?? entry.id,
-    description: entry.data.description,
+    title: entry?.data?.title ?? synthPage?.frontmatter?.title ?? slugForPage,
+    description: entry?.data?.description ?? synthPage?.frontmatter?.description,
   },
   breadcrumbs: [],
   sidebar: manifest.navigation.rootSidebar,
   draft: false,
 };
 
-const page: PageEntry = (pageMeta?.[1] as PageEntry) ?? orphan;
+const page: PageEntry = (pageMeta?.[1] as PageEntry) ?? synthPage ?? orphan;
 
 // Auto-derive title from openapi op.summary if no explicit title.
 let derivedTitle: string | undefined;
 let derivedDesc: string | undefined;
 
-// Detect openapi frontmatter — Mintlify shape: "GET /v4/data/network/{id}"
-const openapiAttr = (entry.data.openapi ?? page.frontmatter.openapi) as string | undefined;
+// Detect openapi frontmatter:
+//   `openapi: METHOD path` → pure auto-generated endpoint
+//   `api: METHOD path`     → companion-MDX (narrative renders above endpoint)
+const apiCompanionAttr = (entry?.data?.api ?? page.frontmatter.api) as string | undefined;
+const openapiAttr = (entry?.data?.openapi ??
+  page.frontmatter.openapi ??
+  apiCompanionAttr) as string | undefined;
+const isCompanion = Boolean(apiCompanionAttr) && !page.frontmatter.openapi && !entry?.data?.openapi;
 let openapi: { method: string; path: string; spec: string } | undefined;
 if (openapiAttr) {
   const parts = openapiAttr.trim().split(/\s+/);
@@ -70,11 +96,15 @@ if (openapiAttr) {
     const [method, ...rest] = parts;
     const path = rest.join(" ");
     const apiCfg = manifest.config.api;
+    // Resolve spec URL: top-level api.openapi → owning tab's openapi.
+    const tabOpenapi = manifest.navigation.tabs.find(
+      (t) => t.slug === page.tab?.slug,
+    )?.openapi;
     const spec = typeof apiCfg?.openapi === "string"
       ? apiCfg.openapi
       : Array.isArray(apiCfg?.openapi)
         ? apiCfg.openapi[0]
-        : undefined;
+        : tabOpenapi;
     if (spec) {
       openapi = { method: method!.toLowerCase(), path, spec };
       // Best-effort SSR fetch for title/description from operation.
@@ -98,10 +128,10 @@ if (openapiAttr) {
 
 const fmTitle =
   page.frontmatter.title ??
-  entry.data.title ??
+  entry?.data?.title ??
   derivedTitle ??
-  humanizeSlug(entry.id);
-const fmDesc = page.frontmatter.description ?? entry.data.description ?? derivedDesc;
+  humanizeSlug(slugForPage);
+const fmDesc = page.frontmatter.description ?? entry?.data?.description ?? derivedDesc;
 
 // Surface the resolved title/description back into the page so PageShell
 // renders the correct H1 + subtitle even when frontmatter is sparse.
@@ -142,7 +172,7 @@ function humanizeSlug(slug: string): string {
     frontmatter={renderedPage.frontmatter}
     manifest={manifest}
   >
-    <Content components={mdxComponents} />
+    {Content ? <Content components={mdxComponents} /> : null}
   </Template>
 ) : (
   <Layout
@@ -153,14 +183,48 @@ function humanizeSlug(slug: string): string {
     pageDescription={fmDesc}
   >
     <PageShell page={renderedPage}>
+      {/* Order: companion-MDX puts narrative ABOVE the endpoint render;
+          pure `openapi:` frontmatter renders the endpoint above (no MDX). */}
+      {isCompanion && Content ? <Content components={mdxComponents} /> : null}
       {openapi ? (
-        <OpenApiEndpoint
-          spec={openapi.spec}
-          method={openapi.method}
-          path={openapi.path}
-        />
+        (() => {
+          const viewer = (manifest.config.api as { viewer?: string } | undefined)?.viewer ?? "tangly";
+          const apiCfg = manifest.config.api as
+            | {
+                baseUrl?: string | string[];
+                auth?: { method?: string; name?: string };
+              }
+            | undefined;
+          const baseUrl = typeof apiCfg?.baseUrl === "string"
+            ? apiCfg.baseUrl
+            : Array.isArray(apiCfg?.baseUrl)
+              ? apiCfg.baseUrl[0]
+              : undefined;
+          const authMethod = apiCfg?.auth?.method as
+            | "bearer" | "basic" | "key" | "cookie" | "none" | undefined;
+          const authName = apiCfg?.auth?.name;
+          if (viewer === "scalar") {
+            return <OpenApiScalar spec={openapi.spec} method={openapi.method} path={openapi.path} />;
+          }
+          if (viewer === "redoc") {
+            return <OpenApiRedoc spec={openapi.spec} method={openapi.method} path={openapi.path} />;
+          }
+          if (viewer === "stoplight") {
+            return <OpenApiStoplight spec={openapi.spec} method={openapi.method} path={openapi.path} />;
+          }
+          return (
+            <OpenApiEndpoint
+              spec={openapi.spec}
+              method={openapi.method}
+              path={openapi.path}
+              {...(baseUrl ? { baseUrl } : {})}
+              {...(authMethod ? { authMethod } : {})}
+              {...(authName ? { authName } : {})}
+            />
+          );
+        })()
       ) : null}
-      <Content components={mdxComponents} />
+      {!isCompanion && Content ? <Content components={mdxComponents} /> : null}
     </PageShell>
   </Layout>
 )}

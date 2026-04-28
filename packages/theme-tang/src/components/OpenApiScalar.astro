@@ -1,0 +1,59 @@
+---
+/**
+ * Scalar viewer — embeds via the standalone CDN bundle when the user opts in
+ * via `api.viewer: "scalar"`. Single-endpoint mode is approximated by
+ * pre-filtering the spec down to the chosen op, since Scalar doesn't expose
+ * a per-operation prop.
+ */
+export interface Props {
+  spec: string;
+  method: string;
+  path: string;
+}
+const { spec, method, path } = Astro.props as Props;
+const id = `tangly-scalar-${Math.random().toString(36).slice(2, 9)}`;
+---
+<div id={id} class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+  <div class="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 text-sm">
+    Loading <code class="font-mono">{method.toUpperCase()} {path}</code>…
+  </div>
+</div>
+<script
+  type="module"
+  define:vars={{ id, specUrl: spec, method: method.toLowerCase(), path }}
+>
+  // Lazy-load Scalar only on pages that opt in. Bundle ~50KB gzipped.
+  const mountId = id;
+  const node = document.getElementById(mountId);
+  if (node) {
+    try {
+      const res = await fetch(specUrl);
+      const fullSpec = await res.json();
+      const filtered = filterSpec(fullSpec, method, path);
+      const { default: ApiReference } = await import("https://esm.sh/@scalar/api-reference@1.53.1?bundle");
+      while (node.firstChild) node.removeChild(node.firstChild);
+      const wrap = document.createElement("div");
+      node.appendChild(wrap);
+      ApiReference(wrap, {
+        spec: { content: filtered },
+        hideClientButton: true,
+        hideDarkModeToggle: true,
+        hideDownloadButton: true,
+      });
+    } catch (err) {
+      const fb = document.createElement("p");
+      fb.className = "p-4 text-sm text-rose-500";
+      fb.textContent = `Scalar load failed: ${err.message}`;
+      while (node.firstChild) node.removeChild(node.firstChild);
+      node.appendChild(fb);
+    }
+  }
+
+  function filterSpec(full, m, p) {
+    if (!full?.paths?.[p]?.[m]) return full;
+    return {
+      ...full,
+      paths: { [p]: { [m]: full.paths[p][m] } },
+    };
+  }
+</script>

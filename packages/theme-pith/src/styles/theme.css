@@ -27,7 +27,9 @@
   --tangly-toc-width: 0; /* Pith hides right TOC by default; in-page TOC at top instead */
   --tangly-topnav-row1-height: 3.5rem;
   --tangly-topnav-row2-height: 2.25rem;
-  --tangly-topnav-height: calc(var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px);
+  --tangly-topnav-height: calc(
+    var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px
+  );
 
   --tangly-radius: 0.25rem;
 }

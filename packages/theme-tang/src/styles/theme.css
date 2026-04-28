@@ -39,7 +39,9 @@
      the layout uses --tangly-topnav-height for sidebar offset etc. */
   --tangly-topnav-row1-height: 3.75rem;
   --tangly-topnav-row2-height: 2.5rem;
-  --tangly-topnav-height: calc(var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px);
+  --tangly-topnav-height: calc(
+    var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px
+  );
 
   color-scheme: light;
 }

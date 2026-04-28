@@ -167,6 +167,8 @@ const ApiSchema = z
       .strict()
       .optional(),
     openapi: z.union([z.string(), z.array(z.string())]).optional(),
+    /** Phase 3: viewer choice. Default: tangly's built-in compact endpoint render. */
+    viewer: z.enum(["tangly", "scalar", "redoc", "stoplight"]).optional(),
     asyncapi: z.union([z.string(), z.array(z.string())]).optional(),
     mdx: z
       .object({
