@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseDocsJson } from "@tangly/schema";
+import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
+import { resolveSectionDefaults } from "./section-defaults.js";
 import type { Manifest, ManifestWarning, PageEntry, SidebarItem } from "./types.js";
 
 export interface BuildManifestOptions {
@@ -10,6 +12,12 @@ export interface BuildManifestOptions {
   root: string;
   /** Override docs.json filename (default "docs.json"). */
   configFile?: string;
+  /**
+   * If true, draft pages are kept in `pages` and reachable from sidebars
+   * with a "Draft" badge. If false (default in build mode), draft pages are
+   * dropped entirely. Dev mode passes `true`.
+   */
+  includeDrafts?: boolean;
 }
 
 export async function buildManifest(opts: BuildManifestOptions): Promise<Manifest> {
@@ -47,6 +55,8 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const pages = new Map<string, PageEntry>();
   const navSlugSet = new Set(navSlugs);
 
+  const includeDrafts = opts.includeDrafts ?? false;
+
   for (const slug of navSlugs) {
     const disk = diskPages.get(slug);
     if (!disk) {
@@ -56,9 +66,17 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       });
       continue;
     }
-    const fm = disk.frontmatter ?? {
-      title: humanizeSlug(slug),
-    };
+    // Cascade section defaults: outer _section.mdx / _meta.json provide
+    // inheritable fields; page frontmatter overrides them.
+    const sectionDefaults = resolveSectionDefaults(disk.file, root);
+    const baseFm = disk.frontmatter ?? { title: humanizeSlug(slug) };
+    const fm = { ...sectionDefaults, ...baseFm };
+    const isDraft = Boolean(fm.draft);
+
+    if (isDraft && !includeDrafts) {
+      // Skip drafts entirely in production build mode.
+      continue;
+    }
 
     const tab = findTabForSlug(navigation, slug);
     const breadcrumbs = buildBreadcrumbs(navigation, slug, tab);
@@ -74,13 +92,34 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       tab: tab ? { slug: tab.slug, title: tab.title } : undefined,
       prev,
       next,
-      draft: Boolean(fm.draft),
+      draft: isDraft,
     });
   }
 
   const orphans: string[] = [];
   for (const p of diskPagesArr) {
     if (!navSlugSet.has(p.slug)) orphans.push(p.slug);
+  }
+
+  // Load user-defined content collections from tangly.config.ts (if present).
+  let collections: Manifest["collections"];
+  try {
+    const loaded = await loadCollections(root);
+    if (Object.keys(loaded.data).length > 0) {
+      collections = serializeCollections(loaded.data);
+    }
+    for (const e of loaded.errors) {
+      warnings.push({
+        level: "error",
+        source: e.file,
+        message: `Collection "${e.collection}" validation failed: ${e.message}`,
+      });
+    }
+  } catch (err) {
+    warnings.push({
+      level: "warn",
+      message: `Could not load tangly.config.ts collections: ${(err as Error).message}`,
+    });
   }
 
   return {
@@ -90,6 +129,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     orphans,
     warnings,
     root,
+    ...(collections ? { collections } : {}),
   };
 }
 

@@ -80,6 +80,8 @@ export interface Manifest {
   warnings: ManifestWarning[];
   /** Source root directory. */
   root: string;
+  /** User-defined content collections (validated against Zod schemas). */
+  collections?: Record<string, Array<{ slug: string; file: string; data: unknown; body: string }>>;
 }
 
 export type { NavGroup, NavTab };

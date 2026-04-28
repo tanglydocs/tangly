@@ -1,0 +1,68 @@
+---
+/**
+ * Default 500 (server error) page. Users can override by dropping a
+ * `500.mdx` at their project root. Astro deploys this for adapters that
+ * support a generic error route (Cloudflare, Node).
+ */
+import { getCollection, render } from "astro:content";
+import Layout from "@tangly/theme-tang/Layout.astro";
+import type { PageEntry } from "tangly";
+import { manifest } from "virtual:tangly/manifest";
+import { mdxComponents } from "../lib/mdx-components.ts";
+
+const entries = await getCollection("docs");
+const userOverride = entries.find((e) => e.id === "500" || e.id === "error");
+
+let CustomContent: ((p: { components?: unknown }) => unknown) | undefined;
+if (userOverride) {
+  const { Content } = await render(userOverride);
+  CustomContent = Content as never;
+}
+
+const fallbackPage: PageEntry = {
+  slug: "500",
+  file: "",
+  frontmatter: { title: "Something went wrong" },
+  breadcrumbs: [],
+  sidebar: [],
+  draft: false,
+};
+
+const homeSlug =
+  manifest.navigation.tabs[0]?.pages?.[0] ??
+  manifest.navigation.rootSidebar.find((i) => !i.isGroup && i.slug)?.slug ??
+  "introduction";
+---
+
+<Layout
+  config={manifest.config}
+  page={fallbackPage}
+  navigation={manifest.navigation}
+  pageTitle="Something went wrong"
+>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-24 text-center">
+    {CustomContent ? (
+      <div class="prose-tang text-left">
+        <CustomContent components={mdxComponents} />
+      </div>
+    ) : (
+      <>
+        <p class="text-sm font-mono text-zinc-400 dark:text-zinc-500 mb-3">500</p>
+        <h1 class="text-3xl sm:text-4xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
+          Something went wrong
+        </h1>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-8">
+          An unexpected error occurred. If this keeps happening, please report it.
+        </p>
+        <a
+          href={`/${homeSlug}`}
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-white no-underline hover:opacity-90"
+          style="background: var(--tangly-color-primary)"
+        >
+          <span>Back to docs</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </>
+    )}
+  </div>
+</Layout>

@@ -18,12 +18,16 @@ if (!userRoot) {
 
 const configFile = process.env.TANGLY_CONFIG_FILE ?? "docs.json";
 const baseUrl = process.env.TANGLY_BASE ?? "/";
+const includeDrafts =
+  process.env.TANGLY_INCLUDE_DRAFTS === "1" ||
+  process.env.TANGLY_INCLUDE_DRAFTS === "true" ||
+  process.env.TANGLY_MODE === "dev";
 
 export default defineConfig({
   base: baseUrl,
   output: "static",
   integrations: [
-    tanglyIntegration({ userRoot, configFile }),
+    tanglyIntegration({ userRoot, configFile, includeDrafts }),
     mdx({
       remarkPlugins: [remarkMintlifyCompat, remarkGfm, remarkMath],
       rehypePlugins: [

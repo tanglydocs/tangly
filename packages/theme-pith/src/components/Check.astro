@@ -1,0 +1,13 @@
+---
+import Callout from "./_Callout.astro";
+
+export interface Props {}
+---
+<Callout
+  icon="circle-check"
+  label="Check"
+  classes="bg-emerald-50 border-l-emerald-500 text-emerald-900 dark:bg-emerald-950/40 dark:border-l-emerald-400 dark:text-emerald-100"
+  iconClass="text-emerald-600 dark:text-emerald-400"
+>
+  <slot />
+</Callout>

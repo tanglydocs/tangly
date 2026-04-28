@@ -33,6 +33,7 @@ export async function copyStaticAssets(opts: CopyAssetsOptions): Promise<CopyAss
       continue;
     }
     const dest = resolve(outDir, dir);
+    // eslint-disable-next-line no-await-in-loop -- sequential dir copy is intentional
     await cp(src, dest, { recursive: true, force: true });
     copied.push(dir);
   }

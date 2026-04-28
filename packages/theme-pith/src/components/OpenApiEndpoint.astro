@@ -1,0 +1,120 @@
+---
+import { resolveMethodColor } from "./_openapi.ts";
+
+/**
+ * Renders a single OpenAPI endpoint by fetching the spec at SSR time.
+ *
+ * Phase 1: SSR fetch + bare-bones rendering of summary, description,
+ * parameters, responses. No try-it-out, no companion-MDX merge.
+ * Phase 3 will replace this with a proper Scalar/Stoplight/Redoc viewer.
+ */
+export interface Props {
+  spec: string;
+  method: string;
+  path: string;
+}
+
+const { spec, method, path } = Astro.props as Props;
+const methodLower = method.toLowerCase();
+const methodColor = resolveMethodColor(methodLower);
+
+interface OpenApiOp {
+  summary?: string;
+  description?: string;
+  parameters?: Array<{
+    name: string;
+    in?: string;
+    description?: string;
+    required?: boolean;
+    schema?: { type?: string };
+  }>;
+  responses?: Record<string, { description?: string }>;
+  requestBody?: {
+    description?: string;
+    required?: boolean;
+    content?: Record<string, { schema?: unknown }>;
+  };
+}
+
+let op: OpenApiOp | null = null;
+let loadError: string | null = null;
+
+try {
+  const url = spec.startsWith("http") ? spec : `https://${spec}`;
+  const res = await fetch(url, { redirect: "follow" });
+  if (!res.ok) {
+    loadError = `${res.status} ${res.statusText}`;
+  } else {
+    const doc = (await res.json()) as {
+      paths?: Record<string, Record<string, OpenApiOp>>;
+    };
+    op = doc.paths?.[path]?.[methodLower] ?? null;
+    if (!op) loadError = `No operation found for ${methodLower.toUpperCase()} ${path}`;
+  }
+} catch (err) {
+  loadError = `Failed to fetch ${spec}: ${(err as Error).message}`;
+}
+---
+
+<div class="tangly-openapi-embed my-6">
+  <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+    <div class="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-3">
+      <span
+        class="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase text-white"
+        style={`background:${methodColor}`}
+      >
+        {method.toUpperCase()}
+      </span>
+      <code class="text-sm font-mono text-zinc-800 dark:text-zinc-200">{path}</code>
+    </div>
+    <div class="p-4 space-y-4">
+      {loadError ? (
+        <p class="text-sm text-rose-500">{loadError}</p>
+      ) : op ? (
+        <>
+          {op.summary ? (
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{op.summary}</h3>
+          ) : null}
+          {op.description ? (
+            <p class="text-sm text-zinc-700 dark:text-zinc-300">{op.description}</p>
+          ) : null}
+          {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
+            <div>
+              <h4 class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-2">Parameters</h4>
+              <ul class="space-y-2 text-sm">
+                {op.parameters.map((p) => (
+                  <li class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <code class="font-mono text-zinc-800 dark:text-zinc-200">{p.name}</code>
+                      {p.in ? <span class="text-xs text-zinc-500">({p.in})</span> : null}
+                      {p.required ? <span class="text-xs text-rose-500">required</span> : null}
+                      {p.schema?.type ? <span class="text-xs text-zinc-500">· {p.schema.type}</span> : null}
+                    </div>
+                    {p.description ? (
+                      <p class="text-zinc-600 dark:text-zinc-400 text-xs">{p.description}</p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {op.responses && Object.keys(op.responses).length > 0 ? (
+            <div>
+              <h4 class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-2">Responses</h4>
+              <ul class="space-y-1 text-sm">
+                {Object.entries(op.responses).map(([code, info]) => (
+                  <li>
+                    <code class="font-mono mr-2">{code}</code>
+                    {info.description}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <p class="text-sm text-zinc-500">No data for this endpoint.</p>
+      )}
+    </div>
+  </div>
+</div>

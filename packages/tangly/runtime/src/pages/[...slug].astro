@@ -7,6 +7,26 @@ import PageShell from "@tangly/theme-tang/PageShell.astro";
 import type { PageEntry } from "tangly";
 import { mdxComponents } from "../lib/mdx-components.ts";
 
+// Eagerly discover user templates so we can dispatch to them per page.
+// `@user-template/*` is aliased by the integration to <userRoot>/templates.
+const userTemplates = import.meta.glob<unknown>(
+  "/@user-template/*.{astro,tsx,jsx}",
+  { eager: true },
+);
+
+function findTemplate(name: string | undefined): unknown | null {
+  if (!name) return null;
+  const stem = name.replace(/\.(astro|tsx?|jsx?)$/i, "");
+  for (const [path, mod] of Object.entries(userTemplates)) {
+    const file = path.split("/").pop() ?? "";
+    const fileStem = file.replace(/\.[^.]+$/, "");
+    if (fileStem === stem) {
+      return (mod as { default?: unknown }).default ?? mod;
+    }
+  }
+  return null;
+}
+
 export async function getStaticPaths() {
   const entries = await getCollection("docs");
   return entries.map((entry) => ({
@@ -91,6 +111,18 @@ const renderedPage: PageEntry = {
   },
 };
 
+// Dispatch to a user template if frontmatter (or inherited section
+// defaults) names one.
+const templateName = page.frontmatter.template;
+const Template = findTemplate(templateName) as
+  | ((p: Record<string, unknown>) => unknown)
+  | null;
+if (templateName && !Template) {
+  console.warn(
+    `[tangly] template "${templateName}" not found in ./templates — falling back to default.`,
+  );
+}
+
 function humanizeSlug(slug: string): string {
   const last = slug.split("/").pop() ?? slug;
   return last
@@ -99,21 +131,33 @@ function humanizeSlug(slug: string): string {
 }
 ---
 
-<Layout
-  config={manifest.config}
-  page={renderedPage}
-  navigation={manifest.navigation}
-  pageTitle={fmTitle}
-  pageDescription={fmDesc}
->
-  <PageShell page={renderedPage}>
-    {openapi ? (
-      <OpenApiEndpoint
-        spec={openapi.spec}
-        method={openapi.method}
-        path={openapi.path}
-      />
-    ) : null}
+{Template ? (
+  <Template
+    config={manifest.config}
+    page={renderedPage}
+    navigation={manifest.navigation}
+    frontmatter={renderedPage.frontmatter}
+    manifest={manifest}
+  >
     <Content components={mdxComponents} />
-  </PageShell>
-</Layout>
+  </Template>
+) : (
+  <Layout
+    config={manifest.config}
+    page={renderedPage}
+    navigation={manifest.navigation}
+    pageTitle={fmTitle}
+    pageDescription={fmDesc}
+  >
+    <PageShell page={renderedPage}>
+      {openapi ? (
+        <OpenApiEndpoint
+          spec={openapi.spec}
+          method={openapi.method}
+          path={openapi.path}
+        />
+      ) : null}
+      <Content components={mdxComponents} />
+    </PageShell>
+  </Layout>
+)}

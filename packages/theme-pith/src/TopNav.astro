@@ -1,0 +1,165 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import type { ResolvedNavigation } from "tangly";
+import Icon from "./components/Icon.astro";
+
+export interface Props {
+  config: DocsJson;
+  navigation: ResolvedNavigation;
+  currentTabSlug?: string;
+}
+
+const { config, navigation, currentTabSlug } = Astro.props as Props;
+
+const logoLight =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.light ?? config.logo?.dark);
+const logoDark =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.dark ?? config.logo?.light);
+const logoHref =
+  typeof config.logo === "string" ? "/" : (config.logo?.href ?? "/");
+
+const tabs = navigation.tabs;
+const anchors = navigation.anchors;
+const navbarLinks = config.navbar?.links ?? [];
+const primary = config.navbar?.primary;
+---
+<header
+  class="tangly-topnav sticky top-0 z-30 h-[var(--tangly-topnav-height)] flex items-center px-4 sm:px-6 lg:px-10"
+>
+  <div class="flex items-center gap-4 w-full max-w-screen-2xl mx-auto">
+    <!-- Mobile hamburger -->
+    <button
+      type="button"
+      class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
+      id="tangly-hamburger"
+      aria-label="Toggle navigation"
+    >
+      <Icon icon="Menu" size={20} />
+    </button>
+
+    <!-- Logo -->
+    <a href={logoHref} class="flex items-center gap-2 font-semibold text-[var(--tangly-color-fg)]">
+      {logoLight && (
+        <img src={logoLight} alt={config.name} class="h-7 w-auto block dark:hidden" />
+      )}
+      {logoDark && (
+        <img src={logoDark} alt={config.name} class="h-7 w-auto hidden dark:block" />
+      )}
+      {!logoLight && !logoDark && <span>{config.name}</span>}
+    </a>
+
+    <!-- Tabs -->
+    {tabs.length > 0 && (
+      <nav class="hidden md:flex items-center gap-1 ml-4">
+        {tabs.map((t) => (
+          <a
+            href={t.href ?? (t.pages[0] ? `/${t.pages[0]}` : `/${t.slug}`)}
+            data-active={t.slug === currentTabSlug ? "true" : "false"}
+            class="px-3 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:bg-[var(--tangly-color-bg-elevated)] inline-flex items-center gap-1.5"
+          >
+            {t.icon && <Icon icon={t.icon} size={14} />}
+            <span>{t.title}</span>
+          </a>
+        ))}
+      </nav>
+    )}
+
+    <div class="flex-1"></div>
+
+    <!-- Search trigger -->
+    <button
+      type="button"
+      id="tangly-search"
+      class="hidden sm:inline-flex items-center gap-2 h-9 px-3 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg-elevated)] text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] min-w-[14rem]"
+      aria-label="Search docs"
+    >
+      <Icon icon="Search" size={14} />
+      <span>Search</span>
+      <span class="ml-auto inline-flex items-center gap-0.5 text-xs">
+        <kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded">Cmd</kbd>
+        <kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded">K</kbd>
+      </span>
+    </button>
+
+    <!-- Anchors -->
+    {anchors.length > 0 && (
+      <div class="hidden lg:flex items-center gap-1">
+        {anchors.map((a) => (
+          <a
+            href={a.href}
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)]"
+          >
+            {a.icon && <Icon icon={a.icon} size={14} />}
+            <span>{a.title}</span>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Navbar links -->
+    {navbarLinks.length > 0 && (
+      <div class="hidden lg:flex items-center gap-1">
+        {navbarLinks.map((l) => (
+          <a
+            href={l.href}
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]"
+          >
+            {typeof l.icon === "string" && <Icon icon={l.icon} size={14} />}
+            <span>{l.label}</span>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Theme toggle -->
+    <button
+      type="button"
+      id="tangly-theme-toggle"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]"
+      aria-label="Toggle theme"
+    >
+      <span class="block dark:hidden"><Icon icon="Moon" size={16} /></span>
+      <span class="hidden dark:block"><Icon icon="Sun" size={16} /></span>
+    </button>
+
+    <!-- Primary CTA -->
+    {primary && primary.type === "button" && (
+      <a
+        href={primary.href}
+        class="inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium text-white"
+        style="background: var(--tangly-color-primary)"
+      >
+        {primary.label}
+      </a>
+    )}
+    {primary && primary.type === "github" && (
+      <a
+        href={primary.href}
+        class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
+        aria-label="GitHub"
+      >
+        <Icon icon="Github" size={16} />
+      </a>
+    )}
+  </div>
+</header>
+
+<script is:inline>
+  document.getElementById("tangly-hamburger")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:toggle-sidebar"));
+  });
+  document.getElementById("tangly-theme-toggle")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:toggle-theme"));
+  });
+  // Cmd/Ctrl-K placeholder: focus the search button (real search is TODO).
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      document.getElementById("tangly-search")?.focus();
+    }
+  });
+</script>

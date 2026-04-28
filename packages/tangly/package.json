@@ -42,8 +42,8 @@
       "import": "./dist/plugin/index.js"
     },
     "./content": {
-      "types": "./dist/content.d.ts",
-      "import": "./dist/content.js"
+      "types": "./dist/content/index.d.ts",
+      "import": "./dist/content/index.js"
     }
   },
   "publishConfig": {
@@ -60,6 +60,7 @@
     "@clack/prompts": "^1.2.0",
     "@tailwindcss/vite": "^4.2.4",
     "@tangly/schema": "workspace:*",
+    "@tangly/theme-pith": "workspace:*",
     "@tangly/theme-tang": "workspace:*",
     "astro": "^6.1.10",
     "chokidar": "^5.0.0",
@@ -74,7 +75,8 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "shiki": "^4.0.2",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.2.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "vite": "^7.3.2",

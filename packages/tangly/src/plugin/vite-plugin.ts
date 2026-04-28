@@ -26,6 +26,12 @@ export interface TanglyPluginOptions {
   userRoot: string;
   /** docs.json filename — defaults to "docs.json". */
   configFile?: string;
+  /**
+   * When true, draft pages are kept in the manifest. Dev mode defaults to
+   * true so drafts render with a badge; build mode defaults to false unless
+   * `TANGLY_INCLUDE_DRAFTS=1` is set.
+   */
+  includeDrafts?: boolean;
 }
 
 interface ManifestPayload {
@@ -52,13 +58,14 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
   const userRoot = resolve(opts.userRoot);
   const configFile = opts.configFile ?? "docs.json";
   const configPath = resolve(userRoot, configFile);
+  const includeDrafts = opts.includeDrafts ?? false;
 
   let manifest: Manifest | null = null;
   let server: ViteDevServer | null = null;
   let watcher: FSWatcher | null = null;
 
   async function loadManifest(): Promise<Manifest> {
-    manifest = await buildManifest({ root: userRoot, configFile });
+    manifest = await buildManifest({ root: userRoot, configFile, includeDrafts });
     return manifest;
   }
 
@@ -82,20 +89,44 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     transform(code, id) {
-      // Pre-process Mintlify-specific MDX quirks before MDX parses JSX.
+      // Pre-process Mintlify-specific MDX quirks before MDX parses JSX or
+      // Astro's asset pipeline tries to resolve relative image paths.
+      if (!id.endsWith(".mdx") && !id.endsWith(".md")) return null;
+
+      let out = code;
+      let changed = false;
+
       // <latex>...</latex> contains raw LaTeX whose curly braces would
       // otherwise be parsed as JSX expressions, breaking the build.
-      if (id.endsWith(".mdx") || id.endsWith(".md")) {
-        if (/<latex>/i.test(code)) {
-          return {
-            code: code.replace(
-              /<latex>([\s\S]*?)<\/latex>/gi,
-              (_m, body) => `\n\n$$\n${(body as string).trim()}\n$$\n\n`,
-            ),
-            map: null,
-          };
-        }
+      if (/<latex>/i.test(out)) {
+        out = out.replace(
+          /<latex>([\s\S]*?)<\/latex>/gi,
+          (_m, body) => `\n\n$$\n${(body as string).trim()}\n$$\n\n`,
+        );
+        changed = true;
       }
+
+      // Rewrite Markdown image references that point outside the file's
+      // directory or use relative parent traversal. Mintlify projects
+      // commonly write `![alt](../images/foo.webp)` expecting the docs root
+      // to act as the public base. Astro's asset pipeline tries to resolve
+      // these as build-time assets and fails when the cache has stale
+      // entries; rewriting them to root-absolute paths routes them through
+      // our static-asset middleware (dev) and copy-assets step (build).
+      //
+      // Match: ![alt](../something/foo.webp)  → ![alt](/something/foo.webp)
+      // Don't touch: absolute URLs (http*) or already-rooted paths (/foo).
+      const mdImageRe = /!\[([^\]]*)\]\(\s*((?:\.\.\/)+)([^)\s]+)\)/g;
+      if (mdImageRe.test(out)) {
+        out = out.replace(mdImageRe, (_m, alt, _dots, rest) => {
+          const path = String(rest);
+          const abs = path.startsWith("/") ? path : `/${path}`;
+          return `![${alt as string}](${abs})`;
+        });
+        changed = true;
+      }
+
+      if (changed) return { code: out, map: null };
       return null;
     },
 
@@ -206,19 +237,32 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
         ignoreInitial: true,
       });
 
-      watcher.on("change", (p: string) => {
+      // Tightened HMR: only invalidate the manifest virtual module + the
+      // pages route module rather than triggering a full-reload. Astro
+      // handles MDX HMR natively for *.mdx body changes; we only need to
+      // re-run getStaticPaths when the nav structure changes.
+      const handleChange = (reason: string) => {
         manifest = null;
-        invalidateVirtuals(`changed ${p}`);
+        const t0 = Date.now();
+        invalidateVirtuals(reason);
+        // Telemetry: log time-to-invalidate so we can verify <250ms target.
+        const ms = Date.now() - t0;
+        devServer.config.logger.info(`[tangly] hmr ${ms}ms (${reason})`);
+      };
+
+      watcher.on("change", (p: string) => {
+        // docs.json change → manifest invalidate (sub-50ms typically).
+        // mdx body change → MDX HMR handles it; we still null the
+        // manifest so any nav-derived data refreshes.
+        handleChange(`changed ${p.split("/").slice(-2).join("/")}`);
       });
       watcher.on("add", (p: string) => {
         if (!p.endsWith(".mdx")) return;
-        manifest = null;
-        invalidateVirtuals(`added ${p}`);
+        handleChange(`added ${p.split("/").slice(-2).join("/")}`);
       });
       watcher.on("unlink", (p: string) => {
         if (!p.endsWith(".mdx")) return;
-        manifest = null;
-        invalidateVirtuals(`removed ${p}`);
+        handleChange(`removed ${p.split("/").slice(-2).join("/")}`);
       });
     },
 

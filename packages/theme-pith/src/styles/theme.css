@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Pith — editorial/handbook aesthetic. Serif headings, denser layout. */
+  --tangly-color-primary: #1f56c8;
+  --tangly-color-primary-light: #4f7ed8;
+  --tangly-color-primary-dark: #133b8c;
+
+  --tangly-color-bg: #fbfaf6;
+  --tangly-color-bg-elevated: #f5f3ec;
+  --tangly-color-fg: #1c1917;
+  --tangly-color-muted: #57534e;
+  --tangly-color-border: #e7e5e0;
+
+  --tangly-font-heading: "Spectral", "Source Serif Pro", Georgia, serif;
+  --tangly-font-body: "Inter", system-ui, sans-serif;
+  --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --tangly-sidebar-width: 16rem;
+  --tangly-content-max-width: 44rem;
+  --tangly-toc-width: 0; /* Pith hides right TOC by default; in-page TOC at top instead */
+  --tangly-topnav-height: 3.5rem;
+
+  --tangly-radius: 0.25rem;
+}
+
+.dark {
+  --tangly-color-bg: #0c0a09;
+  --tangly-color-bg-elevated: #1c1917;
+  --tangly-color-fg: #f5f3ec;
+  --tangly-color-muted: #a8a29e;
+  --tangly-color-border: #292524;
+  --tangly-color-primary-light: #6f96e8;
+  --tangly-color-primary-dark: #133b8c;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--tangly-font-heading);
+  letter-spacing: -0.01em;
+}
+
+.tangly-topnav {
+  background: color-mix(in oklab, var(--tangly-color-bg) 88%, transparent);
+  border-bottom: 1px solid var(--tangly-color-border);
+  backdrop-filter: blur(8px);
+}
+
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 3px;
+}
+
+[data-active="true"] {
+  color: var(--tangly-color-primary);
+}

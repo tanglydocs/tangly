@@ -60,6 +60,7 @@ export const devCommand = defineCommand({
 
     process.env.TANGLY_USER_ROOT = userRoot;
     process.env.TANGLY_CONFIG_FILE = args.config;
+    process.env.TANGLY_MODE = "dev";
 
     const runtimeDir = getRuntimeDir();
     const port = Number(args.port);

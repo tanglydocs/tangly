@@ -1,0 +1,38 @@
+---
+export interface Props {
+  name?: string;
+  path?: string;
+  query?: string;
+  body?: string;
+  header?: string;
+  type?: string;
+  required?: boolean;
+  default?: string;
+  deprecated?: boolean;
+}
+
+const props = Astro.props as Props;
+const name = props.name ?? props.path ?? props.query ?? props.body ?? props.header;
+---
+<div class="tangly-response-field my-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3">
+  <div class="flex flex-wrap items-center gap-2 mb-2">
+    {name && (
+      <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{name}</code>
+    )}
+    {props.type && (
+      <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{props.type}</span>
+    )}
+    {props.required && (
+      <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+    )}
+    {props.deprecated && (
+      <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-medium">deprecated</span>
+    )}
+    {props.default !== undefined && (
+      <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{props.default}</code></span>
+    )}
+  </div>
+  <div class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed [&>p:first-child]:mt-0 [&>p:last-child]:mb-0">
+    <slot />
+  </div>
+</div>
