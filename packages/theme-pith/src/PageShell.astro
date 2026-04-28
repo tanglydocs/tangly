@@ -1,0 +1,157 @@
+---
+import type { PageEntry } from "tangly";
+import Icon from "./components/Icon.astro";
+
+export interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props as Props;
+
+const fm = page.frontmatter;
+const title = fm.title ?? fm.sidebarTitle ?? page.slug;
+const description = fm.description;
+const mode = fm.mode ?? "default";
+
+const showToc = mode === "default";
+const wide = mode === "wide";
+const center = mode === "center";
+const custom = mode === "custom";
+
+const breadcrumbs = page.breadcrumbs ?? [];
+
+// Layout widths
+const containerClass = custom
+  ? ""
+  : wide
+    ? "max-w-screen-xl mx-auto"
+    : center
+      ? "max-w-[var(--tangly-content-max-width)] mx-auto"
+      : ""; // default uses grid w/ TOC
+---
+{custom ? (
+  <slot />
+) : (
+  <div class={showToc ? "grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10" : containerClass}>
+    <article class={`min-w-0 ${showToc ? "max-w-[var(--tangly-content-max-width)]" : ""}`}>
+      {breadcrumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] mb-4 flex flex-wrap items-center gap-1.5">
+          {breadcrumbs.map((b, i) => (
+            <span class="inline-flex items-center gap-1.5">
+              {b.slug ? (
+                <a href={`/${b.slug}`} class="hover:text-[var(--tangly-color-fg)]">{b.title}</a>
+              ) : (
+                <span>{b.title}</span>
+              )}
+              {i < breadcrumbs.length - 1 && <Icon icon="ChevronRight" size={11} />}
+            </span>
+          ))}
+          {breadcrumbs.length > 0 && <Icon icon="ChevronRight" size={11} />}
+          <span class="text-[var(--tangly-color-fg)]">{title}</span>
+        </nav>
+      )}
+
+      <header class="mb-8">
+        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-[var(--tangly-color-fg)] mb-3">
+          {title}
+        </h1>
+        {description && (
+          <p class="text-lg text-[var(--tangly-color-muted)] leading-relaxed">{description}</p>
+        )}
+      </header>
+
+      <div class="prose-tang">
+        <slot />
+      </div>
+
+      {(page.prev || page.next) && (
+        <nav aria-label="Pagination" class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {page.prev ? (
+            <a
+              href={`/${page.prev.slug}`}
+              class="group rounded-[var(--tangly-radius)] border border-[var(--tangly-color-border)] p-4 hover:border-[var(--tangly-color-primary)] transition-colors"
+            >
+              <div class="text-xs uppercase tracking-wide text-[var(--tangly-color-muted)] inline-flex items-center gap-1">
+                <Icon icon="ArrowLeft" size={12} /> Previous
+              </div>
+              <div class="mt-1 font-medium text-[var(--tangly-color-fg)]">{page.prev.title}</div>
+            </a>
+          ) : (<span></span>)}
+          {page.next ? (
+            <a
+              href={`/${page.next.slug}`}
+              class="group rounded-[var(--tangly-radius)] border border-[var(--tangly-color-border)] p-4 sm:text-right hover:border-[var(--tangly-color-primary)] transition-colors"
+            >
+              <div class="text-xs uppercase tracking-wide text-[var(--tangly-color-muted)] inline-flex items-center gap-1 sm:justify-end">
+                Next <Icon icon="ArrowRight" size={12} />
+              </div>
+              <div class="mt-1 font-medium text-[var(--tangly-color-fg)]">{page.next.title}</div>
+            </a>
+          ) : (<span></span>)}
+        </nav>
+      )}
+    </article>
+
+    {showToc && (
+      <aside class="hidden xl:block">
+        <div class="sticky top-[calc(var(--tangly-topnav-height)+1.5rem)]">
+          <div class="text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] mb-2">
+            On this page
+          </div>
+          <nav id="tangly-toc" aria-label="Table of contents" class="text-sm">
+            <!-- Populated by inline script below from h2/h3 in .prose-tang -->
+          </nav>
+        </div>
+      </aside>
+    )}
+  </div>
+)}
+
+<script is:inline>
+  // Build a TOC from h2/h3 in the rendered prose, then scroll-spy.
+  (() => {
+    const tocEl = document.getElementById("tangly-toc");
+    if (!tocEl) return;
+    const article = document.querySelector(".prose-tang");
+    if (!article) return;
+    const headings = article.querySelectorAll("h2, h3");
+    if (headings.length === 0) { tocEl.remove(); return; }
+
+    const links = [];
+    const list = document.createElement("ul");
+    list.className = "space-y-1";
+    headings.forEach((h) => {
+      if (!h.id) {
+        h.id = (h.textContent ?? "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
+      }
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.textContent ?? "";
+      a.className = "tangly-toc-link block border-l-2 border-transparent pl-3 py-1 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]";
+      a.dataset.id = h.id;
+      if (h.tagName === "H3") a.classList.add("pl-6");
+      li.appendChild(a);
+      list.appendChild(li);
+      links.push(a);
+    });
+    tocEl.appendChild(list);
+
+    const setActive = (id) => {
+      links.forEach((l) => l.dataset.active = l.dataset.id === id ? "true" : "false");
+    };
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-100px 0px -70% 0px", threshold: [0, 1] }
+    );
+    headings.forEach((h) => obs.observe(h));
+  })();
+</script>

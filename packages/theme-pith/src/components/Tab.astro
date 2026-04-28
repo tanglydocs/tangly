@@ -1,0 +1,11 @@
+---
+export interface Props {
+  title: string;
+  icon?: string;
+}
+
+const { title, icon } = Astro.props as Props;
+---
+<div class="tangly-tab-panel" data-tab-title={title} data-tab-icon={icon ?? ""}>
+  <slot />
+</div>
