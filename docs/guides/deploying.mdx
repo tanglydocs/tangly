@@ -1,0 +1,79 @@
+---
+title: Deploying
+description: Ship your docs to Vercel, Cloudflare, or any static host.
+icon: "rocket"
+---
+
+# Deploying
+
+`tangly build` produces a static site that drops onto any CDN. The adapter is auto-detected from your project; override with `--adapter`.
+
+## Auto-detection
+
+| File present in project root        | Adapter selected |
+| ----------------------------------- | ---------------- |
+| `vercel.json`                       | `vercel`         |
+| `wrangler.toml` or `wrangler.jsonc` | `cloudflare`     |
+| `Dockerfile`                        | `node`           |
+| (none)                              | `static`         |
+
+## Vercel
+
+Add `vercel.json` (any contents — even `{}`) and run:
+
+```bash
+bun x tangly build
+vercel deploy ./dist
+```
+
+Or push to a Vercel-connected git repo with a build command:
+
+```json
+{
+  "buildCommand": "bun x tangly build",
+  "outputDirectory": "dist"
+}
+```
+
+## Cloudflare Pages
+
+```bash
+bun x tangly build
+wrangler pages deploy ./dist
+```
+
+For a connected repo, set the build command to `bun x tangly build` and the output dir to `dist`.
+
+## Static hosts
+
+Any static host works (Netlify, GitHub Pages, S3+CloudFront, Cloudflare R2):
+
+```bash
+bun x tangly build
+# Upload ./dist to your host.
+```
+
+## Subpath hosting
+
+Deploy under `/docs` instead of the root:
+
+```bash
+bun x tangly build --base /docs
+```
+
+## What gets built
+
+```
+dist/
+├── index.html
+├── introduction/
+│   └── index.html
+├── images/         # copied from project root
+├── logo/
+├── sitemap.xml
+├── robots.txt
+├── llms.txt        # for AI crawlers
+└── llms-full.txt   # full-content variant
+```
+
+Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from sitemap/llms.txt.

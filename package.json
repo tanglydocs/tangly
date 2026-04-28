@@ -17,6 +17,9 @@
     "test": "bun run --filter '*' test",
     "build": "bun run --filter '*' build",
     "ci": "bun run --sequential format:check lint typecheck test build",
+    "dev:docs": "cd docs && ../packages/tangly/bin/tangly.js dev --no-open --port 4322",
+    "build:docs": "cd docs && ../packages/tangly/bin/tangly.js build --out ./dist",
+    "dev:opennem": "cd examples/opennem && ../../packages/tangly/bin/tangly.js dev --no-open --port 4321",
     "changeset": "changeset",
     "release": "bun run build && changeset publish"
   },

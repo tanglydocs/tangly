@@ -1,0 +1,53 @@
+---
+title: docs.json
+description: Top-level schema reference.
+icon: "file-json"
+---
+
+# `docs.json`
+
+Full Zod schema lives in `@tangly/schema/docs.json`. Below is a quick reference.
+
+## Top level
+
+| Field          | Type             | Required | Notes                                           |
+| -------------- | ---------------- | -------- | ----------------------------------------------- |
+| `name`         | string           | ✓        | Display name                                    |
+| `description`  | string           |          | Default meta description                        |
+| `theme`        | enum             |          | `tang` (default), `pith`, or any Mintlify theme |
+| `colors`       | object           |          | Brand colors                                    |
+| `logo`         | string \| object |          | `{ light, dark, href }`                         |
+| `favicon`      | string \| object |          |                                                 |
+| `navigation`   | object           | ✓        | See [Navigation](/guides/navigation)            |
+| `navbar`       | object           |          | Top-bar links + primary CTA                     |
+| `footer`       | object           |          | Socials + link groups                           |
+| `redirects`    | array            |          | `{ source, destination, permanent? }`           |
+| `seo`          | object           |          | Meta tags + indexing                            |
+| `analytics`    | object           |          | PostHog, Plausible, GA4, GTM, Fathom, etc       |
+| `api`          | object           |          | OpenAPI config                                  |
+| `appearance`   | object           |          | Light/dark default + strict mode                |
+| `background`   | object           |          | Page background                                 |
+| `fonts`        | object           |          | Heading + body                                  |
+| `styling`      | object           |          | Eyebrow style, codeblock theme                  |
+| `integrations` | object           |          | Free-form key/value                             |
+| `errors`       | object           |          | 404 redirect rules                              |
+| `contextual`   | object           |          | "Copy / View / ChatGPT / Claude" buttons        |
+| `search`       | object           |          | Search prompt + tweaks                          |
+| `metadata`     | object           |          | Custom meta tags                                |
+
+## Editor support
+
+Add `$schema`:
+
+```json
+{
+  "$schema": "https://tanglydocs.com/schema/docs.json",
+  "name": "..."
+}
+```
+
+You'll get autocomplete + inline validation in VS Code, Cursor, and JetBrains.
+
+## Strict parsing
+
+`@tangly/schema` exports `parseDocsJson(input)` which throws on validation errors. `safeParseDocsJson(input)` returns a discriminated `{ success, data | error }` result. Use the latter from CI scripts.

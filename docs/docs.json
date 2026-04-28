@@ -1,0 +1,116 @@
+{
+  "$schema": "../packages/schema/dist/docs.json",
+  "name": "Tangly",
+  "description": "Self-hosted, open-source docs framework. Renders Mintlify projects unmodified.",
+  "theme": "tang",
+  "colors": {
+    "primary": "#0ea5e9",
+    "light": "#38bdf8",
+    "dark": "#0284c7"
+  },
+  "favicon": "/images/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "installation"]
+          },
+          {
+            "group": "Core",
+            "pages": [
+              "guides/configuration",
+              "guides/navigation",
+              "guides/components",
+              "guides/themes",
+              "guides/openapi",
+              "guides/deploying"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "How-To",
+        "groups": [
+          {
+            "group": "Migration",
+            "pages": ["howto/migrate-from-mintlify"]
+          },
+          {
+            "group": "Customization",
+            "pages": ["howto/custom-components", "howto/custom-templates", "howto/drafts"]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "reference/cli/dev",
+              "reference/cli/build",
+              "reference/cli/check",
+              "reference/cli/init"
+            ]
+          },
+          {
+            "group": "Schema",
+            "pages": ["reference/schema/docs-json", "reference/schema/frontmatter"]
+          },
+          {
+            "group": "Components",
+            "pages": [
+              "reference/components/callouts",
+              "reference/components/cards",
+              "reference/components/tabs-and-steps",
+              "reference/components/code"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Architecture",
+        "groups": [
+          {
+            "group": "Internals",
+            "pages": [
+              "architecture/overview",
+              "architecture/manifest",
+              "architecture/vite-plugin",
+              "architecture/runtime"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/tanglydocs/tangly",
+          "icon": "github"
+        }
+      ]
+    }
+  },
+  "navbar": {
+    "links": [{ "label": "GitHub", "href": "https://github.com/tanglydocs/tangly" }],
+    "primary": {
+      "type": "button",
+      "label": "Star on GitHub",
+      "href": "https://github.com/tanglydocs/tangly"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/tanglydocs/tangly"
+    }
+  },
+  "fonts": {
+    "heading": { "family": "Inter", "weight": 600 },
+    "body": { "family": "Inter", "weight": 400 }
+  }
+}

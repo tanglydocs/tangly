@@ -1,0 +1,70 @@
+---
+title: Installation
+description: Install Tangly into a new or existing project.
+icon: "package"
+---
+
+# Installation
+
+## Requirements
+
+- Node 20+
+- A package manager — `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
+
+## Install
+
+<CodeGroup>
+  ```bash bun
+  bun add -D tangly
+  ```
+
+  ```bash pnpm
+  pnpm add -D tangly
+  ```
+
+  ```bash npm
+  npm install --save-dev tangly
+  ```
+</CodeGroup>
+
+## Project layout
+
+A minimal Tangly project:
+
+```
+my-docs/
+├── docs.json          # navigation + branding (required)
+├── introduction.mdx
+├── images/
+│   └── logo.svg
+└── package.json
+```
+
+Tangly does not require `src/`, `pages/`, or any framework files. The MDX files at the root are the source of truth; `docs.json` drives navigation.
+
+## Editor support
+
+Add this to the top of `docs.json` for autocomplete + inline validation:
+
+```json
+{
+  "$schema": "https://tanglydocs.com/schema/docs.json",
+  "name": "..."
+}
+```
+
+Or point at the local file shipped in the npm package:
+
+```json
+{
+  "$schema": "./node_modules/@tangly/schema/dist/docs.json"
+}
+```
+
+VS Code, Cursor, and JetBrains all pick this up automatically.
+
+## What's next
+
+<Card title="Quickstart" icon="zap" href="/quickstart">
+  Run dev + build in under a minute.
+</Card>

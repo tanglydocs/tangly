@@ -1,0 +1,56 @@
+---
+title: Vite plugin
+description: Virtual modules, HMR, and static-asset middleware.
+icon: "zap"
+---
+
+# Vite plugin
+
+`packages/tangly/src/plugin/vite-plugin.ts` is the bridge between user state and the Astro runtime.
+
+## Virtual modules
+
+Four virtual imports are exposed to the runtime:
+
+| ID                        | Exports                                                                     |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `virtual:tangly/manifest` | The full computed `Manifest` (config, pages, navigation, orphans, warnings) |
+| `virtual:tangly/routes`   | `[{ slug, file }]` for each page (drafts excluded)                          |
+| `virtual:tangly/config`   | The parsed `DocsJson`                                                       |
+| `virtual:tangly/theme`    | `{ themeName, userRoot }`                                                   |
+
+Any `.astro` file in the runtime can `import { manifest } from "virtual:tangly/manifest"` and get a typed snapshot.
+
+## Hot reload
+
+A chokidar watcher listens for changes in:
+
+- `<userRoot>/docs.json`
+- `<userRoot>/**/*.mdx`
+- `<userRoot>/**/*.md`
+
+On change, the manifest is invalidated and Vite is told to do a full reload via `server.ws.send({ type: 'full-reload' })`. Astro's MDX HMR handles per-page MDX changes natively.
+
+## Static-asset middleware
+
+Mintlify projects use absolute paths for images: `<img src="/images/foo.png">`. Tangly's middleware resolves these against the user root's matching directory:
+
+```
+GET /images/foo.png  →  <userRoot>/images/foo.png
+GET /logo/dark.svg   →  <userRoot>/logo/dark.svg
+GET /favicon.ico     →  <userRoot>/<config.favicon>
+```
+
+Supported prefixes: `images`, `logo`, `public`, `static`, `assets`. Path traversal is blocked — requests like `/images/../../etc/passwd` are rejected before any I/O.
+
+## Build-time variant
+
+In production, `packages/tangly/src/build-outputs/copy-assets.ts` walks the same set of directories and copies them into `dist/` so deployed pages see the same paths the dev server served.
+
+## MDX preprocess
+
+The plugin's `transform()` rewrites Mintlify-only quirks before MDX parses JSX. Currently:
+
+- `<latex>...</latex>` → `$$...$$` block math (so curly-brace LaTeX doesn't trigger MDX expression parsing).
+
+More compatibility shims will land here as we hit them.

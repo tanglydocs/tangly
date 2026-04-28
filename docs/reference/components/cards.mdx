@@ -1,0 +1,53 @@
+---
+title: Cards
+description: Card, CardGroup.
+icon: "rectangle-horizontal"
+---
+
+# Cards
+
+Click-through cards in a grid.
+
+<CardGroup cols={2}>
+  <Card title="With icon" icon="rocket" href="/quickstart">
+    Description text.
+  </Card>
+  <Card title="Plain" icon="info">
+    No href — non-interactive.
+  </Card>
+</CardGroup>
+
+```md
+<CardGroup cols={2}>
+  <Card title="..." icon="..." href="...">
+    Description.
+  </Card>
+</CardGroup>
+```
+
+## Card props
+
+<ParamField path="title" type="string">
+  Card heading.
+</ParamField>
+<ParamField path="icon" type="string">
+  Lucide or FA icon name.
+</ParamField>
+<ParamField path="href" type="string">
+  If set, card becomes a link.
+</ParamField>
+<ParamField path="horizontal" type="boolean">
+  Horizontal layout (icon left, content right).
+</ParamField>
+<ParamField path="img" type="string">
+  Optional image instead of icon.
+</ParamField>
+<ParamField path="color" type="string">
+  Accent color for the icon.
+</ParamField>
+
+## CardGroup props
+
+<ParamField path="cols" type="number" default="2">
+  Grid columns (1–4).
+</ParamField>

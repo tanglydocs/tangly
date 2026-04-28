@@ -1,0 +1,81 @@
+---
+title: OpenAPI
+description: Auto-generated API reference pages from an OpenAPI spec.
+icon: "plug"
+---
+
+# OpenAPI
+
+Tangly renders OpenAPI specs the same way Mintlify does.
+
+## Top-level setup
+
+In `docs.json`:
+
+```json
+{
+  "api": {
+    "openapi": "https://api.example.com/openapi.json",
+    "viewer": "scalar"
+  }
+}
+```
+
+Tangly fetches the spec at SSR time. `viewer` accepts `scalar` (default), `stoplight`, or `redoc` — Phase 3 wires the viewer choice; today, every endpoint uses Tangly's built-in renderer.
+
+## Per-endpoint pages
+
+A page with `openapi:` in frontmatter auto-generates the endpoint:
+
+```md
+---
+openapi: get /v4/data/network/{network_code}
+---
+```
+
+The page renders:
+
+- HTTP method badge + path
+- Summary heading from the operation
+- Description
+- Parameters table (path/query/header/body)
+- Responses
+
+## Companion narrative (Phase 3)
+
+You'll be able to add MDX content alongside an auto-generated endpoint:
+
+```md
+---
+api: GET /v4/data/network/{network_code}
+---
+
+# Background
+
+This endpoint returns time-series data...
+```
+
+Tangly merges narrative + endpoint render. Both stay in sync as the spec evolves.
+
+## Auto-generated tab
+
+Set `openapi` on a tab node to materialize a page per endpoint:
+
+```json
+{
+  "tab": "API Reference",
+  "openapi": "/openapi.json"
+}
+```
+
+This is Phase 3 — Phase 1 only handles per-endpoint frontmatter.
+
+## Validation
+
+`tangly check` validates your spec via `@apidevtools/swagger-parser`:
+
+```bash
+bun x tangly check --strict
+```
+
+Bad refs, missing schemas, malformed operations all surface as errors.

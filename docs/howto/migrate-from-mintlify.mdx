@@ -1,0 +1,57 @@
+---
+title: Migrate from Mintlify
+description: Move an existing Mintlify project to Tangly without editing source files.
+icon: "arrow-right-left"
+---
+
+# Migrate from Mintlify
+
+Tangly renders Mintlify projects unmodified. The migration is mostly removing Mintlify and adding Tangly.
+
+<Steps>
+  <Step title="Install Tangly">
+    ```bash
+    bun add -D tangly
+    ```
+  </Step>
+  <Step title="Run upgrade (if you still have mint.json)">
+    ```bash
+    bun x tangly upgrade
+    ```
+    Converts `mint.json` → `docs.json` and bumps Tangly to the latest. Existing MDX renders unchanged. (Phase 2 — until then, rename `mint.json` to `docs.json`; the schema accepts both shapes.)
+  </Step>
+  <Step title="Replace dev/build commands">
+    In `package.json`, swap Mintlify's CLI for Tangly's:
+    ```json
+    {
+      "scripts": {
+        "dev": "tangly dev",
+        "build": "tangly build"
+      }
+    }
+    ```
+  </Step>
+  <Step title="Run dev">
+    ```bash
+    bun run dev
+    ```
+    Open `http://localhost:4321`. Walk every page side-by-side with Mintlify Cloud or `mintlify dev` to spot any rendering gaps.
+  </Step>
+</Steps>
+
+## What's compatible today
+
+<Check>
+  All `docs.json` top-level fields (theme, colors, logo, navigation, navbar, footer, redirects, seo,
+  analytics, api, fonts, etc).
+</Check>
+<Check>Recursive nav (tabs, groups, anchors, dropdowns).</Check>
+<Check>
+  14+ Mintlify MDX components (Card, CardGroup, Note, Tip, Warning, Tabs, Steps, Accordion, Frame,
+  CodeGroup, ParamField, ResponseField, Update, Snippet placeholder).
+</Check>
+<Check>Per-page `openapi: METHOD path` frontmatter.</Check>
+<Check>Lucide icons + Font Awesome name aliasing.</Check>
+<Check>Image absolute paths (`/images/foo.png`).</Check>
+<Check>Light/dark mode + theme toggle.</Check>
+<Check>Heading anchors.</Check>

@@ -1,0 +1,70 @@
+---
+title: Manifest builder
+description: How docs.json + on-disk MDX become a typed, navigable manifest.
+icon: "git-branch"
+---
+
+# Manifest builder
+
+`packages/tangly/src/manifest/` reads `docs.json` and the MDX files in your project, then produces a single typed `Manifest` object that the runtime consumes.
+
+## Shape
+
+```ts
+interface Manifest {
+  config: DocsJson;
+  pages: Map<string, PageEntry>;
+  navigation: ResolvedNavigation;
+  orphans: string[];
+  warnings: ManifestWarning[];
+  root: string;
+}
+```
+
+`PageEntry` carries everything a page render needs:
+
+```ts
+interface PageEntry {
+  slug: string;
+  file: string;
+  frontmatter: Frontmatter;
+  breadcrumbs: { title: string; slug?: string }[];
+  sidebar: SidebarItem[];
+  tab?: { slug: string; title: string };
+  prev?: { slug: string; title: string };
+  next?: { slug: string; title: string };
+  draft: boolean;
+}
+```
+
+## Three steps
+
+<Steps>
+  <Step title="scan-pages.ts">
+    Walks the project root recursively, reads MDX frontmatter via `gray-matter`, validates against
+    the Zod frontmatter schema. Skips: `node_modules`, `dist`, `.tangly`, `components/`,
+    `templates/`, hidden dirs, files starting with `_`.
+  </Step>
+  <Step title="resolve-nav.ts">
+    Walks the recursive nav tree (tabs → groups → pages, plus anchors and dropdowns). Computes
+    per-tab sidebars and collects all referenced slugs. Recursive — groups can nest.
+  </Step>
+  <Step title="build-manifest.ts">
+    Stitches the two together. For each nav slug, computes breadcrumbs + prev/next + sidebar
+    context. Reports orphans (MDX files on disk not in nav).
+  </Step>
+</Steps>
+
+## Warnings
+
+The manifest never throws on user-content issues — it collects them as `warnings: ManifestWarning[]`:
+
+- Frontmatter validation errors (per file).
+- Nav references with no MDX file on disk.
+- Unsupported nav node shapes.
+
+The CLI surfaces these via `tangly dev`'s startup banner and `tangly check`.
+
+## Test corpus
+
+`packages/schema/fixtures/opennem-docs.json` is a vendored snapshot of a real Mintlify project's `docs.json` (Open Electricity docs). Used as the schema parsing baseline in CI. The full MDX corpus is referenced via `examples/opennem` (gitignored) for local iteration.

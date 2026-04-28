@@ -1,0 +1,62 @@
+---
+title: tangly dev
+description: Start the dev server with HMR.
+icon: "play"
+---
+
+# `tangly dev`
+
+Starts a dev server with hot module replacement for `*.mdx` and `docs.json`.
+
+## Usage
+
+```bash
+tangly dev [options]
+```
+
+## Options
+
+<ParamField path="--port <n>" type="number" default="4321">
+  Port number.
+</ParamField>
+
+<ParamField path="--host" type="boolean">
+  Expose on the local network. Use this to test on a phone.
+</ParamField>
+
+<ParamField path="--no-open" type="boolean">
+  Don't auto-open the browser.
+</ParamField>
+
+<ParamField path="--config <path>" type="string" default="docs.json">
+  Path to docs.json relative to the project root.
+</ParamField>
+
+<ParamField path="--root <path>" type="string" default=".">
+  Project root.
+</ParamField>
+
+<ParamField path="--debug" type="boolean">
+  Verbose logging including the resolved manifest.
+</ParamField>
+
+## Banner
+
+Cold start is under 2 seconds for a 100-page project. The banner shows:
+
+```
+  ▲ tangly  v0.0.1
+  ┃ My Docs · 47 pages · theme: tang
+  ┃
+  ┃ Local:    http://localhost:4321
+  ┃
+  ┃ Press h to show help, q to quit, r to restart
+```
+
+Edits to any `*.mdx` file or `docs.json` invalidate the affected modules and trigger a browser update — no restart needed.
+
+## Static assets
+
+Files under `<root>/images/`, `<root>/logo/`, `<root>/public/`, `<root>/static/`, and `<root>/assets/` are served at the corresponding root URL. So `<img src="/images/logo.svg">` resolves to `<root>/images/logo.svg`.
+
+The dev middleware confines paths to the prefix dir — request like `/images/../../foo` is rejected.

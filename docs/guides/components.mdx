@@ -1,0 +1,112 @@
+---
+title: Components
+description: Mintlify-compatible MDX components shipped with Tangly.
+icon: "puzzle"
+---
+
+# Components
+
+All components are auto-injected into MDX — no imports required. Prop signatures match Mintlify exactly.
+
+## Callouts
+
+<Note>This is a Note.</Note>
+<Tip>This is a Tip.</Tip>
+<Warning>This is a Warning.</Warning>
+<Info>This is Info.</Info>
+<Check>This is a Check.</Check>
+<Danger>This is Danger.</Danger>
+
+```md
+<Note>Heads up.</Note>
+<Tip>Pro tip.</Tip>
+<Warning>Heads down.</Warning>
+```
+
+## Cards
+
+<CardGroup cols={2}>
+  <Card title="With href" icon="arrow-right" href="/quickstart">
+    Click-through card with icon.
+  </Card>
+  <Card title="No href" icon="info">
+    Plain card, no link.
+  </Card>
+</CardGroup>
+
+## Tabs
+
+<Tabs>
+  <Tab title="bun">
+    ```bash
+    bun x tangly dev
+    ```
+  </Tab>
+  <Tab title="npm">
+    ```bash
+    npm exec tangly dev
+    ```
+  </Tab>
+</Tabs>
+
+## Steps
+
+<Steps>
+  <Step title="One">First step.</Step>
+  <Step title="Two">Second step.</Step>
+  <Step title="Three">Third step.</Step>
+</Steps>
+
+## Accordion
+
+<AccordionGroup>
+  <Accordion title="Question one">Answer one.</Accordion>
+  <Accordion title="Question two">Answer two.</Accordion>
+</AccordionGroup>
+
+## Code groups
+
+```ts example.ts
+console.log('hello' as const)
+```
+
+Wrap multiple blocks in a `<CodeGroup>` to render a tabbed switcher above them.
+
+## API documentation
+
+<ParamField path="user_id" type="string" required>
+  The user's UUID.
+</ParamField>
+
+<ResponseField name="email" type="string">
+  The user's email address.
+</ResponseField>
+
+## Update (changelog)
+
+<Update label="v0.0.1" description="2026-04-29" tags={["alpha"]}>
+  ## Initial release
+
+  Phase 1 lands: render Mintlify projects unmodified.
+</Update>
+
+## Full list
+
+| Component | Use for |
+|---|---|
+| `Card`, `CardGroup` | Click-through cards |
+| `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger` | Callouts |
+| `Tabs`, `Tab` | Tabbed content |
+| `Steps`, `Step` | Numbered procedures |
+| `Accordion`, `AccordionGroup` | Collapsible Q&A |
+| `CodeGroup` | Multi-language code |
+| `Frame` | Image with caption |
+| `Tooltip` | Inline hover tip |
+| `Icon` | Lucide icon by name |
+| `Badge` | Inline label |
+| `Expandable` | Inline disclosure (used inside `ParamField`) |
+| `ParamField`, `ResponseField` | API doc rows |
+| `RequestExample`, `ResponseExample` | API request/response panels |
+| `Update` | Changelog entry (label/description/tags) |
+| `Snippet` | Reusable MDX (Phase 2) |
+| `Columns` | Free-form grid |
