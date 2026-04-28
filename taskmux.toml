@@ -1,0 +1,9 @@
+name = "tangly"
+auto_start = true
+
+[tasks.docs]
+command = "../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "docs"
+host = "docs"
+auto_start = true
+restart_policy = "on-failure"
