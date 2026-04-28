@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { buildManifest } from "../../manifest/index.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 
@@ -63,7 +64,14 @@ export const buildCommand = defineCommand({
       base: args.base,
     } as never);
 
+    // Sitemap, llms.txt, llms-full.txt, robots.txt
+    const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
+    const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir };
+    if (siteUrl) opts.siteUrl = siteUrl;
+    writeBuildOutputs(opts);
+
     console.log(pc.green(`✓ Built → ${outDir}`));
+    console.log(pc.dim(`  Generated sitemap.xml, robots.txt, llms.txt, llms-full.txt`));
   },
 });
 

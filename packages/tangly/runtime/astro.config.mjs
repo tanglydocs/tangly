@@ -2,9 +2,12 @@
 import mdx from "@astrojs/mdx";
 import { defineConfig } from "astro/config";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeKatex from "rehype-katex";
 import rehypeShiki from "rehype-shiki";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
 
@@ -22,8 +25,9 @@ export default defineConfig({
   integrations: [
     tanglyIntegration({ userRoot, configFile }),
     mdx({
-      remarkPlugins: [remarkGfm],
+      remarkPlugins: [remarkMintlifyCompat, remarkGfm, remarkMath],
       rehypePlugins: [
+        rehypeKatex,
         rehypeSlug,
         [
           rehypeAutolinkHeadings,
@@ -44,6 +48,7 @@ export default defineConfig({
         ],
       ],
       gfm: true,
+      optimize: false,
     }),
   ],
   vite: {
@@ -51,5 +56,14 @@ export default defineConfig({
   },
   markdown: {
     syntaxHighlight: false,
+  },
+  // Mintlify-style projects reference images via absolute /images/... paths
+  // resolved by our static-asset middleware. Astro's automatic image
+  // optimization shouldn't try to process these at build time.
+  image: {
+    service: { entrypoint: "astro/assets/services/noop" },
+  },
+  experimental: {
+    contentIntellisense: false,
   },
 });
