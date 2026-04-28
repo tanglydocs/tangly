@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import { manifest } from "virtual:tangly/manifest";
 import Layout from "@tangly/theme-tang/Layout.astro";
+import OpenApiEndpoint from "@tangly/theme-tang/components/OpenApiEndpoint.astro";
 import PageShell from "@tangly/theme-tang/PageShell.astro";
 import type { PageEntry } from "tangly";
 import { mdxComponents } from "../lib/mdx-components.ts";
@@ -19,7 +20,6 @@ const { Content } = await render(entry);
 
 const pageMeta = manifest.pages.find(([s]) => s === entry.id);
 
-// Synthesize a PageEntry if the page is on disk but not in nav (orphan).
 const orphan: PageEntry = {
   slug: entry.id,
   file: "",
@@ -34,19 +34,86 @@ const orphan: PageEntry = {
 
 const page: PageEntry = (pageMeta?.[1] as PageEntry) ?? orphan;
 
+// Auto-derive title from openapi op.summary if no explicit title.
+let derivedTitle: string | undefined;
+let derivedDesc: string | undefined;
+
+// Detect openapi frontmatter — Mintlify shape: "GET /v4/data/network/{id}"
+const openapiAttr = (entry.data.openapi ?? page.frontmatter.openapi) as string | undefined;
+let openapi: { method: string; path: string; spec: string } | undefined;
+if (openapiAttr) {
+  const parts = openapiAttr.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    const [method, ...rest] = parts;
+    const path = rest.join(" ");
+    const apiCfg = manifest.config.api;
+    const spec = typeof apiCfg?.openapi === "string"
+      ? apiCfg.openapi
+      : Array.isArray(apiCfg?.openapi)
+        ? apiCfg.openapi[0]
+        : undefined;
+    if (spec) {
+      openapi = { method: method!.toLowerCase(), path, spec };
+      // Best-effort SSR fetch for title/description from operation.
+      try {
+        const specUrl = spec.startsWith("http") ? spec : `https://${spec}`;
+        const res = await fetch(specUrl, { redirect: "follow" });
+        if (res.ok) {
+          const doc = (await res.json()) as {
+            paths?: Record<string, Record<string, { summary?: string; description?: string }>>;
+          };
+          const op = doc.paths?.[path]?.[method!.toLowerCase()];
+          derivedTitle = op?.summary;
+          derivedDesc = op?.description;
+        }
+      } catch {
+        // ignore — endpoint will still render via OpenApiEndpoint
+      }
+    }
+  }
+}
+
 const fmTitle =
-  page.frontmatter.title ?? entry.data.title ?? entry.id;
-const fmDesc = page.frontmatter.description ?? entry.data.description;
+  page.frontmatter.title ??
+  entry.data.title ??
+  derivedTitle ??
+  humanizeSlug(entry.id);
+const fmDesc = page.frontmatter.description ?? entry.data.description ?? derivedDesc;
+
+// Surface the resolved title/description back into the page so PageShell
+// renders the correct H1 + subtitle even when frontmatter is sparse.
+const renderedPage: PageEntry = {
+  ...page,
+  frontmatter: {
+    ...page.frontmatter,
+    title: fmTitle,
+    description: fmDesc,
+  },
+};
+
+function humanizeSlug(slug: string): string {
+  const last = slug.split("/").pop() ?? slug;
+  return last
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
 ---
 
 <Layout
   config={manifest.config}
-  page={page}
+  page={renderedPage}
   navigation={manifest.navigation}
   pageTitle={fmTitle}
   pageDescription={fmDesc}
 >
-  <PageShell page={page}>
+  <PageShell page={renderedPage}>
+    {openapi ? (
+      <OpenApiEndpoint
+        spec={openapi.spec}
+        method={openapi.method}
+        path={openapi.path}
+      />
+    ) : null}
     <Content components={mdxComponents} />
   </PageShell>
 </Layout>
