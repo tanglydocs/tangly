@@ -104,9 +104,7 @@ export const ejectCommand = defineCommand({
       pkg.scripts.build = `astro build --root ${args.out}`;
       pkg.scripts.preview = `astro preview --root ${args.out}`;
       writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
-      console.log(
-        pc.dim("  → package.json: astro deps added; tangly retained for plugin + theme"),
-      );
+      console.log(pc.dim("  → package.json: astro deps added; tangly retained for plugin + theme"));
     }
 
     outro(

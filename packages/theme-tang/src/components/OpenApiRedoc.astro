@@ -1,0 +1,49 @@
+---
+/** ReDoc viewer — lazy-loaded standalone bundle from CDN. */
+export interface Props {
+  spec: string;
+  method: string;
+  path: string;
+}
+const { spec, method, path } = Astro.props as Props;
+const id = `tangly-redoc-${Math.random().toString(36).slice(2, 9)}`;
+---
+<div id={id} class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+  <div class="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 text-sm">
+    Loading <code class="font-mono">{method.toUpperCase()} {path}</code>…
+  </div>
+</div>
+<script
+  type="module"
+  define:vars={{ id, specUrl: spec, method: method.toLowerCase(), path }}
+>
+  const mountId = id;
+  const node = document.getElementById(mountId);
+  if (node) {
+    try {
+      const res = await fetch(specUrl);
+      const full = await res.json();
+      const filtered = (full?.paths?.[path]?.[method])
+        ? { ...full, paths: { [path]: { [method]: full.paths[path][method] } } }
+        : full;
+      while (node.firstChild) node.removeChild(node.firstChild);
+      const tgt = document.createElement("div");
+      node.appendChild(tgt);
+      // Load Redoc standalone from CDN.
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js";
+        s.onload = res;
+        s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      window.Redoc.init(filtered, { hideDownloadButton: true }, tgt);
+    } catch (err) {
+      const fb = document.createElement("p");
+      fb.className = "p-4 text-sm text-rose-500";
+      fb.textContent = `Redoc load failed: ${err.message}`;
+      while (node.firstChild) node.removeChild(node.firstChild);
+      node.appendChild(fb);
+    }
+  }
+</script>

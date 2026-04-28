@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseDocsJson } from "@tangly/schema";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
+import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
 import { resolveSectionDefaults } from "./section-defaults.js";
@@ -99,6 +100,39 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const orphans: string[] = [];
   for (const p of diskPagesArr) {
     if (!navSlugSet.has(p.slug)) orphans.push(p.slug);
+  }
+
+  // Phase 3: expand OpenAPI specs attached to tabs into per-endpoint pages.
+  // Each endpoint becomes a synthesized PageEntry whose frontmatter carries
+  // `openapi: METHOD path`; the runtime catch-all renders them via
+  // OpenApiEndpoint just like a hand-authored page.
+  try {
+    const openapi = await buildOpenApiPages({
+      config,
+      tabs: navigation.tabs,
+      root,
+    });
+    for (const synth of openapi.pages) {
+      pages.set(synth.slug, synth);
+    }
+    // Attach the synthesized sidebar to each tab in-place. Endpoint pages
+    // share the same per-tab sidebar.
+    for (const tab of navigation.tabs) {
+      const additions = openapi.sidebarsByTab[tab.slug];
+      if (additions && additions.length > 0) {
+        tab.sidebar.push(...additions);
+        for (const synth of openapi.pages.filter((p) => p.tab?.slug === tab.slug)) {
+          synth.sidebar = tab.sidebar;
+          tab.pages.push(synth.slug);
+        }
+      }
+    }
+    warnings.push(...openapi.warnings);
+  } catch (err) {
+    warnings.push({
+      level: "warn",
+      message: `OpenAPI expansion failed: ${(err as Error).message}`,
+    });
   }
 
   // Load user-defined content collections from tangly.config.ts (if present).
