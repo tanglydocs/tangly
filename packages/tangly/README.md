@@ -6,5 +6,5 @@
 
 This is a name reservation. Real implementation lands shortly.
 
-- Source: [github.com/nikcub/tangly](https://github.com/nikcub/tangly)
+- Source: [github.com/tanglydocs/tangly](https://github.com/tanglydocs/tangly)
 - License: MIT

@@ -10,12 +10,12 @@
     "mintlify",
     "static-site"
   ],
-  "homepage": "https://github.com/nikcub/tangly",
-  "bugs": "https://github.com/nikcub/tangly/issues",
+  "homepage": "https://github.com/tanglydocs/tangly",
+  "bugs": "https://github.com/tanglydocs/tangly/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nikcub/tangly.git",
+    "url": "git+https://github.com/tanglydocs/tangly.git",
     "directory": "packages/tangly"
   },
   "bin": {
