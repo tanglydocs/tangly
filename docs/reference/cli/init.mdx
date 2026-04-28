@@ -1,0 +1,50 @@
+---
+title: tangly init
+description: Scaffold a new Tangly project.
+icon: "plus"
+---
+
+# `tangly init`
+
+Interactive wizard that scaffolds a new Tangly project.
+
+## Usage
+
+```bash
+tangly init [dir]
+```
+
+If `dir` is omitted, scaffolds into the current directory.
+
+## What it does
+
+<Steps>
+  <Step title="Asks for a project name">
+    Used in `docs.json` as `name`.
+  </Step>
+  <Step title="Asks for a template">
+    `basic` — hello-world, single page.
+
+    `api` — sample with OpenAPI integration.
+  </Step>
+  <Step title="Writes files">
+    `docs.json`, `introduction.mdx`, `package.json`, `.gitignore`, `README.md`.
+  </Step>
+</Steps>
+
+## Output
+
+```
+my-docs/
+├── docs.json
+├── introduction.mdx
+├── package.json
+├── .gitignore
+└── README.md
+```
+
+After init, `cd my-docs && bun x tangly dev` starts the dev server.
+
+## Errors
+
+`tangly init` refuses to overwrite an existing `docs.json`. If you want to migrate an existing Mintlify project, use [`tangly upgrade`](/howto/migrate-from-mintlify) instead.

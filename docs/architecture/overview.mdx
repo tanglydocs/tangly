@@ -1,0 +1,87 @@
+---
+title: Architecture
+description: How Tangly turns docs.json + MDX into a static site.
+icon: "blocks"
+---
+
+# Architecture
+
+Tangly is a thin layer over Astro. The CLI wires user configuration to a synthesized Astro app via virtual modules, and your MDX files get processed by Astro's content-collections pipeline.
+
+## High-level flow
+
+```
+docs.json + *.mdx
+       │
+       ▼
+┌──────────────────┐
+│ @tangly/schema   │  Zod parse → typed config
+└──────────────────┘
+       │
+       ▼
+┌──────────────────┐
+│ manifest builder │  scan pages, resolve nav, compute prev/next + sidebar
+└──────────────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Vite plugin      │  virtual:tangly/{manifest,routes,config,theme}
+└──────────────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Astro runtime    │  catch-all [...slug] + content collection over user root
+└──────────────────┘
+       │
+       ▼
+   dist/ (static)
+```
+
+## Three packages
+
+<CardGroup cols={3}>
+  <Card title="@tangly/schema" icon="shield">
+    Zod schema + JSON Schema for `docs.json`. Frontmatter schema. mint.json migrator.
+  </Card>
+  <Card title="tangly" icon="terminal">
+    CLI, manifest builder, Vite plugin, runtime Astro app. The thing users install.
+  </Card>
+  <Card title="@tangly/theme-tang" icon="palette">
+    Default theme: Layout, Sidebar, TopNav, Footer, PageShell + 28 MDX components.
+  </Card>
+</CardGroup>
+
+## Key design decisions
+
+<Note>
+  **User repos never see Astro.** Tangly runs Astro programmatically with `root` pointing at our
+  shipped runtime. Your `docs.json` + MDX is the only thing in your repo.
+</Note>
+
+<Note>
+  **Content collections + glob loader** point at your project root. Astro handles MDX parsing, HMR,
+  and static generation natively.
+</Note>
+
+<Note>
+  **Virtual modules** carry runtime state. The manifest is computed once per dev session and
+  re-imported via `virtual:tangly/manifest` from any page.
+</Note>
+
+## Performance
+
+Cold dev start: under 2s for 100 pages. Build: under 30s for 100 pages. These are acceptance criteria, not aspirations — profile before merging if anything regresses.
+
+## Read more
+
+<CardGroup cols={2}>
+  <Card title="Manifest builder" icon="git-branch" href="/architecture/manifest">
+    How nav resolves to a sidebar tree.
+  </Card>
+  <Card title="Vite plugin" icon="zap" href="/architecture/vite-plugin">
+    Virtual modules + HMR + static asset middleware.
+  </Card>
+  <Card title="Runtime" icon="cog" href="/architecture/runtime">
+    The Astro app shipped inside `tangly`.
+  </Card>
+</CardGroup>

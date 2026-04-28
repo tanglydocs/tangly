@@ -1,0 +1,101 @@
+---
+title: Configuration
+description: All docs.json fields supported by Tangly.
+icon: "settings"
+---
+
+# Configuration
+
+Tangly reads a single `docs.json` at your project root. Every Mintlify field is recognized; a few Tangly-only fields are added.
+
+## Minimal example
+
+```json
+{
+  "$schema": "https://tanglydocs.com/schema/docs.json",
+  "name": "My Docs",
+  "theme": "tang",
+  "colors": { "primary": "#0ea5e9" },
+  "navigation": {
+    "groups": [{ "group": "Get Started", "pages": ["introduction"] }]
+  }
+}
+```
+
+## Top-level fields
+
+<ParamField path="name" type="string" required>
+  Display name. Shown in the title bar, sitemap, and llms.txt.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Short description used as the default meta description.
+</ParamField>
+
+<ParamField path="theme" type="string">
+  One of `tang` (default), `pith`, or any Mintlify theme name (`mint`, `maple`, `palm`, `willow`,
+  `linden`, `almond`, `aspen`, `luma`, `sequoia`). Mintlify themes alias to `tang` for now.
+</ParamField>
+
+<ParamField path="colors" type="object">
+  Brand colors. `primary` (required for full effect), `light`, `dark`, `background`, `anchors`. CSS
+  variables are emitted from these values.
+</ParamField>
+
+<ParamField path="logo" type="string | object">
+  Either a single path or `{ light, dark, href }`. Light and dark variants render together; the active one is shown based on theme.
+</ParamField>
+
+<ParamField path="favicon" type="string | object">
+  Path to a favicon. Object form supports `light` and `dark` variants.
+</ParamField>
+
+<ParamField path="navigation" type="object" required>
+  See [Navigation](/guides/navigation).
+</ParamField>
+
+<ParamField path="navbar" type="object">
+  Top-bar links and primary CTA button.
+</ParamField>
+
+<ParamField path="footer" type="object">
+  Footer socials and link groups.
+</ParamField>
+
+<ParamField path="api" type="object">
+  OpenAPI configuration. See [OpenAPI](/guides/openapi).
+</ParamField>
+
+<ParamField path="redirects" type="array">
+  Source/destination redirect rules.
+</ParamField>
+
+<ParamField path="seo" type="object">
+  Default meta tags and indexing controls.
+</ParamField>
+
+<ParamField path="analytics" type="object">
+  PostHog, Plausible, Fathom, GA4, GTM, etc.
+</ParamField>
+
+## Tangly-only fields (Phase 2+)
+
+These will be honored once their phase ships; you can include them now without breaking validation.
+
+<ParamField path="search" type="object">
+  Search configuration (Phase 4 — Pagefind).
+</ParamField>
+
+<ParamField path="ai" type="object">
+  AI chat config (Phase 6 — BYO API key).
+</ParamField>
+
+## Validation
+
+Run `tangly check` at any time to validate `docs.json` against the schema and resolve every page reference.
+
+```bash
+bun x tangly check --strict
+```
+
+`--strict` exits non-zero on any warning (use this in CI).

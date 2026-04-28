@@ -1,0 +1,57 @@
+---
+title: Tabs & Steps
+description: Tabs, Tab, Steps, Step, Accordion.
+icon: "list-ordered"
+---
+
+# Tabs & Steps
+
+## Tabs
+
+<Tabs>
+  <Tab title="bun">`bun add tangly`</Tab>
+  <Tab title="pnpm">`pnpm add tangly`</Tab>
+  <Tab title="npm">`npm i tangly`</Tab>
+</Tabs>
+
+```md
+<Tabs>
+  <Tab title="bun">...</Tab>
+  <Tab title="pnpm">...</Tab>
+</Tabs>
+```
+
+## Steps
+
+<Steps>
+  <Step title="Install">First step.</Step>
+  <Step title="Configure">Second step.</Step>
+  <Step title="Run">Third step.</Step>
+</Steps>
+
+```md
+<Steps>
+  <Step title="...">...</Step>
+</Steps>
+```
+
+`<Step>` accepts an optional `icon` and `titleSize` (`p | h2 | h3`).
+
+## Accordion
+
+<AccordionGroup>
+  <Accordion title="What is Tangly?" defaultOpen>
+    A self-hosted docs framework that renders Mintlify projects unmodified.
+  </Accordion>
+  <Accordion title="Why Astro?">Static-first, fast cold start, mature MDX integration.</Accordion>
+</AccordionGroup>
+
+```md
+<AccordionGroup>
+  <Accordion title="..." defaultOpen>
+    ...
+  </Accordion>
+</AccordionGroup>
+```
+
+`<Accordion>` accepts `title`, `defaultOpen`, `icon`, `description`.

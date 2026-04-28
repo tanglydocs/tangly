@@ -1,0 +1,47 @@
+---
+title: Introduction
+description: A self-hosted, open-source docs framework that renders Mintlify projects unmodified.
+icon: "sparkles"
+---
+
+# Tangly
+
+Tangly is a self-hosted documentation framework. It reads `docs.json` + MDX, ships sharper authoring primitives on top, and produces a static site that drops onto Vercel or Cloudflare with zero config.
+
+<Note>
+  Tangly is Mintlify-compatible: any existing `docs.json` + MDX project renders without source
+  edits. Hot-reload everything — including `docs.json` — in under a second.
+</Note>
+
+## Why Tangly
+
+Mintlify nailed authoring DX. But it's hosted, closed-source, and you can't extend it without leaving. Tangly keeps the authoring shape — the schema, the components, the conventions — and runs it on Astro, your machine, your repo, your CDN.
+
+<CardGroup cols={2}>
+  <Card title="Drop-in compatible" icon="arrow-right-left" href="/howto/migrate-from-mintlify">
+    Render an existing Mintlify project with no edits. `tangly upgrade` migrates `mint.json`.
+  </Card>
+  <Card title="Sharper primitives" icon="wand-sparkles" href="/guides/configuration">
+    Component shadowing, content collections with Zod, drafts that hide in build, embedded blocks.
+  </Card>
+  <Card title="Astro under the hood" icon="rocket" href="/architecture/overview">
+    Static-site fast. Cold dev start in under 2 seconds. Production build under 30s for 100 pages.
+  </Card>
+  <Card title="Zero lock-in" icon="unlock" href="/reference/cli/init">
+    `tangly eject` materializes the synthesized Astro project. You leave whenever you want.
+  </Card>
+</CardGroup>
+
+## What's included
+
+- **CLI**: `dev`, `build`, `preview`, `init`, `check`.
+- **Default theme (Tang)**: Mintlify-Mint inspired, light + dark, Tailwind v4.
+- **MDX components**: Card, CardGroup, Note, Tip, Warning, Tabs, Steps, Accordion, ParamField, ResponseField, OpenApi viewer, and more.
+- **Schema**: Full Zod schema for `docs.json` with editor-driven validation via `$schema`.
+- **OpenAPI**: Pages with `openapi: METHOD path` frontmatter auto-render the endpoint.
+
+## Status
+
+Tangly is in early preview. Phase 1 (rendering Mintlify projects) is functional. Phase 2 (component shadowing, drafts, content collections, custom templates) is next.
+
+See [Quickstart](/quickstart) to spin up a project.

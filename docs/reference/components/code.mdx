@@ -1,0 +1,42 @@
+---
+title: Code
+description: CodeGroup + fenced code blocks with Shiki.
+icon: "code"
+---
+
+# Code
+
+## Code blocks
+
+Fenced blocks render via Shiki with a dual `github-light` / `github-dark` theme:
+
+```ts
+const x: number = 42
+```
+
+```python
+def add(a: int, b: int) -> int:
+    return a + b
+```
+
+The active theme follows the page's light/dark mode.
+
+## CodeGroup
+
+Tabbed code blocks for showing the same thing in multiple languages. Wrap fenced code blocks in `<CodeGroup>`:
+
+<CodeGroup>
+  ```ts example.ts
+  console.log('hello')
+  ```
+
+  ```py example.py
+  print('hello')
+  ```
+</CodeGroup>
+
+The label after the language is the tab title (filename or short label).
+
+## Inline code
+
+Plain `inline code` works as you'd expect — `<code>` with monospace font.

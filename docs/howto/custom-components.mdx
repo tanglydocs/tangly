@@ -1,0 +1,45 @@
+---
+title: Custom components
+description: Override built-in components or add your own.
+icon: "puzzle"
+tag: "Phase 2"
+---
+
+# Custom components
+
+<Warning>
+  Component shadowing is **Phase 2**. The implementation outline below is what's coming.
+</Warning>
+
+Drop a file at `./components/<Name>.{tsx,astro}` in your project to override the built-in `<Name>`.
+
+## Resolution order
+
+1. `./components/<Name>.{tsx,astro}` in your project root
+2. The active theme's component (`@tangly/theme-tang/components/<Name>.astro`)
+3. Tangly's built-in default
+
+## Contract
+
+Your override must accept the same props as the original — Tangly passes them through verbatim.
+
+## Adding new components
+
+For components that don't exist in the default theme, register them in `tangly.config.ts`:
+
+```ts
+import { defineConfig } from "tangly/config";
+import MyTldr from "./components/MyTldr.astro";
+
+export default defineConfig({
+  components: {
+    Tldr: MyTldr,
+  },
+});
+```
+
+After this, MDX can use `<Tldr>...</Tldr>` without any imports.
+
+## Testing locally
+
+`tangly dev` hot-reloads component shadows. Edit `./components/Note.astro` and the browser updates.

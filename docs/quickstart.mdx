@@ -1,0 +1,93 @@
+---
+title: Quickstart
+description: Spin up a new Tangly project in under a minute.
+icon: "zap"
+---
+
+# Quickstart
+
+Get a new docs site running with one command.
+
+<Steps>
+  <Step title="Install">
+    ```bash
+    bun add -D tangly
+    ```
+  </Step>
+
+  <Step title="Scaffold">
+    ```bash
+    bun x tangly init my-docs
+    cd my-docs
+    ```
+
+    This drops a `docs.json` and an `introduction.mdx` page in the directory.
+  </Step>
+
+  <Step title="Run dev">
+    ```bash
+    bun x tangly dev
+    ```
+
+    Opens at `http://localhost:4321`. Edits to `docs.json` or any `*.mdx` hot-reload in the browser.
+  </Step>
+
+  <Step title="Build">
+    ```bash
+    bun x tangly build
+    ```
+
+    Static output lands in `dist/`. Adapter is auto-detected (`vercel.json` → Vercel, `wrangler.toml` → Cloudflare, `Dockerfile` → Node, else static).
+  </Step>
+</Steps>
+
+## Adding a page
+
+Drop a new `.mdx` file under your project root and reference it from `docs.json`:
+
+```md
+---
+title: My new page
+description: A short description.
+---
+
+# Hello world
+
+Body content goes here.
+```
+
+```json
+{
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": ["introduction", "my-new-page"]
+      }
+    ]
+  }
+}
+```
+
+Save both files. The browser updates without restart.
+
+## Migrating from Mintlify
+
+If you already have a Mintlify project:
+
+```bash
+bun x tangly upgrade
+```
+
+This converts `mint.json` → `docs.json` and bumps `tangly` to the latest. Existing MDX files render unchanged. See [Migrate from Mintlify](/howto/migrate-from-mintlify).
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="settings" href="/guides/configuration">
+    All `docs.json` fields and theme options.
+  </Card>
+  <Card title="Components" icon="puzzle" href="/guides/components">
+    The full component reference with prop signatures.
+  </Card>
+</CardGroup>

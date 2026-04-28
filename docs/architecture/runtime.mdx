@@ -1,0 +1,68 @@
+---
+title: Runtime
+description: The synthesized Astro app that ships inside tangly.
+icon: "cog"
+---
+
+# Runtime
+
+`packages/tangly/runtime/` is a real Astro project that ships inside the `tangly` npm package. The CLI invokes `astro dev` / `astro build` programmatically with `root` pointing at this directory.
+
+## Layout
+
+```
+runtime/
+├── astro.config.mjs
+└── src/
+    ├── content.config.ts          # collection: glob over <userRoot>/**/*.mdx
+    ├── pages/
+    │   ├── index.astro            # redirects to first nav page
+    │   └── [...slug].astro        # catch-all, renders any page slug
+    └── lib/
+        ├── mdx-components.ts      # injects Note/Card/Tabs/etc. into MDX
+        └── remark-mintlify-compat.mjs
+```
+
+## Catch-all
+
+`src/pages/[...slug].astro` is the heart of the runtime. For each page:
+
+<Steps>
+  <Step title="getStaticPaths">
+    Reads `getCollection('docs')` (Astro's content layer) and returns one path per MDX entry.
+  </Step>
+  <Step title="Resolve PageEntry">
+    Looks up the entry in `virtual:tangly/manifest` to get nav/sidebar/breadcrumb context. Falls back to a synthesized "orphan" entry for pages on disk but not in nav.
+  </Step>
+  <Step title="OpenAPI fetch">
+    If frontmatter has `openapi: METHOD path`, SSR-fetches the spec and extracts the operation's title + description for the page banner.
+  </Step>
+  <Step title="Render">
+    Wraps content in `Layout` + `PageShell`, passes `mdxComponents` into `<Content components={...} />`. Adds `<OpenApiEndpoint>` above content when applicable.
+  </Step>
+</Steps>
+
+## Content collection
+
+```ts
+const docs = defineCollection({
+  loader: glob({
+    base: process.env.TANGLY_USER_ROOT,
+    pattern: ["**/*.mdx", "!**/_*.mdx", "!snippets/**", "!components/**", "!templates/**"],
+  }),
+});
+```
+
+Astro's content layer handles MDX parsing, image processing, and per-file caching. We don't reinvent any of it.
+
+## Why a runtime, not a config preset
+
+We could ship as `astro.config` snippets the user adds. Instead, the runtime is fully synthesized:
+
+- User repo never needs Astro deps.
+- `tangly eject` (Phase 2) materializes this directory into the user's repo and removes `tangly` from deps.
+- We can iterate runtime internals without breaking user code.
+
+## Discovery
+
+`getRuntimeDir()` finds the runtime by walking up from the CLI's compiled JS until it finds a directory with `astro.config.mjs`. This handles npm install + workspace symlinks transparently.

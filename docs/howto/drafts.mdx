@@ -1,0 +1,39 @@
+---
+title: Drafts
+description: Author pages that hide in production but render in dev.
+icon: "pencil-line"
+tag: "Phase 2"
+---
+
+# Drafts
+
+<Warning>Draft handling is **Phase 2**. The shape below is the spec.</Warning>
+
+Mark a page as a draft via frontmatter:
+
+```md
+---
+title: New API
+draft: true
+---
+```
+
+## Behavior
+
+- **`tangly dev`**: page renders normally; sidebar shows a `Draft` badge.
+- **`tangly build`**: page omitted entirely. No HTML, no sitemap entry, no llms.txt entry.
+- **`tangly check --strict`**: fails if any draft pages are still in nav (catch them before merge).
+
+## Override for staging
+
+Build with drafts included:
+
+```bash
+TANGLY_INCLUDE_DRAFTS=1 bun x tangly build
+```
+
+Useful when deploying a staging branch that internal reviewers should see.
+
+## Why draft this way
+
+Mintlify treats unpublished content via a separate dashboard flow. Drafts-as-frontmatter keep authoring single-source — your editor + git, not a CMS.
