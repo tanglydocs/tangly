@@ -1,0 +1,185 @@
+/**
+ * Tang prose: GitHub-flavoured markdown look. Apply via `.prose-tang`.
+ * Tailwind utilities aren't enough alone for MDX-rendered content, so this
+ * file targets descendant elements directly.
+ */
+
+.prose-tang {
+  color: var(--tangly-color-fg);
+  font-size: 1rem;
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+
+.prose-tang > * + * {
+  margin-top: 1.25em;
+}
+
+.prose-tang h1,
+.prose-tang h2,
+.prose-tang h3,
+.prose-tang h4,
+.prose-tang h5,
+.prose-tang h6 {
+  font-family: var(--tangly-font-heading);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+  scroll-margin-top: calc(var(--tangly-topnav-height) + 1rem);
+}
+
+.prose-tang h1 {
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+.prose-tang h2 {
+  font-size: 1.5rem;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--tangly-color-border);
+}
+.prose-tang h3 {
+  font-size: 1.25rem;
+}
+.prose-tang h4 {
+  font-size: 1rem;
+}
+.prose-tang h5 {
+  font-size: 0.875rem;
+  color: var(--tangly-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.prose-tang h6 {
+  font-size: 0.85rem;
+  color: var(--tangly-color-muted);
+}
+
+.prose-tang p {
+  margin: 0;
+}
+
+.prose-tang a {
+  color: var(--tangly-color-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.prose-tang a:hover {
+  border-bottom-color: currentColor;
+}
+
+.prose-tang strong {
+  font-weight: 600;
+}
+.prose-tang em {
+  font-style: italic;
+}
+
+.prose-tang ul,
+.prose-tang ol {
+  padding-left: 1.5em;
+  margin: 0;
+}
+.prose-tang ul {
+  list-style: disc;
+}
+.prose-tang ol {
+  list-style: decimal;
+}
+.prose-tang li + li {
+  margin-top: 0.35em;
+}
+.prose-tang li > p {
+  margin-top: 0.5em;
+}
+.prose-tang li > ul,
+.prose-tang li > ol {
+  margin-top: 0.35em;
+}
+
+.prose-tang blockquote {
+  margin: 0;
+  padding: 0.5em 1em;
+  color: var(--tangly-color-muted);
+  border-left: 4px solid var(--tangly-color-border);
+  background: var(--tangly-color-bg-elevated);
+  border-radius: 0 var(--tangly-radius-sm) var(--tangly-radius-sm) 0;
+}
+
+.prose-tang hr {
+  border: 0;
+  border-top: 1px solid var(--tangly-color-border);
+  margin: 2em 0;
+}
+
+.prose-tang code {
+  font-family: var(--tangly-font-mono);
+  font-size: 0.875em;
+  padding: 0.15em 0.35em;
+  border-radius: var(--tangly-radius-sm);
+  background: var(--tangly-color-bg-elevated);
+  border: 1px solid var(--tangly-color-border);
+}
+
+.prose-tang pre {
+  margin: 0;
+  padding: 1em 1.25em;
+  border-radius: var(--tangly-radius);
+  background: #0b0f17;
+  color: #e6edf6;
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.6;
+  border: 1px solid var(--tangly-color-border);
+}
+.prose-tang pre code {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.prose-tang table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  display: block;
+  overflow-x: auto;
+}
+.prose-tang th,
+.prose-tang td {
+  padding: 0.55em 0.85em;
+  border: 1px solid var(--tangly-color-border);
+  text-align: left;
+}
+.prose-tang th {
+  background: var(--tangly-color-bg-elevated);
+  font-weight: 600;
+}
+.prose-tang tr:nth-child(2n) td {
+  background: color-mix(in oklab, var(--tangly-color-bg-elevated) 60%, transparent);
+}
+
+.prose-tang img,
+.prose-tang video {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--tangly-radius);
+  border: 1px solid var(--tangly-color-border);
+}
+
+.prose-tang kbd {
+  display: inline-block;
+  padding: 0.15em 0.45em;
+  font-size: 0.8em;
+  font-family: var(--tangly-font-mono);
+  border: 1px solid var(--tangly-color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--tangly-radius-sm);
+  background: var(--tangly-color-bg-elevated);
+}
+
+.prose-tang :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin-top: 0;
+}

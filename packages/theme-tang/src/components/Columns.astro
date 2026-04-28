@@ -1,0 +1,20 @@
+---
+export interface Props {
+  cols?: number;
+}
+
+const { cols = 2 } = Astro.props as Props;
+const safeCols = Math.min(Math.max(cols | 0, 1), 12);
+const COLS: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-1 sm:grid-cols-2",
+  3: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3",
+  4: "grid-cols-1 sm:grid-cols-2 md:grid-cols-4",
+  5: "grid-cols-1 sm:grid-cols-2 md:grid-cols-5",
+  6: "grid-cols-1 sm:grid-cols-2 md:grid-cols-6",
+};
+const gridCols = COLS[safeCols] ?? `grid-cols-${safeCols}`;
+---
+<div class={`tangly-columns grid ${gridCols} gap-4 my-6`}>
+  <slot />
+</div>

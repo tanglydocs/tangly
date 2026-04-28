@@ -36,5 +36,17 @@
     "build": "tsgo --build",
     "typecheck": "tsgo --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
+    "@tailwindcss/vite": "^4.2.4",
+    "@tangly/schema": "workspace:*",
+    "astro": "^6.1.10",
+    "lucide": "^1.12.0",
+    "tailwindcss": "^4.2.4",
+    "tangly": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
   }
 }

@@ -1,0 +1,136 @@
+---
+import * as lucide from "lucide";
+
+export interface Props {
+  icon: string;
+  size?: number | string;
+  color?: string;
+  class?: string;
+}
+
+const { icon, size = 16, color, class: className = "" } = Astro.props as Props;
+
+// Map common Font Awesome / Mintlify icon names to Lucide equivalents.
+// Mintlify users frequently pass FA names; we normalise to Lucide here.
+const FA_TO_LUCIDE: Record<string, string> = {
+  "circle-check": "CircleCheck",
+  "circle-info": "Info",
+  "circle-exclamation": "CircleAlert",
+  "info-circle": "Info",
+  "exclamation-triangle": "TriangleAlert",
+  "triangle-exclamation": "TriangleAlert",
+  "lightbulb": "Lightbulb",
+  "warning": "TriangleAlert",
+  "danger": "CircleAlert",
+  "check": "Check",
+  "sparkles": "Sparkles",
+  "rocket": "Rocket",
+  "book": "Book",
+  "code": "Code",
+  "terminal": "Terminal",
+  "user": "User",
+  "users": "Users",
+  "gear": "Settings",
+  "cog": "Settings",
+  "house": "House",
+  "home": "House",
+  "magnifying-glass": "Search",
+  "search": "Search",
+  "envelope": "Mail",
+  "mail": "Mail",
+  "link": "Link",
+  "external-link": "ExternalLink",
+  "arrow-right": "ArrowRight",
+  "arrow-left": "ArrowLeft",
+  "chevron-right": "ChevronRight",
+  "chevron-down": "ChevronDown",
+  "plus": "Plus",
+  "minus": "Minus",
+  "x": "X",
+  "xmark": "X",
+  "close": "X",
+  "play": "Play",
+  "pause": "Pause",
+  "star": "Star",
+  "heart": "Heart",
+  "github": "Github",
+  "git": "GitBranch",
+  "database": "Database",
+  "server": "Server",
+  "cloud": "Cloud",
+  "key": "Key",
+  "lock": "Lock",
+  "shield": "Shield",
+  "bolt": "Zap",
+  "zap": "Zap",
+  "file": "File",
+  "file-lines": "FileText",
+  "folder": "Folder",
+  "image": "Image",
+  "video": "Video",
+  "table": "Table",
+  "list": "List",
+  "grid": "Grid3x3",
+  "calendar": "Calendar",
+  "clock": "Clock",
+  "bell": "Bell",
+  "tag": "Tag",
+  "filter": "Filter",
+  "download": "Download",
+  "upload": "Upload",
+  "trash": "Trash2",
+  "edit": "Pencil",
+  "copy": "Copy",
+  "save": "Save",
+  "eye": "Eye",
+  "eye-slash": "EyeOff",
+};
+
+function toPascal(name: string): string {
+  return name
+    .split(/[-_\s]+/)
+    .map((p) => (p ? p[0].toUpperCase() + p.slice(1) : ""))
+    .join("");
+}
+
+function resolveIcon(name: string): unknown {
+  const reg = lucide as unknown as Record<string, unknown>;
+  if (reg[name]) return reg[name];
+  const mapped = FA_TO_LUCIDE[name.toLowerCase()];
+  if (mapped && reg[mapped]) return reg[mapped];
+  const pascal = toPascal(name);
+  if (reg[pascal]) return reg[pascal];
+  return undefined;
+}
+
+let node = resolveIcon(icon);
+if (!node) {
+  // eslint-disable-next-line no-console
+  console.warn(`[tangly] Unknown icon "${icon}", falling back to HelpCircle.`);
+  node = (lucide as unknown as Record<string, unknown>)["CircleHelp"] ?? (lucide as unknown as Record<string, unknown>)["CircleQuestionMark"];
+}
+
+type IconAttr = Record<string, string | number | undefined>;
+type IconChild = [tag: string, attrs: IconAttr];
+const children = (node as IconChild[]) ?? [];
+
+const sizeStr = typeof size === "number" ? `${size}` : size;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={sizeStr}
+  height={sizeStr}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke={color ?? "currentColor"}
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden="true"
+>
+  {children.map(([tag, attrs]) => {
+    const Tag = tag as keyof HTMLElementTagNameMap;
+    return <Tag {...(attrs as Record<string, string | number>)} />;
+  })}
+</svg>

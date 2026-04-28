@@ -1,0 +1,13 @@
+---
+import Callout from "./_Callout.astro";
+
+export interface Props {}
+---
+<Callout
+  icon="sparkles"
+  label="Update"
+  classes="bg-violet-50 border-l-violet-500 text-violet-900 dark:bg-violet-950/40 dark:border-l-violet-400 dark:text-violet-100"
+  iconClass="text-violet-600 dark:text-violet-400"
+>
+  <slot />
+</Callout>

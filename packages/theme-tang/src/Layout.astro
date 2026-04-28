@@ -1,0 +1,148 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import type { PageEntry, ResolvedNavigation } from "tangly";
+import TopNav from "./TopNav.astro";
+import Sidebar from "./Sidebar.astro";
+import Footer from "./Footer.astro";
+import "./styles/theme.css";
+import "./styles/prose.css";
+
+export interface Props {
+  config: DocsJson;
+  page: PageEntry;
+  navigation: ResolvedNavigation;
+  pageTitle: string;
+  pageDescription?: string;
+}
+
+const { config, page, navigation, pageTitle, pageDescription } = Astro.props as Props;
+
+// Resolve favicon (string | { light, dark }).
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+
+// Logo links
+const logoLight =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.light ?? config.logo?.dark);
+const logoDark =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.dark ?? config.logo?.light);
+
+// Active tab from current page
+const currentTabSlug = page.tab?.slug;
+const sidebarItems =
+  page.sidebar.length > 0
+    ? page.sidebar
+    : (currentTabSlug
+        ? (navigation.tabs.find((t) => t.slug === currentTabSlug)?.sidebar ?? [])
+        : navigation.rootSidebar);
+
+// Theme color CSS vars from config.colors
+const colors = config.colors ?? {};
+const bgLight = typeof colors.background === "object" ? colors.background?.light : (typeof colors.background === "string" ? colors.background : undefined);
+const bgDark = typeof colors.background === "object" ? colors.background?.dark : undefined;
+
+const cssVars: string[] = [];
+if (colors.primary) cssVars.push(`--tangly-color-primary: ${colors.primary}`);
+if (colors.light) cssVars.push(`--tangly-color-primary-light: ${colors.light}`);
+if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
+if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
+const styleAttr = cssVars.join("; ");
+
+// Fonts: prefer config.fonts, fall back to DM Sans + JetBrains Mono.
+const headingFont = config.fonts?.heading?.family ?? "DM Sans";
+const bodyFont = config.fonts?.body?.family ?? "DM Sans";
+const monoFont = "JetBrains Mono";
+const googleFamilies = [...new Set([headingFont, bodyFont].filter(Boolean))]
+  .map((f) => `${(f as string).replace(/ /g, "+")}:wght@400;500;600;700`)
+  .join("&family=");
+const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
+
+const appearanceDefault = config.appearance?.default ?? "system";
+const ogTitle = pageTitle;
+const ogDesc = pageDescription ?? config.description ?? "";
+
+// Optional dark-mode background override.
+const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+---
+<!DOCTYPE html>
+<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="icon" href={favicon} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDesc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsHref} />
+    <style is:inline set:html={`:root{--tangly-font-heading:'${headingFont}',system-ui,sans-serif;--tangly-font-body:'${bodyFont}',system-ui,sans-serif;}`}></style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : (appearanceDefault === "dark" || (appearanceDefault === "system" && sys));
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <TopNav config={config} navigation={navigation} currentTabSlug={currentTabSlug} />
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
+      <aside
+        id="tangly-sidebar"
+        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 py-6"
+      >
+        <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
+      </aside>
+      <main class="min-w-0 px-4 sm:px-6 lg:px-10 py-8">
+        <slot />
+      </main>
+    </div>
+    <Footer config={config} />
+
+    <!-- Mobile drawer overlay -->
+    <div
+      id="tangly-drawer"
+      class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden"
+      data-state="closed"
+    >
+      <div class="absolute inset-y-0 left-0 w-72 max-w-[80vw] bg-[var(--tangly-color-bg)] border-r border-[var(--tangly-color-border)] overflow-y-auto p-5 tangly-scroll">
+        <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
+      </div>
+    </div>
+
+    <script is:inline>
+      // Drawer toggle (TopNav dispatches `tangly:toggle-sidebar`).
+      (() => {
+        const drawer = document.getElementById("tangly-drawer");
+        if (!drawer) return;
+        const open = () => { drawer.classList.remove("hidden"); drawer.dataset.state = "open"; };
+        const close = () => { drawer.classList.add("hidden"); drawer.dataset.state = "closed"; };
+        document.addEventListener("tangly:toggle-sidebar", () => {
+          drawer.dataset.state === "open" ? close() : open();
+        });
+        drawer.addEventListener("click", (e) => { if (e.target === drawer) close(); });
+      })();
+
+      // Theme toggle (TopNav dispatches `tangly:toggle-theme`).
+      (() => {
+        document.addEventListener("tangly:toggle-theme", () => {
+          const root = document.documentElement;
+          const isDark = root.classList.toggle("dark");
+          try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+        });
+      })();
+    </script>
+  </body>
+</html>
