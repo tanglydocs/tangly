@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content";
+import { manifest } from "virtual:tangly/manifest";
+import Layout from "@tangly/theme-tang/Layout.astro";
+import PageShell from "@tangly/theme-tang/PageShell.astro";
+import type { PageEntry } from "tangly";
+import { mdxComponents } from "../lib/mdx-components.ts";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("docs");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const pageMeta = manifest.pages.find(([s]) => s === entry.id);
+
+// Synthesize a PageEntry if the page is on disk but not in nav (orphan).
+const orphan: PageEntry = {
+  slug: entry.id,
+  file: "",
+  frontmatter: {
+    title: entry.data.title ?? entry.id,
+    description: entry.data.description,
+  },
+  breadcrumbs: [],
+  sidebar: manifest.navigation.rootSidebar,
+  draft: false,
+};
+
+const page: PageEntry = (pageMeta?.[1] as PageEntry) ?? orphan;
+
+const fmTitle =
+  page.frontmatter.title ?? entry.data.title ?? entry.id;
+const fmDesc = page.frontmatter.description ?? entry.data.description;
+---
+
+<Layout
+  config={manifest.config}
+  page={page}
+  navigation={manifest.navigation}
+  pageTitle={fmTitle}
+  pageDescription={fmDesc}
+>
+  <PageShell page={page}>
+    <Content components={mdxComponents} />
+  </PageShell>
+</Layout>

@@ -1,0 +1,72 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import Icon from "./components/Icon.astro";
+
+export interface Props {
+  config: DocsJson;
+}
+
+const { config } = Astro.props as Props;
+
+const socials = config.footer?.socials ?? {};
+const linkGroups = config.footer?.links ?? [];
+
+// Map social keys to Lucide icon names.
+const SOCIAL_ICON: Record<string, string> = {
+  x: "Twitter",
+  twitter: "Twitter",
+  github: "Github",
+  linkedin: "Linkedin",
+  youtube: "Youtube",
+  slack: "Slack",
+  discord: "MessageCircle",
+};
+---
+<footer class="border-t border-[var(--tangly-color-border)] mt-16 py-8 px-4 sm:px-6 lg:px-10 text-sm text-[var(--tangly-color-muted)]">
+  <div class="max-w-screen-2xl mx-auto flex flex-col gap-6">
+    {linkGroups.length > 0 && (
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        {linkGroups.map((group) => (
+          <div>
+            {group.header && (
+              <div class="text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-fg)] mb-2">
+                {group.header}
+              </div>
+            )}
+            <ul class="space-y-1.5">
+              {group.items.map((l) => (
+                <li>
+                  <a href={l.href} class="hover:text-[var(--tangly-color-fg)]">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )}
+    <div class="flex flex-wrap items-center gap-4 justify-between">
+      <div class="flex items-center gap-2">
+        {Object.entries(socials).map(([key, href]) => (
+          <a
+            href={href as string}
+            aria-label={key}
+            class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] hover:text-[var(--tangly-color-fg)]"
+          >
+            <Icon icon={SOCIAL_ICON[key.toLowerCase()] ?? "Link"} size={14} />
+          </a>
+        ))}
+      </div>
+      <div class="text-xs">
+        Powered by{" "}
+        <a
+          href="https://github.com/tanglydocs/tangly"
+          class="hover:text-[var(--tangly-color-fg)] underline-offset-2 hover:underline"
+        >
+          Tangly
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -49,6 +49,7 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
     const full = join(dir, entry.name);
 
     if (entry.isDirectory()) {
+      // eslint-disable-next-line no-await-in-loop -- recursive walk needs to await each subdir
       await walk(root, full, out);
       continue;
     }

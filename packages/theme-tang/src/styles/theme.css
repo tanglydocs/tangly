@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --tangly-color-primary: #2f73f5;
+  --tangly-color-primary-light: #5a92f7;
+  --tangly-color-primary-dark: #1f56c8;
+
+  --tangly-color-bg: #ffffff;
+  --tangly-color-bg-elevated: #f8fafc;
+  --tangly-color-fg: #0f172a;
+  --tangly-color-muted: #64748b;
+  --tangly-color-border: #e2e8f0;
+
+  --tangly-radius: 0.5rem;
+  --tangly-radius-sm: 0.375rem;
+  --tangly-radius-lg: 0.75rem;
+
+  --tangly-font-heading: "DM Sans", system-ui, sans-serif;
+  --tangly-font-body: "DM Sans", system-ui, sans-serif;
+  --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --tangly-sidebar-width: 17rem;
+  --tangly-content-max-width: 48rem;
+  --tangly-toc-width: 15rem;
+  --tangly-topnav-height: 3.75rem;
+
+  color-scheme: light;
+}
+
+.dark {
+  --tangly-color-primary-light: #82a6f8;
+  --tangly-color-primary-dark: #1f56c8;
+
+  --tangly-color-bg: #0b0f17;
+  --tangly-color-bg-elevated: #11161f;
+  --tangly-color-fg: #e6edf6;
+  --tangly-color-muted: #94a3b8;
+  --tangly-color-border: #1f2937;
+
+  color-scheme: dark;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--tangly-font-heading);
+  letter-spacing: -0.01em;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--tangly-font-mono);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--tangly-color-primary) 25%, transparent);
+}
+
+/* Sidebar / TOC scroll containers */
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 4px;
+}
+.tangly-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Glassy top nav */
+.tangly-topnav {
+  background: color-mix(in oklab, var(--tangly-color-bg) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--tangly-color-border);
+}
+
+/* Active sidebar link */
+.tangly-side-link[data-active="true"] {
+  color: var(--tangly-color-primary);
+  background: color-mix(in oklab, var(--tangly-color-primary) 10%, transparent);
+}
+
+.tangly-toc-link[data-active="true"] {
+  color: var(--tangly-color-primary);
+  border-left-color: var(--tangly-color-primary);
+}

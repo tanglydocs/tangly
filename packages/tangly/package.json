@@ -24,6 +24,7 @@
   "files": [
     "bin",
     "dist",
+    "runtime",
     "schema",
     "README.md"
   ],
@@ -35,6 +36,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./plugin": {
+      "types": "./dist/plugin/index.d.ts",
+      "import": "./dist/plugin/index.js"
     },
     "./content": {
       "types": "./dist/content.d.ts",
@@ -51,14 +56,23 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
     "@clack/prompts": "^1.2.0",
+    "@tailwindcss/vite": "^4.2.4",
     "@tangly/schema": "workspace:*",
+    "@tangly/theme-tang": "workspace:*",
+    "astro": "^6.1.10",
     "chokidar": "^5.0.0",
     "citty": "^0.2.2",
     "gray-matter": "^4.0.3",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "rehype-shiki": "^0.0.9",
+    "remark-gfm": "^4.0.1",
+    "shiki": "^4.0.2",
+    "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
+    "vite": "^7.3.2",
     "vitest": "^4.1.5"
   },
   "engines": {

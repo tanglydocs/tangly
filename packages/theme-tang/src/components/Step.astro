@@ -1,0 +1,29 @@
+---
+import Icon from "./Icon.astro";
+
+export interface Props {
+  title: string;
+  icon?: string;
+  titleSize?: "p" | "h2" | "h3";
+  stepNumber?: number;
+}
+
+const { title, icon, titleSize = "p", stepNumber } = Astro.props as Props;
+const TitleTag = titleSize;
+const titleClasses: Record<string, string> = {
+  p: "text-base font-semibold text-zinc-900 dark:text-zinc-100",
+  h2: "text-2xl font-semibold text-zinc-900 dark:text-zinc-100",
+  h3: "text-xl font-semibold text-zinc-900 dark:text-zinc-100",
+};
+---
+<li class="tangly-step relative pl-12 pb-8 last:pb-0">
+  <span class="absolute left-0 top-0 flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+    {icon ? <Icon icon={icon} size={16} /> : (stepNumber ?? "")}
+  </span>
+  <div>
+    <TitleTag class={`${titleClasses[titleSize]} mt-1 mb-2 leading-tight`}>{title}</TitleTag>
+    <div class="text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed [&>p:first-child]:mt-0 [&>p:last-child]:mb-0">
+      <slot />
+    </div>
+  </div>
+</li>

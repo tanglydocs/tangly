@@ -1,0 +1,26 @@
+---
+export interface Props {}
+
+const groupId = `steps-${Math.random().toString(36).slice(2, 9)}`;
+---
+<ol
+  class="tangly-steps relative my-6 list-none p-0 [counter-reset:tangly-steps] before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-zinc-200 dark:before:bg-zinc-800"
+  data-steps={groupId}
+>
+  <slot />
+</ol>
+<script is:inline define:vars={{ groupId }}>
+  (function () {
+    const root = document.querySelector(`[data-steps="${groupId}"]`);
+    if (!root) return;
+    const steps = Array.from(root.querySelectorAll(":scope > .tangly-step"));
+    steps.forEach((step, i) => {
+      const numberCell = step.querySelector(":scope > span");
+      if (!numberCell) return;
+      // If the number cell has no children (no icon), inject the index.
+      if (!numberCell.firstElementChild && !numberCell.textContent?.trim()) {
+        numberCell.textContent = String(i + 1);
+      }
+    });
+  })();
+</script>

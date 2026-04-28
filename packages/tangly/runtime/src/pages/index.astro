@@ -1,0 +1,26 @@
+---
+import { manifest } from "virtual:tangly/manifest";
+import { getCollection } from "astro:content";
+
+const entries = await getCollection("docs");
+const firstFromNav = manifest.navigation.tabs[0]?.pages?.[0];
+const firstFromRoot =
+  manifest.navigation.rootSidebar.find((i) => !i.isGroup && i.slug)?.slug ??
+  manifest.navigation.rootSidebar[0]?.children?.find((c) => !c.isGroup && c.slug)?.slug;
+const firstFromDisk = entries[0]?.id;
+
+const target = firstFromNav ?? firstFromRoot ?? firstFromDisk ?? "";
+
+export const prerender = true;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=/${target}`} />
+    <title>{manifest.config.name}</title>
+  </head>
+  <body>
+    <p>Loading <a href={`/${target}`}>{manifest.config.name}</a>…</p>
+  </body>
+</html>

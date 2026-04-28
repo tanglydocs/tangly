@@ -1,0 +1,13 @@
+---
+import Callout from "./_Callout.astro";
+
+export interface Props {}
+---
+<Callout
+  icon="circle-alert"
+  label="Danger"
+  classes="bg-red-50 border-l-red-500 text-red-900 dark:bg-red-950/40 dark:border-l-red-400 dark:text-red-100"
+  iconClass="text-red-600 dark:text-red-400"
+>
+  <slot />
+</Callout>
