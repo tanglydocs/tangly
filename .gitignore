@@ -1,0 +1,49 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build outputs
+dist/
+build/
+.turbo/
+.next/
+.astro/
+.tangly/
+
+# typescript
+*.tsbuildinfo
+
+# env
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# logs
+npm-debug.log*
+bun-debug.log*
+yarn-debug.log*
+
+# testing
+coverage/
+.vitest-cache/
+playwright-report/
+test-results/
+
+# examples — large external corpora live here untracked
+examples/opennem/
+examples/squirrelscan/
+
+# release
+.changeset/*.md
+!.changeset/README.md
+!.changeset/config.json

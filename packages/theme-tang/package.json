@@ -1,0 +1,42 @@
+{
+  "name": "@tangly/theme-tang",
+  "version": "0.0.1",
+  "description": "Default theme for Tangly. Mintlify-Mint-inspired, but cleaner.",
+  "keywords": [
+    "docs",
+    "tangly",
+    "theme"
+  ],
+  "homepage": "https://github.com/nikcub/tangly",
+  "bugs": "https://github.com/nikcub/tangly/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikcub/tangly.git",
+    "directory": "packages/theme-tang"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": "./src/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsgo --build",
+    "typecheck": "tsgo --noEmit",
+    "test": "vitest run --passWithNoTests"
+  }
+}
