@@ -33,7 +33,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: ./.github/actions/setup
       - run: bun run build
-      - run: bun run build:docs
+      # GitHub Pages serves project sites under /<repo>/, not /, so build with that base.
+      - name: Build docs (base = /tangly/)
+        working-directory: docs
+        run: ../packages/tangly/bin/tangly.js build --out ./dist --base /tangly/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
