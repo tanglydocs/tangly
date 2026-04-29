@@ -24,6 +24,7 @@
     "release": "bun run build && changeset publish"
   },
   "dependencies": {
+    "katex": "^0.16.45",
     "zod": "^4.3.6"
   },
   "devDependencies": {

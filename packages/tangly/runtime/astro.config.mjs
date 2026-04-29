@@ -10,6 +10,12 @@ import remarkMath from "remark-math";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+// Walk up to the workspace root so we can serve hoisted deps (katex fonts, etc.)
+const workspaceRoot = resolve(__dirname, "../../..");
 
 const userRoot = process.env.TANGLY_USER_ROOT;
 if (!userRoot) {
@@ -41,7 +47,40 @@ export default defineConfig({
               className: ["tangly-heading-anchor"],
               "aria-label": "Navigate to header",
             },
-            content: { type: "text", value: "#" },
+            content: {
+              type: "element",
+              tagName: "svg",
+              properties: {
+                xmlns: "http://www.w3.org/2000/svg",
+                width: 14,
+                height: 14,
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 2,
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                ariaHidden: "true",
+              },
+              children: [
+                {
+                  type: "element",
+                  tagName: "path",
+                  properties: {
+                    d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
+                  },
+                  children: [],
+                },
+                {
+                  type: "element",
+                  tagName: "path",
+                  properties: {
+                    d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+                  },
+                  children: [],
+                },
+              ],
+            },
           },
         ],
         [
@@ -57,6 +96,13 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwind()],
+    server: {
+      fs: {
+        // katex (and other workspace deps under bun's hoist dir) must be
+        // explicitly allowed for Vite to serve their font assets in dev.
+        allow: [process.cwd(), userRoot, workspaceRoot],
+      },
+    },
   },
   markdown: {
     syntaxHighlight: false,

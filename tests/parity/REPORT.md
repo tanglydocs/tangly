@@ -7,6 +7,23 @@ Corpus: `~/Projects/Opennem/opennem/docs` (Open Electricity Documentation, 47 md
 
 Last updated: 2026-04-29
 
+## 2026-04-29 sweep — fixes & remaining gaps
+
+Fixed this round:
+- Footer: hardcoded `Powered by Tangly → github.com/tanglydocs` retargeted to `https://tangly.dev`. Single GitHub in footer now.
+- Footer socials: skip-render unmapped keys (no more `?`/Link fallback).
+- Sidebar default-expanded: `expanded ?? containsCurrent ?? true` was a `??`-vs-boolean bug that defaulted to "open only on active branch". Now `expanded ?? true` → all groups open.
+- Heading anchors: literal `#` text replaced with hover-only Lucide `Link` SVG (rehype-autolink content tree + `.tangly-heading-anchor` CSS in both prose stylesheets).
+- Prose vertical rhythm: `.prose-tang p { margin: 0 }` was killing all paragraph spacing; switched to `font-size + line-height` and let `> * + *` handle margins.
+- H2 border-bottom (GitHub-style HR) removed for Mintlify-style flat headings.
+- H1 retuned: `text-3xl font-bold` (30px / 700) to match Mintlify; was `text-3xl sm:text-4xl font-semibold`.
+- Lucide v1 brand-icon dropouts (Github, Twitter/X, LinkedIn, YouTube, Slack, Discord) — added inline SVG fallbacks in `Icon.astro` for both themes. Expanded FA→Lucide map for `network-wired`, `smog`, `industry`, `arrows-up-down`, `list-check`, etc.
+
+Remaining gaps (parity sweep — Open Electricity corpus):
+- **OpenAPI endpoint renderer**: `/api-reference/data/get-network-data` shows method+path + try-it-out, but parameter sections render as a flat list (0 H2). Mintlify breaks parameters into `Path / Query / Body` H2 blocks with 21 ParamFields. Tangly's `OpenApiEndpoint.astro` needs section grouping.
+- **Topnav GitHub appears twice**: docs.json has `navigation.global.anchors[github]` AND `navbar.links[github]` with different hrefs (org vs repo). Source-of-truth is the user's docs.json — flag for them, not a Tangly bug.
+- **TOC + page chrome**: confirmed working but should QA on a long page with nested H3s.
+
 ## Summary
 
 | Area                                          | Status                                    |

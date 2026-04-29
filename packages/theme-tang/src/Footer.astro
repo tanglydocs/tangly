@@ -49,8 +49,9 @@ const SOCIAL_ICON: Record<string, string> = {
     <div class="flex flex-wrap items-center gap-4 justify-between">
       <div class="flex items-center gap-2">
         {Object.entries(socials).map(([key, href]) => {
-          const iconName = SOCIAL_ICON[key.toLowerCase()];
-          if (!iconName) return null;
+          // Unknown social keys (e.g. "website", "medium") fall back to a
+          // generic Link icon rather than dropping the link silently.
+          const iconName = SOCIAL_ICON[key.toLowerCase()] ?? "Link";
           return (
             <a
               href={href as string}
