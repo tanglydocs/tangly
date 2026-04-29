@@ -81,6 +81,13 @@ export function extractBlocks(mdx: string): BlockMap {
   // the next blank line or next heading.
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i] ?? "";
+    if (line.startsWith("```") || line.startsWith("~~~")) {
+      // Skip fenced code blocks so `{#foo}` inside a sample isn't captured.
+      const fence = line.slice(0, 3);
+      i += 1;
+      while (i < lines.length && !(lines[i] ?? "").startsWith(fence)) i += 1;
+      continue;
+    }
     if (HEADING_RE.test(line)) continue;
     const matches = [...line.matchAll(EXPLICIT_ID_RE)];
     if (matches.length === 0) continue;

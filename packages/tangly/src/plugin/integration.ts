@@ -1,27 +1,9 @@
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration } from "astro";
 import { buildComponentShadowAliases } from "./component-shadow.js";
 import { buildTemplateAliases } from "./template-resolver.js";
+import { buildThemeStylesAlias, buildUserThemeAliases } from "./theme-resolver.js";
 import { tanglyVitePlugin } from "./vite-plugin.js";
-
-function resolveThemeAliases(userRoot: string, configFile: string): Record<string, string> {
-  try {
-    const path = resolve(userRoot, configFile);
-    if (!existsSync(path)) return {};
-    const cfg = JSON.parse(readFileSync(path, "utf8")) as { theme?: string };
-    if (cfg.theme === "pith") {
-      // Map every @tangly/theme-tang/<x> import to @tangly/theme-pith/<x>.
-      return {
-        "@tangly/theme-tang": "@tangly/theme-pith",
-      };
-    }
-  } catch {
-    // ignore
-  }
-  return {};
-}
 
 export interface TanglyIntegrationOptions {
   /** Absolute path to the user's docs project root. */
@@ -38,7 +20,8 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
     hooks: {
       "astro:config:setup": ({ updateConfig, addWatchFile, logger }) => {
         const userRoot = opts.userRoot;
-        addWatchFile(`${userRoot}/${opts.configFile ?? "docs.json"}`);
+        const configFile = opts.configFile ?? "docs.json";
+        addWatchFile(`${userRoot}/${configFile}`);
         logger.info(`mounting Tangly project at ${userRoot}`);
 
         const shadows = buildComponentShadowAliases(userRoot);
@@ -48,11 +31,13 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
         }
         const templateAliases = buildTemplateAliases(userRoot);
 
-        // Theme switching: read docs.json once (synchronously) to discover
-        // the active theme. When set to "pith", alias all imports of
-        // @tangly/theme-tang → @tangly/theme-pith so the runtime swaps
-        // themes without code changes.
-        const themeAliases = resolveThemeAliases(userRoot, opts.configFile ?? "docs.json");
+        // Resolve `@tangly/theme/theme.css` to the active theme's stylesheet
+        // (theme-tang or theme-pith), or `<userRoot>/theme/styles/theme.css`
+        // if the user supplies one.
+        const themeStylesAlias = buildThemeStylesAlias(userRoot, configFile);
+
+        // Per-component / per-shell overrides at `<userRoot>/theme/...`.
+        const userThemeAliases = buildUserThemeAliases(userRoot);
 
         // Cast to bypass mismatched Vite versions between Astro and the
         // hoisted vite Tailwind brings in.
@@ -67,7 +52,11 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
             resolve: {
               alias: {
                 "@user": userRoot,
-                ...themeAliases,
+                // Order matters: user overrides first, then theme styles,
+                // then deprecated shadow map (also user-driven), then
+                // template alias.
+                ...userThemeAliases,
+                ...themeStylesAlias,
                 ...shadows,
                 ...templateAliases,
               },

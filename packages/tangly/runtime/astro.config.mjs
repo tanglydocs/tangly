@@ -7,6 +7,7 @@ import rehypeShiki from "rehype-shiki";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
@@ -35,7 +36,7 @@ export default defineConfig({
   integrations: [
     tanglyIntegration({ userRoot, configFile, includeDrafts }),
     mdx({
-      remarkPlugins: [remarkMintlifyCompat, remarkGfm, remarkMath],
+      remarkPlugins: [remarkMintlifyCompat, remarkExplicitIds, remarkGfm, remarkMath],
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,

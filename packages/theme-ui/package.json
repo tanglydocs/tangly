@@ -1,12 +1,13 @@
 {
-  "name": "@tangly/theme-tang",
+  "name": "@tangly/theme-ui",
   "version": "0.0.1",
   "private": true,
-  "description": "Default Tangly theme. Mintlify-Mint-inspired token set; UI shell comes from @tangly/theme-ui.",
+  "description": "Shared UI library for Tangly themes. Holds Layout, PageShell, Sidebar, TopNav, Footer, prose styles, and all MDX components.",
   "keywords": [
     "docs",
     "tangly",
-    "theme"
+    "theme",
+    "ui"
   ],
   "homepage": "https://github.com/tanglydocs/tangly",
   "bugs": "https://github.com/tanglydocs/tangly/issues",
@@ -14,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tanglydocs/tangly.git",
-    "directory": "packages/theme-tang"
+    "directory": "packages/theme-ui"
   },
   "files": [
     "dist",
@@ -38,8 +39,21 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tangly/theme-ui": "workspace:*",
-    "tailwindcss": "^4.2.4"
+    "@astrojs/mdx": "^5.0.4",
+    "@scalar/api-reference": "^1.53.1",
+    "@tailwindcss/vite": "^4.2.4",
+    "@tangly/schema": "workspace:*",
+    "astro": "^6.1.10",
+    "katex": "^0.16.45",
+    "lucide": "^1.12.0",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "tailwindcss": "^4.2.4",
+    "tangly": "workspace:*",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "@types/node": "^25.6.0"

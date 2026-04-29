@@ -7,6 +7,15 @@ import type { Manifest } from "../manifest/types.js";
  * Copy Mintlify-style static directories from the user's project root into
  * the build output. The dev server serves these via middleware; the build
  * needs them on disk.
+ *
+ * Cascade order (least → most specific; later entries clobber earlier):
+ *   1. @tangly/theme-ui/public/<dir>
+ *   2. @tangly/theme-<active>/public/<dir>
+ *   3. <userRoot>/theme/public/<dir>
+ *   4. <userRoot>/<dir>                      (Mintlify-style)
+ *
+ * `cp` with `force: true` overwrites, so copying in this order means the
+ * user's project files always win over theme defaults.
  */
 const STATIC_DIRS = ["images", "logo", "public", "static", "assets"] as const;
 
@@ -20,22 +29,40 @@ export interface CopyAssetsResult {
   skipped: string[];
 }
 
+function publicCascadeForBuild(userRoot: string, themeName: string | undefined): string[] {
+  const here = new URL(".", import.meta.url).pathname;
+  // dist/build-outputs/copy-assets.js → walk up to packages/.
+  const packagesDir = resolve(here, "..", "..", "..");
+  const active = themeName === "pith" ? "pith" : "tang";
+  // Order matters: least-specific first so later cp() calls overwrite.
+  return [
+    resolve(packagesDir, "theme-ui", "public"),
+    resolve(packagesDir, `theme-${active}`, "public"),
+    resolve(userRoot, "theme", "public"),
+    userRoot,
+  ];
+}
+
 export async function copyStaticAssets(opts: CopyAssetsOptions): Promise<CopyAssetsResult> {
   const { manifest, outDir } = opts;
   const userRoot = manifest.root;
   const copied: string[] = [];
   const skipped: string[] = [];
 
+  const roots = publicCascadeForBuild(userRoot, manifest.config.theme);
+
   for (const dir of STATIC_DIRS) {
-    const src = resolve(userRoot, dir);
-    if (!existsSync(src)) {
-      skipped.push(dir);
-      continue;
+    let copiedThis = false;
+    for (const root of roots) {
+      const src = resolve(root, dir);
+      if (!existsSync(src)) continue;
+      const dest = resolve(outDir, dir);
+      // eslint-disable-next-line no-await-in-loop -- sequential cascade copy is intentional
+      await cp(src, dest, { recursive: true, force: true });
+      copiedThis = true;
     }
-    const dest = resolve(outDir, dir);
-    // eslint-disable-next-line no-await-in-loop -- sequential dir copy is intentional
-    await cp(src, dest, { recursive: true, force: true });
-    copied.push(dir);
+    if (copiedThis) copied.push(dir);
+    else skipped.push(dir);
   }
 
   // Favicon may live anywhere — copy if it's inside userRoot and not under

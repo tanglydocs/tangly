@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../theme-ui/src/**/*.{astro,ts,tsx,mdx}";
 @source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
 @source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
 

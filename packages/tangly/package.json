@@ -62,6 +62,7 @@
     "@tangly/schema": "workspace:*",
     "@tangly/theme-pith": "workspace:*",
     "@tangly/theme-tang": "workspace:*",
+    "@tangly/theme-ui": "workspace:*",
     "astro": "^6.1.10",
     "chokidar": "^5.0.0",
     "citty": "^0.2.2",

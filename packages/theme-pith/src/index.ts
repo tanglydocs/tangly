@@ -1,7 +1,5 @@
 export const THEME_NAME = "pith" as const;
 
-export { themeConfig, type TangThemeConfig as PithThemeConfig } from "./theme.config.js";
-
-// Astro components are imported directly via subpath:
-//   import Layout from "@tangly/theme-pith/Layout.astro";
-// The exports map (`./*`) makes the .astro files importable from src/.
+// Same shape as theme-tang: re-export the shared theme config from
+// @tangly/theme-ui. Pith only customises tokens via styles/theme.css.
+export { themeConfig, type TangThemeConfig as PithThemeConfig } from "@tangly/theme-ui/theme.config.js";

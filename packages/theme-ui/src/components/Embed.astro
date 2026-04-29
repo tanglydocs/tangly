@@ -62,19 +62,36 @@ if (!pageEntry) {
   } else {
     embedStack.push({ page: pageSlug, block: blockId });
     try {
-      // Render block source as Markdown -> HTML. We deliberately don't go
-      // through MDX/JSX here — embeds are content fragments, not components.
-      // remark-gfm covers tables/strikethrough/task lists/etc.
+      // Reject nested embeds in source: cycle detection runs at
+      // component level via the globalThis stack, but Markdown render
+      // never re-invokes <Embed>. Treating any <Embed in the source as
+      // a build error keeps the cycle promise honest.
+      if (/<Embed[\s>]/i.test(source)) {
+        throw new Error(
+          `Block "${blockId}" on page "${pageSlug}" contains a nested <Embed>. ` +
+            `Embedded blocks render as Markdown only; nest via the source page instead.`,
+        );
+      }
+
+      // Render block source as Markdown -> sanitized HTML. We deliberately
+      // don't go through MDX/JSX here — embeds are content fragments, not
+      // components. rehype-sanitize strips raw <script> and event-handler
+      // attributes before injection so user-authored embed sources can't
+      // become an XSS surface for the embedding page.
       const { unified } = await import("unified");
       const { default: remarkParse } = await import("remark-parse");
       const { default: remarkGfm } = await import("remark-gfm");
       const { default: remarkRehype } = await import("remark-rehype");
+      const { default: rehypeSanitize, defaultSchema } = (await import(
+        "rehype-sanitize"
+      )) as typeof import("rehype-sanitize");
       const { default: rehypeStringify } = await import("rehype-stringify");
       const file = await unified()
         .use(remarkParse)
         .use(remarkGfm)
         .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeStringify, { allowDangerousHtml: true })
+        .use(rehypeSanitize, defaultSchema)
+        .use(rehypeStringify)
         .process(source);
       html = String(file);
     } catch (err) {

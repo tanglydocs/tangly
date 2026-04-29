@@ -39,6 +39,7 @@
         "@tangly/schema": "workspace:*",
         "@tangly/theme-pith": "workspace:*",
         "@tangly/theme-tang": "workspace:*",
+        "@tangly/theme-ui": "workspace:*",
         "astro": "^6.1.10",
         "chokidar": "^5.0.0",
         "citty": "^0.2.2",
@@ -70,22 +71,26 @@
       "name": "@tangly/theme-pith",
       "version": "0.0.1",
       "dependencies": {
-        "@astrojs/mdx": "^5.0.4",
-        "@tailwindcss/vite": "^4.2.4",
-        "@tangly/schema": "workspace:*",
-        "astro": "^6.1.10",
-        "lucide": "^1.12.0",
-        "rehype-stringify": "^10.0.1",
-        "remark-gfm": "^4.0.1",
-        "remark-parse": "^11.0.0",
-        "remark-rehype": "^11.1.2",
+        "@tangly/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
-        "tangly": "workspace:*",
-        "unified": "^11.0.5",
+      },
+      "devDependencies": {
+        "@types/node": "^25.6.0",
       },
     },
     "packages/theme-tang": {
       "name": "@tangly/theme-tang",
+      "version": "0.0.1",
+      "dependencies": {
+        "@tangly/theme-ui": "workspace:*",
+        "tailwindcss": "^4.2.4",
+      },
+      "devDependencies": {
+        "@types/node": "^25.6.0",
+      },
+    },
+    "packages/theme-ui": {
+      "name": "@tangly/theme-ui",
       "version": "0.0.1",
       "dependencies": {
         "@astrojs/mdx": "^5.0.4",
@@ -93,7 +98,9 @@
         "@tailwindcss/vite": "^4.2.4",
         "@tangly/schema": "workspace:*",
         "astro": "^6.1.10",
+        "katex": "^0.16.45",
         "lucide": "^1.12.0",
+        "rehype-sanitize": "^6.0.0",
         "rehype-stringify": "^10.0.1",
         "remark-gfm": "^4.0.1",
         "remark-parse": "^11.0.0",
@@ -620,6 +627,8 @@
     "@tangly/theme-pith": ["@tangly/theme-pith@workspace:packages/theme-pith"],
 
     "@tangly/theme-tang": ["@tangly/theme-tang@workspace:packages/theme-tang"],
+
+    "@tangly/theme-ui": ["@tangly/theme-ui@workspace:packages/theme-ui"],
 
     "@tanstack/virtual-core": ["@tanstack/virtual-core@3.14.0", "", {}, "sha512-JLANqGy/D6k4Ujmh8Tr25lGimuOXNiaVyXaCAZS0W+1390sADdGnyUdSWNIfd49gebtIxGMij4IktRVzrdr12Q=="],
 

@@ -11,6 +11,36 @@ async function collectDraftSlugs(userRoot: string): Promise<string[]> {
   return all.filter((p) => Boolean(p.frontmatter?.draft)).map((p) => p.slug);
 }
 
+/**
+ * Resolve the chain of public-asset roots for the active theme. First match
+ * wins on lookup; first-seen wins on copy. Higher = more specific.
+ *
+ *   <userRoot>                     (Mintlify-style: /images at project root)
+ *   <userRoot>/theme/public        (project's per-theme override)
+ *   <activeTheme>/public           (theme-tang or theme-pith bundled assets)
+ *   <theme-ui>/public              (shared baseline assets)
+ */
+export function buildPublicCascade(userRoot: string, themeName: string | undefined): string[] {
+  const roots: string[] = [userRoot];
+
+  const userThemePublic = resolve(userRoot, "theme", "public");
+  if (existsSync(userThemePublic)) roots.push(userThemePublic);
+
+  // Walk up from this file (`packages/tangly/dist/plugin/vite-plugin.js`) to
+  // the workspace's `packages/` directory, then into each theme.
+  const here = new URL(".", import.meta.url).pathname;
+  const packagesDir = resolve(here, "..", "..", "..");
+  const active = themeName === "pith" ? "pith" : "tang";
+
+  const activeThemePublic = resolve(packagesDir, `theme-${active}`, "public");
+  if (existsSync(activeThemePublic)) roots.push(activeThemePublic);
+
+  const themeUiPublic = resolve(packagesDir, "theme-ui", "public");
+  if (existsSync(themeUiPublic)) roots.push(themeUiPublic);
+
+  return roots;
+}
+
 const VIRTUAL_PREFIX = "virtual:tangly/";
 const VIRTUAL_IDS = {
   manifest: `${VIRTUAL_PREFIX}manifest`,
@@ -198,8 +228,14 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       // root-level paths. Mintlify projects reference `/images/foo.png`
       // expecting to find it at `<root>/images/foo.png`.
       //
+      // Cascade: <userRoot>/<dir>/<file> →
+      //          <userRoot>/theme/public/<dir>/<file> →
+      //          <activeTheme>/public/<dir>/<file> →
+      //          <theme-ui>/public/<dir>/<file>
+      // First match wins. Themes can ship default fonts/icons; users override.
+      //
       // SECURITY: decode and confine to the prefix dir. A request like
-      // `/images/../../../etc/passwd` must not escape `<userRoot>/images`.
+      // `/images/../../../etc/passwd` must not escape its prefix root.
       devServer.middlewares.use((req, res, next) => {
         const url = req.url ?? "";
         const m = url.match(/^\/(images|logo|public|static|assets)\/(.*)$/);
@@ -211,11 +247,22 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
           return next();
         }
         if (isAbsolute(suffix)) return next();
-        const prefixDir = resolve(userRoot, m[1]!);
-        const filePath = resolve(prefixDir, suffix);
-        const rel = relative(prefixDir, filePath);
-        if (rel.startsWith("..") || isAbsolute(rel)) return next();
-        if (!existsSync(filePath)) return next();
+
+        const prefix = m[1]!;
+        const candidateRoots = buildPublicCascade(userRoot, manifest?.config.theme);
+        let filePath: string | undefined;
+        for (const root of candidateRoots) {
+          const prefixDir = resolve(root, prefix);
+          const candidate = resolve(prefixDir, suffix);
+          const rel = relative(prefixDir, candidate);
+          if (rel.startsWith("..") || isAbsolute(rel)) continue;
+          if (existsSync(candidate)) {
+            filePath = candidate;
+            break;
+          }
+        }
+        if (!filePath) return next();
+
         const ext = filePath.split(".").pop()?.toLowerCase();
         const types: Record<string, string> = {
           png: "image/png",
@@ -228,10 +275,15 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
           mp4: "video/mp4",
           webm: "video/webm",
           json: "application/json",
+          woff: "font/woff",
+          woff2: "font/woff2",
+          ttf: "font/ttf",
+          otf: "font/otf",
         };
         if (ext && types[ext]) res.setHeader("Content-Type", types[ext]);
+        const concrete = filePath;
         import("node:fs").then(({ createReadStream }) => {
-          createReadStream(filePath).pipe(res);
+          createReadStream(concrete).pipe(res);
         });
       });
 
