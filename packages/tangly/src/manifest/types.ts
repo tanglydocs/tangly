@@ -36,6 +36,12 @@ export interface PageEntry {
   next?: { slug: string; title: string };
   /** Whether this page is a draft (hidden in build). */
   draft: boolean;
+  /**
+   * Block IDs harvested from this page's MDX body — keys are the auto- or
+   * explicitly-set anchor IDs, values are the raw MDX source for that
+   * block. Populated lazily; absent for synth pages and orphans.
+   */
+  blocks?: Record<string, string>;
 }
 
 export interface ResolvedTab {

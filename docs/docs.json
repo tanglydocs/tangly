@@ -41,7 +41,7 @@
           },
           {
             "group": "Customization",
-            "pages": ["howto/custom-components", "howto/custom-templates", "howto/drafts"]
+            "pages": ["howto/custom-components", "howto/custom-templates", "howto/drafts", "howto/embedded-blocks"]
           }
         ]
       },

@@ -7,6 +7,7 @@ import Check from "@tangly/theme-tang/components/Check.astro";
 import CodeGroup from "@tangly/theme-tang/components/CodeGroup.astro";
 import Columns from "@tangly/theme-tang/components/Columns.astro";
 import Danger from "@tangly/theme-tang/components/Danger.astro";
+import Embed from "@tangly/theme-tang/components/Embed.astro";
 import Expandable from "@tangly/theme-tang/components/Expandable.astro";
 import Frame from "@tangly/theme-tang/components/Frame.astro";
 import Icon from "@tangly/theme-tang/components/Icon.astro";
@@ -36,6 +37,7 @@ export const mdxComponents = {
   CodeGroup,
   Columns,
   Danger,
+  Embed,
   Expandable,
   Frame,
   Icon,
