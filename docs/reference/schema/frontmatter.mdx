@@ -19,7 +19,7 @@ tag: Beta
 # My page
 ```
 
-Frontmatter is parsed by `gray-matter` and validated against `@tangly/schema`'s `FrontmatterSchema`. Validation is non-fatal: invalid fields surface as warnings, the page still renders.
+Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema`'s `FrontmatterSchema`. Validation is non-fatal: invalid fields surface as warnings, the page still renders.
 
 ## Recognized fields
 
@@ -142,7 +142,7 @@ The `landing` template reads `frontmatter.hero` and `frontmatter.cta` directly.
 ## Strict parsing
 
 ```ts
-import { parseFrontmatter, safeParseFrontmatter } from "@tangly/schema";
+import { parseFrontmatter, safeParseFrontmatter } from "@tanglydocs/schema";
 
 const fm = parseFrontmatter(rawObject);
 const result = safeParseFrontmatter(rawObject);

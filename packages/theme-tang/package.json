@@ -1,8 +1,7 @@
 {
-  "name": "@tangly/theme-tang",
+  "name": "@tanglydocs/theme-tang",
   "version": "0.0.1",
-  "private": true,
-  "description": "Default Tangly theme. Mintlify-Mint-inspired token set; UI shell comes from @tangly/theme-ui.",
+  "description": "Default Tangly theme. Mintlify-Mint-inspired token set; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
     "tangly",
@@ -39,10 +38,13 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tangly/theme-ui": "workspace:*",
+    "@tanglydocs/theme-ui": "workspace:*",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@types/node": "^25.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

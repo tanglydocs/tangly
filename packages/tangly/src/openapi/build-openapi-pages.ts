@@ -1,4 +1,4 @@
-import type { DocsJson } from "@tangly/schema";
+import type { DocsJson } from "@tanglydocs/schema";
 import type { ManifestWarning, PageEntry, ResolvedTab, SidebarItem } from "../manifest/types.js";
 import { expandOpenApiSpec, loadOpenApiSpec, type ExpandedSpec } from "./expand-spec.js";
 

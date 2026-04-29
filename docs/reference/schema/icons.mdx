@@ -74,7 +74,7 @@ Extend the map by [shadowing](/guides/custom-components) the `Icon` component:
 ---
 // theme/Icon.astro
 import LucideIcon from "lucide/icons/sparkles";
-import { Props } from "@tangly/theme-ui/Icon.astro";
+import { Props } from "@tanglydocs/theme-ui/Icon.astro";
 const { icon } = Astro.props as Props;
 ---
 {icon === "my-custom" ? <LucideIcon /> : <slot />}

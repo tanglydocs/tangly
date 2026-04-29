@@ -1,16 +1,16 @@
 ---
-import type { DocsJson } from "@tangly/schema";
-import type { PageEntry, ResolvedNavigation } from "tangly";
+import type { DocsJson } from "@tanglydocs/schema";
+import type { PageEntry, ResolvedNavigation } from "@tanglydocs/tangly";
 // Pith ships its own Sidebar (rich, contains all chrome). Footer +
 // SearchModal are reused from theme-ui. Imports go through package
 // specifiers so user overrides at <userRoot>/theme/<Name>.astro can
 // still intercept (Vite alias rewires them).
-import Sidebar from "@tangly/theme-ui/Sidebar.astro";
-import Footer from "@tangly/theme-ui/Footer.astro";
-import SearchModal from "@tangly/theme-ui/SearchModal.astro";
-import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
-import "@tangly/theme/theme.css";
-import "@tangly/theme-ui/styles/prose.css";
+import Sidebar from "@tanglydocs/theme-ui/Sidebar.astro";
+import Footer from "@tanglydocs/theme-ui/Footer.astro";
+import SearchModal from "@tanglydocs/theme-ui/SearchModal.astro";
+import MermaidLoader from "@tanglydocs/theme-ui/MermaidLoader.astro";
+import "@tanglydocs/theme/theme.css";
+import "@tanglydocs/theme-ui/styles/prose.css";
 import "katex/dist/katex.min.css";
 
 export interface Props {

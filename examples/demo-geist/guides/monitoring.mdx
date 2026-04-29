@@ -1,0 +1,56 @@
+---
+title: Monitoring
+description: Latency, error rate, and log streaming, with no agent to install.
+icon: activity
+---
+
+Every Halo deployment ships with telemetry on by default. You see traffic at the edge, errors per route, and structured logs from your runtime — all in the dashboard or via the CLI.
+
+## Live logs
+
+```bash
+halo logs --tail
+```
+
+Streams over a long-poll WebSocket. Filter:
+
+```bash
+halo logs --tail --route /api/checkout --status '>=500'
+```
+
+## Metrics
+
+The dashboard exposes:
+
+- **p50 / p95 / p99 latency** — per route, per region.
+- **Requests per second** — broken down by status class.
+- **Error rate** — 4xx and 5xx as separate series.
+- **Cold start rate** — for edge functions, the share of invocations hitting a fresh isolate.
+
+All metrics are pulled at 10s resolution and retained for 30 days.
+
+## Alerts
+
+```bash
+halo alerts add \
+  --name "checkout 5xx" \
+  --route /api/checkout \
+  --metric error_rate \
+  --threshold 0.02 \
+  --window 5m \
+  --notify slack:#oncall
+```
+
+Notify channels: `slack`, `email`, `webhook`, `pagerduty`.
+
+## Exporting to your stack
+
+| Stack | Mechanism |
+|-------|-----------|
+| Datadog | Native integration — paste the API key in dashboard settings |
+| Grafana / Prometheus | OTLP push endpoint at `https://otlp.halo.app/v1/metrics` |
+| Anything | Webhook on every alert + log drain to S3 / GCS |
+
+<Tip>
+  Need traces? Halo emits OpenTelemetry spans for every edge invocation. Configure the OTLP exporter URL and you'll see your runtime's spans alongside the edge spans Halo emits.
+</Tip>

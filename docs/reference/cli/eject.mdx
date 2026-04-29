@@ -42,7 +42,7 @@ tangly eject [options]
     Patches `<out>/astro.config.mjs` to inline your project root path instead of reading `TANGLY_USER_ROOT` from the env.
   </Step>
   <Step title="Adds Astro deps to package.json">
-    Adds `astro`, `@astrojs/mdx`, `@tailwindcss/vite`, `tailwindcss`, `remark-gfm`, `rehype-shiki`, `rehype-slug`, `rehype-autolink-headings`, `rehype-katex`, `remark-math` as direct dependencies. `tangly`, `@tangly/schema`, and `@tangly/theme-ui` are kept — the materialized config still imports `tangly/plugin` and theme components.
+    Adds `astro`, `@astrojs/mdx`, `@tailwindcss/vite`, `tailwindcss`, `remark-gfm`, `rehype-shiki`, `rehype-slug`, `rehype-autolink-headings`, `rehype-katex`, `remark-math` as direct dependencies. `tangly`, `@tanglydocs/schema`, and `@tanglydocs/theme-ui` are kept — the materialized config still imports `tangly/plugin` and theme components.
   </Step>
   <Step title="Rewrites scripts">
     `dev` → `astro dev --root <out>`, `build` → `astro build --root <out>`, `preview` → `astro preview --root <out>`.

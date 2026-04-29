@@ -1,0 +1,91 @@
+---
+title: Deployments
+description: Create, list, inspect, and roll back deployments.
+icon: cloud-upload
+---
+
+A deployment is an immutable build of your project, served from a unique URL. Promoting to production aliases a deployment to your custom domain.
+
+## Create a deployment
+
+```http
+POST /v1/deployments
+```
+
+<ParamField body="project_id" type="string" required>
+  The project to deploy. Get from `GET /v1/projects`.
+</ParamField>
+
+<ParamField body="files" type="object" required>
+  Map of `path → sha256`. Halo asks you to upload only the files it doesn't already have cached.
+</ParamField>
+
+<ParamField body="target" type="string">
+  `production` or `preview`. Defaults to `preview`.
+</ParamField>
+
+<ParamField body="env" type="object">
+  Per-deployment environment overrides. Merged on top of project env.
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string">
+  Deployment identifier, e.g. `dpl_x7k2qz`.
+</ResponseField>
+
+<ResponseField name="url" type="string">
+  Stable URL for this exact deployment.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  `queued` → `building` → `ready` → (optional) `error`.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl https://api.halo.app/v1/deployments \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project_id": "prj_abc123",
+    "files": { "index.html": "abc...", "app.js": "def..." },
+    "target": "production"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "id": "dpl_x7k2qz",
+  "url": "https://my-app-x7k2qz.halo.app",
+  "status": "queued",
+  "created_at": "2026-04-29T14:32:11Z"
+}
+```
+</ResponseExample>
+
+## Get a deployment
+
+```http
+GET /v1/deployments/{id}
+```
+
+Returns the full deployment object including build logs reference and timing breakdown.
+
+## List deployments
+
+```http
+GET /v1/deployments?project_id=prj_abc123&target=production
+```
+
+Filters: `project_id`, `target`, `status`, `created_after`, `created_before`.
+
+## Roll back
+
+```http
+POST /v1/deployments/{id}/promote
+```
+
+Aliases the given deployment to the production domain. Atomic — no traffic gap.

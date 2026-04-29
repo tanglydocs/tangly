@@ -1,8 +1,7 @@
 {
-  "name": "@tangly/theme-pith",
+  "name": "@tanglydocs/theme-pith",
   "version": "0.0.1",
-  "private": true,
-  "description": "Editorial Tangly theme. Serif headings + cream palette; UI shell comes from @tangly/theme-ui.",
+  "description": "Editorial Tangly theme. Serif headings + cream palette; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
     "tangly",
@@ -39,10 +38,13 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tangly/theme-ui": "workspace:*",
+    "@tanglydocs/theme-ui": "workspace:*",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@types/node": "^25.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

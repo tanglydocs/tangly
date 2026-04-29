@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
-import type { Frontmatter } from "@tangly/schema";
-import { safeParseFrontmatter } from "@tangly/schema";
+import type { Frontmatter } from "@tanglydocs/schema";
+import { safeParseFrontmatter } from "@tanglydocs/schema";
 import matter from "gray-matter";
 
 /**

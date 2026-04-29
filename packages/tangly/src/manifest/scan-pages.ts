@@ -1,7 +1,7 @@
 import { readFileSync, statSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
-import { type Frontmatter, safeParseFrontmatter } from "@tangly/schema";
+import { type Frontmatter, safeParseFrontmatter } from "@tanglydocs/schema";
 import matter from "gray-matter";
 import type { ZodError } from "zod";
 import { computeReadingTime, loadGitMeta } from "./git-meta.js";

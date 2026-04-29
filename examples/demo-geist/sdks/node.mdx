@@ -1,0 +1,79 @@
+---
+title: Node SDK
+description: TypeScript and Node.js client for the Halo REST API.
+icon: square-code
+---
+
+The `@halo/sdk` package wraps the REST API with typed methods and pagination helpers. Works in Node 20+, Bun, Deno, and edge runtimes.
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @halo/sdk
+```
+```bash bun
+bun add @halo/sdk
+```
+</CodeGroup>
+
+## Authenticate
+
+```ts
+import { Halo } from "@halo/sdk";
+
+const halo = new Halo({ token: process.env.HALO_TOKEN });
+```
+
+`HALO_TOKEN` is read automatically if you don't pass `token`.
+
+## Deploy
+
+```ts
+const deployment = await halo.deployments.create({
+  project_id: "prj_abc123",
+  files: { "index.html": "abc...", "app.js": "def..." },
+  target: "production",
+});
+
+console.log(deployment.url);
+```
+
+## List with pagination
+
+```ts
+for await (const dep of halo.deployments.list({ project_id: "prj_abc123" })) {
+  console.log(dep.id, dep.status);
+}
+```
+
+The async iterator transparently follows `next_cursor`.
+
+## Streaming logs
+
+```ts
+const stream = halo.logs.stream({ project_id: "prj_abc123" });
+
+for await (const line of stream) {
+  console.log(line.timestamp, line.message);
+}
+```
+
+Backed by a long-poll WebSocket. Reconnects with backoff on network blips.
+
+## Errors
+
+```ts
+import { HaloError } from "@halo/sdk";
+
+try {
+  await halo.deployments.get("dpl_does_not_exist");
+} catch (err) {
+  if (err instanceof HaloError && err.code === "deployment_not_found") {
+    // ...
+  }
+  throw err;
+}
+```
+
+Every error carries `code`, `message`, and `doc_url` from the API.

@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   publish:
-    name: publish tangly@dev
+    name: publish @tanglydocs/* @ dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -42,19 +42,57 @@ jobs:
 
       - run: bun run build
 
-      - name: Bump version (in-place edit, skip workspace resolution)
-        working-directory: packages/tangly
+      - name: Bump all workspace versions in lockstep
         env:
           NEW_VERSION: ${{ steps.ver.outputs.version }}
         run: |
           node -e '
             const fs = require("node:fs");
-            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            pkg.version = process.env.NEW_VERSION;
-            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
-            console.log("version =", pkg.version);
+            const path = require("node:path");
+            const v = process.env.NEW_VERSION;
+            const dirs = [
+              "packages/schema",
+              "packages/theme-ui",
+              "packages/theme-tang",
+              "packages/theme-pith",
+              "packages/theme-pip",
+              "packages/theme-readable",
+              "packages/theme-geist",
+              "packages/tangly",
+            ];
+            for (const d of dirs) {
+              const p = path.join(d, "package.json");
+              const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
+              pkg.version = v;
+              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
+              console.log(pkg.name, "→", v);
+            }
           '
 
-      - name: Publish dev
+      # bun publish rewrites workspace:* to the concrete version of each
+      # workspace dep at publish time, which npm publish does not do.
+      # Topological order: schema (no internal deps) → theme-ui → themes → tangly.
+      - name: Publish @tanglydocs/schema @dev
+        working-directory: packages/schema
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-ui @dev
+        working-directory: packages/theme-ui
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-tang @dev
+        working-directory: packages/theme-tang
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-pith @dev
+        working-directory: packages/theme-pith
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-pip @dev
+        working-directory: packages/theme-pip
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-readable @dev
+        working-directory: packages/theme-readable
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/theme-geist @dev
+        working-directory: packages/theme-geist
+        run: bun publish --tag dev --access public
+      - name: Publish @tanglydocs/tangly @dev
         working-directory: packages/tangly
-        run: npm publish --tag dev --provenance --access public
+        run: bun publish --tag dev --access public

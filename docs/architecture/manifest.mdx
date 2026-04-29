@@ -12,7 +12,7 @@ icon: "git-branch"
 
 ```mermaid
 flowchart TD
-  A1[docs.json] --> P1["@tangly/schema<br/>parseDocsJson"]
+  A1[docs.json] --> P1["@tanglydocs/schema<br/>parseDocsJson"]
   A2["*.mdx on disk"] --> S1[scan-pages.ts]
   S1 --> S2["frontmatter via gray-matter<br/>+ Zod validate"]
   P1 --> R1[resolve-nav.ts]

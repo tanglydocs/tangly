@@ -19,7 +19,7 @@ flowchart TD
   end
 
   subgraph cli[tangly CLI]
-    B1["@tangly/schema<br/>parse + validate"]
+    B1["@tanglydocs/schema<br/>parse + validate"]
     B2[manifest builder]
     B3[Vite plugin<br/>virtual modules + middleware]
   end
@@ -49,13 +49,13 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
 ## Three packages
 
 <CardGroup cols={3}>
-  <Card title="@tangly/schema" icon="shield">
+  <Card title="@tanglydocs/schema" icon="shield">
     Zod schema for `docs.json`, frontmatter validator, mint.json migrator. Generates JSON Schema for editor support.
   </Card>
   <Card title="tangly" icon="terminal">
     CLI commands, manifest builder, Vite plugin, and the synthesized Astro app shipped under `runtime/`.
   </Card>
-  <Card title="@tangly/theme-ui" icon="palette">
+  <Card title="@tanglydocs/theme-ui" icon="palette">
     Layout, Sidebar, TopNav, Footer, PageShell, plus 28 MDX components. Two consumer themes (`tang`, `pith`) wire it up with their own CSS.
   </Card>
 </CardGroup>
@@ -75,7 +75,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
 </Note>
 
 <Note>
-  **Component shadowing** resolves bottom-up: project `theme/<Name>.astro` → active theme → built-in default. The Astro integration sets up Vite aliases so `@tangly/theme-ui/Card.astro` transparently resolves to whatever the user has overridden.
+  **Component shadowing** resolves bottom-up: project `theme/<Name>.astro` → active theme → built-in default. The Astro integration sets up Vite aliases so `@tanglydocs/theme-ui/Card.astro` transparently resolves to whatever the user has overridden.
 </Note>
 
 ## Performance targets

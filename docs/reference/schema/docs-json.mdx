@@ -8,7 +8,7 @@ icon: "file-json"
 
 `docs.json` lives at your project root and configures everything that isn't page content: branding, navigation, theme, analytics, redirects, OpenAPI, search.
 
-The full Zod schema lives at `@tangly/schema` (sources: `packages/schema/src/docs-json.ts`). The published JSON Schema is what your editor uses for autocomplete.
+The full Zod schema lives at `@tanglydocs/schema` (sources: `packages/schema/src/docs-json.ts`). The published JSON Schema is what your editor uses for autocomplete.
 
 ## Editor support
 
@@ -246,7 +246,7 @@ Each provider is independently optional. Tangly emits the right snippet for whic
 ## Strict parsing
 
 ```ts
-import { parseDocsJson, safeParseDocsJson } from "@tangly/schema";
+import { parseDocsJson, safeParseDocsJson } from "@tanglydocs/schema";
 
 const cfg = parseDocsJson(JSON.parse(raw));        // throws on error
 const result = safeParseDocsJson(JSON.parse(raw)); // discriminated result

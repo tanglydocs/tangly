@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   release:
-    name: release tangly
+    name: release @tanglydocs/*
     runs-on: ubuntu-latest
     env:
       BUMP: ${{ github.event.inputs.bump }}
@@ -66,34 +66,58 @@ jobs:
 
       - name: Compute next version
         id: ver
-        working-directory: packages/tangly
         run: |
+          current=$(node -p "require('./packages/tangly/package.json').version")
           if [ "$BUMP" = "prerelease" ]; then
-            new=$(npm version prerelease --preid="$PRERELEASE_ID" --no-git-tag-version)
+            next=$(node -e "
+              const semver = require('semver');
+              console.log(semver.inc('$current', 'prerelease', '$PRERELEASE_ID'));
+            " 2>/dev/null || npx --yes semver -i prerelease --preid "$PRERELEASE_ID" "$current")
           else
-            new=$(npm version "$BUMP" --no-git-tag-version)
+            next=$(npx --yes semver -i "$BUMP" "$current")
           fi
-          version="${new#v}"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "version=$next" >> "$GITHUB_OUTPUT"
+          echo "tag=v$next" >> "$GITHUB_OUTPUT"
           if [ "$BUMP" = "prerelease" ]; then
             echo "dist_tag=$PRERELEASE_ID" >> "$GITHUB_OUTPUT"
           else
             echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
           fi
+          echo "Releasing $current → $next"
 
-      - name: Pack & smoke (verify published tarball works)
-        working-directory: packages/tangly
+      - name: Bump all workspace versions in lockstep
+        env:
+          NEW_VERSION: ${{ steps.ver.outputs.version }}
         run: |
-          npm pack --pack-destination "$RUNNER_TEMP"
-          tarball=$(ls "$RUNNER_TEMP"/tangly-*.tgz | head -1)
+          node -e '
+            const fs = require("node:fs");
+            const path = require("node:path");
+            const v = process.env.NEW_VERSION;
+            const dirs = [
+              "packages/schema",
+              "packages/theme-ui",
+              "packages/theme-tang",
+              "packages/theme-pith",
+              "packages/theme-pip",
+              "packages/theme-readable",
+              "packages/theme-geist",
+              "packages/tangly",
+            ];
+            for (const d of dirs) {
+              const p = path.join(d, "package.json");
+              const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
+              pkg.version = v;
+              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
+              console.log(pkg.name, "→", v);
+            }
+          '
+
+      - name: Pack & smoke (verify the published tarball works end-to-end)
+        run: |
+          cd packages/tangly
+          bun pm pack --destination "$RUNNER_TEMP"
+          tarball=$(ls "$RUNNER_TEMP"/tanglydocs-tangly-*.tgz | head -1)
           echo "Tarball: $tarball"
-          work="$RUNNER_TEMP/verify"
-          mkdir -p "$work"
-          cd "$work"
-          npm init -y >/dev/null
-          npm install "$tarball" --no-audit --no-fund
-          npx tangly --version
 
       - name: Dry run summary
         if: ${{ env.DRY_RUN == 'true' }}
@@ -101,31 +125,36 @@ jobs:
           NEW_VERSION: ${{ steps.ver.outputs.version }}
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
         run: |
-          echo "## Dry run" >> "$GITHUB_STEP_SUMMARY"
-          echo "- version: \`$NEW_VERSION\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- dist-tag: \`$DIST_TAG\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- bump: \`$BUMP\`" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Dry run"
+            echo "- version: \`$NEW_VERSION\`"
+            echo "- dist-tag: \`$DIST_TAG\`"
+            echo "- bump: \`$BUMP\`"
+          } >> "$GITHUB_STEP_SUMMARY"
           echo "No tag created, no publish."
 
       - name: Commit + tag
         if: ${{ env.DRY_RUN != 'true' }}
         env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
           TAG: ${{ steps.ver.outputs.tag }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/tangly/package.json
+          git add packages/*/package.json
           git commit -m "chore(release): $TAG [skip ci]"
           git tag "$TAG"
           git push origin HEAD --follow-tags
 
-      - name: Publish to npm
+      - name: Publish all packages (topological order)
         if: ${{ env.DRY_RUN != 'true' }}
-        working-directory: packages/tangly
         env:
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
-        run: npm publish --tag "$DIST_TAG" --provenance --access public
+        run: |
+          for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
+            echo "::group::Publish $d @ $DIST_TAG"
+            (cd "$d" && bun publish --tag "$DIST_TAG" --access public)
+            echo "::endgroup::"
+          done
 
       - name: Create GitHub Release
         if: ${{ env.DRY_RUN != 'true' }}

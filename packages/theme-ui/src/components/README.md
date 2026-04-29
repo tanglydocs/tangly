@@ -5,7 +5,7 @@ Drop-in `.astro` components matching the Mintlify component API, intended for us
 Import via the barrel:
 
 ```ts
-import * as Components from "@tangly/theme-tang/components";
+import * as Components from "@tanglydocs/theme-tang/components";
 ```
 
 ## Components

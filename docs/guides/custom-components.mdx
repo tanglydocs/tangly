@@ -13,7 +13,7 @@ my-docs/
 ├── docs.json
 ├── introduction.mdx
 └── components/
-    └── Note.astro       # overrides @tangly/theme-ui/Note
+    └── Note.astro       # overrides @tanglydocs/theme-ui/Note
 ```
 
 ## Resolution order
@@ -21,8 +21,8 @@ my-docs/
 When MDX uses `<Note>`, Vite resolves the import top-down:
 
 1. `<userRoot>/components/<Name>.{astro,tsx,jsx,ts,js}` — your project override.
-2. `@tangly/theme-tang/components/<Name>.astro` (or `theme-pith`, `theme-pip`) — the active theme's version.
-3. `@tangly/theme-ui/components/<Name>.astro` — Tangly's built-in default.
+2. `@tanglydocs/theme-tang/components/<Name>.astro` (or `theme-pith`, `theme-pip`) — the active theme's version.
+3. `@tanglydocs/theme-ui/components/<Name>.astro` — Tangly's built-in default.
 
 The component-shadow plugin does this with Vite resolve aliases set up at integration time. There's zero runtime overhead — the override is baked into the bundle.
 
@@ -51,7 +51,7 @@ For components with structured props (e.g. `<Card title="..." icon="..." href=".
 ```tsx
 ---
 // components/Card.astro
-import Icon from "@tangly/theme-ui/Icon.astro";
+import Icon from "@tanglydocs/theme-ui/Icon.astro";
 
 export interface Props {
   title?: string;

@@ -1,12 +1,12 @@
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
-import { resolveTheme, type ResolvedTheme } from "@tangly/schema";
+import { resolveTheme, type ResolvedTheme } from "@tanglydocs/schema";
 
 const nodeRequire = createRequire(import.meta.url);
 
 /**
- * Locate the on-disk root of an `@tangly/theme-*` package via Node's
+ * Locate the on-disk root of an `@tanglydocs/theme-*` package via Node's
  * package resolver. Works in both monorepo (workspace symlink) and
  * installed (real `node_modules`) layouts. Each theme package exports
  * `./package.json` so this resolves cleanly.
@@ -68,7 +68,7 @@ const SHADOWABLE_LAYOUT_NAMES = [
 const EXTENSIONS = [".astro", ".tsx", ".jsx", ".ts", ".js"] as const;
 
 /**
- * Build the alias map that points `@tangly/theme/theme.css` at the active
+ * Build the alias map that points `@tanglydocs/theme/theme.css` at the active
  * theme's CSS file (theme-tang or theme-pith). The user's
  * `<userRoot>/theme/styles/theme.css` wins over both when present.
  */
@@ -93,22 +93,22 @@ export function buildThemeStylesAlias(
 
   // Resolve via the theme package's own export of `./package.json` so we
   // get a real on-disk path in both monorepo and installed layouts.
-  const themePkgRoot = resolveThemePackageRoot(`@tangly/theme-${activeTheme}`);
+  const themePkgRoot = resolveThemePackageRoot(`@tanglydocs/theme-${activeTheme}`);
   const themeCssPath = resolve(themePkgRoot, "src", "styles", "theme.css");
 
   // User override wins.
   const userThemeCss = resolve(userRoot, "theme", "styles", "theme.css");
-  aliases["@tangly/theme/theme.css"] = existsSync(userThemeCss) ? userThemeCss : themeCssPath;
+  aliases["@tanglydocs/theme/theme.css"] = existsSync(userThemeCss) ? userThemeCss : themeCssPath;
 
   // Shell overrides shipped by the theme package itself. When `theme-pith`
   // (or any future theme) provides its own Layout/Sidebar/PageShell etc.,
-  // alias the shared `@tangly/theme-ui/<Name>.astro` specifier at it. The
+  // alias the shared `@tanglydocs/theme-ui/<Name>.astro` specifier at it. The
   // user's `<userRoot>/theme/<Name>.astro` (added later by
   // buildUserThemeAliases) still wins because it's spread after.
   for (const name of SHADOWABLE_LAYOUT_NAMES) {
     const candidate = resolve(themePkgRoot, "src", `${name}.astro`);
     if (existsSync(candidate)) {
-      aliases[`@tangly/theme-ui/${name}.astro`] = candidate;
+      aliases[`@tanglydocs/theme-ui/${name}.astro`] = candidate;
     }
   }
 
@@ -134,10 +134,10 @@ export function buildPublicCascade(userRoot: string, themeName: string | undefin
   if (existsSync(userThemePublic)) roots.push(userThemePublic);
 
   const active = resolveTheme(themeName);
-  const activeThemePublic = resolve(resolveThemePackageRoot(`@tangly/theme-${active}`), "public");
+  const activeThemePublic = resolve(resolveThemePackageRoot(`@tanglydocs/theme-${active}`), "public");
   if (existsSync(activeThemePublic)) roots.push(activeThemePublic);
 
-  const themeUiPublic = resolve(resolveThemePackageRoot("@tangly/theme-ui"), "public");
+  const themeUiPublic = resolve(resolveThemePackageRoot("@tanglydocs/theme-ui"), "public");
   if (existsSync(themeUiPublic)) roots.push(themeUiPublic);
 
   return roots;
@@ -148,7 +148,7 @@ export function buildPublicCascade(userRoot: string, themeName: string | undefin
  * and `<userRoot>/theme/<Name>.{astro,...}` overrides of theme-ui shells.
  *
  * Resolution: drop a file at `<userRoot>/theme/components/Card.astro` to
- * override `@tangly/theme-ui/components/Card.astro` everywhere it's
+ * override `@tanglydocs/theme-ui/components/Card.astro` everywhere it's
  * imported. Drop `<userRoot>/theme/Layout.astro` to swap the page shell.
  */
 export function buildUserThemeAliases(userRoot: string): Record<string, string> {
@@ -164,7 +164,7 @@ export function buildUserThemeAliases(userRoot: string): Record<string, string> 
       for (const ext of EXTENSIONS) {
         const candidate = resolve(componentsDir, `${name}${ext}`);
         if (existsSync(candidate)) {
-          aliases[`@tangly/theme-ui/components/${name}.astro`] = candidate;
+          aliases[`@tanglydocs/theme-ui/components/${name}.astro`] = candidate;
           break;
         }
       }
@@ -176,7 +176,7 @@ export function buildUserThemeAliases(userRoot: string): Record<string, string> 
     for (const ext of EXTENSIONS) {
       const candidate = resolve(themeDir, `${name}${ext}`);
       if (existsSync(candidate)) {
-        aliases[`@tangly/theme-ui/${name}.astro`] = candidate;
+        aliases[`@tanglydocs/theme-ui/${name}.astro`] = candidate;
         break;
       }
     }

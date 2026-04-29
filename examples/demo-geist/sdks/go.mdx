@@ -1,0 +1,94 @@
+---
+title: Go SDK
+description: Idiomatic Go client for the Halo REST API.
+icon: square-code
+---
+
+`github.com/halo/halo-go` is a typed Go client with context-aware methods, automatic retries on transient failures, and a streaming logs iterator.
+
+## Install
+
+```bash
+go get github.com/halo/halo-go
+```
+
+## Authenticate
+
+```go
+package main
+
+import (
+    "context"
+    "os"
+
+    "github.com/halo/halo-go"
+)
+
+func main() {
+    client := halo.NewClient(halo.WithToken(os.Getenv("HALO_TOKEN")))
+    _ = client
+}
+```
+
+## Deploy
+
+```go
+ctx := context.Background()
+
+dep, err := client.Deployments.Create(ctx, &halo.CreateDeploymentInput{
+    ProjectID: "prj_abc123",
+    Files: map[string]string{
+        "index.html": "abc...",
+        "app.js":     "def...",
+    },
+    Target: halo.TargetProduction,
+})
+if err != nil {
+    return err
+}
+
+log.Println(dep.URL)
+```
+
+## List deployments
+
+```go
+iter := client.Deployments.List(ctx, &halo.ListDeploymentsInput{
+    ProjectID: "prj_abc123",
+})
+for iter.Next() {
+    dep := iter.Current()
+    log.Println(dep.ID, dep.Status)
+}
+if err := iter.Err(); err != nil {
+    return err
+}
+```
+
+## Streaming logs
+
+```go
+stream, err := client.Logs.Stream(ctx, &halo.StreamLogsInput{
+    ProjectID: "prj_abc123",
+})
+if err != nil {
+    return err
+}
+defer stream.Close()
+
+for line := range stream.Lines() {
+    log.Println(line.Timestamp, line.Message)
+}
+```
+
+## Errors
+
+```go
+_, err := client.Deployments.Get(ctx, "dpl_x")
+var apiErr *halo.APIError
+if errors.As(err, &apiErr) && apiErr.Code == "deployment_not_found" {
+    // ...
+}
+```
+
+Transient 5xx and rate-limit errors retry up to 5 times with exponential backoff. Disable with `halo.WithRetries(0)`.

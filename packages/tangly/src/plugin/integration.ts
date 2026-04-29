@@ -31,7 +31,7 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
         }
         const templateAliases = buildTemplateAliases(userRoot);
 
-        // Resolve `@tangly/theme/theme.css` to the active theme's stylesheet
+        // Resolve `@tanglydocs/theme/theme.css` to the active theme's stylesheet
         // (theme-tang or theme-pith), or `<userRoot>/theme/styles/theme.css`
         // if the user supplies one.
         const themeStylesAlias = buildThemeStylesAlias(userRoot, configFile);
@@ -54,7 +54,7 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
                 "@user": userRoot,
                 // Order matters: object-spread later keys win on duplicate
                 // keys. Both `shadows` and `userThemeAliases` write
-                // `@tangly/theme-ui/components/<Name>.astro`, so the
+                // `@tanglydocs/theme-ui/components/<Name>.astro`, so the
                 // newer (more specific) `theme/components/` overrides
                 // must come *after* the legacy `components/` shadows.
                 ...themeStylesAlias,
