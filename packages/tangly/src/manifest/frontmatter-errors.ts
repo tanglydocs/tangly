@@ -106,8 +106,8 @@ function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
   if (!a.length) return b.length;
   if (!b.length) return a.length;
-  const v0: number[] = new Array(b.length + 1).fill(0).map((_, i) => i);
-  const v1: number[] = new Array(b.length + 1).fill(0);
+  const v0: number[] = Array.from({ length: b.length + 1 }, (_, i) => i);
+  const v1: number[] = Array.from({ length: b.length + 1 }, () => 0);
   for (let i = 0; i < a.length; i++) {
     v1[0] = i + 1;
     for (let j = 0; j < b.length; j++) {

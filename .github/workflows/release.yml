@@ -56,12 +56,19 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Configure npm auth (bun publish reads ~/.npmrc literally)
+      - name: Configure npm auth (write both ~/.npmrc and project .npmrc)
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::NPM_TOKEN secret is empty or not set"
+            exit 1
+          fi
+          {
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN"
+            echo "registry=https://registry.npmjs.org/"
+            echo "always-auth=true"
+          } | tee ~/.npmrc > .npmrc
 
       - name: Safety gate (format / lint / typecheck / test / build)
         run: bun run ci
@@ -151,6 +158,7 @@ jobs:
         if: ${{ env.DRY_RUN != 'true' }}
         env:
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
             echo "::group::Publish $d @ $DIST_TAG"
