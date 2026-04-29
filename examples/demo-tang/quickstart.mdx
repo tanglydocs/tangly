@@ -1,0 +1,45 @@
+---
+title: Quickstart
+description: From zero to first encrypted payload in under two minutes.
+icon: rocket
+---
+
+You'll need a sandbox API key. Grab one at [example.com/signup](https://example.com/signup).
+
+## 1. Install
+
+<CodeGroup>
+```bash npm
+npm install @example/cipher
+```
+```bash bun
+bun add @example/cipher
+```
+```bash pnpm
+pnpm add @example/cipher
+```
+</CodeGroup>
+
+## 2. Encrypt
+
+```ts
+import { Cipher } from "@example/cipher";
+
+const cipher = new Cipher({ apiKey: process.env.CIPHER_KEY });
+const sealed = await cipher.encrypt({ payload: "secret note" });
+```
+
+`sealed` is a string-encoded envelope. Stash it anywhere — Postgres, S3, a cookie.
+
+## 3. Decrypt
+
+```ts
+const { payload } = await cipher.decrypt(sealed);
+console.log(payload); // "secret note"
+```
+
+That's it.
+
+<Note>
+Sandbox keys are rate-limited to 100 req/min. Production keys lift that automatically when you upgrade.
+</Note>

@@ -1,0 +1,45 @@
+---
+title: Encrypt
+description: Seal a payload into a portable envelope.
+---
+
+```http
+POST /v1/encrypt
+```
+
+## Request
+
+<ParamField body="payload" type="string" required>
+The data to encrypt. Up to 1 MB per call.
+</ParamField>
+
+<ParamField body="aad" type="object">
+Additional authenticated data — included in the integrity check, not encrypted.
+</ParamField>
+
+## Response
+
+<ResponseField name="envelope" type="string">
+The opaque, base64-encoded ciphertext. Pass this back to `/decrypt` to recover the payload.
+</ResponseField>
+
+<ResponseField name="key_version" type="string">
+The key version used. You don't need to track this — `/decrypt` figures it out.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl https://api.example.com/v1/encrypt \
+  -H "Authorization: Bearer $CIPHER_KEY" \
+  -d '{"payload": "secret note"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "envelope": "v2:Ks7...==",
+  "key_version": "v2"
+}
+```
+</ResponseExample>

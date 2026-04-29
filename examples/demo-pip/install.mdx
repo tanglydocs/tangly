@@ -1,0 +1,30 @@
+---
+title: Install
+description: One binary. Two shells.
+---
+
+## Homebrew
+
+```bash
+brew install example/tap/sprig
+```
+
+## From source
+
+```bash
+go install github.com/example/sprig@latest
+```
+
+## Hook your shell
+
+Add one line to your shell rc:
+
+```bash
+# bash / zsh
+eval "$(sprig init bash)"
+
+# fish
+sprig init fish | source
+```
+
+That's it. New commands are tagged starting at the next prompt.

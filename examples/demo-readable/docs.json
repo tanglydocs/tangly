@@ -1,0 +1,36 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "The Long Wait",
+  "description": "A short novel in three chapters.",
+  "theme": "readable",
+  "colors": {
+    "primary": "#7a2e0e",
+    "light": "#a04a23",
+    "dark": "#5e210a"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "The Long Wait",
+        "groups": [
+          {
+            "group": "Front matter",
+            "pages": ["preface"]
+          },
+          {
+            "group": "Part one",
+            "pages": ["chapters/01", "chapters/02", "chapters/03"]
+          },
+          {
+            "group": "Part two",
+            "pages": ["chapters/04", "chapters/05", "chapters/06", "chapters/07"]
+          },
+          {
+            "group": "End matter",
+            "pages": ["afterword"]
+          }
+        ]
+      }
+    ]
+  }
+}

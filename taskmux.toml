@@ -7,3 +7,31 @@ cwd = "docs"
 host = "docs"
 auto_start = true
 restart_policy = "on-failure"
+
+[tasks.tang]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-tang"
+host = "tang"
+auto_start = true
+restart_policy = "on-failure"
+
+[tasks.pith]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-pith"
+host = "pith"
+auto_start = true
+restart_policy = "on-failure"
+
+[tasks.pip]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-pip"
+host = "pip"
+auto_start = true
+restart_policy = "on-failure"
+
+[tasks.readable]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-readable"
+host = "readable"
+auto_start = true
+restart_policy = "on-failure"

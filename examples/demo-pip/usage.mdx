@@ -1,0 +1,28 @@
+---
+title: Usage
+description: Two commands.
+---
+
+## Tagging
+
+Tags are inferred from your command. You can also add them manually:
+
+```bash
+$ sprig tag deploy prod -- ./deploy.sh prod
+```
+
+## Finding
+
+```bash
+$ sprig find prod              # all commands tagged 'prod'
+$ sprig find prod deploy       # AND
+$ sprig find -e --since=7d     # exact, last 7 days
+```
+
+## Forgetting
+
+```bash
+$ sprig forget --before 2024-01-01
+```
+
+That's the whole tool.

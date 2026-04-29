@@ -1,0 +1,38 @@
+---
+title: Decrypt
+description: Recover the original payload from an envelope.
+---
+
+```http
+POST /v1/decrypt
+```
+
+## Request
+
+<ParamField body="envelope" type="string" required>
+The envelope returned by `/encrypt`.
+</ParamField>
+
+## Response
+
+<ResponseField name="payload" type="string">
+The original data, decoded.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl https://api.example.com/v1/decrypt \
+  -H "Authorization: Bearer $CIPHER_KEY" \
+  -d '{"envelope": "v2:Ks7...=="}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{ "payload": "secret note" }
+```
+</ResponseExample>
+
+<Warning>
+Decrypt requires a key with `decrypt:*` scope. A `encrypt:*`-only key returns 403.
+</Warning>

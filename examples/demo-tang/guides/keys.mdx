@@ -1,0 +1,28 @@
+---
+title: API keys
+description: How to provision, scope, and revoke keys.
+icon: key
+---
+
+Cipher distinguishes **two** key types.
+
+## Sandbox vs production
+
+| Key type | Prefix | Rate limit | Auto-rotate |
+| --- | --- | --- | --- |
+| Sandbox | `sk_test_` | 100 req/min | Never |
+| Production | `sk_live_` | Plan-dependent | Every 30 days |
+
+## Scoping
+
+Production keys can be scoped to specific operations:
+
+```bash
+cipher keys create --scope encrypt:* --scope decrypt:tenant-alpha
+```
+
+Restrictive scopes ship with their own audit channel — useful for letting a CI runner encrypt without ever decrypting.
+
+<Warning>
+Don't commit keys to git. The SDK reads `CIPHER_KEY` from the environment by default; that's the path you want.
+</Warning>
