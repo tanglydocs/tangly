@@ -25,12 +25,22 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Configure npm auth (bun publish reads ~/.npmrc literally)
+      - name: Configure npm auth (write both ~/.npmrc and project .npmrc)
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::NPM_TOKEN secret is empty or not set"
+            exit 1
+          fi
+          echo "NPM_TOKEN length: ${#NPM_TOKEN}"
+          {
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN"
+            echo "registry=https://registry.npmjs.org/"
+            echo "always-auth=true"
+          } | tee ~/.npmrc > .npmrc
+          echo "--- ~/.npmrc (token redacted) ---"
+          sed 's|_authToken=.*|_authToken=***|' ~/.npmrc
 
       - name: Compute dev version
         id: ver
@@ -76,25 +86,41 @@ jobs:
       # Topological order: schema (no internal deps) → theme-ui → themes → tangly.
       - name: Publish @tanglydocs/schema @dev
         working-directory: packages/schema
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-ui @dev
         working-directory: packages/theme-ui
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-tang @dev
         working-directory: packages/theme-tang
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-pith @dev
         working-directory: packages/theme-pith
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-pip @dev
         working-directory: packages/theme-pip
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-readable @dev
         working-directory: packages/theme-readable
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/theme-geist @dev
         working-directory: packages/theme-geist
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
       - name: Publish @tanglydocs/tangly @dev
         working-directory: packages/tangly
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun publish --tag dev --access public
