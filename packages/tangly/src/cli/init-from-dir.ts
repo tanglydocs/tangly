@@ -62,7 +62,7 @@ export function scaffoldFromDir(opts: InitFromDirOptions): {
 
   if (opts.existingConfig) {
     return {
-      config: mergeConfigs(opts.existingConfig as unknown as ScaffoldedConfig, baseConfig),
+      config: mergeConfigs(opts.existingConfig, baseConfig),
       summary: { pages: pages.length, groups: groups.length },
     };
   }
@@ -143,33 +143,57 @@ function dedupePreserveOrder(slugs: string[]): string[] {
   return out;
 }
 
-function mergeConfigs(existing: ScaffoldedConfig, fresh: ScaffoldedConfig): ScaffoldedConfig {
-  const merged: ScaffoldedConfig = {
-    ...existing,
-    navigation: { groups: [] as { group: string; pages: string[] }[] },
-  };
-  const existingGroups = existing.navigation?.groups ?? [];
+/**
+ * Merge new groups into existing config. PRESERVES the existing navigation
+ * shape — tabs, pages, anchors, dropdowns, versions, languages, OpenAPI,
+ * templates, and metadata are all kept verbatim. New groups are only
+ * appended into a top-level `navigation.groups` list (creating it if
+ * absent), and existing groups gain any newly-seen pages at the end.
+ *
+ * This intentionally never touches tabbed navigation: if the user already
+ * has tabs/pages/anchors, we just leave them alone and append our new
+ * groups under the root.
+ */
+function mergeConfigs(
+  existing: Record<string, unknown>,
+  fresh: ScaffoldedConfig,
+): ScaffoldedConfig {
+  const cloned = JSON.parse(JSON.stringify(existing)) as Record<string, unknown>;
+  const navigation =
+    (cloned.navigation as Record<string, unknown> | undefined) ?? {};
+  cloned.navigation = navigation;
+
+  const existingGroups = Array.isArray(navigation.groups)
+    ? (navigation.groups as { group: string; pages: string[] }[])
+    : [];
   const freshGroups = fresh.navigation?.groups ?? [];
 
-  const seenGroupNames = new Set(existingGroups.map((g) => g.group));
+  const merged: { group: string; pages: string[] }[] = [];
+  const seenGroupNames = new Set<string>();
+
   for (const eg of existingGroups) {
+    seenGroupNames.add(eg.group);
     const fg = freshGroups.find((g) => g.group === eg.group);
     if (!fg) {
-      merged.navigation.groups.push(eg);
+      merged.push(eg);
       continue;
     }
-    const existingPages = new Set(eg.pages.filter((p): p is string => typeof p === "string"));
+    const existingPages = new Set(
+      eg.pages.filter((p): p is string => typeof p === "string"),
+    );
     const additions = fg.pages.filter((p) => !existingPages.has(p));
-    merged.navigation.groups.push({
+    merged.push({
       group: eg.group,
       pages: [...eg.pages, ...additions],
     });
   }
   for (const fg of freshGroups) {
     if (seenGroupNames.has(fg.group)) continue;
-    merged.navigation.groups.push(fg);
+    merged.push(fg);
   }
-  return merged;
+
+  navigation.groups = merged;
+  return cloned as unknown as ScaffoldedConfig;
 }
 
 export function readExistingConfig(target: string): Record<string, unknown> | undefined {

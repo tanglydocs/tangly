@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 /**
  * rehype plugin: auto-link glossary terms.
  *
@@ -48,6 +50,7 @@ export default function rehypeGlossary(opts = {}) {
   return (tree, file) => {
     if (!compiled || compiled.lookups.size === 0) return;
     if (isGlossarySource(file)) return;
+    if (hasGlossaryOptOut(file)) return;
 
     const seen = new Set();
     walkAndWrap(tree, compiled, seen);
@@ -62,6 +65,29 @@ function isGlossarySource(file) {
   if (/\/glossary\.mdx?$/i.test(norm)) return true;
   if (/\/glossary\/[^/]+\.mdx?$/i.test(norm)) return true;
   return false;
+}
+
+/**
+ * Honour `glossary: false` in page frontmatter. Astro's MDX integration
+ * doesn't reliably populate `file.data.astro.frontmatter` by the time
+ * rehype runs, so we re-read the source file (cheap — already on disk,
+ * and gray-matter only parses the YAML head) when a path is available.
+ */
+function hasGlossaryOptOut(file) {
+  const path =
+    (file && (file.path || (file.history && file.history[file.history.length - 1]))) || "";
+  if (typeof path !== "string" || !path) return false;
+  const fmFromAstro = file?.data?.astro?.frontmatter;
+  if (fmFromAstro && fmFromAstro.glossary === false) return true;
+  try {
+    const raw = readFileSync(path, "utf8");
+    // Cheap front-matter sniff — avoid pulling gray-matter into the runtime.
+    const m = /^---\r?\n([\s\S]*?)\r?\n---/m.exec(raw);
+    if (!m) return false;
+    return /^\s*glossary\s*:\s*false\s*$/m.test(m[1] ?? "");
+  } catch {
+    return false;
+  }
 }
 
 function compile(entries) {
@@ -169,7 +195,7 @@ function scanAndWrap(value, compiled, seen) {
       tagName: "a",
       properties: {
         className: ["tangly-glossary-term"],
-        href: "/glossary#" + hit.entry.slug,
+        href: hit.entry.href || "/glossary#" + hit.entry.slug,
         "data-definition": hit.entry.definition,
         "data-term": hit.entry.term,
       },

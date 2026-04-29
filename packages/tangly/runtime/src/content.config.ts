@@ -9,7 +9,14 @@ if (!userRoot) {
 const docs = defineCollection({
   loader: glob({
     base: userRoot,
-    pattern: ["**/*.mdx", "!**/_*.mdx", "!snippets/**", "!components/**", "!templates/**"],
+    pattern: [
+      "**/*.{md,mdx}",
+      "!**/_*.{md,mdx}",
+      "!**/README.md",
+      "!snippets/**",
+      "!components/**",
+      "!templates/**",
+    ],
   }),
 });
 
