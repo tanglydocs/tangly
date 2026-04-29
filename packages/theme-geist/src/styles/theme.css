@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 only auto-scans files relative to the CSS entrypoint's
+ * project. Components live in `@tanglydocs/theme-ui`, the runtime in
+ * `tangly/runtime/`, and CLI helpers in `tangly/src/` — list them all.
+ */
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../theme-ui/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Geist — modern dev-tool aesthetic (Vercel/Linear/Stripe family).
+     Mostly grayscale; CTA is near-black. Hairline borders carry depth. */
+  --tangly-color-primary: #0a0a0a;
+  --tangly-color-primary-light: #171717;
+  --tangly-color-primary-dark: #000000;
+
+  --tangly-color-bg: #ffffff;
+  --tangly-color-bg-elevated: #fafafa;
+  --tangly-color-fg: #0a0a0a;
+  --tangly-color-muted: #646464;
+  --tangly-color-border: rgba(0, 0, 0, 0.08);
+
+  --tangly-radius: 0.5rem;
+  --tangly-radius-sm: 0.375rem;
+  --tangly-radius-lg: 0.625rem;
+
+  --tangly-font-heading: "Geist", "Inter", system-ui, sans-serif;
+  --tangly-font-body: "Geist", "Inter", system-ui, sans-serif;
+  --tangly-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace,
+    SFMono-Regular, monospace;
+
+  --tangly-sidebar-width: 16rem;
+  --tangly-content-max-width: 48rem;
+  --tangly-toc-width: 13rem;
+  --tangly-topnav-row1-height: 3.75rem;
+  --tangly-topnav-row2-height: 2.75rem;
+  --tangly-topnav-height: calc(
+    var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px
+  );
+
+  color-scheme: light;
+}
+
+.dark {
+  --tangly-color-primary: #ffffff;
+  --tangly-color-primary-light: #ededed;
+  --tangly-color-primary-dark: #ffffff;
+
+  --tangly-color-bg: #0a0a0a;
+  --tangly-color-bg-elevated: #111111;
+  --tangly-color-fg: #fafafa;
+  --tangly-color-muted: #a1a1a1;
+  --tangly-color-border: rgba(255, 255, 255, 0.1);
+
+  color-scheme: dark;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--tangly-font-heading);
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+
+h1 {
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+h2 {
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--tangly-font-mono);
+}
+
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+::selection {
+  background: color-mix(in oklab, var(--tangly-color-fg) 18%, transparent);
+}
+
+/* Sidebar / TOC scroll containers — minimal scrollbars per aesthetic. */
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 3px;
+}
+.tangly-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Topnav — hairline bottom border, no shadow, soft frosted page bg. */
+.tangly-topnav {
+  background: color-mix(in oklab, var(--tangly-color-bg) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--tangly-color-border);
+}
+
+/* Active sidebar link — gray-12 text, no accent fill (geist convention). */
+.tangly-side-link[data-active="true"] {
+  color: var(--tangly-color-fg);
+  background: var(--tangly-color-bg-elevated);
+  font-weight: 500;
+}
+
+.tangly-toc-link[data-active="true"] {
+  color: var(--tangly-color-fg);
+  border-left-color: var(--tangly-color-fg);
+}
+
+[data-active="true"] {
+  color: var(--tangly-color-fg);
+}

@@ -1,0 +1,62 @@
+---
+title: Edge functions
+description: Run TypeScript, Go, or Python at 280+ POPs with sub-30ms cold starts.
+icon: zap
+---
+
+Edge functions run as close to your users as the network allows. Halo isolates each invocation in a V8 isolate (TS) or a microVM (Go/Python), and routes requests to the nearest healthy POP.
+
+## Create a function
+
+```ts api/hello.ts
+export default function handler(req: Request) {
+  return new Response("hi from " + req.headers.get("x-halo-region"));
+}
+```
+
+The file path becomes the route. `api/hello.ts` is reachable at `/api/hello` after deploy.
+
+## Per-region pinning
+
+By default, functions run in every POP. Pin to a region:
+
+```ts
+export const config = {
+  regions: ["iad1", "fra1"],
+};
+```
+
+<Tabs>
+  <Tab title="TypeScript">
+    Runtime: V8 isolates. Cold start: ~5–15ms. Memory: 128 MB max.
+  </Tab>
+  <Tab title="Go">
+    Runtime: Firecracker microVM. Cold start: ~25–50ms. Memory: up to 1 GB.
+  </Tab>
+  <Tab title="Python">
+    Runtime: Firecracker microVM. Cold start: ~30–60ms. Memory: up to 1 GB.
+  </Tab>
+</Tabs>
+
+## Streaming responses
+
+```ts
+export default async function handler() {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode("first chunk\n"));
+      setTimeout(() => {
+        controller.enqueue(new TextEncoder().encode("second chunk\n"));
+        controller.close();
+      }, 100);
+    },
+  });
+  return new Response(stream);
+}
+```
+
+Halo flushes each chunk to the client as soon as it's enqueued.
+
+<Note>
+  Edge functions can't bind raw TCP sockets. For databases, use HTTP-native drivers (Neon, PlanetScale serverless, Upstash) or hit them through a regional service.
+</Note>

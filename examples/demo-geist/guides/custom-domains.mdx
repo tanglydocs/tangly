@@ -1,0 +1,61 @@
+---
+title: Custom domains
+description: Point a domain at Halo and we'll handle TLS, redirects, and routing.
+icon: globe
+---
+
+Halo provisions HTTPS certificates via Let's Encrypt, renews them automatically, and routes traffic through the nearest edge POP.
+
+## Add a domain
+
+```bash
+halo domains add my-app.com
+```
+
+The CLI prints the DNS records you need to set:
+
+```
+A     76.76.21.21
+AAAA  2606:4700:4400::6810:1518
+```
+
+Or, for an apex via CNAME flattening:
+
+```
+CNAME cname.halo.app
+```
+
+Once DNS propagates (usually 1–5 minutes), Halo issues a certificate and the domain goes live.
+
+## Wildcard domains
+
+Use a `*` prefix:
+
+```bash
+halo domains add "*.my-app.com"
+```
+
+DNS-01 validation kicks in — Halo prints a `_acme-challenge` TXT record to set. Wildcard certs renew on a separate 60-day cadence.
+
+## Apex + www
+
+Most teams want both `my-app.com` and `www.my-app.com`:
+
+<Steps>
+  <Step title="Add both domains">
+    `halo domains add my-app.com` then `halo domains add www.my-app.com`.
+  </Step>
+  <Step title="Set the canonical">
+    `halo domains canonical my-app.com` — `www` becomes a 308 redirect.
+  </Step>
+</Steps>
+
+## Domain status
+
+<ResponseField name="status" type="string">
+  One of `pending`, `verifying`, `active`, `error`. Surfaced in the dashboard and via `halo domains list`.
+</ResponseField>
+
+<Tip>
+  Already serving traffic elsewhere? Use `halo domains add --skip-tls-renew` to delay cert issuance until your DNS cuts over.
+</Tip>

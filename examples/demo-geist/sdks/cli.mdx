@@ -1,0 +1,79 @@
+---
+title: CLI
+description: The halo command — deploy, link, alias, log, env. The dashboard, but in your terminal.
+icon: terminal
+---
+
+The Halo CLI is a single binary built on Bun. Every dashboard action has a CLI equivalent. Most teams live in the CLI for daily work and only open the dashboard for org-wide settings.
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install -g @halo/cli
+```
+```bash bun
+bun add -g @halo/cli
+```
+```bash brew
+brew install halo
+```
+```bash curl
+curl -fsSL halo.example.com/install | sh
+```
+</CodeGroup>
+
+## Authenticate
+
+```bash
+halo login
+```
+
+Token is stored at `~/.halo/credentials`. CI? Set `HALO_TOKEN` instead.
+
+## Common commands
+
+| Command | What it does |
+|---------|--------------|
+| `halo init` | Scaffold a new project from a template. |
+| `halo link` | Connect the current repo to a Halo project. |
+| `halo deploy` | Build + upload + deploy from cwd. |
+| `halo alias <domain>` | Promote a deployment to a domain. |
+| `halo logs --tail` | Stream logs from production. |
+| `halo env add KEY value` | Set an environment variable. |
+| `halo rollback` | Promote the previous deployment. |
+
+## halo init
+
+```bash
+halo init --from next-saas-starter
+```
+
+Templates live at `github.com/halo/templates`. Pass any folder name.
+
+## halo deploy
+
+```bash
+halo deploy --prod              # straight to production
+halo deploy --target preview    # default
+halo deploy --build-env KEY=val # one-off build env
+```
+
+`halo deploy` runs idempotently — if nothing changed, it returns the existing deployment URL instead of rebuilding.
+
+## Scripting
+
+<RequestExample>
+```bash JSON output
+halo deploy --json
+```
+```ts Programmatic
+import { execa } from "execa";
+const { stdout } = await execa("halo", ["deploy", "--json"]);
+const { url } = JSON.parse(stdout);
+```
+</RequestExample>
+
+<Tip>
+  Every command supports `--json` for machine output. CI pipelines parse it directly.
+</Tip>

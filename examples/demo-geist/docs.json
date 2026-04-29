@@ -1,0 +1,88 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "Halo",
+  "description": "Ship apps to the edge. Halo deploys, scales, and fronts your code in 30 seconds.",
+  "theme": "geist",
+  "colors": {
+    "primary": "#0a0a0a",
+    "light": "#171717",
+    "dark": "#ffffff"
+  },
+  "fonts": {
+    "heading": { "family": "Geist" },
+    "body": { "family": "Geist" }
+  },
+  "appearance": {
+    "default": "system",
+    "readingProgress": true
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/deploy-from-git",
+              "guides/custom-domains",
+              "guides/environment-variables",
+              "guides/edge-functions",
+              "guides/monitoring"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Reference",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/deployments",
+              "api-reference/projects",
+              "api-reference/domains"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "Clients",
+            "pages": ["sdks/cli", "sdks/node", "sdks/go", "sdks/python"]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      { "label": "Sign in", "href": "https://halo.example.com/login" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Start deploying",
+      "href": "https://halo.example.com/signup"
+    }
+  },
+  "footer": {
+    "lastUpdated": true,
+    "socials": {
+      "github": "https://github.com/example/halo",
+      "x": "https://x.com/halo"
+    }
+  },
+  "banner": {
+    "id": "halo-v1",
+    "type": "info",
+    "dismissible": true,
+    "content": "Halo v1 is live — read the <a href=\"/introduction\">launch notes</a>."
+  }
+}

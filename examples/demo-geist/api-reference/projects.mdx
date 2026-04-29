@@ -1,0 +1,79 @@
+---
+title: Projects
+description: Group deployments under a project. One project per repo, in most cases.
+icon: folder
+---
+
+A project is a long-lived collection of deployments. It owns the production alias, the env vars, and the team membership.
+
+## Create a project
+
+```http
+POST /v1/projects
+```
+
+<ParamField body="name" type="string" required>
+  Slug-like identifier, lowercase, dashes allowed. Used in default deployment URLs.
+</ParamField>
+
+<ParamField body="framework" type="string">
+  Auto-detected from the repo if linked. One of `next`, `astro`, `remix`, `sveltekit`, `static`, `node`, `go`, `python`, `custom`.
+</ParamField>
+
+<ParamField body="repo" type="object">
+  `{ provider, owner, name, branch }`. Optional — projects can be deployed CLI-only.
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string">
+  Project identifier, e.g. `prj_abc123`.
+</ResponseField>
+
+<ResponseField name="default_url" type="string">
+  Stable preview URL: `<name>.halo.app`.
+</ResponseField>
+
+## halo.json
+
+The repo-level config that controls how your project builds. Lives at the repo root.
+
+<ResponseField name="framework" type="string">
+  Override auto-detection.
+</ResponseField>
+
+<ResponseField name="build" type="string">
+  Build command. Default: framework-specific.
+</ResponseField>
+
+<ResponseField name="output" type="string">
+  Build output directory. Default: framework-specific.
+</ResponseField>
+
+<ResponseField name="regions" type="string[]">
+  IATA-style codes for which POPs to run edge functions in. Default: all.
+</ResponseField>
+
+<ResponseField name="env" type="object">
+  Build-time env vars. Runtime vars belong in [`halo env`](/guides/environment-variables).
+</ResponseField>
+
+<RequestExample>
+```bash
+curl https://api.halo.app/v1/projects \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -d '{
+    "name": "my-app",
+    "framework": "next",
+    "repo": { "provider": "github", "owner": "example", "name": "my-app", "branch": "main" }
+  }'
+```
+</RequestExample>
+
+## Update
+
+```http
+PATCH /v1/projects/{id}
+```
+
+Updatable: `name`, `framework`, `regions`, `repo.branch`.

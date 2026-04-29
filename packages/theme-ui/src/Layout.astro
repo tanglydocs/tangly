@@ -1,19 +1,19 @@
 ---
-import type { DocsJson } from "@tangly/schema";
-import type { PageEntry, ResolvedNavigation } from "tangly";
+import type { DocsJson } from "@tanglydocs/schema";
+import type { PageEntry, ResolvedNavigation } from "@tanglydocs/tangly";
 // Import shells via package specifiers so user overrides at
 // `<userRoot>/theme/<Name>.astro` (wired through Vite alias by the Tangly
 // integration) actually intercept these. Relative imports would bypass
 // the alias and pin to the bundled defaults.
-import TopNav from "@tangly/theme-ui/TopNav.astro";
-import Sidebar from "@tangly/theme-ui/Sidebar.astro";
-import Footer from "@tangly/theme-ui/Footer.astro";
-import SearchModal from "@tangly/theme-ui/SearchModal.astro";
-import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
-// `@tangly/theme/theme.css` is resolved by the Tangly Astro integration to
+import TopNav from "@tanglydocs/theme-ui/TopNav.astro";
+import Sidebar from "@tanglydocs/theme-ui/Sidebar.astro";
+import Footer from "@tanglydocs/theme-ui/Footer.astro";
+import SearchModal from "@tanglydocs/theme-ui/SearchModal.astro";
+import MermaidLoader from "@tanglydocs/theme-ui/MermaidLoader.astro";
+// `@tanglydocs/theme/theme.css` is resolved by the Tangly Astro integration to
 // the active theme's `styles/theme.css` (theme-tang or theme-pith), with
 // `<userRoot>/theme/styles/theme.css` overriding when present.
-import "@tangly/theme/theme.css";
+import "@tanglydocs/theme/theme.css";
 import "./styles/prose.css";
 import "./styles/code.css";
 import "katex/dist/katex.min.css";

@@ -1,4 +1,4 @@
-# @tangly/theme-tang
+# @tanglydocs/theme-tang
 
 > Default theme for [Tangly](https://github.com/tanglydocs/tangly) — a self-hosted, OSS docs framework that renders Mintlify projects unmodified.
 
@@ -33,8 +33,8 @@ The framework wires this theme automatically when `docs.json` selects `theme: "t
 
 ```astro
 ---
-import Layout from "@tangly/theme-tang/Layout.astro";
-import PageShell from "@tangly/theme-tang/PageShell.astro";
+import Layout from "@tanglydocs/theme-tang/Layout.astro";
+import PageShell from "@tanglydocs/theme-tang/PageShell.astro";
 ---
 <Layout config={config} page={page} navigation={navigation} pageTitle={page.frontmatter.title}>
   <PageShell page={page}>

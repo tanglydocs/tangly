@@ -20,7 +20,7 @@ Tangly is a self-hosted, OSS docs framework that renders Mintlify projects unmod
 ## Layout
 
 - `packages/tangly` — CLI + manifest + Vite plugin + runtime Astro app (`runtime/`). Public.
-- `packages/schema` — `@tangly/schema`: Zod schema for `docs.json`, frontmatter, mint→docs migrator. Private workspace pkg (the `@tangly` org name was unavailable on npm).
+- `packages/schema` — `@tanglydocs/schema`: Zod schema for `docs.json`, frontmatter, mint→docs migrator. Private workspace pkg (the `@tangly` org name was unavailable on npm).
 - `packages/theme-tang` — default theme (Mintlify-Mint inspired). Private workspace pkg.
 - `packages/theme-pith` — editorial alternative theme (serif headings, cream bg). Private workspace pkg.
 - `docs/` — Tangly's own docs, rendered by Tangly itself via `bun run dev:docs` (port 4322).
@@ -45,7 +45,7 @@ Tangly is a self-hosted, OSS docs framework that renders Mintlify projects unmod
 
 - All 14+ MDX components render (Card, CardGroup, Note, Tip, Warning, Info, Check, Danger, Update, Tabs, Tab, Steps, Step, Accordion, AccordionGroup, Frame, CodeGroup, ParamField, ResponseField, Snippet placeholder, OpenApiEndpoint).
 - `docs.json` schema accepts every Mintlify top-level field. Theme aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) map to `tang`. `pith` is the only second-tier theme today.
-- `mint.json` legacy parses via `@tangly/schema/convertMintToDocs`. CLI: `tangly migrate` (renamed from `upgrade` per user).
+- `mint.json` legacy parses via `@tanglydocs/schema/convertMintToDocs`. CLI: `tangly migrate` (renamed from `upgrade` per user).
 
 ## Things the user has called out
 

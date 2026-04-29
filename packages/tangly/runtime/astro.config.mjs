@@ -23,7 +23,7 @@ import {
   transformerTanglyChrome,
 } from "./src/lib/shiki-transformers.mjs";
 import tailwind from "@tailwindcss/vite";
-import { tanglyIntegration } from "tangly/plugin";
+import { tanglyIntegration } from "@tanglydocs/tangly/plugin";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";

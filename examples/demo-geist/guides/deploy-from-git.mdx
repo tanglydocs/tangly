@@ -1,0 +1,65 @@
+---
+title: Deploy from git
+description: Connect a repo once. Every push builds and deploys.
+icon: git-branch
+---
+
+Halo's git integration watches a branch and ships every commit. Pull requests get isolated preview URLs that survive until the PR closes.
+
+## Connect a repository
+
+```bash
+halo link
+```
+
+The CLI walks you through:
+
+<Steps>
+  <Step title="Choose a provider">
+    GitHub, GitLab, or Bitbucket. OAuth handshake happens in your browser.
+  </Step>
+  <Step title="Pick a repo">
+    Halo lists every repo you can read. Selection is scoped per-org.
+  </Step>
+  <Step title="Confirm the production branch">
+    Defaults to `main`. Override with `--prod-branch develop`.
+  </Step>
+</Steps>
+
+After linking, every push to the production branch triggers a build. Every push to a non-prod branch creates a preview deployment.
+
+## Deployment lifecycle
+
+<AccordionGroup>
+  <Accordion title="Build">
+    Halo runs your build command in an isolated container with the Node, Go, or Python runtime your `halo.json` declares. Build output is uploaded to the edge cache.
+  </Accordion>
+  <Accordion title="Deploy">
+    Each deployment gets a stable URL of the form `<project>-<hash>.halo.app`. Aliases (production domains) flip atomically.
+  </Accordion>
+  <Accordion title="Rollback">
+    `halo rollback` reverts the production alias to the previous deployment. Takes effect at the edge in under 5 seconds.
+  </Accordion>
+</AccordionGroup>
+
+## Configuration
+
+Drop a `halo.json` at the repo root:
+
+```json halo.json
+{
+  "framework": "next",
+  "build": "bun run build",
+  "output": ".next",
+  "regions": ["iad1", "sfo1", "fra1"],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
+```
+
+Field reference: see [`halo.json`](/api-reference/projects#halo-json).
+
+<Warning>
+  Build secrets (API keys, tokens) belong in [environment variables](/guides/environment-variables), not `halo.json`.
+</Warning>

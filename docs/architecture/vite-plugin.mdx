@@ -105,10 +105,10 @@ More compatibility shims land here as we hit them.
 
 ## Component shadowing
 
-`packages/tangly/src/plugin/component-shadow.ts` rewrites Vite resolution for `@tangly/theme-ui/<Name>.astro`:
+`packages/tangly/src/plugin/component-shadow.ts` rewrites Vite resolution for `@tanglydocs/theme-ui/<Name>.astro`:
 
 1. `<userRoot>/theme/<Name>.{astro,tsx,jsx}` (project-level override)
-2. `@tangly/theme-<active>/components/<Name>.astro` (theme-level override)
-3. `@tangly/theme-ui/components/<Name>.astro` (built-in default)
+2. `@tanglydocs/theme-<active>/components/<Name>.astro` (theme-level override)
+3. `@tanglydocs/theme-ui/components/<Name>.astro` (built-in default)
 
 The lookup runs at module-resolution time, not import time, so overrides have zero runtime cost — Vite produces the same code as if you'd written the import directly.

@@ -13,7 +13,7 @@ See [`plans/SPEC.md`](./plans/SPEC.md) for the full brief.
 ## Repo
 
 - `packages/tangly` — the npm package
-- `packages/schema` — `@tangly/schema` (Zod + JSON Schema for `docs.json`)
+- `packages/schema` — `@tanglydocs/schema` (Zod + JSON Schema for `docs.json`)
 - `packages/theme-tang` — default theme
 - `packages/theme-pith` — editorial alternative theme
 - `examples/` — test corpora (Opennem, basic, etc.)

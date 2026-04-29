@@ -1,7 +1,6 @@
 {
-  "name": "@tangly/schema",
+  "name": "@tanglydocs/schema",
   "version": "0.0.1",
-  "private": true,
   "description": "docs.json Zod schema + JSON Schema for Tangly.",
   "keywords": [
     "docs",
@@ -40,5 +39,8 @@
   },
   "dependencies": {
     "zod": "^4.3.6"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,4 +1,4 @@
-# @tangly/schema
+# @tanglydocs/schema
 
 > docs.json Zod schema + JSON Schema for [Tangly](https://github.com/tanglydocs/tangly).
 

@@ -1,4 +1,4 @@
-import type { DocsJson, Frontmatter, NavGroup, NavNode, NavTab } from "@tangly/schema";
+import type { DocsJson, Frontmatter, NavGroup, NavNode, NavTab } from "@tanglydocs/schema";
 
 // NavTab type is referenced via tabFromNavTab below.
 import type {

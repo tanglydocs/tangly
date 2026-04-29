@@ -52,9 +52,9 @@ export function buildComponentShadowAliases(userRoot: string): Record<string, st
       const candidate = resolve(userComponentsDir, `${name}${ext}`);
       if (existsSync(candidate)) {
         // Map the shared UI package path → user file. The runtime imports
-        // components via `@tangly/theme-ui/components/<Name>.astro`; we
+        // components via `@tanglydocs/theme-ui/components/<Name>.astro`; we
         // override that specific specifier.
-        aliases[`@tangly/theme-ui/components/${name}.astro`] = candidate;
+        aliases[`@tanglydocs/theme-ui/components/${name}.astro`] = candidate;
         break;
       }
     }

@@ -1,4 +1,4 @@
-import type { DocsJson, Frontmatter, NavGroup, NavTab } from "@tangly/schema";
+import type { DocsJson, Frontmatter, NavGroup, NavTab } from "@tanglydocs/schema";
 
 export interface SidebarItem {
   /** Display title for the sidebar. */

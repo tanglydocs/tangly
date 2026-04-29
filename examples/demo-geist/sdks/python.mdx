@@ -1,0 +1,90 @@
+---
+title: Python SDK
+description: Async-first Python client for the Halo REST API.
+icon: square-code
+---
+
+`halo-sdk` is an async Python client built on httpx. Sync wrappers exist for scripts, but async is the primary surface.
+
+## Install
+
+```bash
+uv add halo-sdk
+```
+
+Or with pip:
+
+```bash
+pip install halo-sdk
+```
+
+## Authenticate
+
+```python
+import os
+from halo import Halo
+
+halo = Halo(token=os.environ["HALO_TOKEN"])
+```
+
+## Deploy
+
+```python
+import asyncio
+from halo import Halo
+
+async def main():
+    halo = Halo()
+    dep = await halo.deployments.create(
+        project_id="prj_abc123",
+        files={"index.html": "abc...", "app.js": "def..."},
+        target="production",
+    )
+    print(dep.url)
+
+asyncio.run(main())
+```
+
+## Iterate deployments
+
+```python
+async for dep in halo.deployments.list(project_id="prj_abc123"):
+    print(dep.id, dep.status)
+```
+
+The iterator transparently follows pagination cursors.
+
+## Streaming logs
+
+```python
+async with halo.logs.stream(project_id="prj_abc123") as stream:
+    async for line in stream:
+        print(line.timestamp, line.message)
+```
+
+## Sync API
+
+For one-off scripts:
+
+```python
+from halo.sync import Halo
+
+halo = Halo()
+dep = halo.deployments.get("dpl_x7k2qz")
+print(dep.url)
+```
+
+## Errors
+
+```python
+from halo import HaloError
+
+try:
+    await halo.deployments.get("dpl_does_not_exist")
+except HaloError as err:
+    if err.code == "deployment_not_found":
+        ...
+    raise
+```
+
+`HaloError` exposes `code`, `message`, `doc_url`, and `request_id` for support tickets.

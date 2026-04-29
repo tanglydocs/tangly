@@ -1,0 +1,50 @@
+{
+  "name": "@tanglydocs/theme-geist",
+  "version": "0.0.1",
+  "description": "Geist Tangly theme. Modern dev-tool aesthetic (Vercel/Linear/Stripe family). Hairline borders, mono UI labels, restrained grayscale, near-black/white CTAs. UI shell from @tanglydocs/theme-ui.",
+  "keywords": [
+    "docs",
+    "tangly",
+    "theme"
+  ],
+  "homepage": "https://github.com/tanglydocs/tangly",
+  "bugs": "https://github.com/tanglydocs/tangly/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanglydocs/tangly.git",
+    "directory": "packages/theme-geist"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "build": "tsgo --build",
+    "typecheck": "tsgo --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@tanglydocs/theme-ui": "workspace:*",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

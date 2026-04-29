@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
-import { safeParseFrontmatter } from "@tangly/schema";
+import { safeParseFrontmatter } from "@tanglydocs/schema";
 import matter from "gray-matter";
 import type { Manifest } from "../manifest/types.js";
 

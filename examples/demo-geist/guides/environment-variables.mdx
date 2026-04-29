@@ -1,0 +1,57 @@
+---
+title: Environment variables
+description: Inject secrets into builds and runtime without checking them into git.
+icon: key
+---
+
+Halo exposes environment variables to your build container, your runtime, or both. Values are encrypted at rest and decrypted only at the edge.
+
+## Set a variable
+
+```bash
+halo env add DATABASE_URL postgres://...
+```
+
+By default the variable is available to **all environments** (production, preview, development).
+
+Scope it:
+
+```bash
+halo env add DATABASE_URL postgres://prod... --env production
+halo env add DATABASE_URL postgres://stage... --env preview
+```
+
+## Read variables
+
+In your code, just read `process.env`:
+
+```ts
+const url = process.env.DATABASE_URL;
+```
+
+Edge functions get the same `process.env` shape regardless of runtime — Halo wires it up before your handler runs.
+
+## Encrypted from rest to runtime
+
+| Stage | Encryption |
+|-------|------------|
+| Storage (Halo control plane) | AES-256-GCM, per-org KMS key |
+| Transit (control → edge) | mTLS |
+| Edge memory | decrypted just-in-time, never written to disk |
+
+## Reading variables programmatically
+
+<RequestExample>
+```bash CLI
+halo env list --env production --json
+```
+```ts SDK
+import { Halo } from "@halo/sdk";
+const halo = new Halo({ token: process.env.HALO_TOKEN });
+const vars = await halo.env.list({ env: "production" });
+```
+</RequestExample>
+
+<Warning>
+  Never log `process.env` in production. Halo redacts known secrets in the log stream, but custom variables you add are not redacted.
+</Warning>

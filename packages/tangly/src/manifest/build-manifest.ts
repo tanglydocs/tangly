@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
-import { parseDocsJson } from "@tangly/schema";
+import { parseDocsJson } from "@tanglydocs/schema";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";

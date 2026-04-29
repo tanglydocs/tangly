@@ -1,0 +1,44 @@
+---
+title: Introduction
+description: Halo is a hosting platform for fast web apps. Push to git, get a URL, scale to zero.
+icon: sparkles
+---
+
+Halo runs your code on a global edge network. You hand us a git repo or a `halo deploy` command; we hand back a URL, an HTTPS certificate, and a deployment that survives traffic spikes without you doing anything.
+
+## What you get
+
+<CardGroup cols={2}>
+  <Card title="Git-based deploys" icon="git-branch" href="/guides/deploy-from-git">
+    Push to `main`, ship to production. Every PR gets a preview URL.
+  </Card>
+  <Card title="Custom domains" icon="globe" href="/guides/custom-domains">
+    Point a domain at Halo, we provision certs and route traffic.
+  </Card>
+  <Card title="Edge functions" icon="zap" href="/guides/edge-functions">
+    Run TypeScript, Go, or Python at 280+ POPs. Cold start under 30ms.
+  </Card>
+  <Card title="Built-in monitoring" icon="activity" href="/guides/monitoring">
+    Latency, error rate, log streaming. No agent, no setup.
+  </Card>
+</CardGroup>
+
+## How it fits
+
+Halo is the layer between your code and your users. You keep writing code the way you do today — Halo handles the edge, the cache, the certs, the rollbacks, and the autoscaling.
+
+<Steps>
+  <Step title="Connect a repo">
+    Or run `halo init` against a local project.
+  </Step>
+  <Step title="Push a commit">
+    Halo builds, deploys, and gives you a unique URL per deployment.
+  </Step>
+  <Step title="Promote to production">
+    Aliases the deployment to your production domain. Rollback is instant.
+  </Step>
+</Steps>
+
+<Note>
+  New here? The [quickstart](/quickstart) takes about two minutes from `npx halo` to a live URL.
+</Note>

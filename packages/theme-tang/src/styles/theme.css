@@ -2,7 +2,7 @@
 
 /*
  * Tailwind v4 only auto-scans files relative to the CSS entrypoint's
- * project. Components live in `@tangly/theme-ui`, the runtime in
+ * project. Components live in `@tanglydocs/theme-ui`, the runtime in
  * `tangly/runtime/`, and CLI helpers in `tangly/src/` — list them all.
  */
 @source "../**/*.{astro,ts,tsx,mdx}";

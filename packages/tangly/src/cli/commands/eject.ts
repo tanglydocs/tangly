@@ -81,7 +81,7 @@ export const ejectCommand = defineCommand({
       };
       const deps = pkg.dependencies ?? {};
       const devDeps = pkg.devDependencies ?? {};
-      // Keep `tangly` (the plugin), `@tangly/schema`, and `@tangly/theme-ui`
+      // Keep `tangly` (the plugin), `@tanglydocs/schema`, and `@tanglydocs/theme-ui`
       // — the materialized astro.config still imports `tangly/plugin` and
       // theme components. Add raw Astro deps users will likely want to
       // tweak directly.
