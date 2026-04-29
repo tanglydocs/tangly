@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { intro, isCancel, outro, select, text } from "@clack/prompts";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { readExistingConfig, scaffoldFromDir } from "../init-from-dir.js";
 
 export const initCommand = defineCommand({
   meta: {
@@ -16,11 +17,36 @@ export const initCommand = defineCommand({
       required: false,
       default: ".",
     },
+    from: {
+      type: "string",
+      description:
+        "Path to an existing folder of `.md`/`.mdx` files. Synthesizes a docs.json by walking the tree (folders → groups). Idempotent — re-run merges new files into the existing nav.",
+    },
   },
   async run({ args }) {
     intro(pc.bgCyan(pc.black(" Tangly ")));
 
     const dir = resolve(args.dir);
+
+    // --from <dir>: walk an existing markdown folder and synthesize docs.json.
+    if (args.from) {
+      const src = resolve(args.from);
+      if (!existsSync(src)) {
+        console.error(pc.red(`✗ --from path not found: ${src}`));
+        process.exit(1);
+      }
+      const existing = readExistingConfig(dir);
+      const { config, summary } = scaffoldFromDir({ src, existingConfig: existing });
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(resolve(dir, "docs.json"), JSON.stringify(config, null, 2), "utf8");
+      const verb = existing ? "Merged" : "Generated";
+      outro(
+        `${pc.green("✓")} ${verb} docs.json with ${summary.pages} pages across ${summary.groups} groups.`,
+      );
+      console.log(pc.dim("Review docs.json and run `tangly dev` from the docs root to start."));
+      return;
+    }
+
     if (existsSync(resolve(dir, "docs.json"))) {
       console.error(pc.red(`✗ docs.json already exists at ${dir}`));
       process.exit(1);

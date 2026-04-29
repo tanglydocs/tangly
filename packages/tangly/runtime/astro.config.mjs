@@ -56,7 +56,9 @@ const codeThemes =
     : codeConfig.theme ?? { light: "github-light", dark: "github-dark" };
 const codeCopyButton = codeConfig.copyButton !== false;
 
-// Load glossary entries once at config-load. Errors are non-fatal.
+// Load glossary entries once at config-load. Errors are non-fatal —
+// a missing or malformed glossary file disables the feature for this
+// run rather than breaking the build.
 let glossaryEntries = [];
 try {
   const { loadGlossary } = await import("tangly");

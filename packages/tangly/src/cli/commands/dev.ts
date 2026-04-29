@@ -6,6 +6,7 @@ import { VERSION } from "../../index.js";
 import { buildManifest } from "../../manifest/index.js";
 import { printBanner } from "../banner.js";
 import { getRuntimeDir } from "../runtime-paths.js";
+import { findCloudflaredBin, startCloudflaredTunnel } from "../tunnel.js";
 
 export const devCommand = defineCommand({
   meta: {
@@ -41,6 +42,11 @@ export const devCommand = defineCommand({
     debug: {
       type: "boolean",
       description: "Verbose logging",
+      default: false,
+    },
+    tunnel: {
+      type: "boolean",
+      description: "Expose dev server publicly via cloudflared quick tunnel",
       default: false,
     },
   },
@@ -92,7 +98,38 @@ export const devCommand = defineCommand({
       }
     }
 
+    let tunnelChild: ReturnType<typeof startCloudflaredTunnel>["child"] | null = null;
+    if (args.tunnel) {
+      const bin = findCloudflaredBin();
+      if (!bin) {
+        console.log(
+          pc.yellow(
+            "⚠ --tunnel requires cloudflared. Install it (e.g. `brew install cloudflared`) and re-run.",
+          ),
+        );
+      } else {
+        const { child, url } = startCloudflaredTunnel({
+          bin,
+          localUrl: `http://localhost:${port}`,
+        });
+        tunnelChild = child;
+        url
+          .then((publicUrl) => {
+            console.log(pc.cyan(`\n🌐 Public tunnel: ${publicUrl}\n`));
+          })
+          .catch(() => {
+            /* swallow */
+          });
+        child.on("exit", (code) => {
+          if (code !== 0 && code !== null) {
+            console.log(pc.dim(`cloudflared exited (code ${code}).`));
+          }
+        });
+      }
+    }
+
     process.on("SIGINT", async () => {
+      tunnelChild?.kill("SIGTERM");
       await (server as { stop?: () => Promise<void> }).stop?.();
       process.exit(0);
     });
