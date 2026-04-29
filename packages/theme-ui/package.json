@@ -33,6 +33,9 @@
     "./package.json": "./package.json",
     "./*": "./src/*"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsgo --build",
     "typecheck": "tsgo --noEmit",
@@ -43,6 +46,7 @@
     "@scalar/api-reference": "^1.53.1",
     "@tailwindcss/vite": "^4.2.4",
     "@tanglydocs/schema": "workspace:*",
+    "@tanglydocs/tangly": "workspace:*",
     "astro": "^6.1.10",
     "katex": "^0.16.45",
     "lucide": "^1.12.0",
@@ -53,13 +57,9 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "tailwindcss": "^4.2.4",
-    "@tanglydocs/tangly": "workspace:*",
     "unified": "^11.0.5"
   },
   "devDependencies": {
     "@types/node": "^25.6.0"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

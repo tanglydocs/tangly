@@ -32,6 +32,9 @@
     "./package.json": "./package.json",
     "./*": "./src/*"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsgo --build",
     "typecheck": "tsgo --noEmit",
@@ -43,8 +46,5 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.0"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

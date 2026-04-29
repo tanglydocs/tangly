@@ -134,7 +134,10 @@ export function buildPublicCascade(userRoot: string, themeName: string | undefin
   if (existsSync(userThemePublic)) roots.push(userThemePublic);
 
   const active = resolveTheme(themeName);
-  const activeThemePublic = resolve(resolveThemePackageRoot(`@tanglydocs/theme-${active}`), "public");
+  const activeThemePublic = resolve(
+    resolveThemePackageRoot(`@tanglydocs/theme-${active}`),
+    "public",
+  );
   if (existsSync(activeThemePublic)) roots.push(activeThemePublic);
 
   const themeUiPublic = resolve(resolveThemePackageRoot("@tanglydocs/theme-ui"), "public");

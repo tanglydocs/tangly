@@ -31,8 +31,7 @@
 
   --tangly-font-heading: "Geist", "Inter", system-ui, sans-serif;
   --tangly-font-body: "Geist", "Inter", system-ui, sans-serif;
-  --tangly-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace,
-    SFMono-Regular, monospace;
+  --tangly-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   --tangly-sidebar-width: 16rem;
   --tangly-content-max-width: 48rem;

@@ -1,7 +1,12 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { confirm, intro, isCancel, outro } from "@clack/prompts";
-import { convertMintToDocs, parseDocsJson, safeParseDocsJson, TANGLY_THEMES } from "@tanglydocs/schema";
+import {
+  convertMintToDocs,
+  parseDocsJson,
+  safeParseDocsJson,
+  TANGLY_THEMES,
+} from "@tanglydocs/schema";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 
