@@ -1,0 +1,132 @@
+---
+/**
+ * GlossaryTerm
+ *
+ * Authors don't write this component by hand - the `rehype-glossary` plugin
+ * wraps the first occurrence of each glossary term on every page in an
+ * `<a class="tangly-glossary-term" data-definition="..." data-term="..."
+ * href="/glossary#slug">` element. This component is the canonical render
+ * for cases where authors DO want to opt-in manually:
+ *
+ *   <GlossaryTerm slug="capacity-factor" definition="The ratio of...">
+ *     CF
+ *   </GlossaryTerm>
+ *
+ * The rehype plugin emits raw HAST anchors with the same class, so the
+ * `.tangly-glossary-term` styles below cover both paths.
+ */
+export interface Props {
+  slug: string;
+  term?: string;
+  definition?: string;
+  href?: string;
+}
+
+const { slug, term, definition = "", href } = Astro.props as Props;
+const linkHref = href ?? `/glossary#${slug}`;
+---
+<a
+  class="tangly-glossary-term"
+  href={linkHref}
+  data-definition={definition}
+  {...term ? { "data-term": term } : {}}
+><slot /></a>
+
+<style is:global>
+  /* Auto-linked glossary terms. The same class covers both the rehype-
+     emitted anchors and the explicit <GlossaryTerm> component. */
+  .tangly-glossary-term {
+    position: relative;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgb(161 161 170 / 0.6); /* zinc-400/60 */
+    cursor: help;
+  }
+  .tangly-glossary-term:hover,
+  .tangly-glossary-term:focus-visible {
+    text-decoration-style: solid;
+    text-decoration-color: rgb(82 82 91); /* zinc-600 */
+  }
+  :is(.dark) .tangly-glossary-term {
+    text-decoration-color: rgb(113 113 122 / 0.7); /* zinc-500/70 */
+  }
+  :is(.dark) .tangly-glossary-term:hover,
+  :is(.dark) .tangly-glossary-term:focus-visible {
+    text-decoration-color: rgb(212 212 216); /* zinc-300 */
+  }
+
+  /* CSS-only tooltip: built from `data-definition`. No JS, no flash. */
+  .tangly-glossary-term::after {
+    content: attr(data-definition);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+    min-width: 12rem;
+    max-width: 22rem;
+    width: max-content;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    background: rgb(24 24 27); /* zinc-900 */
+    color: rgb(244 244 245); /* zinc-100 */
+    font-size: 0.75rem;
+    line-height: 1.35;
+    font-weight: 400;
+    text-align: left;
+    white-space: normal;
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.2),
+      0 4px 6px -4px rgb(0 0 0 / 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease;
+    z-index: 60;
+  }
+  .tangly-glossary-term::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 1px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgb(24 24 27);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+    z-index: 60;
+  }
+  .tangly-glossary-term:hover::after,
+  .tangly-glossary-term:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .tangly-glossary-term:hover::before,
+  .tangly-glossary-term:focus-visible::before {
+    opacity: 1;
+  }
+
+  /* Hide tooltip when the data-definition attribute is missing/empty so
+     we don't pop an empty bubble. */
+  .tangly-glossary-term:not([data-definition])::after,
+  .tangly-glossary-term[data-definition=""]::after,
+  .tangly-glossary-term:not([data-definition])::before,
+  .tangly-glossary-term[data-definition=""]::before {
+    display: none;
+  }
+
+  :is(.dark) .tangly-glossary-term::after {
+    background: rgb(244 244 245); /* zinc-100 */
+    color: rgb(24 24 27); /* zinc-900 */
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.4),
+      0 4px 6px -4px rgb(0 0 0 / 0.3);
+  }
+  :is(.dark) .tangly-glossary-term::before {
+    border-top-color: rgb(244 244 245);
+  }
+</style>

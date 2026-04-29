@@ -1,0 +1,56 @@
+---
+// LightboxImage wraps a regular <img> in a clickable button that opens
+// a fullscreen modal. Esc / outside-click closes. Mobile pinch-zoom works
+// via CSS `touch-action`.
+//
+// Used by the default MDX `img` renderer so any inline image becomes a
+// lightbox automatically. Pass `lightbox={false}` (or wrap in a Frame
+// with `lightbox={false}`) to opt out.
+
+export interface Props {
+  src: string;
+  alt?: string;
+  width?: number | string;
+  height?: number | string;
+  lightbox?: boolean;
+}
+
+const { src, alt = "", width, height, lightbox = true } = Astro.props as Props;
+---
+{lightbox ? (
+  <button
+    type="button"
+    class="tangly-lightbox-trigger"
+    data-tangly-lightbox-src={src}
+    {...(alt ? { "data-tangly-lightbox-alt": alt } : {})}
+    aria-label={alt ? `Open ${alt} in lightbox` : "Open image in lightbox"}
+  >
+    <img
+      src={src}
+      alt={alt}
+      {...(width ? { width } : {})}
+      {...(height ? { height } : {})}
+      loading="lazy"
+    />
+  </button>
+) : (
+  <img src={src} alt={alt} {...(width ? { width } : {})} {...(height ? { height } : {})} loading="lazy" />
+)}
+
+<style is:global>
+.tangly-lightbox-trigger {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+.tangly-lightbox-trigger img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+</style>

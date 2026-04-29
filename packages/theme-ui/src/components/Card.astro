@@ -7,10 +7,24 @@ export interface Props {
   href?: string;
   horizontal?: boolean;
   img?: string;
+  /** Same as `img` — Mintlify-compatible alias used in newer projects. */
+  image?: string;
+  /** CSS aspect ratio for the image area (e.g. "16/9"). Defaults to 16/9. */
+  imageAspect?: string;
   color?: string;
 }
 
-const { title, icon, href, horizontal = false, img, color } = Astro.props as Props;
+const {
+  title,
+  icon,
+  href,
+  horizontal = false,
+  img,
+  image,
+  imageAspect = "16/9",
+  color,
+} = Astro.props as Props;
+const resolvedImage = img ?? image;
 const Tag = href ? "a" : "div";
 const hover = href ? "hover:border-zinc-300 hover:shadow-sm dark:hover:border-zinc-700 transition-colors" : "";
 const layout = horizontal ? "flex flex-row items-start gap-4" : "flex flex-col gap-2";
@@ -21,9 +35,12 @@ const accent = color ? `style="--card-accent: ${color}"` : "";
   class={`group block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 ${hover} no-underline`}
   style={color ? `--card-accent: ${color}` : undefined}
 >
-  {img && (
-    <div class={horizontal ? "shrink-0 w-32 h-24 overflow-hidden rounded-lg" : "mb-3 w-full h-40 overflow-hidden rounded-lg"}>
-      <img src={img} alt={title ?? ""} class="w-full h-full object-cover" />
+  {resolvedImage && (
+    <div
+      class={horizontal ? "shrink-0 w-32 overflow-hidden rounded-lg" : "mb-3 w-full overflow-hidden rounded-lg"}
+      style={`aspect-ratio: ${horizontal ? "4/3" : imageAspect};`}
+    >
+      <img src={resolvedImage} alt={title ?? ""} class="w-full h-full object-cover" loading="lazy" />
     </div>
   )}
   <div class={layout + " w-full"}>

@@ -13,6 +13,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
@@ -54,6 +55,15 @@ const codeThemes =
     ? { light: codeConfig.theme, dark: codeConfig.theme }
     : codeConfig.theme ?? { light: "github-light", dark: "github-dark" };
 const codeCopyButton = codeConfig.copyButton !== false;
+
+// Load glossary entries once at config-load. Errors are non-fatal.
+let glossaryEntries = [];
+try {
+  const { loadGlossary } = await import("tangly");
+  glossaryEntries = loadGlossary(userRoot);
+} catch {
+  /* swallow — glossary is optional */
+}
 const includeDrafts =
   process.env.TANGLY_INCLUDE_DRAFTS === "1" ||
   process.env.TANGLY_INCLUDE_DRAFTS === "true" ||
@@ -161,6 +171,10 @@ export default defineConfig({
             ],
           },
         ],
+        // Glossary auto-link runs AFTER shiki so code blocks aren't touched.
+        ...(glossaryEntries.length > 0
+          ? [[rehypeGlossary, { entries: glossaryEntries }]]
+          : []),
       ],
       gfm: true,
       optimize: false,

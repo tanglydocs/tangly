@@ -1,0 +1,66 @@
+---
+// Keyboard component. Renders styled keycap(s).
+// Usage:
+//   <Kbd>Cmd</Kbd>+<Kbd>K</Kbd>
+//   <Kbd keys="Cmd+K" />  → renders both, with auto Cmd→Ctrl on non-mac.
+
+export interface Props {
+  keys?: string;
+}
+
+const { keys } = Astro.props as Props;
+
+function splitKeys(s: string): string[] {
+  return s.split(/[\s+]+/).filter(Boolean);
+}
+
+const tokens = keys ? splitKeys(keys) : null;
+---
+{tokens ? (
+  <span class="tangly-kbd-group inline-flex items-center gap-1 align-middle">
+    {tokens.map((k, i) => (
+      <>
+        {i > 0 && <span class="tangly-kbd-sep text-[var(--tangly-color-muted)]">+</span>}
+        <kbd
+          class="tangly-kbd"
+          data-platform-key={/^cmd|⌘$/i.test(k) ? "cmd" : ""}
+        >{k}</kbd>
+      </>
+    ))}
+  </span>
+) : (
+  <kbd class="tangly-kbd"><slot /></kbd>
+)}
+
+<style is:global>
+.tangly-kbd {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  font-family: var(--tangly-font-mono, "JetBrains Mono"), ui-monospace, monospace;
+  font-size: 0.78em;
+  font-weight: 500;
+  color: rgb(63, 63, 70);
+  background: rgb(244, 244, 245);
+  border: 1px solid rgb(228, 228, 231);
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.dark .tangly-kbd {
+  color: rgb(228, 228, 231);
+  background: rgb(39, 39, 42);
+  border-color: rgb(63, 63, 70);
+}
+</style>
+
+<script is:inline>
+  // Swap Cmd → Ctrl on non-mac platforms.
+  (() => {
+    if (/Mac|iPhone|iPad/.test(navigator.userAgent)) return;
+    document.querySelectorAll("[data-platform-key='cmd']").forEach((el) => {
+      el.textContent = "Ctrl";
+    });
+  })();
+</script>

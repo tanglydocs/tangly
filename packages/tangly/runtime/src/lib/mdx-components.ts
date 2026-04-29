@@ -9,9 +9,13 @@ import Columns from "@tangly/theme-ui/components/Columns.astro";
 import Danger from "@tangly/theme-ui/components/Danger.astro";
 import Embed from "@tangly/theme-ui/components/Embed.astro";
 import Expandable from "@tangly/theme-ui/components/Expandable.astro";
+import FileTree from "@tangly/theme-ui/components/FileTree.astro";
 import Frame from "@tangly/theme-ui/components/Frame.astro";
+import GlossaryTerm from "@tangly/theme-ui/components/GlossaryTerm.astro";
 import Icon from "@tangly/theme-ui/components/Icon.astro";
 import Info from "@tangly/theme-ui/components/Info.astro";
+import Kbd from "@tangly/theme-ui/components/Kbd.astro";
+import LightboxImage from "@tangly/theme-ui/components/LightboxImage.astro";
 import Note from "@tangly/theme-ui/components/Note.astro";
 import PackageManager from "@tangly/theme-ui/components/PackageManager.astro";
 import ParamField from "@tangly/theme-ui/components/ParamField.astro";
@@ -26,9 +30,14 @@ import Tabs from "@tangly/theme-ui/components/Tabs.astro";
 import Tip from "@tangly/theme-ui/components/Tip.astro";
 import Tooltip from "@tangly/theme-ui/components/Tooltip.astro";
 import Update from "@tangly/theme-ui/components/Update.astro";
+import Video from "@tangly/theme-ui/components/Video.astro";
 import Warning from "@tangly/theme-ui/components/Warning.astro";
 
 export const mdxComponents = {
+  // Default `img` MDX renderer → wraps every inline image in a clickable
+  // lightbox. Pages opt out via `<Frame lightbox={false}>` or by setting
+  // `appearance.lightbox: false` (future).
+  img: LightboxImage,
   Accordion,
   AccordionGroup,
   Badge,
@@ -40,9 +49,12 @@ export const mdxComponents = {
   Danger,
   Embed,
   Expandable,
+  FileTree,
   Frame,
+  GlossaryTerm,
   Icon,
   Info,
+  Kbd,
   Note,
   PackageManager,
   ParamField,
@@ -57,5 +69,6 @@ export const mdxComponents = {
   Tip,
   Tooltip,
   Update,
+  Video,
   Warning,
 };

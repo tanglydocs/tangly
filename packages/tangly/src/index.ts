@@ -3,6 +3,8 @@ export const VERSION = "0.0.1";
 export {
   buildManifest,
   type BuildManifestOptions,
+  type GlossaryEntry,
+  loadGlossary,
   resolveNavigation,
   type ResolveResult,
   scanPages,
