@@ -1,44 +1,102 @@
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
 import type { Manifest } from "../manifest/types.js";
+import { buildPublicCascade } from "./theme-resolver.js";
 
 async function collectDraftSlugs(userRoot: string): Promise<string[]> {
   const all = await scanPages(userRoot);
   return all.filter((p) => Boolean(p.frontmatter?.draft)).map((p) => p.slug);
 }
 
+const STATIC_PREFIXES = ["images", "logo", "public", "static", "assets"] as const;
+
+const CONTENT_TYPES: Record<string, string> = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  gif: "image/gif",
+  svg: "image/svg+xml",
+  webp: "image/webp",
+  ico: "image/x-icon",
+  mp4: "video/mp4",
+  webm: "video/webm",
+  json: "application/json",
+  css: "text/css",
+  js: "application/javascript",
+  txt: "text/plain",
+  html: "text/html",
+  woff: "font/woff",
+  woff2: "font/woff2",
+  ttf: "font/ttf",
+  otf: "font/otf",
+};
+
 /**
- * Resolve the chain of public-asset roots for the active theme. First match
- * wins on lookup; first-seen wins on copy. Higher = more specific.
+ * Resolve a request URL to an on-disk file by walking the public cascade.
  *
- *   <userRoot>                     (Mintlify-style: /images at project root)
- *   <userRoot>/theme/public        (project's per-theme override)
- *   <activeTheme>/public           (theme-tang or theme-pith bundled assets)
- *   <theme-ui>/public              (shared baseline assets)
+ *   1. <userRoot>/<dir>/<file>          when <dir> is one of STATIC_PREFIXES
+ *   2. <userRoot>/theme/public/<path>   any path under the user's theme/public
+ *   3. <activeTheme>/public/<path>      bundled with the active theme
+ *   4. <theme-ui>/public/<path>         shared baseline
+ *
+ * Confines every candidate to its root to prevent traversal escape.
  */
-export function buildPublicCascade(userRoot: string, themeName: string | undefined): string[] {
-  const roots: string[] = [userRoot];
+function resolvePublicAsset(
+  url: string,
+  userRoot: string,
+  themeName: string | undefined,
+): string | null {
+  const path = url.split("?")[0]!.split("#")[0]!;
+  let suffix: string;
+  try {
+    suffix = decodeURIComponent(path.replace(/^\/+/, ""));
+  } catch {
+    return null;
+  }
+  if (!suffix || isAbsolute(suffix)) return null;
 
-  const userThemePublic = resolve(userRoot, "theme", "public");
-  if (existsSync(userThemePublic)) roots.push(userThemePublic);
+  const cascade = buildPublicCascade(userRoot, themeName);
+  // Tier 1: <userRoot> only matches the known prefix dirs.
+  const prefixMatch = path.match(/^\/([^/]+)\/(.+)$/);
+  if (prefixMatch && STATIC_PREFIXES.includes(prefixMatch[1] as (typeof STATIC_PREFIXES)[number])) {
+    const prefixDir = resolve(userRoot, prefixMatch[1]!);
+    let inner: string;
+    try {
+      inner = decodeURIComponent(prefixMatch[2]!.split("?")[0]!.split("#")[0]!);
+    } catch {
+      return null;
+    }
+    if (!isAbsolute(inner)) {
+      const candidate = resolve(prefixDir, inner);
+      const rel = relative(prefixDir, candidate);
+      if (!rel.startsWith("..") && !isAbsolute(rel) && existsSync(candidate)) {
+        try {
+          if (statSync(candidate).isFile()) return candidate;
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+  }
 
-  // Walk up from this file (`packages/tangly/dist/plugin/vite-plugin.js`) to
-  // the workspace's `packages/` directory, then into each theme.
-  const here = new URL(".", import.meta.url).pathname;
-  const packagesDir = resolve(here, "..", "..", "..");
-  const active = themeName === "pith" ? "pith" : "tang";
-
-  const activeThemePublic = resolve(packagesDir, `theme-${active}`, "public");
-  if (existsSync(activeThemePublic)) roots.push(activeThemePublic);
-
-  const themeUiPublic = resolve(packagesDir, "theme-ui", "public");
-  if (existsSync(themeUiPublic)) roots.push(themeUiPublic);
-
-  return roots;
+  // Tiers 2-4: any file path resolved against each theme/public root.
+  // Skip the userRoot tier here — that's only the prefix-restricted tier 1.
+  for (const root of cascade.slice(1)) {
+    const candidate = resolve(root, suffix);
+    const rel = relative(root, candidate);
+    if (rel.startsWith("..") || isAbsolute(rel)) continue;
+    if (!existsSync(candidate)) continue;
+    try {
+      if (statSync(candidate).isFile()) return candidate;
+    } catch {
+      /* ignore */
+    }
+  }
+  return null;
 }
 
 const VIRTUAL_PREFIX = "virtual:tangly/";
@@ -134,8 +192,9 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     transform(code, id) {
-      // Pre-process Mintlify-specific MDX quirks before MDX parses JSX or
-      // Astro's asset pipeline tries to resolve relative image paths.
+      // Pre-process MDX quirks (raw LaTeX blocks, ../images/foo refs)
+      // before MDX parses JSX or Astro's asset pipeline tries to resolve
+      // relative image paths.
       if (!id.endsWith(".mdx") && !id.endsWith(".md")) return null;
 
       let out = code;
@@ -152,9 +211,9 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       }
 
       // Rewrite Markdown image references that point outside the file's
-      // directory or use relative parent traversal. Mintlify projects
-      // commonly write `![alt](../images/foo.webp)` expecting the docs root
-      // to act as the public base. Astro's asset pipeline tries to resolve
+      // directory or use relative parent traversal. Many docs corpora
+      // ship `![alt](../images/foo.webp)` expecting the project root to
+      // act as the public base. Astro's asset pipeline tries to resolve
       // these as build-time assets and fails when the cache has stale
       // entries; rewriting them to root-absolute paths routes them through
       // our static-asset middleware (dev) and copy-assets step (build).
@@ -224,63 +283,27 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     configureServer(devServer) {
       server = devServer;
 
-      // Serve user's project static directories (images/, logo/, etc.) as
-      // root-level paths. Mintlify projects reference `/images/foo.png`
-      // expecting to find it at `<root>/images/foo.png`.
+      // Serve assets from the cascading public roots. Tier 1 (userRoot)
+      // only matches the canonical prefix dirs (/images, /logo, /public,
+      // /static, /assets) so we don't accidentally serve project source
+      // files. Tiers 2-4 (`<userRoot>/theme/public`, active theme,
+      // theme-ui) serve any path so themes can ship root-level files
+      // like /favicon.svg or /fonts/foo.woff2 and projects can override.
       //
-      // Cascade: <userRoot>/<dir>/<file> →
-      //          <userRoot>/theme/public/<dir>/<file> →
-      //          <activeTheme>/public/<dir>/<file> →
-      //          <theme-ui>/public/<dir>/<file>
-      // First match wins. Themes can ship default fonts/icons; users override.
-      //
-      // SECURITY: decode and confine to the prefix dir. A request like
-      // `/images/../../../etc/passwd` must not escape its prefix root.
+      // SECURITY: each candidate is confined to its cascade root.
       devServer.middlewares.use((req, res, next) => {
         const url = req.url ?? "";
-        const m = url.match(/^\/(images|logo|public|static|assets)\/(.*)$/);
-        if (!m) return next();
-        let suffix: string;
-        try {
-          suffix = decodeURIComponent(m[2]!.split("?")[0]!.split("#")[0]!);
-        } catch {
+        if (!url.startsWith("/")) return next();
+        // Skip Vite/Astro internals so we don't shadow live reload, etc.
+        if (url.startsWith("/@") || url.startsWith("/__") || url.startsWith("/_astro/")) {
           return next();
         }
-        if (isAbsolute(suffix)) return next();
-
-        const prefix = m[1]!;
-        const candidateRoots = buildPublicCascade(userRoot, manifest?.config.theme);
-        let filePath: string | undefined;
-        for (const root of candidateRoots) {
-          const prefixDir = resolve(root, prefix);
-          const candidate = resolve(prefixDir, suffix);
-          const rel = relative(prefixDir, candidate);
-          if (rel.startsWith("..") || isAbsolute(rel)) continue;
-          if (existsSync(candidate)) {
-            filePath = candidate;
-            break;
-          }
-        }
+        const filePath = resolvePublicAsset(url, userRoot, manifest?.config.theme);
         if (!filePath) return next();
-
         const ext = filePath.split(".").pop()?.toLowerCase();
-        const types: Record<string, string> = {
-          png: "image/png",
-          jpg: "image/jpeg",
-          jpeg: "image/jpeg",
-          gif: "image/gif",
-          svg: "image/svg+xml",
-          webp: "image/webp",
-          ico: "image/x-icon",
-          mp4: "video/mp4",
-          webm: "video/webm",
-          json: "application/json",
-          woff: "font/woff",
-          woff2: "font/woff2",
-          ttf: "font/ttf",
-          otf: "font/otf",
-        };
-        if (ext && types[ext]) res.setHeader("Content-Type", types[ext]);
+        if (ext && CONTENT_TYPES[ext]) {
+          res.setHeader("Content-Type", CONTENT_TYPES[ext]);
+        }
         const concrete = filePath;
         import("node:fs").then(({ createReadStream }) => {
           createReadStream(concrete).pipe(res);

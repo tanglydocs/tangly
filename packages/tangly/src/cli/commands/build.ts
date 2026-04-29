@@ -47,9 +47,7 @@ export const buildCommand = defineCommand({
     const validAdapters = ["vercel", "cloudflare", "node", "static"] as const;
     if (!(validAdapters as readonly string[]).includes(adapter)) {
       console.error(
-        pc.red(
-          `✗ Unknown --adapter "${adapter}". Expected: ${validAdapters.join(" | ")}.`,
-        ),
+        pc.red(`✗ Unknown --adapter "${adapter}". Expected: ${validAdapters.join(" | ")}.`),
       );
       process.exit(1);
     }
@@ -83,7 +81,7 @@ export const buildCommand = defineCommand({
       base: args.base,
     } as never);
 
-    // Copy Mintlify-style static directories (images/, logo/, etc.) and
+    // Copy the canonical static directories (images/, logo/, etc.) and
     // the configured favicon into the build output.
     const assetsResult = await copyStaticAssets({ manifest, outDir });
 
