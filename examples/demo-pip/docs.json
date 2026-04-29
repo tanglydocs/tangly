@@ -1,0 +1,27 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "Sprig",
+  "description": "A tiny CLI for tagging your shell history.",
+  "theme": "pip",
+  "colors": {
+    "primary": "#15803d",
+    "light": "#16a34a",
+    "dark": "#14532d"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Sprig",
+        "groups": [
+          {
+            "group": "Sprig",
+            "pages": ["introduction", "install", "usage", "changelog"]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [{ "label": "GitHub", "href": "https://github.com/example/sprig" }]
+  }
+}

@@ -1,0 +1,30 @@
+---
+title: Key rotation
+description: Rotate without re-encrypting your stored envelopes.
+icon: arrows-up-down
+---
+
+Rotation in Cipher is **non-destructive**. New encrypts use the new key; old envelopes stay decryptable until the old key's grace window closes.
+
+## How it works
+
+1. You (or the auto-rotator) issue a new key version.
+2. The SDK starts using the new version for `encrypt`.
+3. `decrypt` accepts envelopes sealed under any key version that hasn't expired.
+4. Old keys retire after the grace window — default 30 days.
+
+## Trigger rotation
+
+```bash
+cipher keys rotate sk_live_xxx
+```
+
+You can also schedule:
+
+```bash
+cipher keys rotate sk_live_xxx --schedule "0 0 * * 0"
+```
+
+<Tip>
+Production keys auto-rotate every 30 days. Most teams never run `keys rotate` by hand.
+</Tip>

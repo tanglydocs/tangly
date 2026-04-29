@@ -1,0 +1,43 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "Cipher",
+  "description": "Encrypt anything in three lines of code.",
+  "theme": "tang",
+  "colors": {
+    "primary": "#0f766e",
+    "light": "#14b8a6",
+    "dark": "#0d5b53"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Guides",
+            "pages": ["guides/keys", "guides/rotation"]
+          }
+        ]
+      },
+      {
+        "tab": "API",
+        "groups": [
+          {
+            "group": "Reference",
+            "pages": ["api-reference/encrypt", "api-reference/decrypt"]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "primary": { "type": "button", "label": "Sign up", "href": "https://example.com/signup" }
+  },
+  "footer": {
+    "socials": { "github": "https://github.com/example/cipher" }
+  }
+}

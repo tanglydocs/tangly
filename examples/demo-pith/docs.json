@@ -1,0 +1,46 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "On Craft",
+  "description": "A handbook of small ideas about making things.",
+  "theme": "pith",
+  "colors": {
+    "primary": "#7c3a0b",
+    "light": "#9c4a18",
+    "dark": "#5e2a05"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Handbook",
+        "groups": [
+          {
+            "group": "Foundations",
+            "pages": ["introduction", "principles", "process"]
+          },
+          {
+            "group": "Practice",
+            "pages": ["habits", "feedback"]
+          }
+        ]
+      },
+      {
+        "tab": "End matter",
+        "groups": [
+          {
+            "group": "Apparatus",
+            "pages": ["glossary", "colophon"]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        { "anchor": "Notes", "href": "https://example.com/notes", "icon": "book" }
+      ]
+    }
+  },
+  "navbar": {
+    "primary": { "type": "github", "href": "https://github.com/example/on-craft" }
+  },
+  "footer": { "socials": {} }
+}
