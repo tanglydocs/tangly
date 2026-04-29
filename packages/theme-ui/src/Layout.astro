@@ -5,7 +5,10 @@ import TopNav from "./TopNav.astro";
 import Sidebar from "./Sidebar.astro";
 import Footer from "./Footer.astro";
 import SearchModal from "./SearchModal.astro";
-import "./styles/theme.css";
+// `@tangly/theme/theme.css` is resolved by the Tangly Astro integration to
+// the active theme's `styles/theme.css` (theme-tang or theme-pith), with
+// `<userRoot>/theme/styles/theme.css` overriding when present.
+import "@tangly/theme/theme.css";
 import "./styles/prose.css";
 import "katex/dist/katex.min.css";
 

@@ -105,7 +105,24 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
 
   const orphans: string[] = [];
   for (const p of diskPagesArr) {
-    if (!navSlugSet.has(p.slug)) orphans.push(p.slug);
+    if (!navSlugSet.has(p.slug)) {
+      orphans.push(p.slug);
+      // Orphan pages are still routable (the catch-all walks the whole
+      // content collection). Surface a minimal PageEntry so <Embed> can
+      // resolve them as sources.
+      if (p.frontmatter?.draft && !includeDrafts) continue;
+      const fm = p.frontmatter ?? { title: humanizeSlug(p.slug) };
+      const blocks = extractBlocks(p.content).blocks;
+      pages.set(p.slug, {
+        slug: p.slug,
+        file: p.file,
+        frontmatter: fm,
+        breadcrumbs: [],
+        sidebar: navigation.rootSidebar,
+        draft: Boolean(p.frontmatter?.draft),
+        ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
+      });
+    }
   }
 
   // Phase 3: expand OpenAPI specs attached to tabs into per-endpoint pages.

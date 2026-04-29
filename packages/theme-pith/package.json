@@ -2,7 +2,7 @@
   "name": "@tangly/theme-pith",
   "version": "0.0.1",
   "private": true,
-  "description": "Editorial alternative theme for Tangly.",
+  "description": "Editorial Tangly theme. Serif headings + cream palette; UI shell comes from @tangly/theme-ui.",
   "keywords": [
     "docs",
     "tangly",
@@ -38,17 +38,10 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.4",
-    "@tailwindcss/vite": "^4.2.4",
-    "@tangly/schema": "workspace:*",
-    "astro": "^6.1.10",
-    "lucide": "^1.12.0",
-    "rehype-stringify": "^10.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.2",
-    "tailwindcss": "^4.2.4",
-    "tangly": "workspace:*",
-    "unified": "^11.0.5"
+    "@tangly/theme-ui": "workspace:*",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
   }
 }

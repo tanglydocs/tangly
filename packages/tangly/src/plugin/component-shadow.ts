@@ -11,6 +11,7 @@ const COMPONENT_NAMES = [
   "CodeGroup",
   "Columns",
   "Danger",
+  "Embed",
   "Expandable",
   "Frame",
   "Icon",
@@ -50,10 +51,10 @@ export function buildComponentShadowAliases(userRoot: string): Record<string, st
     for (const ext of EXTENSIONS) {
       const candidate = resolve(userComponentsDir, `${name}${ext}`);
       if (existsSync(candidate)) {
-        // Map the theme package path → user file. The runtime imports
-        // components via `@tangly/theme-tang/components/<Name>.astro`; we
+        // Map the shared UI package path → user file. The runtime imports
+        // components via `@tangly/theme-ui/components/<Name>.astro`; we
         // override that specific specifier.
-        aliases[`@tangly/theme-tang/components/${name}.astro`] = candidate;
+        aliases[`@tangly/theme-ui/components/${name}.astro`] = candidate;
         break;
       }
     }
