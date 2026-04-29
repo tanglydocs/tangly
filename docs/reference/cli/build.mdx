@@ -37,6 +37,17 @@ tangly build [options]
   Project root.
 </ParamField>
 
+<ParamField path="--analyze" type="boolean" default="false">
+  Write a build-size report to `dist/_tangly/build-report.html` (and `build-report.json`). Surfaces per-page HTML/JS/CSS bytes, totals, and warnings for outliers. Open the HTML report in a browser to inspect; the JSON is machine-readable for CI gates.
+</ParamField>
+
+```bash
+tangly build --analyze
+# ▲ Build report
+#   142 pages · HTML 1.8 MB · JS 240 KB · CSS 84 KB
+#   Wrote dist/_tangly/build-report.html
+```
+
 ## Build output
 
 ```

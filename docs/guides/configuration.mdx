@@ -84,6 +84,70 @@ That's enough to render. Add fields as you need them.
 
 For the complete field-by-field reference (every nested object, every enum value), see [`docs.json` reference](/reference/schema/docs-json).
 
+## Code blocks
+
+`code` controls Shiki theming and the per-block copy button. See [Code](/reference/components/code) for the rendering surface.
+
+```json
+{
+  "code": {
+    "copyButton": true,
+    "theme": { "light": "github-light", "dark": "github-dark" }
+  }
+}
+```
+
+`copyButton: false` hides the button globally (per-block opt-out: add `noCopy` to the fence meta). `theme` accepts a string (same theme for both modes) or an object split.
+
+## Appearance
+
+`appearance` toggles page chrome — color-scheme default plus the new reading-time stamp and reading-progress bar.
+
+```json
+{
+  "appearance": {
+    "default": "system",
+    "readingTime": true,
+    "readingProgress": true
+  }
+}
+```
+
+`readingTime: true` shows estimated minutes in the page header (computed from word count). `readingProgress: true` paints a 2px progress bar across the top of every page as the reader scrolls.
+
+## Footer
+
+Beyond the existing `socials` and `links`, the footer now drives last-updated stamps and edit-on-source links.
+
+```json
+{
+  "footer": {
+    "lastUpdated": true,
+    "repo": "https://github.com/owner/repo",
+    "editUrl": "https://github.com/owner/repo/edit/main/{path}"
+  }
+}
+```
+
+`lastUpdated: true` reads each page's last commit date from git and shows it in the footer. `editUrl` is a template — `{path}` is replaced with the page's path relative to the project root. If `editUrl` is omitted but `repo` is set, Tangly derives `editUrl` from the repo URL. If neither is set, the link is hidden.
+
+## Banner
+
+Top-of-page announcement strip. Add `id` to make dismissals stick across reloads (the id is the localStorage key — change it to re-show the banner). `type` controls tone.
+
+```json
+{
+  "banner": {
+    "id": "v02-launch",
+    "type": "info",
+    "dismissible": true,
+    "content": "Tangly v0.2 ships richer code blocks — <a href=\"/changelog\">see what's new</a>"
+  }
+}
+```
+
+`type` is one of `info`, `warning`, `success`. See [Announcement banner](/guides/announcement) for the full guide.
+
 ## Section defaults
 
 Cascade frontmatter through a directory subtree by dropping `_section.mdx` (or `_meta.json`) at the directory root:

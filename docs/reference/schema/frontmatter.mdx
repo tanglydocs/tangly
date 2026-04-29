@@ -86,6 +86,32 @@ Frontmatter is parsed by `gray-matter` and validated against `@tangly/schema`'s 
   Extra context injected into AI-assistant queries about this page. Reserved for the upcoming chat integration.
 </ParamField>
 
+<ParamField path="lastUpdated" type="boolean | string">
+  Override the auto-derived last-updated stamp. `false` hides it on this page; an ISO date string (e.g. `2026-04-01`) overrides the git timestamp. Default is to inherit `footer.lastUpdated` from `docs.json`.
+</ParamField>
+
+<ParamField path="readingTime" type="boolean | number">
+  Override the auto-computed reading-time. `false` hides it; a number (in minutes) overrides the word-count estimate. Inherits `appearance.readingTime` when omitted.
+</ParamField>
+
+<ParamField path="editUrl" type="string">
+  Override the edit-on-source URL for this page. Useful when a single page is canonical-sourced from a different repo than the rest of the site.
+</ParamField>
+
+<ParamField path="glossary" type="boolean" default="true">
+  Disable glossary auto-linking on this page. Set to `false` to skip term highlighting (typically on the glossary page itself).
+</ParamField>
+
+```md
+---
+title: Release notes
+lastUpdated: false
+readingTime: 3
+editUrl: https://github.com/owner/notes/edit/main/RELEASES.md
+glossary: false
+---
+```
+
 <ParamField path="seo" type="object">
   Per-page SEO override.
 

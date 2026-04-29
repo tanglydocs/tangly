@@ -1,6 +1,6 @@
 ---
 title: Layout
-description: Frame, Columns, Expandable, Accordion — the structural primitives.
+description: Frame, Kbd, FileTree, Card image, Columns, Expandable, Accordion.
 icon: "layout"
 ---
 
@@ -28,11 +28,85 @@ A bordered container around an image, video, or any visual block. Optionally cap
   Optional centered caption below the framed content.
 </ParamField>
 
-`<Frame>` is content-agnostic — anything inside `<slot>` gets framed. Most commonly: `<img>`, `<video>`, embeds.
+`<Frame>` is content-agnostic — anything inside the slot gets framed. Most commonly: `<img>`, `<video>`, embeds. Children inherit the [image lightbox](/reference/components/media#image-lightbox) automatically; pass `lightbox={false}` on an inner `<img>` to opt out.
+
+## `<Kbd>`
+
+Render a styled keycap. Use inline for keyboard shortcuts, menu hints, and command-palette mentions.
+
+Press <Kbd>Cmd</Kbd>+<Kbd>K</Kbd> to open search, or use <Kbd keys="Cmd+Shift+P" /> for the command palette.
+
+```md
+Press <Kbd>Cmd</Kbd>+<Kbd>K</Kbd> to open search.
+
+<Kbd keys="Cmd+Shift+P" /> opens the command palette.
+```
+
+The `keys` prop splits on whitespace or `+` and renders each token as its own keycap with a `+` separator. `Cmd` (and `⌘`) auto-swap to `Ctrl` on non-Mac platforms via a tiny inline script.
+
+### Props
+
+<ParamField path="keys" type="string">
+  Shorthand. Whitespace- or `+`-separated keys (e.g. `Cmd+K`, `Ctrl Shift P`). When set, the `<slot>` is ignored.
+</ParamField>
+
+## `<FileTree>`
+
+Render a directory tree from a nested Markdown unordered list. Indentation is preserved by the slot's nested `<ul>` structure; bold list items get a highlighted row.
+
+<FileTree>
+  - my-docs
+    - docs.json
+    - **introduction.mdx**
+    - guides
+      - configuration.mdx
+      - navigation.mdx
+    - images
+      - logo.svg
+</FileTree>
+
+````md
+<FileTree>
+  - my-docs
+    - docs.json
+    - **introduction.mdx**
+    - guides
+      - configuration.mdx
+      - navigation.mdx
+    - images
+      - logo.svg
+</FileTree>
+````
+
+File icons are derived from extensions (the same Lucide names that decorate code-block titles), so `.ts`, `.json`, `.bash`, `.css`, etc. all pick up appropriate glyphs.
+
+## `<Card image>`
+
+`<Card>` accepts an `image` prop (alias `img`) to render a cover image above the title and description. Useful for landing-page tiles and visual indexes.
+
+```md
+<Card title="Open Electricity" image="/images/cards/opennem.png" href="/case-studies/opennem">
+  Real-time grid analytics, rendered through Tangly.
+</Card>
+```
+
+### Image props
+
+<ParamField path="image" type="string">
+  Cover image URL. Aliased to `img` for parity with older Mintlify projects.
+</ParamField>
+
+<ParamField path="imageAspect" type="string" default="16/9">
+  CSS aspect ratio for the image area.
+</ParamField>
+
+In horizontal cards (`horizontal`), the image collapses to a 4:3 thumbnail on the left.
+
+For all other Card props (title, icon, href, color, horizontal), see [Cards](/reference/components/cards).
 
 ## `<Columns>`
 
-Responsive grid for arbitrary content. See [Cards](/reference/components/cards#columns) for usage.
+Responsive grid for arbitrary content. See [Cards → Columns](/reference/components/cards#columns) for usage.
 
 ## `<Expandable>`
 
