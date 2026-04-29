@@ -13,11 +13,15 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import rehypeAnnotations from "./src/lib/rehype-annotations.mjs";
 import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
-import { transformerTanglyChrome } from "./src/lib/shiki-transformers.mjs";
+import {
+  transformerTanglyAnnotations,
+  transformerTanglyChrome,
+} from "./src/lib/shiki-transformers.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
 import { fileURLToPath } from "node:url";
@@ -164,15 +168,19 @@ export default defineConfig({
             themes: codeThemes,
             defaultColor: false,
             transformers: [
-              // Order: focus -> diff -> highlight -> meta -> chrome.
+              // Order: focus -> diff -> highlight -> meta -> annotations -> chrome.
               transformerNotationFocus(),
               transformerNotationDiff(),
               transformerNotationHighlight(),
               transformerMetaHighlight(),
+              transformerTanglyAnnotations(),
               transformerTanglyChrome({ copyButton: codeCopyButton }),
             ],
           },
         ],
+        // Pair annotated code-figures with the next `<ol>`. Runs after
+        // shiki so it sees the marker attribute set by the transformer.
+        rehypeAnnotations,
         // Glossary auto-link runs AFTER shiki so code blocks aren't touched.
         ...(glossaryEntries.length > 0
           ? [[rehypeGlossary, { entries: glossaryEntries }]]
