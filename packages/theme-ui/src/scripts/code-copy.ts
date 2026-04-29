@@ -1,3 +1,4 @@
+export {};
 // Click handler for [data-tangly-copy] buttons inside code-figures.
 // Strips Shiki/Tangly notation markers from copied text.
 
@@ -20,7 +21,12 @@ function findCode(button: HTMLButtonElement): string {
   if (!figure) return "";
   const pre = figure.querySelector("pre");
   if (!pre) return "";
-  return pre.innerText;
+  // Clone and strip annotation pills so copied text is clean code.
+  const clone = pre.cloneNode(true) as HTMLPreElement;
+  for (const m of clone.querySelectorAll(".tangly-annotation-marker")) {
+    m.remove();
+  }
+  return clone.innerText;
 }
 
 function flash(button: HTMLButtonElement) {

@@ -176,4 +176,102 @@ export function transformerTanglyChrome(opts = {}) {
   };
 }
 
+/**
+ * Numbered inline annotations. When fence meta contains `annotate`, the
+ * trailing `(N)` (optionally inside `// (N)`, `# (N)`, `<!-- (N) -->`,
+ * `/* (N) *\/`) on each line is stripped and replaced with a numbered
+ * pill button. The post-shiki rehype plugin then pairs the next adjacent
+ * `<ol>` as the annotation panel.
+ *
+ * Defensive: never throws — unexpected AST shapes leave the line alone.
+ */
+const ANNOTATION_TAIL_RE =
+  /(\s*(?:\/\/|#|<!--|\/\*)\s*)?\((\d+)\)(\s*(?:-->|\*\/))?\s*$/;
+
+export function transformerTanglyAnnotations() {
+  return {
+    name: "tangly:annotations",
+    line(line) {
+      try {
+        const meta = this.options?.meta?.__raw ?? "";
+        if (!metaHas(meta, "annotate")) return;
+        const text = collectText(line);
+        if (!text) return;
+        const m = text.match(ANNOTATION_TAIL_RE);
+        if (!m) return;
+        const matchLen = m[0].length;
+        const n = m[2];
+        if (!stripTrailing(line, matchLen)) return;
+        line.children.push({
+          type: "element",
+          tagName: "button",
+          properties: {
+            type: "button",
+            className: ["tangly-annotation-marker"],
+            "data-tangly-annotation": n,
+            ariaLabel: `Annotation ${n}`,
+            tabIndex: 0,
+          },
+          children: [{ type: "text", value: n }],
+        });
+        const pre = this.pre ?? null;
+        if (pre && pre.properties) {
+          pre.properties["data-tangly-annotated"] = "true";
+        }
+      } catch {
+        /* never break MDX render */
+      }
+    },
+  };
+}
+
+function collectText(node) {
+  if (!node) return "";
+  if (node.type === "text") return typeof node.value === "string" ? node.value : "";
+  if (!Array.isArray(node.children)) return "";
+  let out = "";
+  for (const c of node.children) out += collectText(c);
+  return out;
+}
+
+/**
+ * Remove the last `n` characters of the rendered text from the line's
+ * trailing descendants, working right-to-left through token spans. Empty
+ * spans are pruned. Returns false if the requested length doesn't fit.
+ */
+function stripTrailing(line, n) {
+  if (n <= 0) return true;
+  let remaining = n;
+  function recur(node) {
+    if (!node || remaining <= 0) return;
+    if (node.type === "text") {
+      const v = typeof node.value === "string" ? node.value : "";
+      if (v.length >= remaining) {
+        node.value = v.slice(0, v.length - remaining);
+        remaining = 0;
+      } else {
+        node.value = "";
+        remaining -= v.length;
+      }
+      return;
+    }
+    if (!Array.isArray(node.children)) return;
+    for (let i = node.children.length - 1; i >= 0 && remaining > 0; i--) {
+      const c = node.children[i];
+      recur(c);
+      if (
+        c &&
+        ((c.type === "text" && c.value === "") ||
+          (c.type === "element" &&
+            Array.isArray(c.children) &&
+            c.children.length === 0))
+      ) {
+        node.children.splice(i, 1);
+      }
+    }
+  }
+  recur(line);
+  return remaining === 0;
+}
+
 export { iconForFilename, parseMetaTitle, metaHas };

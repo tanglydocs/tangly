@@ -77,6 +77,28 @@ function process(input: Input) {
 
 You can combine notations on the same block — focus + diff is a common pair for migration guides.
 
+## Annotations
+
+Add `annotate` to the fence meta. Trailing `(N)` markers — bare or wrapped in any of `// (N)`, `# (N)`, `<!-- (N) -->`, `/* (N) */` — are stripped from the rendered code and replaced with a numbered pill. The next adjacent ordered list is paired automatically: it gains the `tangly-code-annotation-list` class and each `<li>` is tagged with its 1-based index.
+
+````md
+```ts annotate
+const config = {
+  retries: 3, // (1)
+  timeout: 5000, // (2)
+  fetch: customFetch, // (3)
+};
+```
+
+1. How many times to retry on failure
+2. Request timeout in milliseconds
+3. Override the default `fetch` (useful in tests)
+````
+
+Hover or focus a marker to ring its `<li>`; hover the `<li>` to ring the marker. The Copy button clones the `<pre>` and drops the marker buttons before reading text, so copy output is clean code with the markers (and the original `// (N)` comment that wrapped them) removed.
+
+Without `annotate` the meta is inert — `(1)` in code stays as `(1)`. Useful when you have a code block where literal numeric parens are part of the language.
+
 ## Copy button
 
 Every block gets a Copy button by default. Disable globally in `docs.json`:

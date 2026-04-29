@@ -56,6 +56,27 @@ Mintlify-style bare path also works:
 bun add cipher
 ```
 
+## Annotations
+
+```ts annotate
+const config = {
+  retries: 3,        // (1)
+  timeout: 5000,     // (2)
+  fetch: customFetch, // (3)
+};
+```
+
+1. How many times to retry on failure.
+2. Request timeout in milliseconds.
+3. Custom `fetch` implementation — useful in tests.
+
+A fence without `annotate` keeps `(1)` as literal text:
+
+```ts
+const arr = [1, 2, 3];
+const second = arr[(2 - 1)]; // (1) is just text here
+```
+
 ## PackageManager — synced across the page
 
 Pick a tab in either group below; the other syncs automatically. Selection

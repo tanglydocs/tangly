@@ -67,6 +67,28 @@ function process(input: Input) {
 
 Stack notations on the same block — diff inside a focus is a clean way to show "this is the line that changed, in context".
 
+## Annotations
+
+Add `annotate` to the fence meta and Tangly turns trailing `(1)`, `(2)` markers into numbered pills, then pairs the very next ordered list as a footer panel — no component to import, just Markdown.
+
+````md
+```ts annotate
+const config = {
+  retries: 3, // (1)
+  timeout: 5000, // (2)
+  fetch: customFetch, // (3)
+};
+```
+
+1. How many times to retry on failure
+2. Request timeout in milliseconds
+3. Override the default `fetch` (useful in tests)
+````
+
+The marker pattern is the trailing `(N)` on a line, optionally inside a `//`, `#`, `<!-- -->`, or `/* */` comment — all stripped before rendering. Hover or focus a marker to highlight its list item; hover the item to highlight the marker. The Copy button strips markers automatically, so users get clean code.
+
+`(1)` outside `annotate` renders verbatim — the feature is fully opt-in.
+
 ## Titles + diff + focus
 
 All notations compose. Migration guides typically combine all three:

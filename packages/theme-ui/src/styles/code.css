@@ -262,6 +262,67 @@
   cursor: pointer;
 }
 
+/* Numbered code annotations. */
+.tangly-annotation-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  margin-inline-start: 0.4rem;
+  padding: 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--tangly-font-mono, "JetBrains Mono"), ui-monospace, monospace;
+  line-height: 1;
+  color: #fff;
+  background: var(--tangly-color-primary, #0ea5e9);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  vertical-align: baseline;
+  user-select: none;
+}
+.tangly-annotation-marker:focus-visible,
+.tangly-annotation-marker[data-active] {
+  outline: 2px solid var(--tangly-color-primary, #0ea5e9);
+  outline-offset: 2px;
+}
+
+.tangly-code-figure:has(+ ol.tangly-code-annotation-list) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+.tangly-code-annotation-list {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding: 0.6rem 1rem 0.6rem 2.25rem;
+  list-style: decimal;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgb(63, 63, 70);
+  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid var(--tangly-color-border, #e5e7eb);
+  border-top: none;
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+.dark .tangly-code-annotation-list {
+  color: rgb(212, 212, 216);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.tangly-code-annotation-list li {
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  transition: background 120ms;
+}
+.tangly-code-annotation-list li[data-active] {
+  background: rgba(14, 165, 233, 0.12);
+  outline: 1px solid var(--tangly-color-primary, #0ea5e9);
+}
+
 /* Glossary auto-link tooltip. */
 .tangly-glossary-term {
   border-bottom: 1px dotted var(--tangly-color-primary, #0ea5e9);
