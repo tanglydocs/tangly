@@ -28,7 +28,7 @@
         "groups": [
           {
             "group": "Apparatus",
-            "pages": ["glossary", "colophon"]
+            "pages": ["apparatus", "glossary", "colophon"]
           }
         ]
       }

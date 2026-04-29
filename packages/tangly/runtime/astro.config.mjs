@@ -64,7 +64,7 @@ try {
   const { loadGlossary } = await import("tangly");
   glossaryEntries = loadGlossary(userRoot);
 } catch {
-  /* swallow — glossary is optional */
+  /* glossary is optional */
 }
 const includeDrafts =
   process.env.TANGLY_INCLUDE_DRAFTS === "1" ||

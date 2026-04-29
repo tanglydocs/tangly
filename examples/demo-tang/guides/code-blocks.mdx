@@ -1,0 +1,68 @@
+---
+title: Rich code blocks
+description: Highlight, diff, focus, titles, copy, and synced package-manager tabs.
+icon: code
+---
+
+# Code blocks
+
+Tangly's code blocks ship with line highlighting, diff markers, focus dimming,
+filename tabs, and a copy button on every block. All notations are plain
+comments inside the fenced code so the source stays readable.
+
+## Line highlight
+
+```ts {2,4-5}
+const greeting = "hello";
+const name = "Cipher";
+const word = greeting + " " + name;
+console.log(word);
+console.log(word.toUpperCase());
+```
+
+## Diff
+
+```ts
+const config = {
+  port: 3000,           // [!code --]
+  port: 4000,           // [!code ++]
+  host: "localhost",
+};
+```
+
+## Focus
+
+```ts
+function encrypt(input, key) {
+  const buffer = toBytes(input);
+  const cipher = createCipher(key); // [!code focus]
+  return cipher.update(buffer);
+}
+```
+
+## Filename + copy
+
+```ts title="src/cipher.ts"
+import { createCipher } from "node:crypto";
+
+export function encrypt(plaintext: string, key: Buffer) {
+  return createCipher("aes-256-gcm", key).update(plaintext);
+}
+```
+
+Mintlify-style bare path also works:
+
+```bash src/install.sh
+bun add cipher
+```
+
+## PackageManager — synced across the page
+
+Pick a tab in either group below; the other syncs automatically. Selection
+persists across pages via localStorage.
+
+<PackageManager name="cipher" />
+
+Run a script:
+
+<PackageManager command="run dev" />
