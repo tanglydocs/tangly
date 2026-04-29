@@ -1,27 +1,24 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { confirm, intro, isCancel, outro } from "@clack/prompts";
-import {
-  convertMintToDocs,
-  MINTLIFY_THEMES,
-  parseDocsJson,
-  safeParseDocsJson,
-} from "@tangly/schema";
+import { convertMintToDocs, parseDocsJson, safeParseDocsJson, TANGLY_THEMES } from "@tangly/schema";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 
 const TANGLY_SCHEMA_URL = "https://tanglydocs.com/schema/docs.json";
 
 /**
- * Migrate a Mintlify project. Two paths:
- *   - Legacy: project has `mint.json`        → full conversion via convertMintToDocs.
- *   - Modern: project has `docs.json`        → validate + lightly massage
- *     ($schema URL, theme alias). Mintlify moved to docs.json mid-2025.
+ * Migrate a project from a legacy docs framework to Tangly. Two paths:
+ *   - Legacy: project has `mint.json` → full conversion via convertMintToDocs.
+ *   - Modern: project has `docs.json` → validate + update the `$schema` URL.
+ *
+ * Theme is left untouched. If the existing `theme` value isn't a Tangly
+ * theme we surface a warning prompting the user to pick one explicitly.
  */
 export const migrateCommand = defineCommand({
   meta: {
     name: "migrate",
-    description: "Migrate a Mintlify project to Tangly (mint.json or existing docs.json)",
+    description: "Migrate a project to Tangly (mint.json or existing docs.json)",
   },
   args: {
     root: {
@@ -37,11 +34,6 @@ export const migrateCommand = defineCommand({
     "keep-source": {
       type: "boolean",
       description: "Keep mint.json after legacy migration",
-      default: false,
-    },
-    "keep-theme": {
-      type: "boolean",
-      description: "Don't auto-swap Mintlify theme name to 'tang'",
       default: false,
     },
   },
@@ -61,11 +53,7 @@ export const migrateCommand = defineCommand({
     }
 
     if (hasMint && hasDocs) {
-      console.log(
-        pc.yellow(
-          `⚠ Both mint.json and docs.json present. Preferring docs.json (Mintlify's current shape).`,
-        ),
-      );
+      console.log(pc.yellow(`⚠ Both mint.json and docs.json present. Preferring docs.json.`));
       console.log(pc.dim(`  mint.json will be left in place.`));
     }
 
@@ -74,7 +62,6 @@ export const migrateCommand = defineCommand({
         docsPath,
         userRoot,
         yes: args.yes,
-        keepTheme: args["keep-theme"],
       });
     } else {
       await migrateMintJson({
@@ -138,14 +125,11 @@ async function migrateExistingDocs(opts: {
   docsPath: string;
   userRoot: string;
   yes: boolean;
-  keepTheme: boolean;
 }): Promise<void> {
-  const { docsPath, yes, keepTheme } = opts;
+  const { docsPath, yes } = opts;
   const raw = readFileSync(docsPath, "utf8");
   const parsed = JSON.parse(raw) as Record<string, unknown>;
 
-  // Validate against Tangly's schema first — Tangly accepts every Mintlify
-  // field, so this should pass for any well-formed Mintlify docs.json.
   const result = safeParseDocsJson(parsed);
   if (!result.success) {
     console.error(pc.red(`✗ Existing docs.json doesn't validate against Tangly's schema:`));
@@ -154,8 +138,9 @@ async function migrateExistingDocs(opts: {
     process.exit(1);
   }
 
-  // Plan changes.
+  // Plan changes (mutating writes) and notices (informational only).
   const changes: string[] = [];
+  const notices: string[] = [];
   const updated: Record<string, unknown> = { ...parsed };
 
   // 1. $schema → Tangly's schema URL.
@@ -164,25 +149,39 @@ async function migrateExistingDocs(opts: {
     changes.push(`  $schema  ${pc.dim(currentSchema ?? "(none)")} → ${pc.cyan(TANGLY_SCHEMA_URL)}`);
   }
 
-  // 2. theme: Mintlify theme name aliases to 'tang' unless the user opts
-  //    out via --keep-theme. Mintlify themes (mint, maple, palm, …) are
-  //    accepted by the schema and Tangly's runtime treats them as 'tang',
-  //    but renaming makes intent explicit.
+  // 2. theme is left as-is. Tangly themes are an explicit choice; if the
+  //    current value isn't one of TANGLY_THEMES we emit a notice so the
+  //    user picks one themselves before running `tangly dev`.
   const currentTheme = updated.theme as string | undefined;
-  const isMintlifyTheme =
-    currentTheme && (MINTLIFY_THEMES as readonly string[]).includes(currentTheme);
-  if (!keepTheme && isMintlifyTheme && currentTheme !== "tang") {
-    changes.push(`  theme    ${pc.dim(currentTheme)} → ${pc.cyan("tang")}`);
+  const isTanglyTheme = currentTheme && (TANGLY_THEMES as readonly string[]).includes(currentTheme);
+  if (currentTheme && !isTanglyTheme) {
+    notices.push(`theme is "${currentTheme}" — set it to one of: ${TANGLY_THEMES.join(", ")}`);
+  } else if (!currentTheme) {
+    notices.push(
+      `no theme set — defaulting to "tang". Pick explicitly with: ${TANGLY_THEMES.join(", ")}`,
+    );
   }
 
-  if (changes.length === 0) {
+  if (changes.length === 0 && notices.length === 0) {
     console.log(pc.green("✓ docs.json already matches Tangly's shape — nothing to migrate."));
-    parseDocsJson(parsed); // surfaces any warnings
+    parseDocsJson(parsed);
     return;
   }
 
-  console.log("\nProposed changes:");
-  for (const c of changes) console.log(c);
+  if (changes.length > 0) {
+    console.log("\nProposed changes:");
+    for (const c of changes) console.log(c);
+  }
+
+  if (notices.length > 0) {
+    console.log("\nNotices:");
+    for (const n of notices) console.log(`  ${pc.yellow("!")} ${n}`);
+  }
+
+  if (changes.length === 0) {
+    parseDocsJson(parsed);
+    return;
+  }
 
   if (!yes) {
     const ok = await confirm({
@@ -196,10 +195,6 @@ async function migrateExistingDocs(opts: {
   }
 
   updated.$schema = TANGLY_SCHEMA_URL;
-  if (!keepTheme && isMintlifyTheme && currentTheme !== "tang") {
-    updated.theme = "tang";
-  }
-
   writeFileSync(docsPath, JSON.stringify(updated, null, 2) + "\n", "utf8");
   console.log(pc.green(`✓ Updated ${docsPath}`));
 }

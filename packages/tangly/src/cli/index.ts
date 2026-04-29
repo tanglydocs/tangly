@@ -13,7 +13,7 @@ const main = defineCommand({
   meta: {
     name: "tangly",
     version: VERSION,
-    description: "Self-hosted, OSS docs framework. Renders Mintlify projects unmodified.",
+    description: "Self-hosted, open-source docs framework.",
   },
   subCommands: {
     dev: devCommand,
