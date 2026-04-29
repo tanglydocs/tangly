@@ -19,6 +19,11 @@ export interface ResolveResult {
   navigation: ResolvedNavigation;
   /** Slugs that nav references in declaration order. */
   navSlugs: string[];
+  /**
+   * Per-slug template inherited from the nearest nav ancestor (group or tab)
+   * with a `template` field. Page frontmatter and section defaults override.
+   */
+  navTemplates: Map<string, string>;
   warnings: ManifestWarning[];
 }
 
@@ -57,9 +62,16 @@ function isGroup(node: NavNode): node is NavGroup {
   return typeof node === "object" && node !== null && "group" in node;
 }
 
+interface SidebarBuildCtx extends ResolveOptions {
+  /** Active template inherited from the enclosing nav ancestor. */
+  inheritedTemplate?: string;
+  /** Collected per-slug nav-level template overrides. */
+  navTemplates: Map<string, string>;
+}
+
 function buildSidebar(
   nodes: NavNode[],
-  ctx: ResolveOptions,
+  ctx: SidebarBuildCtx,
   warnings: ManifestWarning[],
   collectedSlugs: Set<string>,
 ): SidebarItem[] {
@@ -67,6 +79,9 @@ function buildSidebar(
   for (const node of nodes) {
     if (isString(node)) {
       collectedSlugs.add(node);
+      if (ctx.inheritedTemplate && !ctx.navTemplates.has(node)) {
+        ctx.navTemplates.set(node, ctx.inheritedTemplate);
+      }
       const item: SidebarItem = {
         title: pageTitle(node, ctx.diskPages),
         slug: node,
@@ -81,7 +96,11 @@ function buildSidebar(
       if (tag !== undefined) item.tag = tag;
       out.push(item);
     } else if (isGroup(node)) {
-      const children = buildSidebar(node.pages, ctx, warnings, collectedSlugs);
+      const childCtx: SidebarBuildCtx = {
+        ...ctx,
+        inheritedTemplate: node.template ?? ctx.inheritedTemplate,
+      };
+      const children = buildSidebar(node.pages, childCtx, warnings, collectedSlugs);
       const item: SidebarItem = {
         title: node.group,
         slug: "",
@@ -119,7 +138,7 @@ function buildAnchors(config: DocsJson): ResolvedAnchor[] {
 
 function tabFromNavTab(
   tab: NavTab,
-  ctx: ResolveOptions,
+  ctx: SidebarBuildCtx,
   warnings: ManifestWarning[],
   collectedSlugs: Set<string>,
 ): ResolvedTab {
@@ -127,12 +146,21 @@ function tabFromNavTab(
   const sidebarSlugs = new Set<string>();
   const sidebar: SidebarItem[] = [];
 
+  const tabCtx: SidebarBuildCtx = {
+    ...ctx,
+    inheritedTemplate: tab.template ?? ctx.inheritedTemplate,
+  };
+
   if (Array.isArray(tab.pages)) {
-    sidebar.push(...buildSidebar(tab.pages, ctx, warnings, sidebarSlugs));
+    sidebar.push(...buildSidebar(tab.pages, tabCtx, warnings, sidebarSlugs));
   }
   if (Array.isArray(tab.groups)) {
     for (const g of tab.groups) {
-      const children = buildSidebar(g.pages, ctx, warnings, sidebarSlugs);
+      const groupCtx: SidebarBuildCtx = {
+        ...tabCtx,
+        inheritedTemplate: g.template ?? tabCtx.inheritedTemplate,
+      };
+      const children = buildSidebar(g.pages, groupCtx, warnings, sidebarSlugs);
       const item: SidebarItem = {
         title: g.group,
         slug: "",
@@ -170,20 +198,26 @@ function slugifyTab(s: string): string {
 export function resolveNavigation(opts: ResolveOptions): ResolveResult {
   const warnings: ManifestWarning[] = [];
   const navSlugs = new Set<string>();
+  const navTemplates = new Map<string, string>();
   const tabs: ResolvedTab[] = [];
   const rootSidebar: SidebarItem[] = [];
 
   const nav = opts.config.navigation;
+  const baseCtx: SidebarBuildCtx = { ...opts, navTemplates };
 
   if (Array.isArray(nav.tabs)) {
     for (const t of nav.tabs) {
-      tabs.push(tabFromNavTab(t, opts, warnings, navSlugs));
+      tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
     }
   }
   if (Array.isArray(nav.groups)) {
     const collected = new Set<string>();
     for (const g of nav.groups) {
-      const children = buildSidebar(g.pages, opts, warnings, collected);
+      const groupCtx: SidebarBuildCtx = {
+        ...baseCtx,
+        inheritedTemplate: g.template ?? baseCtx.inheritedTemplate,
+      };
+      const children = buildSidebar(g.pages, groupCtx, warnings, collected);
       const item: SidebarItem = {
         title: g.group,
         slug: "",
@@ -199,7 +233,7 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
   }
   if (Array.isArray(nav.pages)) {
     const collected = new Set<string>();
-    rootSidebar.push(...buildSidebar(nav.pages, opts, warnings, collected));
+    rootSidebar.push(...buildSidebar(nav.pages, baseCtx, warnings, collected));
     for (const s of collected) navSlugs.add(s);
   }
 
@@ -209,5 +243,5 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
     rootSidebar,
   };
 
-  return { navigation, navSlugs: [...navSlugs], warnings };
+  return { navigation, navSlugs: [...navSlugs], navTemplates, warnings };
 }
