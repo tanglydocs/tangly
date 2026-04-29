@@ -122,9 +122,7 @@ function readPageTitle(file: string): string | null {
 
 function humanize(s: string): string {
   if (!s) return "";
-  return s
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return s.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function deriveName(dir: string): string {
@@ -159,8 +157,7 @@ function mergeConfigs(
   fresh: ScaffoldedConfig,
 ): ScaffoldedConfig {
   const cloned = JSON.parse(JSON.stringify(existing)) as Record<string, unknown>;
-  const navigation =
-    (cloned.navigation as Record<string, unknown> | undefined) ?? {};
+  const navigation = (cloned.navigation as Record<string, unknown> | undefined) ?? {};
   cloned.navigation = navigation;
 
   const existingGroups = Array.isArray(navigation.groups)
@@ -178,9 +175,7 @@ function mergeConfigs(
       merged.push(eg);
       continue;
     }
-    const existingPages = new Set(
-      eg.pages.filter((p): p is string => typeof p === "string"),
-    );
+    const existingPages = new Set(eg.pages.filter((p): p is string => typeof p === "string"));
     const additions = fg.pages.filter((p) => !existingPages.has(p));
     merged.push({
       group: eg.group,

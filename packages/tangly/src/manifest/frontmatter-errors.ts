@@ -10,10 +10,7 @@ import type { ZodError, ZodIssue } from "zod";
  * locate the field's line via a simple grep — exact column resolution
  * isn't worth the YAML parsing cost for a tiny terminal hint.
  */
-export function formatFrontmatterError(opts: {
-  file: string;
-  error: ZodError;
-}): string {
+export function formatFrontmatterError(opts: { file: string; error: ZodError }): string {
   const issues = opts.error.issues ?? [];
   const lines: string[] = [];
   const raw = readFileMaybe(opts.file);
@@ -92,9 +89,7 @@ function describeIssue(issue: ZodIssue): string {
 
 function suggest(issue: ZodIssue): string | null {
   if (issue.code === "invalid_value") {
-    const got = String(
-      (issue as unknown as { received?: unknown }).received ?? "",
-    ).toLowerCase();
+    const got = String((issue as unknown as { received?: unknown }).received ?? "").toLowerCase();
     const opts = (issue as unknown as { values?: unknown[] }).values ?? [];
     let best: { v: string; d: number } | null = null;
     for (const o of opts) {

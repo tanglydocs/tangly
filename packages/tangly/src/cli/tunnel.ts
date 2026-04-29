@@ -29,10 +29,7 @@ export function findCloudflaredBin(): string | null {
  * Spawn cloudflared in quick-tunnel mode pointing at our dev server URL.
  * Returns the child process and a Promise resolving to the public URL.
  */
-export function startCloudflaredTunnel(opts: {
-  bin: string;
-  localUrl: string;
-}): {
+export function startCloudflaredTunnel(opts: { bin: string; localUrl: string }): {
   child: ReturnType<typeof spawn>;
   url: Promise<string>;
 } {

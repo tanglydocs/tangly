@@ -101,7 +101,10 @@ export function buildBuildReport(distDir: string): BuildReport {
   };
 }
 
-export function writeBuildReport(distDir: string, report: BuildReport): {
+export function writeBuildReport(
+  distDir: string,
+  report: BuildReport,
+): {
   json: string;
   html: string;
 } {
@@ -173,15 +176,13 @@ function renderHtml(report: BuildReport): string {
   const rows = (rs: RouteSize[]) =>
     rs
       .map(
-        (r) =>
-          `<tr><td><code>${escapeHtml(r.route)}</code></td><td>${fmtBytes(r.html)}</td></tr>`,
+        (r) => `<tr><td><code>${escapeHtml(r.route)}</code></td><td>${fmtBytes(r.html)}</td></tr>`,
       )
       .join("");
   const jsRows = (rs: AssetSize[]) =>
     rs
       .map(
-        (r) =>
-          `<tr><td><code>${escapeHtml(r.path)}</code></td><td>${fmtBytes(r.size)}</td></tr>`,
+        (r) => `<tr><td><code>${escapeHtml(r.path)}</code></td><td>${fmtBytes(r.size)}</td></tr>`,
       )
       .join("");
   const warningsHtml = report.warnings.length

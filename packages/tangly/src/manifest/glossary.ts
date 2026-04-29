@@ -179,9 +179,7 @@ function loadGlossaryDir(dir: string): GlossaryEntry[] {
     const fm = parsed.data as { term?: unknown; aliases?: unknown };
     const term = typeof fm.term === "string" ? fm.term.trim() : "";
     if (!term) {
-      console.warn(
-        `[tangly] glossary entry ${full} has no \`term\` frontmatter; skipping.`,
-      );
+      console.warn(`[tangly] glossary entry ${full} has no \`term\` frontmatter; skipping.`);
       continue;
     }
     const aliases = Array.isArray(fm.aliases)
