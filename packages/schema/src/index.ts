@@ -30,4 +30,10 @@ export {
   resolveJsonPointer,
   resolveRefPath,
 } from "./ref-resolve.js";
-export { MINTLIFY_THEMES, resolveTheme, TANGLY_THEMES, ThemeSchema, type Theme } from "./themes.js";
+export {
+  resolveTheme,
+  TANGLY_THEMES,
+  ThemeSchema,
+  type ResolvedTheme,
+  type Theme,
+} from "./themes.js";
