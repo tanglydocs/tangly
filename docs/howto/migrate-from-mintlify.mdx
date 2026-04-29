@@ -6,7 +6,11 @@ icon: "arrow-right-left"
 
 # Migrate from Mintlify
 
-Tangly renders Mintlify projects unmodified. The migration is mostly removing Mintlify and adding Tangly.
+Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CLI and pointing `$schema` at Tangly's schema.
+
+<Note>
+  Mintlify moved from `mint.json` to `docs.json` mid-2025. `tangly migrate` handles both — it detects which one your project has and does the right thing.
+</Note>
 
 <Steps>
   <Step title="Install Tangly">
@@ -14,14 +18,24 @@ Tangly renders Mintlify projects unmodified. The migration is mostly removing Mi
     bun add -D tangly
     ```
   </Step>
-  <Step title="Run upgrade (if you still have mint.json)">
+
+  <Step title="Run migrate">
     ```bash
-    bun x tangly upgrade
+    bun x tangly migrate
     ```
-    Converts `mint.json` → `docs.json` and bumps Tangly to the latest. Existing MDX renders unchanged. (Phase 2 — until then, rename `mint.json` to `docs.json`; the schema accepts both shapes.)
+
+    What it does:
+
+    - **If you have `docs.json`** (Mintlify modern): validates against Tangly's schema, updates `$schema` to point at Tangly, swaps Mintlify theme aliases (`mint`, `maple`, `palm`, …) to `tang`. Use `--keep-theme` to skip the theme swap.
+    - **If you have `mint.json`** (Mintlify legacy): full conversion to `docs.json`. Source is renamed to `mint.json.bak`. Use `--keep-source` to keep the original.
+    - **If you have both**: prefers `docs.json` and leaves `mint.json` alone.
+
+    No MDX files are touched in either case.
   </Step>
+
   <Step title="Replace dev/build commands">
     In `package.json`, swap Mintlify's CLI for Tangly's:
+
     ```json
     {
       "scripts": {
@@ -31,27 +45,62 @@ Tangly renders Mintlify projects unmodified. The migration is mostly removing Mi
     }
     ```
   </Step>
+
   <Step title="Run dev">
     ```bash
     bun run dev
     ```
-    Open `http://localhost:4321`. Walk every page side-by-side with Mintlify Cloud or `mintlify dev` to spot any rendering gaps.
+
+    Open `http://localhost:4321`. Walk every page side-by-side with `mintlify dev` (different port) to spot any rendering gaps.
   </Step>
 </Steps>
 
-## What's compatible today
+## Side-by-side compare
+
+If you want to confirm parity before committing:
+
+```bash
+# Terminal 1
+mintlify dev --port 3050
+
+# Terminal 2
+tangly dev --port 4321
+```
+
+Browse both at the same time.
+
+## What's compatible
 
 <Check>
-  All `docs.json` top-level fields (theme, colors, logo, navigation, navbar, footer, redirects, seo,
-  analytics, api, fonts, etc).
+  All `docs.json` top-level fields (theme, colors, logo, navigation, navbar, footer, redirects, seo, analytics, api, appearance, fonts, etc).
 </Check>
-<Check>Recursive nav (tabs, groups, anchors, dropdowns).</Check>
+<Check>Recursive nav: tabs, groups, anchors, dropdowns, versions, languages.</Check>
 <Check>
-  14+ Mintlify MDX components (Card, CardGroup, Note, Tip, Warning, Tabs, Steps, Accordion, Frame,
-  CodeGroup, ParamField, ResponseField, Update, Snippet placeholder).
+  18+ MDX components (Card, CardGroup, Note, Tip, Warning, Info, Check, Danger, Update, Tabs, Steps, Accordion, Frame, CodeGroup, ParamField, ResponseField, Snippet, Columns, Tooltip, Icon, Badge, Expandable).
 </Check>
-<Check>Per-page `openapi: METHOD path` frontmatter.</Check>
+<Check>Per-page `openapi: METHOD path` frontmatter — auto-rendered endpoint with try-it-out.</Check>
+<Check>Tab-level `openapi:` — auto-routes one page per endpoint when no manual nav exists.</Check>
+<Check>`api: METHOD path` companion-MDX — narrative content above the auto-rendered endpoint.</Check>
 <Check>Lucide icons + Font Awesome name aliasing.</Check>
-<Check>Image absolute paths (`/images/foo.png`).</Check>
+<Check>Image absolute paths (`/images/foo.png`) and relative (`../images/foo.png`).</Check>
 <Check>Light/dark mode + theme toggle.</Check>
 <Check>Heading anchors.</Check>
+<Check>KaTeX block math via `<latex>` tags.</Check>
+
+## Flags
+
+<ParamField path="--root <dir>" type="string" default=".">
+  Project root.
+</ParamField>
+
+<ParamField path="--yes" type="boolean">
+  Skip confirmation prompts.
+</ParamField>
+
+<ParamField path="--keep-source" type="boolean">
+  When migrating from `mint.json`, retain the original instead of renaming it to `mint.json.bak`.
+</ParamField>
+
+<ParamField path="--keep-theme" type="boolean">
+  Don't swap Mintlify theme names (`mint`, `maple`, etc.) to `tang`. Useful if you want to keep the schema validating against your existing tooling.
+</ParamField>
