@@ -1,0 +1,223 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import type { PageEntry, ResolvedNavigation } from "tangly";
+import Icon from "@tangly/theme-ui/components/Icon.astro";
+import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
+import "@tangly/theme/theme.css";
+import "@tangly/theme-ui/styles/prose.css";
+import "katex/dist/katex.min.css";
+
+/**
+ * Pip — minimal layout. Topbar with logo + flat list of pages + theme
+ * toggle. No sidebar. No tabs. No search modal. For 4–5 page sites.
+ */
+export interface Props {
+  config: DocsJson;
+  page: PageEntry;
+  navigation: ResolvedNavigation;
+  pageTitle: string;
+  pageDescription?: string;
+}
+
+const { config, page, navigation, pageTitle, pageDescription } = Astro.props as Props;
+
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+
+const logoLight =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.light ?? config.logo?.dark);
+const logoDark =
+  typeof config.logo === "string"
+    ? config.logo
+    : (config.logo?.dark ?? config.logo?.light);
+const logoHref = typeof config.logo === "string" ? "/" : (config.logo?.href ?? "/");
+
+const colors = config.colors ?? {};
+const bgLight = typeof colors.background === "object" ? colors.background?.light : (typeof colors.background === "string" ? colors.background : undefined);
+const bgDark = typeof colors.background === "object" ? colors.background?.dark : undefined;
+
+const cssVars: string[] = [];
+if (colors.primary) cssVars.push(`--tangly-color-primary: ${colors.primary}`);
+if (colors.light) cssVars.push(`--tangly-color-primary-light: ${colors.light}`);
+if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
+if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
+const styleAttr = cssVars.join("; ");
+
+// Pip flattens the navigation: tabs are ignored; we walk every leaf in
+// rootSidebar (or the first tab when tabs are present) into one flat
+// list of links shown in the topbar. Stops at depth 1 — for tiny sites
+// nested groups defeat the purpose.
+function flattenLeaves(items: ResolvedNavigation["rootSidebar"]): { slug: string; title: string }[] {
+  const out: { slug: string; title: string }[] = [];
+  for (const item of items) {
+    if (item.isGroup) {
+      for (const child of item.children ?? []) {
+        if (!child.isGroup) out.push({ slug: child.slug, title: child.title });
+      }
+    } else {
+      out.push({ slug: item.slug, title: item.title });
+    }
+  }
+  return out;
+}
+
+const sourceItems = navigation.rootSidebar.length > 0
+  ? navigation.rootSidebar
+  : (navigation.tabs[0]?.sidebar ?? []);
+const flatLinks = flattenLeaves(sourceItems);
+const navbarLinks = config.navbar?.links ?? [];
+const primary = config.navbar?.primary;
+
+const headingFont = config.fonts?.heading?.family ?? "Inter";
+const bodyFont = config.fonts?.body?.family ?? "Inter";
+const monoFont = "JetBrains Mono";
+const googleFamilies = [...new Set([headingFont, bodyFont, "Inter"])]
+  .filter(Boolean)
+  .map((f) => `${(f as string).replace(/ /g, "+")}:wght@400;500;600;700`)
+  .join("&family=");
+const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
+
+const appearanceDefault = config.appearance?.default ?? "system";
+const ogTitle = pageTitle;
+const ogDesc = pageDescription ?? config.description ?? "";
+const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+---
+<!DOCTYPE html>
+<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="icon" href={favicon} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDesc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsHref} />
+    <style is:inline set:html={`:root{--tangly-font-heading:'${headingFont}',system-ui,sans-serif;--tangly-font-body:'${bodyFont}',system-ui,sans-serif;}`}></style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : (appearanceDefault === "dark" || (appearanceDefault === "system" && sys));
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-30 border-b border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)]/90 backdrop-blur">
+      <div class="flex items-center gap-6 h-[var(--tangly-topnav-row1-height,3.5rem)] px-5 sm:px-8 max-w-screen-xl mx-auto">
+        <a href={logoHref} class="flex items-center gap-2 font-semibold text-[var(--tangly-color-fg)] no-underline shrink-0">
+          {logoLight && (
+            <img src={logoLight} alt={config.name} class="h-7 w-auto block dark:hidden" />
+          )}
+          {logoDark && (
+            <img src={logoDark} alt={config.name} class="h-7 w-auto hidden dark:block" />
+          )}
+          {!logoLight && !logoDark && <span>{config.name}</span>}
+        </a>
+
+        <nav aria-label="Pages" class="hidden md:flex items-center gap-5 text-sm flex-1 min-w-0 overflow-x-auto tangly-scroll">
+          {flatLinks.map((l) => (
+            <a
+              href={`/${l.slug}`}
+              data-active={l.slug === page.slug ? "true" : "false"}
+              class="text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:font-medium whitespace-nowrap no-underline"
+            >
+              {l.title}
+            </a>
+          ))}
+        </nav>
+
+        <div class="flex items-center gap-3 ml-auto">
+          {navbarLinks.map((l) => (
+            <a
+              href={l.href}
+              class="hidden sm:inline-flex text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
+            >
+              {l.label}
+            </a>
+          ))}
+          <button
+            type="button"
+            id="tangly-theme-toggle"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]"
+            aria-label="Toggle theme"
+          >
+            <span class="block dark:hidden"><Icon icon="Moon" size={16} /></span>
+            <span class="hidden dark:block"><Icon icon="Sun" size={16} /></span>
+          </button>
+          {primary && primary.type === "button" && (
+            <a
+              href={primary.href}
+              class="inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium text-white shrink-0 hover:opacity-90 no-underline"
+              style="background: var(--tangly-color-primary)"
+            >
+              {primary.label}
+            </a>
+          )}
+          {primary && primary.type === "github" && (
+            <a
+              href={primary.href}
+              class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
+              aria-label="GitHub"
+            >
+              <Icon icon="Github" size={16} />
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile: scrollable nav row underneath */}
+      <nav aria-label="Pages (mobile)" class="md:hidden flex items-center gap-5 px-5 py-2 text-sm overflow-x-auto tangly-scroll border-t border-[var(--tangly-color-border)]">
+        {flatLinks.map((l) => (
+          <a
+            href={`/${l.slug}`}
+            data-active={l.slug === page.slug ? "true" : "false"}
+            class="text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:font-medium whitespace-nowrap no-underline"
+          >
+            {l.title}
+          </a>
+        ))}
+      </nav>
+    </header>
+
+    <main
+      class="flex-1 w-full max-w-[var(--tangly-content-max-width)] mx-auto px-5 sm:px-8 py-12 sm:py-16"
+      data-pagefind-body
+      data-pagefind-meta={`title:${pageTitle}`}
+    >
+      <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
+      <slot />
+    </main>
+
+    <footer class="border-t border-[var(--tangly-color-border)] py-6 text-xs text-[var(--tangly-color-muted)]">
+      <div class="max-w-[var(--tangly-content-max-width)] mx-auto px-5 sm:px-8 flex items-center justify-between">
+        <span>{config.name}</span>
+        <a href="https://tangly.dev" class="hover:text-[var(--tangly-color-fg)] no-underline">Powered by Tangly</a>
+      </div>
+    </footer>
+
+    <script is:inline>
+      document.addEventListener("tangly:toggle-theme", () => {
+        const root = document.documentElement;
+        const isDark = root.classList.toggle("dark");
+        try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+        document.dispatchEvent(new CustomEvent("tangly:rerender-mermaid"));
+      });
+      document.getElementById("tangly-theme-toggle")?.addEventListener("click", () => {
+        document.dispatchEvent(new CustomEvent("tangly:toggle-theme"));
+      });
+    </script>
+
+    <MermaidLoader />
+  </body>
+</html>

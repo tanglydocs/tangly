@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../theme-ui/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Pip — minimal/handbook aesthetic. One column. No sidebar. Topbar
+     holds logo + flat nav links + theme toggle. For 4-5 page sites. */
+  --tangly-color-primary: #16a34a;
+  --tangly-color-primary-light: #22c55e;
+  --tangly-color-primary-dark: #15803d;
+
+  --tangly-color-bg: #ffffff;
+  --tangly-color-bg-elevated: #f7f7f5;
+  --tangly-color-fg: #18181b;
+  --tangly-color-muted: #71717a;
+  --tangly-color-border: #e4e4e7;
+
+  --tangly-font-heading: "Inter", system-ui, sans-serif;
+  --tangly-font-body: "Inter", system-ui, sans-serif;
+  --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Pip has no left sidebar; nav lives in a single topbar row. */
+  --tangly-sidebar-width: 0;
+  --tangly-content-max-width: 42rem;
+  --tangly-toc-width: 0;
+  --tangly-topnav-row1-height: 3.5rem;
+  --tangly-topnav-row2-height: 0;
+  --tangly-topnav-height: 3.5rem;
+
+  --tangly-radius: 0.5rem;
+}
+
+.dark {
+  --tangly-color-bg: #09090b;
+  --tangly-color-bg-elevated: #18181b;
+  --tangly-color-fg: #fafafa;
+  --tangly-color-muted: #a1a1aa;
+  --tangly-color-border: #27272a;
+  --tangly-color-primary: #22c55e;
+  --tangly-color-primary-light: #4ade80;
+  --tangly-color-primary-dark: #16a34a;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--tangly-font-heading);
+  letter-spacing: -0.015em;
+}
+
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 3px;
+}
+
+[data-active="true"] {
+  color: var(--tangly-color-primary);
+}

@@ -1,0 +1,61 @@
+---
+import type { PageEntry } from "tangly";
+import Icon from "@tangly/theme-ui/components/Icon.astro";
+
+/**
+ * Pip page shell — minimal. H1 + optional description + content. No
+ * breadcrumbs (the topbar nav is the entire navigation surface). No
+ * right TOC. Compact prev/next at the bottom.
+ */
+export interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props as Props;
+const fm = page.frontmatter;
+const title = fm.title ?? fm.sidebarTitle ?? page.slug;
+const description = fm.description;
+const mode = fm.mode ?? "default";
+const custom = mode === "custom";
+---
+{custom ? (
+  <slot />
+) : (
+  <article>
+    <header class="mb-10">
+      <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-[var(--tangly-color-fg)] mb-3">
+        {title}
+      </h1>
+      {description && (
+        <p class="text-lg text-[var(--tangly-color-muted)] leading-relaxed">{description}</p>
+      )}
+    </header>
+
+    <div class="prose-tang">
+      <slot />
+    </div>
+
+    {(page.prev || page.next) && (
+      <nav aria-label="Pagination" class="mt-16 pt-6 border-t border-[var(--tangly-color-border)] flex items-center justify-between gap-3 text-sm">
+        {page.prev ? (
+          <a
+            href={`/${page.prev.slug}`}
+            class="inline-flex items-center gap-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
+          >
+            <Icon icon="ArrowLeft" size={14} />
+            <span>{page.prev.title}</span>
+          </a>
+        ) : (<span></span>)}
+        {page.next ? (
+          <a
+            href={`/${page.next.slug}`}
+            class="inline-flex items-center gap-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
+          >
+            <span>{page.next.title}</span>
+            <Icon icon="ArrowRight" size={14} />
+          </a>
+        ) : (<span></span>)}
+      </nav>
+    )}
+  </article>
+)}
