@@ -13,12 +13,6 @@ export interface Props {
 
 const { items, currentSlug, config, _depth = 0 } = Astro.props as Props;
 
-/** True if a node or any descendant matches the current slug. */
-function containsCurrent(node: SidebarItem, current: string): boolean {
-  if (!node.isGroup) return node.slug === current;
-  return (node.children ?? []).some((c) => containsCurrent(c, current));
-}
-
 const isRoot = _depth === 0;
 ---
 {isRoot ? (
@@ -27,7 +21,7 @@ const isRoot = _depth === 0;
       {items.map((item) => (
         <li>
           {item.isGroup ? (
-            <details open={item.expanded ?? containsCurrent(item, currentSlug) ?? true} class="group/det">
+            <details open={item.expanded ?? true} class="group/det">
               <summary class="flex items-center gap-1.5 cursor-pointer list-none select-none text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] py-2 px-2">
                 <span class="inline-flex transition-transform group-open/det:rotate-90">
                   <Icon icon="ChevronRight" size={12} />
@@ -68,7 +62,7 @@ const isRoot = _depth === 0;
     {items.map((item) => (
       <li>
         {item.isGroup ? (
-          <details open={item.expanded ?? containsCurrent(item, currentSlug) ?? true} class="group/det">
+          <details open={item.expanded ?? true} class="group/det">
             <summary class="flex items-center gap-1.5 cursor-pointer list-none select-none py-1.5 px-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] rounded-md">
               <span class="inline-flex transition-transform group-open/det:rotate-90">
                 <Icon icon="ChevronRight" size={12} />

@@ -81,7 +81,7 @@ export const buildCommand = defineCommand({
     let pagefindIndexed = 0;
     let pagefindExcluded = 0;
     try {
-      const pf = await runPagefind({ manifest, outDir });
+      const pf = await runPagefind({ manifest, outDir, userRoot });
       pagefindIndexed = pf.indexed;
       pagefindExcluded = pf.excluded.length;
     } catch (err) {

@@ -162,8 +162,14 @@ const placeholder = config.search?.prompt ?? "Search docs…";
     activeIndex = idx;
   }
 
+  // Monotonically incrementing token to discard stale search responses.
+  // Without this, a slow earlier query can resolve after a fast later one
+  // and overwrite the visible results with stale content.
+  let queryToken = 0;
+
   async function runQuery(q: string) {
     if (!results) return;
+    const myToken = ++queryToken;
     while (results.firstChild) results.removeChild(results.firstChild);
 
     if (!q.trim()) {
@@ -174,6 +180,7 @@ const placeholder = config.search?.prompt ?? "Search docs…";
     }
 
     const lib = await ensurePagefind();
+    if (myToken !== queryToken) return;
     if (!lib) {
       results.appendChild(
         el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, [
@@ -184,6 +191,7 @@ const placeholder = config.search?.prompt ?? "Search docs…";
     }
 
     const { results: hits } = await lib.search(q);
+    if (myToken !== queryToken) return;
     if (hits.length === 0) {
       results.appendChild(
         el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, [
@@ -195,6 +203,7 @@ const placeholder = config.search?.prompt ?? "Search docs…";
 
     const top = hits.slice(0, 10);
     const datas = await Promise.all(top.map((h) => h.data()));
+    if (myToken !== queryToken) return;
     datas.forEach((d, i) => {
       const li = el("li", {
         class: "rounded-md cursor-pointer",

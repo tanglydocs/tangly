@@ -7,12 +7,12 @@
 .prose-tang {
   color: var(--tangly-color-fg);
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.65;
   word-wrap: break-word;
 }
 
 .prose-tang > * + * {
-  margin-top: 1.25em;
+  margin-top: 1em;
 }
 
 .prose-tang h1,
@@ -23,26 +23,30 @@
 .prose-tang h6 {
   font-family: var(--tangly-font-heading);
   font-weight: 600;
-  line-height: 1.25;
-  margin-top: 2em;
-  margin-bottom: 0.75em;
+  line-height: 1.33;
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
   scroll-margin-top: calc(var(--tangly-topnav-height) + 1rem);
 }
 
 .prose-tang h1 {
-  font-size: 2rem;
-  letter-spacing: -0.02em;
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 .prose-tang h2 {
   font-size: 1.5rem;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--tangly-color-border);
+  letter-spacing: -0.025em;
+  line-height: 1.33;
 }
 .prose-tang h3 {
   font-size: 1.25rem;
+  line-height: 1.4;
 }
 .prose-tang h4 {
   font-size: 1rem;
+  line-height: 1.5;
 }
 .prose-tang h5 {
   font-size: 0.875rem;
@@ -56,7 +60,8 @@
 }
 
 .prose-tang p {
-  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .prose-tang a {
@@ -75,26 +80,26 @@
   font-style: italic;
 }
 
-.prose-tang ul,
-.prose-tang ol {
+:where(.prose-tang ul, .prose-tang ol) {
   padding-left: 1.5em;
-  margin: 0;
 }
-.prose-tang ul {
+:where(.prose-tang ul) {
   list-style: disc;
 }
-.prose-tang ol {
+:where(.prose-tang ol) {
   list-style: decimal;
 }
-.prose-tang li + li {
+:where(.prose-tang li + li) {
   margin-top: 0.35em;
 }
-.prose-tang li > p {
-  margin-top: 0.5em;
+:where(.prose-tang li > p) {
+  margin-top: 0.4em;
 }
-.prose-tang li > ul,
-.prose-tang li > ol {
+:where(.prose-tang li > ul, .prose-tang li > ol) {
   margin-top: 0.35em;
+}
+:where(.prose-tang li) {
+  display: list-item;
 }
 
 .prose-tang blockquote {
@@ -182,4 +187,27 @@
 
 .prose-tang :is(h1, h2, h3, h4, h5, h6):first-child {
   margin-top: 0;
+}
+
+.prose-tang :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+}
+.prose-tang .tangly-heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  color: var(--tangly-color-muted);
+  text-decoration: none;
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.prose-tang :is(h1, h2, h3, h4, h5, h6):hover .tangly-heading-anchor,
+.prose-tang .tangly-heading-anchor:focus {
+  opacity: 1;
+}
+.prose-tang .tangly-heading-anchor:hover {
+  color: var(--tangly-color-fg);
+  border-bottom: 0;
 }
