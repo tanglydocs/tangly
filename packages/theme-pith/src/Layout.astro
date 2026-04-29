@@ -1,0 +1,191 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import type { PageEntry, ResolvedNavigation } from "tangly";
+// Pith ships its own Sidebar (rich, contains all chrome). Footer +
+// SearchModal are reused from theme-ui. Imports go through package
+// specifiers so user overrides at <userRoot>/theme/<Name>.astro can
+// still intercept (Vite alias rewires them).
+import Sidebar from "@tangly/theme-ui/Sidebar.astro";
+import Footer from "@tangly/theme-ui/Footer.astro";
+import SearchModal from "@tangly/theme-ui/SearchModal.astro";
+import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
+import "@tangly/theme/theme.css";
+import "@tangly/theme-ui/styles/prose.css";
+import "katex/dist/katex.min.css";
+
+export interface Props {
+  config: DocsJson;
+  page: PageEntry;
+  navigation: ResolvedNavigation;
+  pageTitle: string;
+  pageDescription?: string;
+}
+
+const { config, page, navigation, pageTitle, pageDescription } = Astro.props as Props;
+
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+
+const currentTabSlug = page.tab?.slug;
+const sidebarItems =
+  page.sidebar.length > 0
+    ? page.sidebar
+    : (currentTabSlug
+        ? (navigation.tabs.find((t) => t.slug === currentTabSlug)?.sidebar ?? [])
+        : navigation.rootSidebar);
+
+const colors = config.colors ?? {};
+const bgLight = typeof colors.background === "object" ? colors.background?.light : (typeof colors.background === "string" ? colors.background : undefined);
+const bgDark = typeof colors.background === "object" ? colors.background?.dark : undefined;
+
+const cssVars: string[] = [];
+if (colors.primary) cssVars.push(`--tangly-color-primary: ${colors.primary}`);
+if (colors.light) cssVars.push(`--tangly-color-primary-light: ${colors.light}`);
+if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
+if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
+const styleAttr = cssVars.join("; ");
+
+// Pith always loads Spectral (heading) + Inter (body) + JetBrains Mono.
+// `docs.json` `fonts` overrides still win because the inline `:root`
+// rule below uses those values to set --tangly-font-heading/body.
+const headingFont = config.fonts?.heading?.family ?? "Spectral";
+const bodyFont = config.fonts?.body?.family ?? "Inter";
+const monoFont = "JetBrains Mono";
+const googleFamilies = [...new Set([headingFont, bodyFont, "Spectral", "Inter"])]
+  .filter(Boolean)
+  .map((f) => `${(f as string).replace(/ /g, "+")}:wght@400;500;600;700`)
+  .join("&family=");
+const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
+
+const appearanceDefault = config.appearance?.default ?? "system";
+const ogTitle = pageTitle;
+const ogDesc = pageDescription ?? config.description ?? "";
+const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+---
+<!DOCTYPE html>
+<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="icon" href={favicon} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDesc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsHref} />
+    <style is:inline set:html={`:root{--tangly-font-heading:'${headingFont}','Source Serif Pro',Georgia,serif;--tangly-font-body:'${bodyFont}',system-ui,sans-serif;}`}></style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : (appearanceDefault === "dark" || (appearanceDefault === "system" && sys));
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
+  </head>
+  <body class="min-h-screen">
+    {/* No topnav. Whole page is sidebar + main. Sidebar is full-height. */}
+    <div class="flex">
+      <aside
+        id="tangly-pith-sidebar"
+        class="hidden lg:flex flex-col sticky top-0 h-screen w-[var(--tangly-sidebar-width)] border-r border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] overflow-y-auto tangly-scroll"
+      >
+        <Sidebar
+          config={config}
+          navigation={navigation}
+          currentTabSlug={currentTabSlug}
+          items={sidebarItems}
+          currentSlug={page.slug}
+        />
+      </aside>
+
+      <div class="flex-1 min-w-0 flex flex-col">
+        {/* Tiny mobile header — hamburger + logo only. Hidden on lg+. */}
+        <header class="lg:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 border-b border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)]/85 backdrop-blur">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
+            id="tangly-hamburger"
+            aria-label="Toggle navigation"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path>
+            </svg>
+          </button>
+          <a href="/" class="font-semibold text-[var(--tangly-color-fg)] truncate">{config.name}</a>
+        </header>
+
+        <main
+          class="flex-1 min-w-0 px-6 sm:px-10 lg:px-16 py-12 max-w-[var(--tangly-content-max-width)] mx-auto w-full"
+          data-pagefind-body
+          data-pagefind-meta={`title:${pageTitle}`}
+        >
+          <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
+          <slot />
+        </main>
+
+        <Footer config={config} />
+      </div>
+    </div>
+
+    <SearchModal config={config} />
+
+    {/* Mobile drawer */}
+    <div
+      id="tangly-drawer"
+      class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden"
+      data-state="closed"
+    >
+      <div class="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-[var(--tangly-color-bg)] border-r border-[var(--tangly-color-border)] overflow-y-auto tangly-scroll">
+        <Sidebar
+          config={config}
+          navigation={navigation}
+          currentTabSlug={currentTabSlug}
+          items={sidebarItems}
+          currentSlug={page.slug}
+        />
+      </div>
+    </div>
+
+    <script is:inline>
+      (() => {
+        const drawer = document.getElementById("tangly-drawer");
+        if (!drawer) return;
+        const open = () => { drawer.classList.remove("hidden"); drawer.dataset.state = "open"; };
+        const close = () => { drawer.classList.add("hidden"); drawer.dataset.state = "closed"; };
+        document.addEventListener("tangly:toggle-sidebar", () => {
+          drawer.dataset.state === "open" ? close() : open();
+        });
+        drawer.addEventListener("click", (e) => { if (e.target === drawer) close(); });
+      })();
+
+      (() => {
+        document.addEventListener("tangly:toggle-theme", () => {
+          const root = document.documentElement;
+          const isDark = root.classList.toggle("dark");
+          try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+          document.dispatchEvent(new CustomEvent("tangly:rerender-mermaid"));
+        });
+      })();
+
+      document.getElementById("tangly-hamburger")?.addEventListener("click", () => {
+        document.dispatchEvent(new CustomEvent("tangly:toggle-sidebar"));
+      });
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent("tangly:open-search"));
+        }
+      });
+    </script>
+
+    <MermaidLoader />
+  </body>
+</html>

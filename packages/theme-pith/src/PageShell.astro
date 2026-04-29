@@ -1,0 +1,108 @@
+---
+import type { PageEntry } from "tangly";
+import Icon from "@tangly/theme-ui/components/Icon.astro";
+
+/**
+ * Pith page shell — editorial single-column. No right TOC aside.
+ * Generous vertical rhythm. Drop-cap on the lead paragraph, italic
+ * subtitle, decorative rule above page metadata.
+ */
+export interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props as Props;
+
+const fm = page.frontmatter;
+const title = fm.title ?? fm.sidebarTitle ?? page.slug;
+const description = fm.description;
+const mode = fm.mode ?? "default";
+const custom = mode === "custom";
+
+const breadcrumbs = page.breadcrumbs ?? [];
+---
+{custom ? (
+  <slot />
+) : (
+  <article class="pith-article">
+    {breadcrumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] mb-6 flex flex-wrap items-center gap-1.5 uppercase tracking-[0.1em]">
+        {breadcrumbs.map((b, i) => (
+          <span class="inline-flex items-center gap-1.5">
+            {b.slug ? (
+              <a href={`/${b.slug}`} class="hover:text-[var(--tangly-color-fg)] no-underline">{b.title}</a>
+            ) : (
+              <span>{b.title}</span>
+            )}
+            {i < breadcrumbs.length - 1 && <Icon icon="ChevronRight" size={10} />}
+          </span>
+        ))}
+      </nav>
+    )}
+
+    <header class="mb-12">
+      <h1 class="font-[var(--tangly-font-heading)] text-4xl sm:text-5xl font-semibold tracking-tight text-[var(--tangly-color-fg)] mb-4 leading-[1.1]">
+        {title}
+      </h1>
+      {description && (
+        <p class="text-xl italic text-[var(--tangly-color-muted)] leading-relaxed font-[var(--tangly-font-heading)]">
+          {description}
+        </p>
+      )}
+      <div class="mt-6 h-px w-16 bg-[var(--tangly-color-primary)] opacity-60"></div>
+    </header>
+
+    <div class="prose-tang pith-prose">
+      <slot />
+    </div>
+
+    {(page.prev || page.next) && (
+      <nav aria-label="Pagination" class="mt-20 pt-8 border-t border-[var(--tangly-color-border)] grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {page.prev ? (
+          <a
+            href={`/${page.prev.slug}`}
+            class="group p-4 hover:bg-[var(--tangly-color-bg-elevated)] transition-colors no-underline"
+          >
+            <div class="text-[10px] uppercase tracking-[0.12em] text-[var(--tangly-color-muted)] inline-flex items-center gap-1">
+              <Icon icon="ArrowLeft" size={10} /> Previous
+            </div>
+            <div class="mt-1 font-[var(--tangly-font-heading)] text-lg text-[var(--tangly-color-fg)]">{page.prev.title}</div>
+          </a>
+        ) : (<span></span>)}
+        {page.next ? (
+          <a
+            href={`/${page.next.slug}`}
+            class="group p-4 sm:text-right hover:bg-[var(--tangly-color-bg-elevated)] transition-colors no-underline"
+          >
+            <div class="text-[10px] uppercase tracking-[0.12em] text-[var(--tangly-color-muted)] inline-flex items-center gap-1 sm:justify-end">
+              Next <Icon icon="ArrowRight" size={10} />
+            </div>
+            <div class="mt-1 font-[var(--tangly-font-heading)] text-lg text-[var(--tangly-color-fg)]">{page.next.title}</div>
+          </a>
+        ) : (<span></span>)}
+      </nav>
+    )}
+  </article>
+)}
+
+<style is:global>
+  /* Editorial accents on top of theme-ui's prose-tang base. */
+  .pith-prose > p:first-of-type::first-letter {
+    font-family: var(--tangly-font-heading);
+    font-size: 3.4em;
+    line-height: 0.9;
+    float: left;
+    margin: 0.05em 0.1em 0 0;
+    color: var(--tangly-color-primary);
+    font-weight: 600;
+  }
+  .pith-prose h2 {
+    font-family: var(--tangly-font-heading);
+    font-weight: 600;
+  }
+  .pith-prose h3 {
+    font-family: var(--tangly-font-heading);
+    font-style: italic;
+    font-weight: 500;
+  }
+</style>

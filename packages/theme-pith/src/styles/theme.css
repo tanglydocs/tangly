@@ -23,14 +23,16 @@
   --tangly-font-body: "Inter", system-ui, sans-serif;
   --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --tangly-sidebar-width: 16rem;
-  --tangly-content-max-width: 44rem;
-  --tangly-toc-width: 0; /* Pith hides right TOC by default; in-page TOC at top instead */
-  --tangly-topnav-row1-height: 3.5rem;
-  --tangly-topnav-row2-height: 2.25rem;
-  --tangly-topnav-height: calc(
-    var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px
-  );
+  /* Pith puts ALL chrome in the left sidebar: logo, search, tabs, nav,
+     anchors, navbar links, primary CTA, theme toggle. No top bar — so
+     `--tangly-topnav-height` collapses to 0. Sidebar is wider to host
+     everything; content is narrower for editorial reading. */
+  --tangly-sidebar-width: 18rem;
+  --tangly-content-max-width: 46rem;
+  --tangly-toc-width: 0;
+  --tangly-topnav-row1-height: 0;
+  --tangly-topnav-row2-height: 0;
+  --tangly-topnav-height: 0;
 
   --tangly-radius: 0.25rem;
 }
