@@ -1,0 +1,503 @@
+<!DOCTYPE html><html lang="en" style="--tangly-color-primary: #8b3119; --tangly-color-primary-light: #9b3f23; --tangly-color-primary-dark: #7b2315; "> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Getting Started</title><meta name="description" content="Fetch and display power generation by fuel type from the NEM"><link rel="icon" href="/images/favicon/favicon.svg"><meta property="og:title" content="Getting Started"><meta property="og:description" content="Fetch and display power generation by fuel type from the NEM"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta name="color-scheme" content="light dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&#38;family=JetBrains+Mono:wght@400;500;600&#38;display=swap"><style>:root{--tangly-font-heading:'DM Sans',system-ui,sans-serif;--tangly-font-body:'DM Sans',system-ui,sans-serif;}</style><script>(function(){const appearanceDefault = "system";
+
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : (appearanceDefault === "dark" || (appearanceDefault === "system" && sys));
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    })();</script><link rel="stylesheet" href="/_astro/mdx-components.BhsKFiKa.css"></head> <body class="min-h-screen flex flex-col"> <header class="tangly-topnav sticky top-0 z-30">  <div class="flex items-center gap-4 px-4 sm:px-6 lg:px-10 h-[var(--tangly-topnav-row1-height,3.75rem)]"> <div class="flex items-center gap-4 w-full max-w-screen-2xl mx-auto"> <button type="button" class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]" id="tangly-hamburger" aria-label="Toggle navigation"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg> </button> <a href="/" class="flex items-center gap-2 font-semibold text-[var(--tangly-color-fg)] shrink-0"> <img src="/images/oe_logo_full_black.png" alt="Open Electricity Documentation" class="h-7 w-auto block dark:hidden"> <img src="/images/oe_logo_full_white.png" alt="Open Electricity Documentation" class="h-7 w-auto hidden dark:block">  </a> <div class="flex-1"></div> <button type="button" id="tangly-search" class="hidden sm:inline-flex items-center gap-2 h-9 px-3 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg-elevated)] text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] min-w-[14rem]" aria-label="Search docs"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg> <span>Search</span> <span class="ml-auto inline-flex items-center gap-0.5 text-xs"> <kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded">Cmd</kbd> <kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded">K</kbd> </span> </button>  <div class="hidden lg:flex items-center gap-1 shrink-0"> <a href="https://github.com/opennem" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)]"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-1.93c-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18a10.94 10.94 0 0 1 5.74 0c2.2-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"></path></svg> <span>GitHub</span> </a><a href="https://explore.openelectricity.org.au/" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)]"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> <span>Website</span> </a> <a href="https://explore.openelectricity.org.au" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]">  <span>Tracker</span> </a><a href="https://github.com/opennem/opennem" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]">  <span>GitHub</span> </a><a href="https://openelectricity.org.au/analysis" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]">  <span>Blog</span> </a> </div> <button type="button" id="tangly-theme-toggle" class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] shrink-0" aria-label="Toggle theme"> <span class="block dark:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg></span> <span class="hidden dark:block"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span> </button> <a href="https://platform.openelectricity.org.au" class="inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium text-white shrink-0 hover:opacity-90" style="background: var(--tangly-color-primary)"> Platform </a>  </div> </div>  <div class="border-t border-[var(--tangly-color-border)] px-4 sm:px-6 lg:px-10"> <nav class="hidden md:flex items-center gap-1 max-w-screen-2xl mx-auto h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll" aria-label="Sections"> <a href="/introduction" data-active="false" class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap">  <span>Documentation</span> </a><a href="/api-reference/overview" data-active="false" class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap">  <span>API Reference</span> </a><a href="/sdk/overview" data-active="false" class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap">  <span>SDKs</span> </a><a href="/howto/getting-started" data-active="true" class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap">  <span>How-To</span> </a><a href="/contribute/overview" data-active="false" class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap">  <span>Contribute</span> </a> </nav> </div> </header> <script>
+  document.getElementById("tangly-hamburger")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:toggle-sidebar"));
+  });
+  document.getElementById("tangly-theme-toggle")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:toggle-theme"));
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      document.dispatchEvent(new CustomEvent("tangly:open-search"));
+    }
+  });
+  document.getElementById("tangly-search")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:open-search"));
+  });
+</script> <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto"> <aside id="tangly-sidebar" class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 py-6"> <nav aria-label="Sidebar" class="text-sm"><ul class="space-y-0.5"><li><details open class="group/det"><summary class="flex items-center gap-1.5 cursor-pointer list-none select-none text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] py-2 px-2"><span class="inline-flex transition-transform group-open/det:rotate-90"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span><span class="flex-1">How-To Guides</span></summary><div class="mt-0.5 ml-1 pl-3 border-l border-[var(--tangly-color-border)]"><ul class="space-y-0.5"><li><a href="/howto/getting-started" data-active="true" class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"></path><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"></path></svg><span class="flex-1 truncate">Getting Started</span></a></li></ul></div></details></li></ul></nav> </aside> <main class="min-w-0 px-4 sm:px-6 lg:px-10 py-8" data-pagefind-body data-pagefind-meta="title:Getting Started"> <span data-pagefind-meta="slug:howto/getting-started" hidden></span> <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10"><article class="min-w-0 max-w-[var(--tangly-content-max-width)]"><nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] mb-4 flex flex-wrap items-center gap-1.5"><span class="inline-flex items-center gap-1.5"><span>How-To</span></span><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg><span class="text-[var(--tangly-color-fg)]">Getting Started</span></nav><header class="mb-8"><h1 class="text-3xl font-bold tracking-tight text-[var(--tangly-color-fg)] mb-3">Getting Started</h1><p class="text-lg text-[var(--tangly-color-muted)] leading-relaxed">Fetch and display power generation by fuel type from the NEM</p></header><div class="prose-tang"><p>This guide walks through fetching a day of power generation data from Australia’s National Electricity Market (NEM), grouped by fuel technology, and displaying it as a table. By the end you’ll have a working script in either Python or TypeScript.</p>
+<h2 id="prerequisites">Prerequisites<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#prerequisites"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>You’ll need an API key from the <a href="https://platform.openelectricity.org.au">Open Electricity Platform</a>. See <a href="/sdk/configuration">SDK configuration</a> for how to set it up as an environment variable.</p>
+<h2 id="install-the-sdk">Install the SDK<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#install-the-sdk"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-um388m2"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-bash" metastring="uv"><span style="color:#D8DEE9FF">uv add openelectricity</span>
+</code></pre><pre style="background:#2e3440"><code class="language-bash" metastring="pip"><span style="color:#D8DEE9FF">pip install openelectricity</span>
+</code></pre><pre style="background:#2e3440"><code class="language-bash" metastring="npm"><span style="color:#D8DEE9FF">npm install openelectricity</span>
+</code></pre><pre style="background:#2e3440"><code class="language-bash" metastring="bun"><span style="color:#D8DEE9FF">bun add openelectricity</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-um388m2";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script>
+<p>Both SDKs read your <code>OPENELECTRICITY_API_KEY</code> environment variable automatically — no need to pass credentials in code.</p>
+<ol class="tangly-steps relative my-6 list-none p-0 [counter-reset:tangly-steps] before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-zinc-200 dark:before:bg-zinc-800" data-steps="steps-l02e5vc"> <h3 id="initialise-the-client">Initialise the client<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#initialise-the-client"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3><p>The client handles authentication, request retries and response parsing. See the <a href="/sdk/overview">SDK overview</a> for more detail.</p><div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-n44ixbu"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-python" metastring="Python"><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> openelectricity </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> OEClient</span>
+
+<span style="color:#D8DEE9FF">client </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">OEClient</span><span style="color:#ECEFF4">()</span>
+</code></pre><pre style="background:#2e3440"><code class="language-typescript" metastring="TypeScript"><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">OpenElectricityClient</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">openelectricity</span><span style="color:#ECEFF4">&quot;</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">client</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">OpenElectricityClient</span><span style="color:#D8DEE9FF">()</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-n44ixbu";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script><h3 id="build-the-date-range">Build the date range<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#build-the-date-range"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3><p>We’ll query yesterday’s full 24-hour window so the data is complete.</p><div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-5xltwij"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-python" metastring="Python"><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> datetime </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> datetime, timedelta</span>
+
+<span style="color:#D8DEE9FF">yesterday </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9FF">datetime.</span><span style="color:#88C0D0">now</span><span style="color:#ECEFF4">()</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">-</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">timedelta</span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">days</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">1</span><span style="color:#ECEFF4">))</span><span style="color:#D8DEE9FF">.</span><span style="color:#88C0D0">replace</span><span style="color:#ECEFF4">(</span>
+<span style="color:#88C0D0">    </span><span style="color:#D8DEE9">hour</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">minute</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">second</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">microsecond</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span>
+<span style="color:#ECEFF4">)</span>
+<span style="color:#D8DEE9FF">today </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> yesterday </span><span style="color:#81A1C1">+</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">timedelta</span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">days</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">1</span><span style="color:#ECEFF4">)</span>
+</code></pre><pre style="background:#2e3440"><code class="language-typescript" metastring="TypeScript"><span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#D8DEE9FF">()</span>
+<span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setDate</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#D8DEE9FF">() </span><span style="color:#81A1C1">-</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">1</span><span style="color:#D8DEE9FF">)</span>
+<span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setHours</span><span style="color:#D8DEE9FF">(</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#D8DEE9FF">)</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">today</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF">)</span>
+<span style="color:#D8DEE9">today</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setDate</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">today</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#D8DEE9FF">() </span><span style="color:#81A1C1">+</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">1</span><span style="color:#D8DEE9FF">)</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">d</span><span style="color:#81A1C1">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#ECEFF4">)</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=&gt;</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#ECEFF4">`${</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getFullYear</span><span style="color:#A3BE8C">()</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">-</span><span style="color:#ECEFF4">${</span><span style="color:#8FBCBB">String</span><span style="color:#A3BE8C">(</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getMonth</span><span style="color:#A3BE8C">() </span><span style="color:#81A1C1">+</span><span style="color:#A3BE8C"> </span><span style="color:#B48EAD">1</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">padStart</span><span style="color:#A3BE8C">(</span><span style="color:#B48EAD">2</span><span style="color:#ECEFF4">,</span><span style="color:#A3BE8C"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">0</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">-</span><span style="color:#ECEFF4">${</span><span style="color:#8FBCBB">String</span><span style="color:#A3BE8C">(</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#A3BE8C">())</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">padStart</span><span style="color:#A3BE8C">(</span><span style="color:#B48EAD">2</span><span style="color:#ECEFF4">,</span><span style="color:#A3BE8C"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">0</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">T00:00:00</span><span style="color:#ECEFF4">`</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-5xltwij";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script><aside role="note" aria-label="Tip" class="tangly-callout my-4 flex items-start gap-3 rounded-lg border-l-4 px-4 py-3 bg-emerald-50 border-l-emerald-500 text-emerald-900 dark:bg-emerald-950/40 dark:border-l-emerald-400 dark:text-emerald-100"> <span class="shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg> </span> <div class="flex-1 min-w-0 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0 leading-relaxed">  Using yesterday ensures you always get a full day of settled data. Today’s data may still be arriving.  </div> </aside><h3 id="request-power-data">Request power data<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#request-power-data"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3><p>Call <code>get_network_data</code> / <code>getNetworkData</code> with these parameters:</p><ul>
+<li><strong><code>network_code=&quot;NEM&quot;</code></strong> — the <a href="/guides/networks">National Electricity Market</a> covering eastern Australia</li>
+<li><strong><code>metrics=[DataMetric.POWER]</code></strong> — instantaneous generation in MW. See the <a href="/guides/power">power guide</a></li>
+<li><strong><code>interval=&quot;1h&quot;</code></strong> — hourly aggregation</li>
+<li><strong><code>secondary_grouping=&quot;fueltech_group&quot;</code></strong> — break results down by <a href="/guides/fueltechs">fuel technology group</a> (solar, wind, coal, etc.)</li>
+</ul><div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-pklm449"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-python" metastring="Python"><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> openelectricity.types </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> DataMetric</span>
+
+<span style="color:#81A1C1">with</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">OEClient</span><span style="color:#ECEFF4">()</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">as</span><span style="color:#D8DEE9FF"> client:</span>
+<span style="color:#D8DEE9FF">    response </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> client.</span><span style="color:#88C0D0">get_network_data</span><span style="color:#ECEFF4">(</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">network_code</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">NEM</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">metrics</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">[</span><span style="color:#88C0D0">DataMetric.POWER</span><span style="color:#ECEFF4">],</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">interval</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">1h</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">date_start</span><span style="color:#81A1C1">=</span><span style="color:#88C0D0">yesterday</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">date_end</span><span style="color:#81A1C1">=</span><span style="color:#88C0D0">today</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">secondary_grouping</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">fueltech_group</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">    </span><span style="color:#ECEFF4">)</span>
+</code></pre><pre style="background:#2e3440"><code class="language-typescript" metastring="TypeScript"><span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">datatable</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">await</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">client</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getNetworkData</span><span style="color:#D8DEE9FF">(</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">NEM</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> [</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">power</span><span style="color:#ECEFF4">&quot;</span><span style="color:#D8DEE9FF">]</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">interval</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">1h</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">dateStart</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF">)</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">dateEnd</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">today</span><span style="color:#D8DEE9FF">)</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">secondaryGrouping</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> [</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">fueltech_group</span><span style="color:#ECEFF4">&quot;</span><span style="color:#D8DEE9FF">]</span><span style="color:#ECEFF4">,</span>
+<span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF">)</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-pklm449";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script><h3 id="understand-the-response">Understand the response<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#understand-the-response"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3><p>The API returns time series data grouped by your requested dimensions. Each series contains:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td><strong>metric</strong></td><td>The metric name (<code>power</code>)</td></tr><tr><td><strong>unit</strong></td><td>Unit of measurement (<code>MW</code>)</td></tr><tr><td><strong>results</strong></td><td>Array of named series, one per fuel technology group</td></tr></tbody></table><p>Each result has a <code>data</code> array of <code>{ timestamp, value }</code> pairs at the requested interval.</p><h3 id="display-as-a-table">Display as a table<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#display-as-a-table"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3><div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-vfl0inu"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-python" metastring="Python"><span style="color:#4C566A"># Option 1: Polars DataFrame</span>
+<span style="color:#D8DEE9FF">df </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> response.</span><span style="color:#88C0D0">to_polars</span><span style="color:#ECEFF4">()</span>
+<span style="color:#88C0D0">print</span><span style="color:#ECEFF4">(</span><span style="color:#88C0D0">df</span><span style="color:#ECEFF4">)</span>
+
+<span style="color:#4C566A"># Option 2: Console-friendly records</span>
+<span style="color:#81A1C1">for</span><span style="color:#D8DEE9FF"> record </span><span style="color:#81A1C1">in</span><span style="color:#D8DEE9FF"> response.</span><span style="color:#88C0D0">to_records</span><span style="color:#ECEFF4">()</span><span style="color:#D8DEE9FF">:</span>
+<span style="color:#D8DEE9FF">    </span><span style="color:#88C0D0">print</span><span style="color:#ECEFF4">(</span><span style="color:#88C0D0">record</span><span style="color:#ECEFF4">)</span>
+</code></pre><pre style="background:#2e3440"><code class="language-typescript" metastring="TypeScript"><span style="color:#8FBCBB">console</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">table</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">datatable</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">toConsole</span><span style="color:#D8DEE9FF">())</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-vfl0inu";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script> </ol> <script>(function(){const groupId = "steps-l02e5vc";
+
+  (function () {
+    const root = document.querySelector(`[data-steps="${groupId}"]`);
+    if (!root) return;
+    const steps = Array.from(root.querySelectorAll(":scope > .tangly-step"));
+    steps.forEach((step, i) => {
+      const numberCell = step.querySelector(":scope > span");
+      if (!numberCell) return;
+      // If the number cell has no children (no icon), inject the index.
+      if (!numberCell.firstElementChild && !numberCell.textContent?.trim()) {
+        numberCell.textContent = String(i + 1);
+      }
+    });
+  })();
+})();</script>
+<h2 id="complete-example">Complete example<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#complete-example"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Runnable end-to-end scripts you can copy and execute directly.</p>
+<div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group="cg-51oi1so"> <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div> <div class="tangly-code-panels"><pre style="background:#2e3440"><code class="language-python" metastring="Python"><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> datetime </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> datetime, timedelta</span>
+<span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> openelectricity </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> OEClient</span>
+<span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> openelectricity.types </span><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> DataMetric</span>
+
+<span style="color:#D8DEE9FF">yesterday </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9FF">datetime.</span><span style="color:#88C0D0">now</span><span style="color:#ECEFF4">()</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">-</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">timedelta</span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">days</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">1</span><span style="color:#ECEFF4">))</span><span style="color:#D8DEE9FF">.</span><span style="color:#88C0D0">replace</span><span style="color:#ECEFF4">(</span>
+<span style="color:#88C0D0">    </span><span style="color:#D8DEE9">hour</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">minute</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">second</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#88C0D0"> </span><span style="color:#D8DEE9">microsecond</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">0</span>
+<span style="color:#ECEFF4">)</span>
+<span style="color:#D8DEE9FF">today </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> yesterday </span><span style="color:#81A1C1">+</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">timedelta</span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">days</span><span style="color:#81A1C1">=</span><span style="color:#B48EAD">1</span><span style="color:#ECEFF4">)</span>
+
+<span style="color:#81A1C1">with</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">OEClient</span><span style="color:#ECEFF4">()</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">as</span><span style="color:#D8DEE9FF"> client:</span>
+<span style="color:#D8DEE9FF">    response </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> client.</span><span style="color:#88C0D0">get_network_data</span><span style="color:#ECEFF4">(</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">network_code</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">NEM</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">metrics</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">[</span><span style="color:#88C0D0">DataMetric.POWER</span><span style="color:#ECEFF4">],</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">interval</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">1h</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">date_start</span><span style="color:#81A1C1">=</span><span style="color:#88C0D0">yesterday</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">date_end</span><span style="color:#81A1C1">=</span><span style="color:#88C0D0">today</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">        </span><span style="color:#D8DEE9">secondary_grouping</span><span style="color:#81A1C1">=</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">fueltech_group</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#88C0D0">    </span><span style="color:#ECEFF4">)</span>
+<span style="color:#D8DEE9FF">    df </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> response.</span><span style="color:#88C0D0">to_polars</span><span style="color:#ECEFF4">()</span>
+<span style="color:#D8DEE9FF">    </span><span style="color:#88C0D0">print</span><span style="color:#ECEFF4">(</span><span style="color:#88C0D0">df</span><span style="color:#ECEFF4">)</span>
+</code></pre><pre style="background:#2e3440"><code class="language-typescript" metastring="TypeScript"><span style="color:#81A1C1">import</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">OpenElectricityClient</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">from</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">openelectricity</span><span style="color:#ECEFF4">&quot;</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#D8DEE9FF">()</span>
+<span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setDate</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#D8DEE9FF">() </span><span style="color:#81A1C1">-</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">1</span><span style="color:#D8DEE9FF">)</span>
+<span style="color:#D8DEE9">yesterday</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setHours</span><span style="color:#D8DEE9FF">(</span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">0</span><span style="color:#D8DEE9FF">)</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">today</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF">)</span>
+<span style="color:#D8DEE9">today</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">setDate</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">today</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#D8DEE9FF">() </span><span style="color:#81A1C1">+</span><span style="color:#D8DEE9FF"> </span><span style="color:#B48EAD">1</span><span style="color:#D8DEE9FF">)</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">(</span><span style="color:#D8DEE9">d</span><span style="color:#81A1C1">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">Date</span><span style="color:#ECEFF4">)</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=&gt;</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#ECEFF4">`${</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getFullYear</span><span style="color:#A3BE8C">()</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">-</span><span style="color:#ECEFF4">${</span><span style="color:#8FBCBB">String</span><span style="color:#A3BE8C">(</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getMonth</span><span style="color:#A3BE8C">() </span><span style="color:#81A1C1">+</span><span style="color:#A3BE8C"> </span><span style="color:#B48EAD">1</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">padStart</span><span style="color:#A3BE8C">(</span><span style="color:#B48EAD">2</span><span style="color:#ECEFF4">,</span><span style="color:#A3BE8C"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">0</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">-</span><span style="color:#ECEFF4">${</span><span style="color:#8FBCBB">String</span><span style="color:#A3BE8C">(</span><span style="color:#D8DEE9">d</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getDate</span><span style="color:#A3BE8C">())</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">padStart</span><span style="color:#A3BE8C">(</span><span style="color:#B48EAD">2</span><span style="color:#ECEFF4">,</span><span style="color:#A3BE8C"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">0</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">)</span><span style="color:#ECEFF4">}</span><span style="color:#A3BE8C">T00:00:00</span><span style="color:#ECEFF4">`</span>
+
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">client</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">new</span><span style="color:#D8DEE9FF"> </span><span style="color:#8FBCBB">OpenElectricityClient</span><span style="color:#D8DEE9FF">()</span>
+<span style="color:#81A1C1">const</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">datatable</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">=</span><span style="color:#D8DEE9FF"> </span><span style="color:#81A1C1">await</span><span style="color:#D8DEE9FF"> </span><span style="color:#D8DEE9">client</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">getNetworkData</span><span style="color:#D8DEE9FF">(</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">NEM</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> [</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">power</span><span style="color:#ECEFF4">&quot;</span><span style="color:#D8DEE9FF">]</span><span style="color:#ECEFF4">,</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">{</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">interval</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">1h</span><span style="color:#ECEFF4">&quot;</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">dateStart</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">yesterday</span><span style="color:#D8DEE9FF">)</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">dateEnd</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> </span><span style="color:#88C0D0">fmt</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">today</span><span style="color:#D8DEE9FF">)</span><span style="color:#ECEFF4">,</span>
+<span style="color:#D8DEE9FF">  </span><span style="color:#D8DEE9">secondaryGrouping</span><span style="color:#ECEFF4">:</span><span style="color:#D8DEE9FF"> [</span><span style="color:#ECEFF4">&quot;</span><span style="color:#A3BE8C">fueltech_group</span><span style="color:#ECEFF4">&quot;</span><span style="color:#D8DEE9FF">]</span><span style="color:#ECEFF4">,</span>
+<span style="color:#ECEFF4">}</span><span style="color:#D8DEE9FF">)</span>
+
+<span style="color:#8FBCBB">console</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">table</span><span style="color:#D8DEE9FF">(</span><span style="color:#D8DEE9">datatable</span><span style="color:#ECEFF4">.</span><span style="color:#88C0D0">toConsole</span><span style="color:#D8DEE9FF">())</span>
+</code></pre></div> </div> <script>(function(){const groupId = "cg-51oi1so";
+
+  (function () {
+    const root = document.querySelector(`[data-code-group="${groupId}"]`);
+    if (!root) return;
+    const panels = root.querySelector(".tangly-code-panels");
+    const tabsBar = root.querySelector(".tangly-code-tabs");
+    if (!panels || !tabsBar) return;
+    const blocks = Array.from(panels.children);
+    blocks.forEach((blk, i) => {
+      const el = blk;
+      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
+      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
+      const codeEl = el.querySelector("code");
+      const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
+      const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = label;
+      btn.setAttribute("role", "tab");
+      btn.className =
+        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+      btn.dataset.idx = String(i);
+      btn.addEventListener("click", () => activate(i));
+      tabsBar.appendChild(btn);
+      el.classList.add("tangly-code-panel");
+      if (i !== 0) el.style.display = "none";
+    });
+    function activate(idx) {
+      Array.from(tabsBar.children).forEach((b, i) => {
+        const btn = b;
+        if (i === idx) {
+          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        } else {
+          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+        }
+      });
+      blocks.forEach((b, i) => {
+        b.style.display = i === idx ? "" : "none";
+      });
+    }
+    activate(0);
+  })();
+})();</script>
+<h2 id="next-steps">Next steps<a class="tangly-heading-anchor" aria-label="Navigate to header" href="#next-steps"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<div class="tangly-card-group grid grid-cols-1 sm:grid-cols-2 gap-4 my-6"> <a href="/sdk/python/overview" class="group block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 hover:border-zinc-300 hover:shadow-sm dark:hover:border-zinc-700 transition-colors no-underline"><div class="flex flex-col gap-2 w-full"> <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg> </div> <div class="flex-1 min-w-0"> <div class="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">SDK Reference — Python</div> <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed"> <p>Full Python client API and DataFrame integrations</p> </div> </div> </div> </a><a href="/sdk/typescript/overview" class="group block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 hover:border-zinc-300 hover:shadow-sm dark:hover:border-zinc-700 transition-colors no-underline"><div class="flex flex-col gap-2 w-full"> <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg> </div> <div class="flex-1 min-w-0"> <div class="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">SDK Reference — TypeScript</div> <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed"> <p>Full TypeScript client API and DataTable analysis tools</p> </div> </div> </div> </a><a href="/api-reference/overview" class="group block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 hover:border-zinc-300 hover:shadow-sm dark:hover:border-zinc-700 transition-colors no-underline"><div class="flex flex-col gap-2 w-full"> <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="m16 18 6-6-6-6"></path><path d="m8 6-6 6 6 6"></path></svg> </div> <div class="flex-1 min-w-0"> <div class="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">API Reference</div> <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed"> <p>Explore all available API endpoints directly</p> </div> </div> </div> </a><a href="/guides/networks" class="group block rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 hover:border-zinc-300 hover:shadow-sm dark:hover:border-zinc-700 transition-colors no-underline"><div class="flex flex-col gap-2 w-full"> <div class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path></svg> </div> <div class="flex-1 min-w-0"> <div class="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">Guides</div> <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed"> <p>Learn about networks, fuel technologies, emissions and more</p> </div> </div> </div> </a> </div></div></article><aside class="hidden xl:block"><div class="sticky top-[calc(var(--tangly-topnav-height)+1.5rem)]"><div class="text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] mb-2">
+On this page
+</div><nav id="tangly-toc" aria-label="Table of contents" class="text-sm"><!-- Populated by inline script below from h2/h3 in .prose-tang --></nav></div></aside></div><script>
+  // Build a TOC from h2/h3 in the rendered prose, then scroll-spy.
+  (() => {
+    const tocEl = document.getElementById("tangly-toc");
+    if (!tocEl) return;
+    const article = document.querySelector(".prose-tang");
+    if (!article) return;
+    const headings = article.querySelectorAll("h2, h3");
+    if (headings.length === 0) { tocEl.remove(); return; }
+
+    const links = [];
+    const list = document.createElement("ul");
+    list.className = "space-y-1";
+    headings.forEach((h) => {
+      if (!h.id) {
+        h.id = (h.textContent ?? "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
+      }
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.textContent ?? "";
+      a.className = "tangly-toc-link block border-l-2 border-transparent pl-3 py-1 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]";
+      a.dataset.id = h.id;
+      if (h.tagName === "H3") a.classList.add("pl-6");
+      li.appendChild(a);
+      list.appendChild(li);
+      links.push(a);
+    });
+    tocEl.appendChild(list);
+
+    const setActive = (id) => {
+      links.forEach((l) => l.dataset.active = l.dataset.id === id ? "true" : "false");
+    };
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-100px 0px -70% 0px", threshold: [0, 1] }
+    );
+    headings.forEach((h) => obs.observe(h));
+  })();
+</script> </main> </div> <footer class="border-t border-[var(--tangly-color-border)] mt-16 py-8 px-4 sm:px-6 lg:px-10 text-sm text-[var(--tangly-color-muted)]"> <div class="max-w-screen-2xl mx-auto flex flex-col gap-6">  <div class="flex flex-wrap items-center gap-4 justify-between"> <div class="flex items-center gap-2"> <a href="https://x.com/opennem" aria-label="x" class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] hover:text-[var(--tangly-color-fg)]"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"></path></svg> </a><a href="https://github.com/opennem/opennem" aria-label="github" class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] hover:text-[var(--tangly-color-fg)]"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-1.93c-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18a10.94 10.94 0 0 1 5.74 0c2.2-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"></path></svg> </a> </div> <div class="text-xs">
+Powered by  <a href="https://tangly.dev" class="hover:text-[var(--tangly-color-fg)] underline-offset-2 hover:underline">
+Tangly
+</a> </div> </div> </div> </footer> <dialog id="tangly-search-modal" class="tangly-search-modal w-full max-w-2xl rounded-2xl bg-[var(--tangly-color-bg)] text-[var(--tangly-color-fg)] border border-[var(--tangly-color-border)] shadow-2xl backdrop:bg-black/40 p-0" aria-label="Search docs" data-astro-cid-blu2mufv> <form id="tangly-search-form" class="flex flex-col" method="dialog" data-astro-cid-blu2mufv> <div class="flex items-center gap-3 px-4 py-3 border-b border-[var(--tangly-color-border)]" data-astro-cid-blu2mufv> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--tangly-color-muted)]" aria-hidden="true" data-astro-cid-blu2mufv> <circle cx="11" cy="11" r="8" data-astro-cid-blu2mufv></circle> <path d="m21 21-4.3-4.3" data-astro-cid-blu2mufv></path> </svg> <input id="tangly-search-input" type="search" autocomplete="off" placeholder="Search docs…" class="flex-1 bg-transparent outline-none text-base text-[var(--tangly-color-fg)] placeholder:text-[var(--tangly-color-muted)]" aria-label="Search query" data-astro-cid-blu2mufv> <button type="button" id="tangly-search-close" class="text-xs text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] px-2 py-0.5 rounded border border-[var(--tangly-color-border)]" aria-label="Close" data-astro-cid-blu2mufv>
+Esc
+</button> </div> <ul id="tangly-search-results" class="max-h-[60vh] overflow-y-auto tangly-scroll p-2" role="listbox" aria-label="Results" data-astro-cid-blu2mufv> <li class="text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" data-astro-cid-blu2mufv>
+Type to search…
+</li> </ul> <div class="px-4 py-2 border-t border-[var(--tangly-color-border)] flex items-center gap-3 text-xs text-[var(--tangly-color-muted)]" data-astro-cid-blu2mufv> <span data-astro-cid-blu2mufv><kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded" data-astro-cid-blu2mufv>↑↓</kbd> navigate</span> <span data-astro-cid-blu2mufv><kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded" data-astro-cid-blu2mufv>↵</kbd> open</span> <span data-astro-cid-blu2mufv><kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded" data-astro-cid-blu2mufv>esc</kbd> close</span> </div> </form> </dialog> <script type="module">let f=null,C=!1,i=0;async function b(){if(f)return f;if(C)return null;try{return f=await import(["","pagefind","pagefind.js"].join("/")),f}catch{return C=!0,null}}function w(e,n){let r=null;return((...l)=>{r&&clearTimeout(r),r=setTimeout(()=>e(...l),n)})}function A(e){const n={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};return e.replace(/[&<>"']/g,r=>n[r]??r)}function o(e,n={},r=[]){const l=document.createElement(e);for(const[s,d]of Object.entries(n))s==="class"?l.className=d:l.setAttribute(s,d);for(const s of r)l.appendChild(typeof s=="string"?document.createTextNode(s):s);return l}const c=document.getElementById("tangly-search-modal"),u=document.getElementById("tangly-search-input"),t=document.getElementById("tangly-search-results"),T=document.getElementById("tangly-search-close");function L(){if(c){if(typeof c.showModal=="function"?c.showModal():c.setAttribute("open",""),u&&(u.value="",u.focus()),t){for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(o("li",{class:"text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center"},["Type to search…"]))}i=0}}function B(){c?.close()}document.addEventListener("tangly:open-search",L);T?.addEventListener("click",B);function m(e){if(!t)return;t.querySelectorAll("li[data-result]").forEach((r,l)=>{r.setAttribute("aria-selected",l===e?"true":"false"),r.style.background=l===e?"var(--tangly-color-bg-elevated)":"transparent"}),i=e}let p=0;async function I(e){if(!t)return;const n=++p;for(;t.firstChild;)t.removeChild(t.firstChild);if(!e.trim()){t.appendChild(o("li",{class:"text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center"},["Type to search…"]));return}const r=await b();if(n!==p)return;if(!r){t.appendChild(o("li",{class:"text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center"},["Search index unavailable. Run `tangly build` first."]));return}const{results:l}=await r.search(e);if(n!==p)return;if(l.length===0){t.appendChild(o("li",{class:"text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center"},[`No matches for "${e}".`]));return}const s=l.slice(0,10),d=await Promise.all(s.map(a=>a.data()));n===p&&(d.forEach((a,v)=>{const g=o("li",{class:"rounded-md cursor-pointer",role:"option","data-result":String(v),"data-url":a.meta.slug?`/${a.meta.slug}`:a.url}),h=o("a",{href:a.meta.slug?`/${a.meta.slug}`:a.url,class:"block px-3 py-2 no-underline"});h.appendChild(o("div",{class:"font-medium text-sm text-[var(--tangly-color-fg)]"},[a.meta.title??a.url]));const y=o("div",{class:"text-xs text-[var(--tangly-color-muted)] mt-0.5 line-clamp-2"}),k=A(a.excerpt).replace(/&lt;mark&gt;/g,"<mark>").replace(/&lt;\/mark&gt;/g,"</mark>"),x=document.createRange();x.selectNodeContents(y);const E=x.createContextualFragment(k);y.appendChild(E),h.appendChild(y),g.appendChild(h),g.addEventListener("mouseenter",()=>m(v)),t.appendChild(g)}),m(0))}const D=w((...e)=>{I(e[0])},80);u?.addEventListener("input",()=>D(u.value));document.addEventListener("keydown",e=>{if(!c||!c.open)return;const n=t?.querySelectorAll("li[data-result]");if(!(!n||n.length===0)){if(e.key==="ArrowDown")e.preventDefault(),m(Math.min(i+1,n.length-1));else if(e.key==="ArrowUp")e.preventDefault(),m(Math.max(i-1,0));else if(e.key==="Enter"){e.preventDefault();const l=n[i]?.dataset.url;l&&(location.href=l)}}});</script> <!-- Mobile drawer overlay --> <div id="tangly-drawer" class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden" data-state="closed"> <div class="absolute inset-y-0 left-0 w-72 max-w-[80vw] bg-[var(--tangly-color-bg)] border-r border-[var(--tangly-color-border)] overflow-y-auto p-5 tangly-scroll"> <nav aria-label="Sidebar" class="text-sm"><ul class="space-y-0.5"><li><details open class="group/det"><summary class="flex items-center gap-1.5 cursor-pointer list-none select-none text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] py-2 px-2"><span class="inline-flex transition-transform group-open/det:rotate-90"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span><span class="flex-1">How-To Guides</span></summary><div class="mt-0.5 ml-1 pl-3 border-l border-[var(--tangly-color-border)]"><ul class="space-y-0.5"><li><a href="/howto/getting-started" data-active="true" class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class aria-hidden="true"><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"></path><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"></path></svg><span class="flex-1 truncate">Getting Started</span></a></li></ul></div></details></li></ul></nav> </div> </div> <script>
+      // Drawer toggle (TopNav dispatches `tangly:toggle-sidebar`).
+      (() => {
+        const drawer = document.getElementById("tangly-drawer");
+        if (!drawer) return;
+        const open = () => { drawer.classList.remove("hidden"); drawer.dataset.state = "open"; };
+        const close = () => { drawer.classList.add("hidden"); drawer.dataset.state = "closed"; };
+        document.addEventListener("tangly:toggle-sidebar", () => {
+          drawer.dataset.state === "open" ? close() : open();
+        });
+        drawer.addEventListener("click", (e) => { if (e.target === drawer) close(); });
+      })();
+
+      // Theme toggle (TopNav dispatches `tangly:toggle-theme`).
+      (() => {
+        document.addEventListener("tangly:toggle-theme", () => {
+          const root = document.documentElement;
+          const isDark = root.classList.toggle("dark");
+          try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+        });
+      })();
+    </script> </body> </html>
