@@ -67,6 +67,7 @@
     "citty": "^0.2.2",
     "gray-matter": "^4.0.3",
     "katex": "^0.16.45",
+    "pagefind": "^1.5.2",
     "picocolors": "^1.1.1",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-katex": "^7.0.1",

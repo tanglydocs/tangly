@@ -4,6 +4,7 @@ import type { PageEntry, ResolvedNavigation } from "tangly";
 import TopNav from "./TopNav.astro";
 import Sidebar from "./Sidebar.astro";
 import Footer from "./Footer.astro";
+import SearchModal from "./SearchModal.astro";
 import "./styles/theme.css";
 import "./styles/prose.css";
 
@@ -105,11 +106,18 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
       >
         <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
       </aside>
-      <main class="min-w-0 px-4 sm:px-6 lg:px-10 py-8">
+      <main
+        class="min-w-0 px-4 sm:px-6 lg:px-10 py-8"
+        data-pagefind-body
+        data-pagefind-meta={`title:${pageTitle}`}
+      >
+        <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
         <slot />
       </main>
     </div>
     <Footer config={config} />
+
+    <SearchModal config={config} />
 
     <!-- Mobile drawer overlay -->
     <div

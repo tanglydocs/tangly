@@ -1,0 +1,71 @@
+---
+title: Search
+description: Cmd+K search powered by Pagefind. Zero infra, static index.
+icon: "search"
+---
+
+# Search
+
+Tangly ships Cmd+K search with no third-party service required. The index is built when you run `tangly build` and served as static assets next to the rest of your site.
+
+<Note>
+  Search runs only against built sites. In `tangly dev` the modal opens but reports "Search index unavailable" — the index doesn't exist until you build. Use `tangly build && tangly preview` to test search locally.
+</Note>
+
+## How it works
+
+<Steps>
+  <Step title="Index at build">
+    `tangly build` walks every rendered HTML file in `dist/`, extracts the content inside the `data-pagefind-body` region (set by your theme's Layout), and writes a static index to `dist/pagefind/`.
+  </Step>
+  <Step title="Lazy load on first open">
+    The `<SearchModal>` component lives in every page but doesn't fetch the index until the user presses Cmd+K. The Pagefind client is ~30 KB gzipped.
+  </Step>
+  <Step title="Highlights + slug-based result navigation">
+    Results show the page title (from `data-pagefind-meta="title:..."`), an excerpt with `<mark>` highlights around matches, and link to `/<slug>`.
+  </Step>
+</Steps>
+
+## Excluding pages
+
+Both filters work the same way — the page never enters the search index.
+
+```md
+---
+title: Internal note
+draft: true
+---
+```
+
+```md
+---
+title: Legal page
+noindex: true
+---
+```
+
+`tangly build` reports how many pages were excluded:
+
+```
+Pagefind: 47 pages indexed, 2 excluded
+```
+
+## Configuration
+
+```json
+{
+  "search": {
+    "prompt": "Search the docs…"
+  }
+}
+```
+
+The `prompt` becomes the placeholder text in the search input. More search options (fuzzy threshold, result limits) will land later.
+
+## Hosting
+
+The `dist/pagefind/` directory must be served as static assets by your host. Vercel, Cloudflare Pages, Netlify, S3+CloudFront, and any plain static host work without additional config.
+
+## Customizing the modal
+
+The default modal is a single Astro file at `@tangly/theme-tang/SearchModal.astro` (or `theme-pith/`). Drop an override at `./components/SearchModal.astro` in your project to replace it; component shadowing routes the import there.

@@ -4,6 +4,7 @@ import { defineCommand } from "citty";
 import pc from "picocolors";
 import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
+import { runPagefind } from "../../build-outputs/run-pagefind.js";
 import { buildManifest } from "../../manifest/index.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 
@@ -75,11 +76,27 @@ export const buildCommand = defineCommand({
     if (siteUrl) opts.siteUrl = siteUrl;
     writeBuildOutputs(opts);
 
+    // Pagefind: search index over rendered HTML. Done last so it sees
+    // every static asset already in place.
+    let pagefindIndexed = 0;
+    let pagefindExcluded = 0;
+    try {
+      const pf = await runPagefind({ manifest, outDir });
+      pagefindIndexed = pf.indexed;
+      pagefindExcluded = pf.excluded.length;
+    } catch (err) {
+      console.warn(pc.yellow(`⚠ Pagefind indexing failed: ${(err as Error).message}`));
+    }
+
     console.log(pc.green(`✓ Built → ${outDir}`));
     if (assetsResult.copied.length > 0) {
       console.log(pc.dim(`  Copied static: ${assetsResult.copied.join(", ")}`));
     }
     console.log(pc.dim(`  Generated sitemap.xml, robots.txt, llms.txt, llms-full.txt`));
+    if (pagefindIndexed > 0) {
+      const note = pagefindExcluded > 0 ? `, ${pagefindExcluded} excluded` : "";
+      console.log(pc.dim(`  Pagefind: ${pagefindIndexed} pages indexed${note}`));
+    }
   },
 });
 
