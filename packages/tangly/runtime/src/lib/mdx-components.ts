@@ -13,6 +13,7 @@ import Frame from "@tangly/theme-ui/components/Frame.astro";
 import Icon from "@tangly/theme-ui/components/Icon.astro";
 import Info from "@tangly/theme-ui/components/Info.astro";
 import Note from "@tangly/theme-ui/components/Note.astro";
+import PackageManager from "@tangly/theme-ui/components/PackageManager.astro";
 import ParamField from "@tangly/theme-ui/components/ParamField.astro";
 import RequestExample from "@tangly/theme-ui/components/RequestExample.astro";
 import ResponseExample from "@tangly/theme-ui/components/ResponseExample.astro";
@@ -43,6 +44,7 @@ export const mdxComponents = {
   Icon,
   Info,
   Note,
+  PackageManager,
   ParamField,
   RequestExample,
   ResponseExample,

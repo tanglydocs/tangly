@@ -1,0 +1,77 @@
+---
+import CodeGroup from "./CodeGroup.astro";
+
+// PackageManager renders an install command across npm/yarn/pnpm/bun in a
+// synced CodeGroup (default name="pkg" — every PackageManager block on the
+// page shows the same tab once one is selected).
+//
+// Usage:
+//   <PackageManager name="@tangly/cli" />
+//   <PackageManager name="zod" mode="dev" />
+//   <PackageManager command="run build" />
+
+export interface Props {
+  /** Package name to install. Required unless `command` is set. */
+  name?: string;
+  /** "dev" → install as devDependency. */
+  mode?: "dev" | "prod" | undefined;
+  /** Run a script instead of installing — e.g. "run build". */
+  command?: string;
+  /** Sync key. Default "pkg" so all install blocks on a page sync. */
+  syncName?: string;
+}
+
+const {
+  name = "",
+  mode,
+  command,
+  syncName = "pkg",
+} = Astro.props as Props;
+
+interface Cmd {
+  label: string;
+  lang: string;
+  text: string;
+}
+
+let cmds: Cmd[];
+
+if (command) {
+  cmds = [
+    { label: "npm", lang: "bash", text: `npm ${command}` },
+    { label: "yarn", lang: "bash", text: `yarn ${command}` },
+    { label: "pnpm", lang: "bash", text: `pnpm ${command}` },
+    { label: "bun", lang: "bash", text: `bun ${command}` },
+  ];
+} else {
+  const pkg = name || "<package>";
+  const dev = mode === "dev";
+  cmds = [
+    {
+      label: "npm",
+      lang: "bash",
+      text: `npm install ${dev ? "--save-dev " : ""}${pkg}`,
+    },
+    {
+      label: "yarn",
+      lang: "bash",
+      text: `yarn add ${dev ? "--dev " : ""}${pkg}`,
+    },
+    {
+      label: "pnpm",
+      lang: "bash",
+      text: `pnpm add ${dev ? "--save-dev " : ""}${pkg}`,
+    },
+    {
+      label: "bun",
+      lang: "bash",
+      text: `bun add ${dev ? "--dev " : ""}${pkg}`,
+    },
+  ];
+}
+---
+<CodeGroup name={syncName}>
+  {cmds.map((c) => (
+    <pre data-language={c.label} data-filename={c.label}><code class={`language-${c.lang}`}>{c.text}</code></pre>
+  ))}
+</CodeGroup>

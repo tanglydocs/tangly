@@ -15,6 +15,7 @@ import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
 // `<userRoot>/theme/styles/theme.css` overriding when present.
 import "@tangly/theme/theme.css";
 import "./styles/prose.css";
+import "./styles/code.css";
 import "katex/dist/katex.min.css";
 
 export interface Props {
@@ -165,5 +166,10 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
     </script>
 
     <MermaidLoader />
+
+    <script>
+      import "./scripts/code-copy.ts";
+      import "./scripts/code-sync.ts";
+    </script>
   </body>
 </html>

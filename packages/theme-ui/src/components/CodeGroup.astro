@@ -1,17 +1,28 @@
 ---
-// CodeGroup wraps multiple code blocks (e.g. <pre>) and renders them as tabs.
-// Tab labels come from each child's `data-filename` or `data-language` attribute,
-// or fall back to "Tab N". Switching is handled by a tiny inline script.
+// CodeGroup wraps multiple code blocks (e.g. <pre> or <figure>) and renders
+// them as tabs. Tab labels come from each child's `data-filename`,
+// `data-language`, or `data-language` on the inner pre, falling back to
+// "Tab N". Pass `name` to sync the active tab across the page (and across
+// pages via localStorage) — every CodeGroup with the same `name` shows
+// the same tab.
 
-export interface Props {}
+export interface Props {
+  /** Optional sync key. Same `name` across blocks → matched tab. */
+  name?: string;
+}
 
+const { name = "" } = Astro.props as Props;
 const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
 ---
-<div class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4" data-code-group={groupId}>
+<div
+  class="tangly-code-group rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 my-4"
+  data-code-group={groupId}
+  data-code-group-name={name || undefined}
+>
   <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div>
   <div class="tangly-code-panels"><slot /></div>
 </div>
-<script is:inline define:vars={{ groupId }}>
+<script is:inline define:vars={{ groupId, name }}>
   (function () {
     const root = document.querySelector(`[data-code-group="${groupId}"]`);
     if (!root) return;
@@ -19,13 +30,23 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
     const tabsBar = root.querySelector(".tangly-code-tabs");
     if (!panels || !tabsBar) return;
     const blocks = Array.from(panels.children);
+    const labels = [];
     blocks.forEach((blk, i) => {
       const el = blk;
-      const filename = el.getAttribute("data-filename") || el.getAttribute("filename");
-      const lang = el.getAttribute("data-language") || el.getAttribute("data-lang");
-      const codeEl = el.querySelector("code");
+      // For figure-wrapped pre (Tangly chrome), look at the inner pre/code.
+      const innerPre = el.tagName === "PRE" ? el : el.querySelector("pre");
+      const filename =
+        el.getAttribute("data-filename") ||
+        innerPre?.getAttribute("data-filename") ||
+        el.getAttribute("filename");
+      const lang =
+        el.getAttribute("data-language") ||
+        innerPre?.getAttribute("data-language") ||
+        el.getAttribute("data-lang");
+      const codeEl = (innerPre ?? el).querySelector("code");
       const codeLang = codeEl?.className.match(/language-([\w-]+)/)?.[1];
       const label = filename || lang || codeLang || `Tab ${i + 1}`;
+      labels.push(label);
       const btn = document.createElement("button");
       btn.type = "button";
       btn.textContent = label;
@@ -33,7 +54,12 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
       btn.className =
         "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
       btn.dataset.idx = String(i);
-      btn.addEventListener("click", () => activate(i));
+      btn.addEventListener("click", () => {
+        activate(i);
+        if (name && window.__tanglyCodeGroup) {
+          window.__tanglyCodeGroup.onActivate(groupId, name, label);
+        }
+      });
       tabsBar.appendChild(btn);
       el.classList.add("tangly-code-panel");
       if (i !== 0) el.style.display = "none";
@@ -52,5 +78,17 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
       });
     }
     activate(0);
+
+    // Register with the cross-page sync registry.
+    if (name) {
+      const tryRegister = () => {
+        if (window.__tanglyCodeGroup) {
+          window.__tanglyCodeGroup.register(groupId, name, labels, activate);
+        } else {
+          setTimeout(tryRegister, 50);
+        }
+      };
+      tryRegister();
+    }
   })();
 </script>

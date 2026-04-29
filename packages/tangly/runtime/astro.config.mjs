@@ -1,19 +1,27 @@
 // @ts-check
 import mdx from "@astrojs/mdx";
+import rehypeShiki from "@shikijs/rehype";
+import {
+  transformerMetaHighlight,
+  transformerNotationDiff,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+} from "@shikijs/transformers";
 import { defineConfig } from "astro/config";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
-import rehypeShiki from "rehype-shiki";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
+import { transformerTanglyChrome } from "./src/lib/shiki-transformers.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
+import { readFileSync, existsSync } from "node:fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Walk up to the workspace root so we can serve hoisted deps (katex fonts, etc.)
@@ -26,6 +34,26 @@ if (!userRoot) {
 
 const configFile = process.env.TANGLY_CONFIG_FILE ?? "docs.json";
 const baseUrl = process.env.TANGLY_BASE ?? "/";
+
+// Pull `code` settings (theme, copyButton) from docs.json so the user can
+// override defaults without touching astro.config. Errors are non-fatal —
+// the manifest pipeline surfaces config issues via `tangly check`.
+let codeConfig = {};
+try {
+  const docsPath = resolve(userRoot, configFile);
+  if (existsSync(docsPath)) {
+    const parsed = JSON.parse(readFileSync(docsPath, "utf8"));
+    codeConfig = parsed?.code ?? {};
+  }
+} catch {
+  /* swallow */
+}
+
+const codeThemes =
+  typeof codeConfig.theme === "string"
+    ? { light: codeConfig.theme, dark: codeConfig.theme }
+    : codeConfig.theme ?? { light: "github-light", dark: "github-dark" };
+const codeCopyButton = codeConfig.copyButton !== false;
 const includeDrafts =
   process.env.TANGLY_INCLUDE_DRAFTS === "1" ||
   process.env.TANGLY_INCLUDE_DRAFTS === "true" ||
@@ -121,7 +149,16 @@ export default defineConfig({
         [
           rehypeShiki,
           {
-            themes: { light: "github-light", dark: "github-dark" },
+            themes: codeThemes,
+            defaultColor: false,
+            transformers: [
+              // Order: focus -> diff -> highlight -> meta -> chrome.
+              transformerNotationFocus(),
+              transformerNotationDiff(),
+              transformerNotationHighlight(),
+              transformerMetaHighlight(),
+              transformerTanglyChrome({ copyButton: codeCopyButton }),
+            ],
           },
         ],
       ],

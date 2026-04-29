@@ -61,6 +61,19 @@ const FooterSchema = z
           .strict(),
       )
       .optional(),
+    /** Show last-updated timestamps on every page footer (default: false). */
+    lastUpdated: z.boolean().optional(),
+    /**
+     * Edit-this-page URL template. `{path}` is substituted with the page
+     * file's path relative to the project root (e.g.
+     * "https://github.com/owner/repo/edit/main/{path}").
+     */
+    editUrl: z.string().optional(),
+    /**
+     * Repository URL — used to derive `editUrl` if not set explicitly.
+     * Falls back to `git remote get-url origin` when omitted.
+     */
+    repo: z.string().optional(),
   })
   .strict()
   .optional();
@@ -188,6 +201,30 @@ const AppearanceSchema = z
   .object({
     default: z.enum(["light", "dark", "system"]).optional(),
     strict: z.boolean().optional(),
+    /** Show estimated reading time in the page header (default: false). */
+    readingTime: z.boolean().optional(),
+    /** Render a 2px scroll-progress bar across the top (default: false). */
+    readingProgress: z.boolean().optional(),
+  })
+  .strict()
+  .optional();
+
+const CodeSchema = z
+  .object({
+    /** Show a copy-to-clipboard button on every code block (default: true). */
+    copyButton: z.boolean().optional(),
+    /**
+     * Shiki theme(s). String → same theme for light + dark.
+     * Object → split. Defaults to github-light/github-dark.
+     */
+    theme: z
+      .union([
+        z.string(),
+        z
+          .object({ light: z.string(), dark: z.string() })
+          .strict(),
+      ])
+      .optional(),
   })
   .strict()
   .optional();
@@ -284,6 +321,7 @@ export const DocsJsonSchema = z
     analytics: AnalyticsSchema,
     api: ApiSchema,
     appearance: AppearanceSchema,
+    code: CodeSchema,
     background: BackgroundSchema,
     fonts: FontsSchema,
     styling: StylingSchema,

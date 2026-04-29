@@ -61,6 +61,9 @@
     "@astrojs/node": "^10.0.6",
     "@astrojs/vercel": "^10.0.6",
     "@clack/prompts": "^1.2.0",
+    "@shikijs/rehype": "^4.0.2",
+    "@shikijs/transformers": "^4.0.2",
+    "@shikijs/twoslash": "^4.0.2",
     "@tailwindcss/vite": "^4.2.4",
     "@tangly/schema": "workspace:*",
     "@tangly/theme-pip": "workspace:*",
@@ -87,7 +90,9 @@
     "remark-rehype": "^11.1.2",
     "shiki": "^4.0.2",
     "tailwindcss": "^4.2.4",
+    "twoslash": "^0.3.8",
     "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ export { default as Card } from "./Card.astro";
 export { default as CardGroup } from "./CardGroup.astro";
 export { default as CodeGroup } from "./CodeGroup.astro";
 export { default as Frame } from "./Frame.astro";
+export { default as PackageManager } from "./PackageManager.astro";
 
 // Callouts
 export { default as Note } from "./Note.astro";
