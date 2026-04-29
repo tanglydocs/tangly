@@ -25,8 +25,13 @@ export interface GlossaryEntry {
   term: string;
   /** Alternate spellings / abbreviations. */
   aliases: string[];
-  /** Anchor slug on the glossary page. */
+  /** Anchor slug on the glossary page (or filename slug for per-term form). */
   slug: string;
+  /**
+   * Resolved link href. `/glossary#<slug>` for the single-file form;
+   * `/glossary/<slug>` for the per-term-file form.
+   */
+  href: string;
   /** Plain-text excerpt (first paragraph, max 200 chars). */
   definition: string;
 }
@@ -107,7 +112,13 @@ function finalize(
   const body = section.bodyLines.join("\n").trim();
   const aliases = extractAliases(body);
   const definition = excerpt(body);
-  return { term: section.term, aliases, slug, definition };
+  return {
+    term: section.term,
+    aliases,
+    slug,
+    href: `/glossary#${slug}`,
+    definition,
+  };
 }
 
 const ALIASES_LINE_RE = /^\s*(?:\*\*)?aliases?:?(?:\*\*)?\s*([^\n]+)$/im;
@@ -181,6 +192,7 @@ function loadGlossaryDir(dir: string): GlossaryEntry[] {
       term,
       aliases: dedupe(aliases),
       slug,
+      href: `/glossary/${slug}`,
       definition: excerpt(parsed.content),
     });
   }
