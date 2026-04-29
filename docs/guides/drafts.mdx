@@ -1,0 +1,66 @@
+---
+title: Drafts
+description: Author pages that hide in production but render in dev.
+icon: "pencil-line"
+---
+
+# Drafts
+
+Mark a page as a draft via frontmatter:
+
+```md
+---
+title: New API
+draft: true
+---
+```
+
+Drafts are first-class — no separate dashboard, no CMS workflow. Authoring stays in your editor and git.
+
+## Behavior
+
+| Mode | Drafts |
+| ---- | ------ |
+| `tangly dev` | Render normally with a "Draft" badge in the sidebar. |
+| `tangly build` | Omitted entirely — no HTML, no sitemap entry, no `llms.txt`/`llms-full.txt` entry, no Pagefind index entry. |
+| `tangly check --strict` | Warnings for nav references that resolve to drafts. |
+
+## Override for staging
+
+Include drafts in a build:
+
+```bash
+TANGLY_INCLUDE_DRAFTS=1 bun x tangly build
+```
+
+Drafts ship with the build but still get the "Draft" badge so reviewers know what's not yet published. Useful for staging branches that internal reviewers should see.
+
+```bash
+# Or set it as an env var in CI
+echo 'TANGLY_INCLUDE_DRAFTS=1' >> .env.staging
+```
+
+## Visibility rules
+
+A page is a draft when **either**:
+
+- Its frontmatter has `draft: true`, or
+- A section default (`_section.mdx` or `_meta.json` upstream) declares `draft: true` and the page doesn't override it.
+
+Section defaults cascade through the directory tree. To draft an entire section:
+
+```md
+---
+# guides/wip/_section.mdx
+draft: true
+---
+```
+
+Every page under `guides/wip/` becomes a draft unless it sets `draft: false` explicitly.
+
+## Why drafts as frontmatter
+
+- **Single source**: the page's state lives next to its content.
+- **Git-trackable**: the diff between draft and published is just one frontmatter line.
+- **Reviewable**: PR reviewers see exactly what's about to ship.
+- **No vendor lock**: drafts work the same on every Mintlify-compatible renderer.

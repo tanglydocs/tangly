@@ -6,10 +6,12 @@ icon: "palette"
 
 # Themes
 
-Tangly ships two themes:
+Tangly ships four themes:
 
-- **Tang** — default, Mintlify-Mint inspired.
-- **Pith** — editorial alternative, denser, serif headings (Phase 2).
+- **Tang** — default. Mintlify-Mint inspired. Sans-serif headings, white background.
+- **Pith** — editorial. Serif headings, cream background, narrower content column.
+- **Pip** — compact. Minimal chrome, dense sidebar. Used for Tangly's own docs.
+- **Readable** — long-form reading mode with a top progress bar.
 
 Switch via `docs.json`:
 
@@ -17,74 +19,58 @@ Switch via `docs.json`:
 { "theme": "pith" }
 ```
 
+See [Themes reference](/reference/schema/themes) for the full alias map (Mintlify themes like `mint`, `maple`, `palm` all resolve to `tang`).
+
 ## Color tokens
 
-The `colors` field in `docs.json` becomes CSS variables:
+The `colors` field in `docs.json` becomes CSS variables on `<html>`:
 
 ```css
 :root {
   --tangly-color-primary: #0ea5e9;
+  --tangly-color-primary-light: #38bdf8;
+  --tangly-color-primary-dark: #0284c7;
   --tangly-color-bg: #ffffff;
-  --tangly-color-fg: #0f172a;
-  --tangly-color-muted: #64748b;
-  --tangly-color-border: #e2e8f0;
 }
 .dark {
-  --tangly-color-primary: #38bdf8;
-  --tangly-color-bg: #0b1120;
-  --tangly-color-fg: #e2e8f0;
+  --tangly-color-bg-dark: #0a0a0a;
 }
 ```
 
-These flow through every component — buttons, links, code blocks, sidebar active state.
+These flow through every component — buttons, links, code blocks, sidebar active state. See [Colors](/reference/schema/colors) for the schema.
 
 ## Light + dark
 
-Tangly auto-detects `prefers-color-scheme` and provides a manual toggle in the top-bar.
-
-## Component shadowing (Phase 2)
-
-Drop a file at `./components/Note.tsx` (or `.astro`) in your project to override the default `Note` without forking the theme:
-
-```
-my-docs/
-├── docs.json
-├── components/
-│   └── Note.astro    ← user override
-└── introduction.mdx  ← MDX still uses <Note>; resolves to your file
-```
-
-Resolution order:
-
-1. `./components/<Name>.{tsx,astro}` in user project
-2. Active theme's component
-3. Built-in default
-
-The shadow component must export a default that accepts the same props as the original.
-
-## Custom themes (Phase 2+)
-
-Themes are npm packages with a fixed shape. To author your own:
-
-```
-packages/theme-mine/
-├── src/
-│   ├── Layout.astro
-│   ├── Sidebar.astro
-│   ├── TopNav.astro
-│   ├── Footer.astro
-│   ├── PageShell.astro
-│   ├── styles/
-│   │   ├── theme.css
-│   │   └── prose.css
-│   └── theme.config.ts
-└── package.json
-```
-
-Then in `docs.json`:
+Tangly auto-detects `prefers-color-scheme` and provides a manual toggle in the top-bar. Override the default with `appearance.default`:
 
 ```json
-{ "theme": "mine" }
+{ "appearance": { "default": "dark" } }
 ```
 
-Tangly looks for `@tangly/theme-mine` first, then any package whose name ends in `theme-mine`.
+Set `appearance.strict: true` to disable the user toggle.
+
+## Project-level CSS overrides
+
+Drop a `theme/styles/theme.css` at your project root to override the active theme's CSS variables:
+
+```css
+/* my-docs/theme/styles/theme.css */
+:root {
+  --tangly-color-primary: #f43f5e;
+  --tangly-sidebar-width: 280px;
+}
+```
+
+The integration concatenates this after the theme's own CSS so your overrides win.
+
+## Component shadowing
+
+For structural changes (different markup, not just styling), [shadow individual components](/guides/custom-components) by dropping `./components/<Name>.astro` files in your project.
+
+## Custom themes
+
+Custom theme packages aren't supported as a public extension point yet — `theme:` in `docs.json` only resolves the four built-in themes (`tang`, `pith`, `pip`, `readable`); unknown values fall through to `tang`.
+
+For custom branding today, use the project-level `theme/styles/theme.css` override above plus [component shadowing](/guides/custom-components) for any structural changes. That covers the common case (different colors, spacing, typography, individual component markup) without needing a new package.
+
+Authoring third-party theme packages with their own Layout, Sidebar, etc. is on the roadmap.

@@ -1,17 +1,24 @@
 ---
 title: Code
-description: CodeGroup + fenced code blocks with Shiki.
+description: Code blocks, CodeGroup, syntax highlighting.
 icon: "code"
 ---
 
 # Code
 
-## Code blocks
+Tangly uses [Shiki](https://shiki.style) for syntax highlighting — same engine VS Code ships with — through the `rehype-shiki` plugin. Themes are dual: `github-light` follows the page's light mode, `github-dark` follows dark mode. The active theme switches automatically when the user toggles.
 
-Fenced blocks render via Shiki with a dual `github-light` / `github-dark` theme:
+## Fenced code blocks
+
+Plain triple-backtick fences work as you'd expect:
 
 ```ts
-const x: number = 42
+interface User {
+  id: string;
+  name: string;
+}
+
+const u: User = { id: "abc", name: "Nik" };
 ```
 
 ```python
@@ -19,24 +26,76 @@ def add(a: int, b: int) -> int:
     return a + b
 ```
 
-The active theme follows the page's light/dark mode.
+```bash
+bun add -D tangly
+bun x tangly dev
+```
 
-## CodeGroup
+The first word after the opening backticks is the language. Pass an optional second value for a filename or label:
 
-Tabbed code blocks for showing the same thing in multiple languages. Wrap fenced code blocks in `<CodeGroup>`:
+````md
+```ts user-service.ts
+const fn = () => {};
+```
+````
+
+## `<CodeGroup>`
+
+Tabbed code blocks for showing the same thing in multiple languages or frameworks.
 
 <CodeGroup>
   ```ts example.ts
-  console.log('hello')
+  const x: number = 42;
+  console.log(x);
   ```
 
   ```py example.py
-  print('hello')
+  x: int = 42
+  print(x)
+  ```
+
+  ```bash example.sh
+  echo 42
   ```
 </CodeGroup>
 
-The label after the language is the tab title (filename or short label).
+````md
+<CodeGroup>
+  ```ts example.ts
+  const x: number = 42;
+  ```
+
+  ```py example.py
+  x = 42
+  ```
+</CodeGroup>
+````
+
+The label after the language is the tab title. The first child is active by default.
 
 ## Inline code
 
-Plain `inline code` works as you'd expect — `<code>` with monospace font.
+Single-backtick `` `inline code` `` renders as monospace with a tinted background.
+
+## Supported languages
+
+Anything Shiki supports. The full list is in the Shiki docs; the most common ones (`ts`, `tsx`, `js`, `jsx`, `python`, `bash`, `sh`, `zsh`, `json`, `yaml`, `toml`, `html`, `css`, `astro`, `mdx`, `md`, `sql`, `rust`, `go`, `swift`, `kotlin`, `java`, `c`, `cpp`, `csharp`, `dockerfile`, `nginx`, `graphql`, `proto`) all work without configuration.
+
+## Highlighting & line ranges
+
+Tangly currently emits Shiki's default output. Per-line highlighting and `// [!code ++]` annotations are on the roadmap but not wired today. If you need them now, [eject](/reference/cli/eject) and configure Shiki directly.
+
+## Codeblock theme override
+
+Set `styling.codeblocks` in `docs.json`:
+
+```json
+{
+  "styling": { "codeblocks": "system" }
+}
+```
+
+| Value | Behavior |
+| --- | --- |
+| `system` (default) | Light/dark follows the page theme. |
+| `dark` | Always uses `github-dark`, even in light mode. |

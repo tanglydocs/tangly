@@ -8,8 +8,9 @@ icon: "package"
 
 ## Requirements
 
-- Node 20+
+- **Node 20+** (or Bun 1.2+).
 - A package manager — `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
+- A directory you want to render. Tangly does not impose a folder structure beyond `docs.json` at the root.
 
 ## Install
 
@@ -25,22 +26,47 @@ icon: "package"
   ```bash npm
   npm install --save-dev tangly
   ```
+
+  ```bash yarn
+  yarn add -D tangly
+  ```
 </CodeGroup>
+
+The `tangly` binary becomes available via `bun x tangly`, `pnpm exec tangly`, `npx tangly`, etc.
 
 ## Project layout
 
-A minimal Tangly project:
+A minimal Tangly project is two files:
 
 ```
 my-docs/
 ├── docs.json          # navigation + branding (required)
 ├── introduction.mdx
-├── images/
-│   └── logo.svg
 └── package.json
 ```
 
-Tangly does not require `src/`, `pages/`, or any framework files. The MDX files at the root are the source of truth; `docs.json` drives navigation.
+A typical project grows like this:
+
+```
+my-docs/
+├── docs.json
+├── introduction.mdx
+├── quickstart.mdx
+├── guides/
+│   ├── concepts.mdx
+│   └── advanced.mdx
+├── reference/
+│   └── api.mdx
+├── images/
+│   └── logo.svg
+├── theme/                    # optional component overrides
+│   └── components/
+│       └── Card.astro
+├── tangly.config.ts          # optional content collections
+└── package.json
+```
+
+Tangly does not require `src/`, `pages/`, or any framework files. The MDX files at any depth are the source of truth; `docs.json` decides which ones appear in navigation. Files prefixed with `_` (e.g. `_section.mdx`) and the `snippets/` folder are skipped.
 
 ## Editor support
 
@@ -48,23 +74,35 @@ Add this to the top of `docs.json` for autocomplete + inline validation:
 
 ```json
 {
-  "$schema": "https://tanglydocs.com/schema/docs.json",
-  "name": "..."
+  "$schema": "./node_modules/tangly/schema/docs.json",
+  "name": "My docs"
 }
 ```
 
-Or point at the local file shipped in the npm package:
+VS Code, Cursor, JetBrains, and any editor with a JSON-Schema language server pick this up automatically. You'll get IntelliSense for every nav field, color token, and analytics provider.
+
+## Optional: scripts
+
+Wire dev/build into your `package.json`:
 
 ```json
 {
-  "$schema": "./node_modules/@tangly/schema/dist/docs.json"
+  "scripts": {
+    "dev": "tangly dev",
+    "build": "tangly build",
+    "preview": "tangly preview",
+    "check": "tangly check --strict"
+  }
 }
 ```
 
-VS Code, Cursor, and JetBrains all pick this up automatically.
-
 ## What's next
 
-<Card title="Quickstart" icon="zap" href="/quickstart">
-  Run dev + build in under a minute.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="zap" href="/quickstart">
+    Scaffold + run dev in under a minute.
+  </Card>
+  <Card title="Configuration" icon="settings" href="/guides/configuration">
+    Every `docs.json` field with examples.
+  </Card>
+</CardGroup>

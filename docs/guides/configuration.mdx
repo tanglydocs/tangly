@@ -1,18 +1,18 @@
 ---
 title: Configuration
-description: All docs.json fields supported by Tangly.
+description: Configure your project via docs.json.
 icon: "settings"
 ---
 
 # Configuration
 
-Tangly reads a single `docs.json` at your project root. Every Mintlify field is recognized; a few Tangly-only fields are added.
+Tangly reads a single `docs.json` at your project root. The full reference is at [`docs.json`](/reference/schema/docs-json) — this guide covers the shape and the fields you'll touch most.
 
 ## Minimal example
 
 ```json
 {
-  "$schema": "https://tanglydocs.com/schema/docs.json",
+  "$schema": "./node_modules/tangly/schema/docs.json",
   "name": "My Docs",
   "theme": "tang",
   "colors": { "primary": "#0ea5e9" },
@@ -22,28 +22,28 @@ Tangly reads a single `docs.json` at your project root. Every Mintlify field is 
 }
 ```
 
-## Top-level fields
+That's enough to render. Add fields as you need them.
+
+## Common fields
 
 <ParamField path="name" type="string" required>
-  Display name. Shown in the title bar, sitemap, and llms.txt.
+  Display name. Shown in the title bar, sitemap, and `llms.txt`.
 </ParamField>
 
 <ParamField path="description" type="string">
-  Short description used as the default meta description.
+  Default meta description for pages that don't override it in frontmatter.
 </ParamField>
 
-<ParamField path="theme" type="string">
-  One of `tang` (default), `pith`, or any Mintlify theme name (`mint`, `maple`, `palm`, `willow`,
-  `linden`, `almond`, `aspen`, `luma`, `sequoia`). Mintlify themes alias to `tang` for now.
+<ParamField path="theme" type="string" default="tang">
+  `tang`, `pith`, `pip`, or any Mintlify theme alias. See [Themes](/reference/schema/themes).
 </ParamField>
 
 <ParamField path="colors" type="object">
-  Brand colors. `primary` (required for full effect), `light`, `dark`, `background`, `anchors`. CSS
-  variables are emitted from these values.
+  `{ primary, light, dark, background, anchors }`. Hex format only. See [Colors](/reference/schema/colors).
 </ParamField>
 
 <ParamField path="logo" type="string | object">
-  Either a single path or `{ light, dark, href }`. Light and dark variants render together; the active one is shown based on theme.
+  Either a single path or `{ light, dark, href }`.
 </ParamField>
 
 <ParamField path="favicon" type="string | object">
@@ -51,51 +51,72 @@ Tangly reads a single `docs.json` at your project root. Every Mintlify field is 
 </ParamField>
 
 <ParamField path="navigation" type="object" required>
-  See [Navigation](/guides/navigation).
+  Tabs, groups, anchors, dropdowns. See [Navigation](/guides/navigation).
 </ParamField>
 
 <ParamField path="navbar" type="object">
-  Top-bar links and primary CTA button.
+  Top-bar links and primary CTA. See [`docs.json` reference](/reference/schema/docs-json#navbar).
 </ParamField>
 
 <ParamField path="footer" type="object">
-  Footer socials and link groups.
+  Footer socials and link groups. See [`docs.json` reference](/reference/schema/docs-json#footer).
 </ParamField>
 
 <ParamField path="api" type="object">
   OpenAPI configuration. See [OpenAPI](/guides/openapi).
 </ParamField>
 
+<ParamField path="search" type="object">
+  Search modal customization. `prompt` is the placeholder text. See [Search](/guides/search).
+</ParamField>
+
 <ParamField path="redirects" type="array">
-  Source/destination redirect rules.
+  `[{ source, destination, permanent? }]`. Implemented as static HTML redirects.
 </ParamField>
 
 <ParamField path="seo" type="object">
-  Default meta tags and indexing controls.
+  Custom meta tags + indexing controls.
 </ParamField>
 
 <ParamField path="analytics" type="object">
-  PostHog, Plausible, Fathom, GA4, GTM, etc.
+  PostHog, Plausible, Fathom, GA4, GTM, Amplitude, Hotjar, Mixpanel, Segment, Pirsch, LogRocket, Heap. Configure as many as you want.
 </ParamField>
 
-## Tangly-only fields (Phase 2+)
+For the complete field-by-field reference (every nested object, every enum value), see [`docs.json` reference](/reference/schema/docs-json).
 
-These will be honored once their phase ships; you can include them now without breaking validation.
+## Section defaults
 
-<ParamField path="search" type="object">
-  Search configuration (Phase 4 — Pagefind).
-</ParamField>
+Cascade frontmatter through a directory subtree by dropping `_section.mdx` (or `_meta.json`) at the directory root:
 
-<ParamField path="ai" type="object">
-  AI chat config (Phase 6 — BYO API key).
-</ParamField>
+```md
+---
+# guides/wip/_section.mdx
+draft: true
+mode: wide
+icon: pencil-line
+---
+```
+
+Every page under `guides/wip/` inherits these fields unless it overrides them in its own frontmatter. Section defaults bubble outward — closer overrides further.
 
 ## Validation
 
-Run `tangly check` at any time to validate `docs.json` against the schema and resolve every page reference.
+Run `tangly check` to validate `docs.json` against the schema and resolve every page reference:
 
 ```bash
 bun x tangly check --strict
 ```
 
-`--strict` exits non-zero on any warning (use this in CI).
+`--strict` exits non-zero on any warning (use this in CI). See [`tangly check`](/reference/cli/check) for the full surface.
+
+## Editor support
+
+Add `$schema` for autocomplete + inline validation in VS Code, Cursor, JetBrains:
+
+```json
+{
+  "$schema": "./node_modules/tangly/schema/docs.json"
+}
+```
+
+`tangly migrate` rewrites this for you when migrating from Mintlify.

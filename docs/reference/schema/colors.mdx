@@ -1,0 +1,71 @@
+---
+title: Colors
+description: Brand colors and CSS variables.
+icon: "swatch-book"
+---
+
+# Colors
+
+Configure brand colors in `docs.json#colors`:
+
+```json
+{
+  "colors": {
+    "primary": "#0ea5e9",
+    "light":   "#38bdf8",
+    "dark":    "#0284c7",
+    "background": { "light": "#ffffff", "dark": "#0a0a0a" },
+    "anchors":    { "from": "#0ea5e9", "to": "#06b6d4" }
+  }
+}
+```
+
+## Fields
+
+<ParamField path="primary" type="string">
+  Primary brand color. Used for active sidebar link, link color, primary buttons. Hex format only (`#rgb`, `#rrggbb`, or `#rrggbbaa`).
+</ParamField>
+
+<ParamField path="light" type="string">
+  Lighter variant. Used for hover states and highlights.
+</ParamField>
+
+<ParamField path="dark" type="string">
+  Darker variant. Used for active states and dark-mode tinted UI.
+</ParamField>
+
+<ParamField path="background" type="string | object">
+  Page background color. Either a single hex (same for both modes) or `{ light?, dark? }` for theme-aware override.
+</ParamField>
+
+<ParamField path="anchors" type="string | object">
+  Anchor link color. Either a single hex or `{ from?, to? }` for a gradient.
+</ParamField>
+
+## CSS variables emitted
+
+Tangly's Layout writes inline CSS variables on `<html>`:
+
+| Variable | Source |
+| -------- | ------ |
+| `--tangly-color-primary` | `colors.primary` |
+| `--tangly-color-primary-light` | `colors.light` |
+| `--tangly-color-primary-dark` | `colors.dark` |
+| `--tangly-color-bg` | `colors.background.light` (or string form) |
+| `--tangly-color-bg-dark` | `colors.background.dark` |
+
+Themes consume these in their `theme.css`. Overriding them at the project level (in `theme/styles/theme.css`) lets you tweak colors without forking the theme.
+
+## Validation
+
+Each hex must match `/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/`. Schema validation rejects:
+
+- `rgb(...)` / `hsl(...)` — Tangly stores raw hex for predictable CSS-var output.
+- Named colors (`"red"`, `"blue"`).
+- Tailwind tokens (`"sky-500"`).
+
+If you need named tokens, set them in `theme/styles/theme.css` as CSS variables and reference those.
+
+## Defaults
+
+When `colors` is omitted entirely, themes use their bundled defaults from each theme's own `theme.css`. Override CSS variables at the project level via `theme/styles/theme.css` if the bundled palette doesn't match your brand.

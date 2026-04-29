@@ -1,0 +1,51 @@
+---
+title: tangly preview
+description: Serve the built dist/ locally.
+icon: "eye"
+---
+
+# `tangly preview`
+
+Serves the production output of `tangly build` from a local HTTP server. Use it to sanity-check the built site before pushing to a CDN.
+
+## Usage
+
+```bash
+tangly preview [options]
+```
+
+Run it from the same directory as `tangly build` (so `dist/` resolves correctly), or pass `--root` and `--out` explicitly.
+
+## Options
+
+<ParamField path="--port <n>" type="number" default="4321">
+  Port to serve on.
+</ParamField>
+
+<ParamField path="--out <dir>" type="string" default="./dist">
+  Directory to serve. Must already contain a built site (run `tangly build` first).
+</ParamField>
+
+<ParamField path="--root <path>" type="string" default=".">
+  Project root. `--out` is resolved relative to this.
+</ParamField>
+
+## What it does
+
+`tangly preview` is a thin wrapper around Astro's `astro preview`. It serves static HTML, CSS, JS, and assets from `dist/` with the same routing the deployed site will use (extension-less URLs, directory index files).
+
+## Typical workflow
+
+```bash
+bun x tangly build       # produces dist/
+bun x tangly preview     # opens at http://localhost:4321
+```
+
+The preview server does not watch for source changes. Re-run `tangly build` after editing.
+
+## When to use it
+
+- Verify the production output before deploying.
+- Check Pagefind search (only available in built output, not dev).
+- Test the adapter-specific build artifacts (e.g. Vercel function metadata).
+- Reproduce a deployment-only bug locally.

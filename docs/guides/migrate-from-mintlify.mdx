@@ -26,7 +26,7 @@ Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CL
 
     What it does:
 
-    - **If you have `docs.json`** (Mintlify modern): validates against Tangly's schema, updates `$schema` to point at Tangly, swaps Mintlify theme aliases (`mint`, `maple`, `palm`, …) to `tang`. Use `--keep-theme` to skip the theme swap.
+    - **If you have `docs.json`** (Mintlify modern): validates against Tangly's schema, updates `$schema` to Tangly's URL, surfaces a notice if `theme` isn't a Tangly theme. The `theme` field itself is **not** auto-rewritten — pick one yourself before running `tangly dev`.
     - **If you have `mint.json`** (Mintlify legacy): full conversion to `docs.json`. Source is renamed to `mint.json.bak`. Use `--keep-source` to keep the original.
     - **If you have both**: prefers `docs.json` and leaves `mint.json` alone.
 
@@ -101,6 +101,3 @@ Browse both at the same time.
   When migrating from `mint.json`, retain the original instead of renaming it to `mint.json.bak`.
 </ParamField>
 
-<ParamField path="--keep-theme" type="boolean">
-  Don't swap Mintlify theme names (`mint`, `maple`, etc.) to `tang`. Useful if you want to keep the schema validating against your existing tooling.
-</ParamField>

@@ -1,0 +1,125 @@
+---
+title: Media & misc
+description: Icon, Tooltip, Badge, Snippet, Embed, Update.
+icon: "image"
+---
+
+# Media & misc
+
+Components that don't fit the other categories: small visual atoms (`Icon`, `Tooltip`, `Badge`), reusable content (`Snippet`, `Embed`), and release blocks (`Update`).
+
+## `<Icon>`
+
+Render a Lucide icon (with FA name aliasing). See [Icons](/reference/schema/icons) for the full alias map.
+
+<Icon icon="rocket" /> <Icon icon="zap" size={20} /> <Icon icon="settings" color="#0ea5e9" />
+
+```md
+<Icon icon="rocket" />
+<Icon icon="zap" size={20} />
+<Icon icon="settings" color="#0ea5e9" />
+```
+
+### Props
+
+<ParamField path="icon" type="string" required>Icon name (Lucide or aliased FA).</ParamField>
+<ParamField path="size" type="number | string" default="16">Pixel size or any CSS length.</ParamField>
+<ParamField path="color" type="string">CSS color override.</ParamField>
+<ParamField path="class" type="string">Extra class names appended to the SVG.</ParamField>
+
+## `<Tooltip>`
+
+Hoverable inline tooltip. Wrap text that should reveal a tip on hover or focus.
+
+This is <Tooltip tip="A self-hosted, open-source docs framework.">Tangly</Tooltip>.
+
+```md
+This is <Tooltip tip="A self-hosted, OSS docs framework.">Tangly</Tooltip>.
+```
+
+### Props
+
+<ParamField path="tip" type="string" required>The tooltip text.</ParamField>
+
+The wrapped content gets a dotted underline to signal hoverability.
+
+## `<Badge>`
+
+Small inline pill for status, version, or category labels.
+
+<Badge>default</Badge> <Badge variant="tip">tip</Badge> <Badge variant="warning">warning</Badge> <Badge variant="error">error</Badge>
+
+```md
+<Badge>default</Badge>
+<Badge variant="tip">tip</Badge>
+<Badge variant="warning">warning</Badge>
+<Badge variant="error">error</Badge>
+```
+
+### Props
+
+<ParamField path="variant" type="enum" default="default">
+  `default | tip | warning | error`. Each variant has distinct light/dark styling.
+</ParamField>
+
+## `<Snippet>`
+
+Reusable content fragment. Today, `<Snippet>` is a placeholder that renders inline children — full snippet resolution from `snippets/<file>.mdx` is on the roadmap.
+
+```md
+<Snippet file="shared/disclaimer">
+  Inline fallback content.
+</Snippet>
+```
+
+For now, prefer [`<Embed>`](#embed) for cross-page content reuse — it works at build time and is fully production-ready.
+
+### Props
+
+<ParamField path="file" type="string" required>
+  Relative path under `snippets/` (no extension). Used as a `data-snippet-file` attribute today; will be the resolution target when full snippets land.
+</ParamField>
+
+## `<Embed>`
+
+Pull a labeled block from another page into this page. Works at build time — no runtime cost.
+
+```md
+{/* On guides/billing.mdx: */}
+## Rate limits {#rate-limits}
+
+API calls are limited to 100 / minute per key.
+
+---
+
+{/* On reference/api.mdx: */}
+<Embed page="guides/billing" block="rate-limits" />
+```
+
+### Props
+
+<ParamField path="page" type="string" required>
+  Source page slug (no leading `/`).
+</ParamField>
+
+<ParamField path="block" type="string" required>
+  Block ID. Either an auto-generated heading slug (`rate-limits`) or an explicit `{#id}` marker (`## Heading {#my-id}`).
+</ParamField>
+
+### How it works
+
+1. The manifest extracts every heading's ID and the Markdown content following it from every page.
+2. `<Embed>` looks up the block, sanitizes the Markdown, and renders the HTML inline.
+3. A "View in /\<page>" link points to the source.
+4. Cycle detection runs at build time — `A → B → A` fails the build with a clear error.
+
+### Limitations
+
+- Embedded fragments render as **Markdown only** — no MDX components or JSX.
+- Nested embeds in source content are rejected at build time (the cycle promise can't be honored otherwise).
+
+See [Embedded blocks](/guides/embedded-blocks) for the end-to-end guide.
+
+## `<Update>`
+
+Release block for changelogs. See [Callouts → Update](/reference/components/callouts#update).

@@ -28,7 +28,7 @@ If `dir` is omitted, scaffolds into the current directory.
     `api` — sample with OpenAPI integration.
   </Step>
   <Step title="Writes files">
-    `docs.json`, `introduction.mdx`, `package.json`, `.gitignore`, `README.md`.
+    `docs.json` and `introduction.mdx`. Existing `package.json` is left alone — install Tangly yourself with `bun add -D tangly` (or your preferred package manager).
   </Step>
 </Steps>
 
@@ -37,14 +37,17 @@ If `dir` is omitted, scaffolds into the current directory.
 ```
 my-docs/
 ├── docs.json
-├── introduction.mdx
-├── package.json
-├── .gitignore
-└── README.md
+└── introduction.mdx
 ```
 
-After init, `cd my-docs && bun x tangly dev` starts the dev server.
+After init, install Tangly and start the dev server:
+
+```bash
+cd my-docs
+bun add -D tangly
+bun x tangly dev
+```
 
 ## Errors
 
-`tangly init` refuses to overwrite an existing `docs.json`. If you want to migrate an existing Mintlify project, use [`tangly upgrade`](/howto/migrate-from-mintlify) instead.
+`tangly init` refuses to overwrite an existing `docs.json`. If you want to migrate an existing Mintlify project, use [`tangly migrate`](/reference/cli/migrate) instead.

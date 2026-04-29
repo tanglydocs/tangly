@@ -1,18 +1,20 @@
 ---
 title: Quickstart
-description: Spin up a new Tangly project in under a minute.
+description: Scaffold a Tangly project, edit a page, and ship a build.
 icon: "zap"
 ---
 
 # Quickstart
 
-Get a new docs site running with one command.
+Five minutes from empty directory to deployed static site.
 
 <Steps>
   <Step title="Install">
     ```bash
     bun add -D tangly
     ```
+
+    See [Installation](/installation) for pnpm/npm/yarn.
   </Step>
 
   <Step title="Scaffold">
@@ -21,7 +23,7 @@ Get a new docs site running with one command.
     cd my-docs
     ```
 
-    This drops a `docs.json` and an `introduction.mdx` page in the directory.
+    `init` prompts for a project name and template (basic, api, or starter-from-mintlify), then drops a `docs.json` plus a few starter pages.
   </Step>
 
   <Step title="Run dev">
@@ -29,7 +31,45 @@ Get a new docs site running with one command.
     bun x tangly dev
     ```
 
-    Opens at `http://localhost:4321`. Edits to `docs.json` or any `*.mdx` hot-reload in the browser.
+    Opens at `http://localhost:4321`. Edits to `docs.json` or any `*.mdx` hot-reload in under 250ms. Drafts (`draft: true` frontmatter) are visible in dev and hidden in build.
+  </Step>
+
+  <Step title="Add a page">
+    Create `guides/concepts.mdx`:
+
+    ```md
+    ---
+    title: Concepts
+    description: Core ideas behind the product.
+    icon: book
+    ---
+
+    # Concepts
+
+    Body content. Markdown, MDX, components — all of it works.
+    ```
+
+    Reference it in `docs.json`:
+
+    ```json
+    {
+      "navigation": {
+        "tabs": [
+          {
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": ["introduction", "guides/concepts"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    ```
+
+    The browser refreshes without a server restart.
   </Step>
 
   <Step title="Build">
@@ -37,57 +77,50 @@ Get a new docs site running with one command.
     bun x tangly build
     ```
 
-    Static output lands in `dist/`. Adapter is auto-detected (`vercel.json` → Vercel, `wrangler.toml` → Cloudflare, `Dockerfile` → Node, else static).
+    Static output lands in `dist/`. The adapter is auto-detected from your repo:
+
+    | File present | Adapter |
+    | --- | --- |
+    | `vercel.json` | `vercel` |
+    | `wrangler.toml` / `wrangler.jsonc` | `cloudflare` |
+    | `Dockerfile` | `node` |
+    | (none) | `static` |
+
+    Override with `--adapter <name>`. See [Deploying](/guides/deploying) for the recipes.
+  </Step>
+
+  <Step title="Preview the build">
+    ```bash
+    bun x tangly preview
+    ```
+
+    Serves `dist/` locally so you can sanity-check the production output before pushing.
   </Step>
 </Steps>
 
-## Adding a page
+## Already on Mintlify?
 
-Drop a new `.mdx` file under your project root and reference it from `docs.json`:
-
-```md
----
-title: My new page
-description: A short description.
----
-
-# Hello world
-
-Body content goes here.
-```
-
-```json
-{
-  "navigation": {
-    "groups": [
-      {
-        "group": "Get Started",
-        "pages": ["introduction", "my-new-page"]
-      }
-    ]
-  }
-}
-```
-
-Save both files. The browser updates without restart.
-
-## Migrating from Mintlify
-
-If you already have a Mintlify project:
+If you have an existing `mint.json` project, run:
 
 ```bash
-bun x tangly upgrade
+bun x tangly migrate
 ```
 
-This converts `mint.json` → `docs.json` and bumps `tangly` to the latest. Existing MDX files render unchanged. See [Migrate from Mintlify](/howto/migrate-from-mintlify).
+This rewrites `mint.json` → `docs.json` and bumps `tangly` to the latest. Existing MDX files render unchanged. See [Migrate from Mintlify](/guides/migrate-from-mintlify).
 
-## Next
+## What's next
 
 <CardGroup cols={2}>
   <Card title="Configuration" icon="settings" href="/guides/configuration">
-    All `docs.json` fields and theme options.
+    Every `docs.json` field — theme, colors, navigation, analytics, search.
   </Card>
-  <Card title="Components" icon="puzzle" href="/guides/components">
-    The full component reference with prop signatures.
+  <Card title="Component reference" icon="puzzle" href="/reference/components/callouts">
+    Card, Tabs, Steps, ParamField, OpenApiEndpoint — the full set.
+  </Card>
+  <Card title="Drafts" icon="file-clock" href="/guides/drafts">
+    Hide unfinished pages in build, surface them in dev.
+  </Card>
+  <Card title="Deploying" icon="rocket" href="/guides/deploying">
+    Vercel, Cloudflare Pages, Netlify, Docker, plain static.
   </Card>
 </CardGroup>

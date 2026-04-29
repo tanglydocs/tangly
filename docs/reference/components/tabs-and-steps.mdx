@@ -1,12 +1,16 @@
 ---
-title: Tabs & Steps
-description: Tabs, Tab, Steps, Step, Accordion.
+title: Tabs, Steps, Accordions
+description: Tabs, Tab, Steps, Step, Accordion, AccordionGroup, Expandable.
 icon: "list-ordered"
 ---
 
-# Tabs & Steps
+# Tabs, Steps, Accordions
 
-## Tabs
+Disclosure and selection UI. All components auto-inject — no imports needed.
+
+## `<Tabs>` / `<Tab>`
+
+Tabbed content panels. Click to switch.
 
 <Tabs>
   <Tab title="bun">`bun add tangly`</Tab>
@@ -21,29 +25,59 @@ icon: "list-ordered"
 </Tabs>
 ```
 
-## Steps
+### `<Tab>` props
+
+<ParamField path="title" type="string">
+  Label shown in the tab strip.
+</ParamField>
+
+The first `<Tab>` is active by default.
+
+## `<Steps>` / `<Step>`
+
+Numbered, vertical stepper for sequential instructions.
 
 <Steps>
   <Step title="Install">First step.</Step>
-  <Step title="Configure">Second step.</Step>
+  <Step title="Configure" icon="settings">Second step with an icon.</Step>
   <Step title="Run">Third step.</Step>
 </Steps>
 
 ```md
 <Steps>
-  <Step title="...">...</Step>
+  <Step title="Install">...</Step>
+  <Step title="Configure" icon="settings">...</Step>
 </Steps>
 ```
 
-`<Step>` accepts an optional `icon` and `titleSize` (`p | h2 | h3`).
+### `<Step>` props
 
-## Accordion
+<ParamField path="title" type="string">
+  Step heading.
+</ParamField>
+
+<ParamField path="icon" type="string">
+  Optional Lucide / FA icon. Replaces the step number.
+</ParamField>
+
+<ParamField path="titleSize" type="enum">
+  `p` (default) | `h2` | `h3`. Controls the heading element used for the title.
+</ParamField>
+
+## `<Accordion>` / `<AccordionGroup>`
+
+Collapsible Q&A.
 
 <AccordionGroup>
   <Accordion title="What is Tangly?" defaultOpen>
     A self-hosted docs framework that renders Mintlify projects unmodified.
   </Accordion>
-  <Accordion title="Why Astro?">Static-first, fast cold start, mature MDX integration.</Accordion>
+  <Accordion title="Why Astro?" icon="zap">
+    Static-first, fast cold start, mature MDX integration.
+  </Accordion>
+  <Accordion title="Can I use my own theme?">
+    Yes — drop a `theme/` directory at your project root and override any component.
+  </Accordion>
 </AccordionGroup>
 
 ```md
@@ -54,4 +88,46 @@ icon: "list-ordered"
 </AccordionGroup>
 ```
 
-`<Accordion>` accepts `title`, `defaultOpen`, `icon`, `description`.
+### `<Accordion>` props
+
+<ParamField path="title" type="string">
+  Accordion heading (clickable).
+</ParamField>
+
+<ParamField path="defaultOpen" type="boolean">
+  Whether to render expanded.
+</ParamField>
+
+<ParamField path="icon" type="string">
+  Optional icon next to the title.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Subtitle below the title (visible whether collapsed or open).
+</ParamField>
+
+`<AccordionGroup>` accepts no props — it just clusters accordions visually with consistent spacing.
+
+## `<Expandable>`
+
+Inline disclosure (single-item, no group).
+
+<Expandable title="Show more details">
+  Body content. Shorter than `<Accordion>` and intended for quick asides inside prose.
+</Expandable>
+
+```md
+<Expandable title="Show more details">
+  Body content.
+</Expandable>
+```
+
+### `<Expandable>` props
+
+<ParamField path="title" type="string">
+  Summary text (clickable).
+</ParamField>
+
+<ParamField path="defaultOpen" type="boolean">
+  Whether to render expanded.
+</ParamField>

@@ -1,7 +1,7 @@
 {
   "$schema": "../packages/schema/dist/docs.json",
   "name": "Tangly",
-  "description": "Self-hosted, open-source docs framework. Renders Mintlify projects unmodified.",
+  "description": "Self-hosted, open-source documentation framework.",
   "theme": "tang",
   "colors": {
     "primary": "#0ea5e9",
@@ -16,7 +16,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": ["introduction", "quickstart", "installation"]
+            "pages": ["introduction", "installation", "quickstart"]
           },
           {
             "group": "Core",
@@ -26,22 +26,25 @@
               "guides/components",
               "guides/themes",
               "guides/openapi",
-              "guides/search",
-              "guides/deploying"
+              "guides/search"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "How-To",
-        "groups": [
-          {
-            "group": "Migration",
-            "pages": ["howto/migrate-from-mintlify"]
           },
           {
             "group": "Customization",
-            "pages": ["howto/custom-components", "howto/custom-templates", "howto/drafts", "howto/embedded-blocks"]
+            "pages": [
+              "guides/custom-components",
+              "guides/custom-templates",
+              "guides/drafts",
+              "guides/embedded-blocks"
+            ]
+          },
+          {
+            "group": "Deploying",
+            "pages": ["guides/deploying"]
+          },
+          {
+            "group": "Migration",
+            "pages": ["guides/migrate-from-mintlify"]
           }
         ]
       },
@@ -53,13 +56,23 @@
             "pages": [
               "reference/cli/dev",
               "reference/cli/build",
+              "reference/cli/preview",
               "reference/cli/check",
-              "reference/cli/init"
+              "reference/cli/init",
+              "reference/cli/migrate",
+              "reference/cli/add",
+              "reference/cli/eject"
             ]
           },
           {
             "group": "Schema",
-            "pages": ["reference/schema/docs-json", "reference/schema/frontmatter"]
+            "pages": [
+              "reference/schema/docs-json",
+              "reference/schema/frontmatter",
+              "reference/schema/themes",
+              "reference/schema/colors",
+              "reference/schema/icons"
+            ]
           },
           {
             "group": "Components",
@@ -67,7 +80,10 @@
               "reference/components/callouts",
               "reference/components/cards",
               "reference/components/tabs-and-steps",
-              "reference/components/code"
+              "reference/components/code",
+              "reference/components/layout",
+              "reference/components/api",
+              "reference/components/media"
             ]
           }
         ]
@@ -109,9 +125,5 @@
     "socials": {
       "github": "https://github.com/tanglydocs/tangly"
     }
-  },
-  "fonts": {
-    "heading": { "family": "Inter", "weight": 600 },
-    "body": { "family": "Inter", "weight": 400 }
   }
 }

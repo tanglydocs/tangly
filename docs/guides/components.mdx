@@ -1,14 +1,18 @@
 ---
 title: Components
-description: Mintlify-compatible MDX components shipped with Tangly.
+description: MDX components shipped with Tangly — overview and per-page reference links.
 icon: "puzzle"
 ---
 
 # Components
 
-All components are auto-injected into MDX — no imports required. Prop signatures match Mintlify exactly.
+All 28 built-in components are auto-injected into MDX — no imports required. Prop signatures match Mintlify exactly so existing content renders unchanged.
 
-## Callouts
+For full prop reference per component, see the [Components reference](/reference/components/callouts).
+
+## Quick tour
+
+### Callouts
 
 <Note>This is a Note.</Note>
 <Tip>This is a Tip.</Tip>
@@ -20,10 +24,10 @@ All components are auto-injected into MDX — no imports required. Prop signatur
 ```md
 <Note>Heads up.</Note>
 <Tip>Pro tip.</Tip>
-<Warning>Heads down.</Warning>
+<Warning>Watch out.</Warning>
 ```
 
-## Cards
+### Cards
 
 <CardGroup cols={2}>
   <Card title="With href" icon="arrow-right" href="/quickstart">
@@ -34,7 +38,7 @@ All components are auto-injected into MDX — no imports required. Prop signatur
   </Card>
 </CardGroup>
 
-## Tabs
+### Tabs
 
 <Tabs>
   <Tab title="bun">
@@ -44,12 +48,12 @@ All components are auto-injected into MDX — no imports required. Prop signatur
   </Tab>
   <Tab title="npm">
     ```bash
-    npm exec tangly dev
+    npx tangly dev
     ```
   </Tab>
 </Tabs>
 
-## Steps
+### Steps
 
 <Steps>
   <Step title="One">First step.</Step>
@@ -57,22 +61,14 @@ All components are auto-injected into MDX — no imports required. Prop signatur
   <Step title="Three">Third step.</Step>
 </Steps>
 
-## Accordion
+### Accordion
 
 <AccordionGroup>
   <Accordion title="Question one">Answer one.</Accordion>
   <Accordion title="Question two">Answer two.</Accordion>
 </AccordionGroup>
 
-## Code groups
-
-```ts example.ts
-console.log('hello' as const)
-```
-
-Wrap multiple blocks in a `<CodeGroup>` to render a tabbed switcher above them.
-
-## API documentation
+### API rows
 
 <ParamField path="user_id" type="string" required>
   The user's UUID.
@@ -82,31 +78,28 @@ Wrap multiple blocks in a `<CodeGroup>` to render a tabbed switcher above them.
   The user's email address.
 </ResponseField>
 
-## Update (changelog)
+## All components
 
-<Update label="v0.0.1" description="2026-04-29" tags={["alpha"]}>
-  ## Initial release
+| Component | Reference page |
+| --------- | -------------- |
+| `Card`, `CardGroup`, `Columns` | [Cards](/reference/components/cards) |
+| `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger`, `Update` | [Callouts](/reference/components/callouts) |
+| `Tabs`, `Tab`, `Steps`, `Step`, `Accordion`, `AccordionGroup`, `Expandable` | [Tabs, Steps, Accordions](/reference/components/tabs-and-steps) |
+| `CodeGroup` (and fenced code blocks) | [Code](/reference/components/code) |
+| `Frame`, `Columns`, `Expandable` | [Layout](/reference/components/layout) |
+| `ParamField`, `ResponseField`, `RequestExample`, `ResponseExample`, `OpenApiEndpoint`, `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight` | [API components](/reference/components/api) |
+| `Icon`, `Tooltip`, `Badge`, `Snippet`, `Embed` | [Media & misc](/reference/components/media) |
 
-  Phase 1 lands: render Mintlify projects unmodified.
-</Update>
+## Customizing
 
-## Full list
+Override any component by [shadowing](/guides/custom-components) — drop a file at `<userRoot>/components/<Name>.{astro,tsx}` and Vite resolves your version everywhere it's used.
 
-| Component | Use for |
-|---|---|
-| `Card`, `CardGroup` | Click-through cards |
-| `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger` | Callouts |
-| `Tabs`, `Tab` | Tabbed content |
-| `Steps`, `Step` | Numbered procedures |
-| `Accordion`, `AccordionGroup` | Collapsible Q&A |
-| `CodeGroup` | Multi-language code |
-| `Frame` | Image with caption |
-| `Tooltip` | Inline hover tip |
-| `Icon` | Lucide icon by name |
-| `Badge` | Inline label |
-| `Expandable` | Inline disclosure (used inside `ParamField`) |
-| `ParamField`, `ResponseField` | API doc rows |
-| `RequestExample`, `ResponseExample` | API request/response panels |
-| `Update` | Changelog entry (label/description/tags) |
-| `Snippet` | Reusable MDX (Phase 2) |
-| `Columns` | Free-form grid |
+For new components that aren't in the built-in set, import them explicitly in your MDX:
+
+```md
+import Tldr from "../components/Tldr.astro";
+
+<Tldr>Short summary.</Tldr>
+```
+
+Auto-registration via `tangly.config.ts` is on the roadmap but not yet wired.
