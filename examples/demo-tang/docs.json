@@ -19,7 +19,7 @@
           },
           {
             "group": "Guides",
-            "pages": ["guides/keys", "guides/rotation"]
+            "pages": ["guides/keys", "guides/rotation", "guides/code-blocks"]
           }
         ]
       },
@@ -34,10 +34,21 @@
       }
     ]
   },
+  "appearance": {
+    "readingTime": true,
+    "readingProgress": true
+  },
   "navbar": {
     "primary": { "type": "button", "label": "Sign up", "href": "https://example.com/signup" }
   },
   "footer": {
+    "lastUpdated": true,
     "socials": { "github": "https://github.com/example/cipher" }
+  },
+  "banner": {
+    "id": "v02",
+    "type": "info",
+    "dismissible": true,
+    "content": "Cipher 0.2 is here — see the <a href=\"/guides/code-blocks\">new code blocks</a>."
   }
 }
