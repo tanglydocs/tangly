@@ -52,12 +52,14 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
             resolve: {
               alias: {
                 "@user": userRoot,
-                // Order matters: user overrides first, then theme styles,
-                // then deprecated shadow map (also user-driven), then
-                // template alias.
-                ...userThemeAliases,
+                // Order matters: object-spread later keys win on duplicate
+                // keys. Both `shadows` and `userThemeAliases` write
+                // `@tangly/theme-ui/components/<Name>.astro`, so the
+                // newer (more specific) `theme/components/` overrides
+                // must come *after* the legacy `components/` shadows.
                 ...themeStylesAlias,
                 ...shadows,
+                ...userThemeAliases,
                 ...templateAliases,
               },
             },

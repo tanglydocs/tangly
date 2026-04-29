@@ -1,5 +1,5 @@
-// Barrel re-export for all Mintlify-compatible MDX components.
-// Use these in your MDX content via the configured MDX components map.
+// Barrel re-export for the MDX component set. Wired into the runtime's
+// MDX components map so they're available unprefixed in every page.
 
 export { default as Card } from "./Card.astro";
 export { default as CardGroup } from "./CardGroup.astro";
