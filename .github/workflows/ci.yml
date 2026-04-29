@@ -22,6 +22,9 @@ jobs:
       - uses: ./.github/actions/setup
       - run: bun run format:check
       - run: bun run lint
+      # Workspace pkgs reference each other via dist/.d.ts; build first.
+      - name: Build (so downstream typecheck sees emitted .d.ts)
+        run: bun run build
       - run: bun run typecheck
 
   test:
