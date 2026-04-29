@@ -335,6 +335,13 @@ export const DocsJsonSchema = z
       .object({
         content: z.string(),
         dismissible: z.boolean().optional(),
+        /**
+         * Stable ID. Used as the localStorage dismissal key — change the
+         * id to re-show after a previous dismiss.
+         */
+        id: z.string().optional(),
+        /** Tone (color). Default: info. */
+        type: z.enum(["info", "warning", "success"]).optional(),
       })
       .strict()
       .optional(),

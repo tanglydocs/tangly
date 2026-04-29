@@ -184,7 +184,7 @@ function humanizeSlug(slug: string): string {
     pageTitle={fmTitle}
     pageDescription={fmDesc}
   >
-    <PageShell page={renderedPage}>
+    <PageShell page={renderedPage} config={manifest.config}>
       {/* Order: companion-MDX puts narrative ABOVE the endpoint render;
           pure `openapi:` frontmatter renders the endpoint above (no MDX). */}
       {isCompanion && Content ? <Content components={mdxComponents} /> : null}

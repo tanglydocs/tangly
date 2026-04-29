@@ -185,6 +185,46 @@
   background-color: var(--shiki-dark-bg) !important;
 }
 
+/* Announcement / banner bar. */
+.tangly-banner {
+  background: rgb(245, 247, 250);
+  color: rgb(82, 82, 91);
+  border-bottom: 1px solid var(--tangly-color-border, #e5e7eb);
+}
+.tangly-banner a {
+  color: var(--tangly-color-primary, #0ea5e9);
+  text-decoration: underline;
+}
+.dark .tangly-banner {
+  background: rgb(24, 26, 32);
+  color: rgb(212, 212, 216);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+.tangly-banner-warning {
+  background: rgb(254, 249, 195);
+  color: rgb(120, 53, 15);
+}
+.dark .tangly-banner-warning {
+  background: rgba(120, 53, 15, 0.25);
+  color: rgb(254, 240, 138);
+}
+.tangly-banner-success {
+  background: rgb(220, 252, 231);
+  color: rgb(22, 101, 52);
+}
+.dark .tangly-banner-success {
+  background: rgba(22, 101, 52, 0.25);
+  color: rgb(187, 247, 208);
+}
+.tangly-banner-dismiss {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: inherit;
+}
+
 /* Inline code in prose. */
 :not(pre) > code {
   padding: 0.125rem 0.35rem;

@@ -21,6 +21,20 @@ export const FrontmatterSchema = z
     draft: z.boolean().optional(),
     template: z.string().optional(),
     aiContext: z.string().optional(),
+    /**
+     * Override the page's last-updated stamp. `false` hides it. ISO date
+     * string overrides the git-derived value.
+     */
+    lastUpdated: z.union([z.boolean(), z.string()]).optional(),
+    /**
+     * Override the page's reading-time stamp. `false` hides it. Number
+     * overrides the auto-computed minutes.
+     */
+    readingTime: z.union([z.boolean(), z.number()]).optional(),
+    /** Override the page's edit-on-source URL. */
+    editUrl: z.string().optional(),
+    /** Disable glossary auto-linking on this page. */
+    glossary: z.boolean().optional(),
     seo: z
       .object({
         title: z.string().optional(),

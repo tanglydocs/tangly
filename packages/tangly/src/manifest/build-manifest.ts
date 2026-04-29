@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve, sep } from "node:path";
 import { parseDocsJson } from "@tangly/schema";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
+import { resolveEditUrl } from "./git-meta.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
 import { resolveSectionDefaults } from "./section-defaults.js";
@@ -60,6 +61,15 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
 
   const includeDrafts = opts.includeDrafts ?? false;
 
+  // Footer config drives last-updated + edit-on-source. We cache the
+  // resolved editUrl per page so PageShell can render a one-click link
+  // without redoing remote-URL parsing on every render.
+  const footer = config.footer as
+    | { lastUpdated?: boolean; editUrl?: string; repo?: string }
+    | undefined;
+  const editUrlTemplate = footer?.editUrl;
+  const repo = footer?.repo;
+
   for (const slug of navSlugs) {
     const disk = diskPages.get(slug);
     if (!disk) {
@@ -96,6 +106,40 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     // can resolve targets at SSR time.
     const blocks = extractBlocks(disk.content).blocks;
 
+    // Resolve last-updated: page frontmatter wins, falls back to git.
+    let lastUpdated: string | undefined;
+    const fmLast = fm.lastUpdated;
+    if (typeof fmLast === "string") {
+      lastUpdated = fmLast;
+    } else if (fmLast === false) {
+      lastUpdated = undefined;
+    } else {
+      lastUpdated = disk.lastUpdated;
+    }
+
+    // Reading time: page frontmatter wins.
+    let readingTime: number | undefined;
+    const fmRead = fm.readingTime;
+    if (typeof fmRead === "number") {
+      readingTime = fmRead;
+    } else if (fmRead === false) {
+      readingTime = undefined;
+    } else {
+      readingTime = disk.readingTime;
+    }
+
+    // editUrl: per-page frontmatter override, then config template/repo.
+    const pageRel = relative(root, disk.file).split(sep).join("/");
+    const editUrl =
+      typeof fm.editUrl === "string"
+        ? fm.editUrl
+        : (resolveEditUrl({
+            root,
+            pagePathRelative: pageRel,
+            ...(editUrlTemplate ? { editUrlTemplate } : {}),
+            ...(repo ? { repo } : {}),
+          }) ?? undefined);
+
     pages.set(slug, {
       slug,
       file: disk.file,
@@ -106,6 +150,9 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       prev,
       next,
       draft: isDraft,
+      ...(lastUpdated ? { lastUpdated } : {}),
+      ...(typeof readingTime === "number" ? { readingTime } : {}),
+      ...(editUrl ? { editUrl } : {}),
       ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
     });
   }
