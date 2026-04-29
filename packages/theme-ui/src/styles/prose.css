@@ -64,12 +64,12 @@
   line-height: 1.65;
 }
 
-.prose-tang a {
+.prose-tang :where(p, li, td, th, h2, h3, h4, h5, h6) a {
   color: var(--tangly-color-primary);
   text-decoration: none;
   border-bottom: 1px solid transparent;
 }
-.prose-tang a:hover {
+.prose-tang :where(p, li, td, th, h2, h3, h4, h5, h6) a:hover {
   border-bottom-color: currentColor;
 }
 
@@ -88,6 +88,10 @@
 }
 :where(.prose-tang ol) {
   list-style: decimal;
+}
+:where(.prose-tang ol.tangly-steps, .prose-tang ol.list-none, .prose-tang ul.list-none) {
+  list-style: none;
+  padding-left: 0;
 }
 :where(.prose-tang li + li) {
   margin-top: 0.35em;

@@ -56,10 +56,12 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
-        with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+      - name: Configure npm auth (bun publish reads ~/.npmrc literally)
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
 
       - name: Safety gate (format / lint / typecheck / test / build)
         run: bun run ci
