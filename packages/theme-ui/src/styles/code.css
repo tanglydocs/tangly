@@ -225,6 +225,76 @@
   color: inherit;
 }
 
+/* Lightbox modal. */
+.tangly-lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+  touch-action: pinch-zoom;
+}
+.tangly-lightbox-modal[hidden] {
+  display: none;
+}
+.tangly-lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: default;
+}
+.tangly-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+/* Glossary auto-link tooltip. */
+.tangly-glossary-term {
+  border-bottom: 1px dotted var(--tangly-color-primary, #0ea5e9);
+  position: relative;
+  cursor: help;
+  text-decoration: none;
+  color: inherit;
+}
+.tangly-glossary-term:hover::after {
+  content: attr(data-definition);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  width: max-content;
+  max-width: 24rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--tangly-color-fg);
+  background: rgb(255, 255, 255);
+  border: 1px solid var(--tangly-color-border);
+  border-radius: 0.4rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  white-space: normal;
+  pointer-events: none;
+}
+.dark .tangly-glossary-term:hover::after {
+  background: rgb(24, 24, 27);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Inline code in prose. */
 :not(pre) > code {
   padding: 0.125rem 0.35rem;

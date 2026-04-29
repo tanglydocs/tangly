@@ -1,0 +1,135 @@
+---
+// Video embed. Detects YouTube, Vimeo, or direct mp4 from `src`. Renders
+// in a 16:9 frame with rounded corners. Lazy-loads the iframe via
+// IntersectionObserver — no embed traffic until the user scrolls near.
+//
+// Usage:
+//   <Video src="https://www.youtube.com/watch?v=..." />
+//   <Video src="/videos/demo.mp4" poster="/videos/poster.jpg" />
+//   <Video src="https://vimeo.com/123" transcript="/transcripts/demo.txt" />
+
+export interface Props {
+  src: string;
+  poster?: string;
+  transcript?: string;
+  title?: string;
+}
+
+const { src, poster, transcript, title } = Astro.props as Props;
+
+function detectKind(url: string): "youtube" | "vimeo" | "mp4" | "iframe" {
+  if (/youtube\.com\/watch|youtu\.be\//.test(url)) return "youtube";
+  if (/vimeo\.com\//.test(url)) return "vimeo";
+  if (/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url)) return "mp4";
+  return "iframe";
+}
+
+function embedUrl(kind: string, url: string): string {
+  if (kind === "youtube") {
+    const m = url.match(/(?:v=|youtu\.be\/)([\w-]+)/);
+    const id = m?.[1] ?? "";
+    return `https://www.youtube-nocookie.com/embed/${id}`;
+  }
+  if (kind === "vimeo") {
+    const m = url.match(/vimeo\.com\/(\d+)/);
+    const id = m?.[1] ?? "";
+    return `https://player.vimeo.com/video/${id}`;
+  }
+  return url;
+}
+
+const kind = detectKind(src);
+const embed = embedUrl(kind, src);
+const labelTitle = title ?? "Embedded video";
+---
+<figure class="tangly-video">
+  {kind === "mp4" ? (
+    <video
+      controls
+      preload="metadata"
+      {...(poster ? { poster } : {})}
+      class="tangly-video-frame"
+    >
+      <source src={src} />
+    </video>
+  ) : (
+    <div class="tangly-video-frame" data-tangly-video data-embed={embed}>
+      {poster && (
+        <img src={poster} alt={labelTitle} class="tangly-video-poster" loading="lazy" />
+      )}
+      <noscript>
+        <iframe src={embed} title={labelTitle} allowfullscreen loading="lazy"></iframe>
+      </noscript>
+    </div>
+  )}
+  {transcript && (
+    <figcaption class="tangly-video-transcript">
+      <a href={transcript}>Transcript</a>
+    </figcaption>
+  )}
+</figure>
+
+<style is:global>
+.tangly-video {
+  margin: 1.25rem 0;
+}
+.tangly-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 0.625rem;
+  overflow: hidden;
+  background: rgb(24, 24, 27);
+}
+.tangly-video-frame iframe,
+.tangly-video-frame video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.tangly-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tangly-video-transcript {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--tangly-color-muted);
+}
+.tangly-video-transcript a {
+  color: var(--tangly-color-primary);
+  text-decoration: underline;
+}
+</style>
+
+<script is:inline>
+  // Lazy-load embed iframe once the placeholder enters viewport.
+  (() => {
+    const placeholders = document.querySelectorAll("[data-tangly-video]");
+    if (placeholders.length === 0 || !("IntersectionObserver" in window)) return;
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target;
+        const embed = el.dataset.embed;
+        if (!embed) continue;
+        const iframe = document.createElement("iframe");
+        iframe.src = embed;
+        iframe.allowFullscreen = true;
+        iframe.loading = "lazy";
+        iframe.title = "Embedded video";
+        // Replace placeholder children (poster image / noscript) with the iframe.
+        while (el.firstChild) el.removeChild(el.firstChild);
+        el.appendChild(iframe);
+        delete el.dataset.embed;
+        obs.unobserve(el);
+      }
+    }, { rootMargin: "200px" });
+    placeholders.forEach((p) => obs.observe(p));
+  })();
+</script>

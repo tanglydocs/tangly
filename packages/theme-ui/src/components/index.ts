@@ -4,8 +4,12 @@
 export { default as Card } from "./Card.astro";
 export { default as CardGroup } from "./CardGroup.astro";
 export { default as CodeGroup } from "./CodeGroup.astro";
+export { default as FileTree } from "./FileTree.astro";
 export { default as Frame } from "./Frame.astro";
+export { default as Kbd } from "./Kbd.astro";
+export { default as LightboxImage } from "./LightboxImage.astro";
 export { default as PackageManager } from "./PackageManager.astro";
+export { default as Video } from "./Video.astro";
 
 // Callouts
 export { default as Note } from "./Note.astro";
@@ -26,6 +30,7 @@ export { default as AccordionGroup } from "./AccordionGroup.astro";
 
 // Layout / inline / API
 export { default as Columns } from "./Columns.astro";
+export { default as GlossaryTerm } from "./GlossaryTerm.astro";
 export { default as Tooltip } from "./Tooltip.astro";
 export { default as Icon } from "./Icon.astro";
 export { default as Badge } from "./Badge.astro";
