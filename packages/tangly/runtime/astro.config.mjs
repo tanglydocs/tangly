@@ -8,6 +8,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
+import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import tailwind from "@tailwindcss/vite";
 import { tanglyIntegration } from "tangly/plugin";
@@ -50,11 +51,7 @@ const output = "static";
 if (adapterName === "vercel") {
   const { default: vercel } = await import("@astrojs/vercel");
   adapter = vercel({ webAnalytics: { enabled: false } });
-} else if (
-  adapterName !== "static" &&
-  adapterName !== "cloudflare" &&
-  adapterName !== "node"
-) {
+} else if (adapterName !== "static" && adapterName !== "cloudflare" && adapterName !== "node") {
   throw new Error(
     `[tangly] Unknown adapter "${adapterName}". Expected: vercel | cloudflare | node | static.`,
   );
@@ -67,7 +64,13 @@ export default defineConfig({
   integrations: [
     tanglyIntegration({ userRoot, configFile, includeDrafts }),
     mdx({
-      remarkPlugins: [remarkMintlifyCompat, remarkExplicitIds, remarkGfm, remarkMath],
+      remarkPlugins: [
+        remarkMintlifyCompat,
+        remarkExplicitIds,
+        remarkMermaid,
+        remarkGfm,
+        remarkMath,
+      ],
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,

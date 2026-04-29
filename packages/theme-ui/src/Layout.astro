@@ -1,10 +1,15 @@
 ---
 import type { DocsJson } from "@tangly/schema";
 import type { PageEntry, ResolvedNavigation } from "tangly";
-import TopNav from "./TopNav.astro";
-import Sidebar from "./Sidebar.astro";
-import Footer from "./Footer.astro";
-import SearchModal from "./SearchModal.astro";
+// Import shells via package specifiers so user overrides at
+// `<userRoot>/theme/<Name>.astro` (wired through Vite alias by the Tangly
+// integration) actually intercept these. Relative imports would bypass
+// the alias and pin to the bundled defaults.
+import TopNav from "@tangly/theme-ui/TopNav.astro";
+import Sidebar from "@tangly/theme-ui/Sidebar.astro";
+import Footer from "@tangly/theme-ui/Footer.astro";
+import SearchModal from "@tangly/theme-ui/SearchModal.astro";
+import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
 // `@tangly/theme/theme.css` is resolved by the Tangly Astro integration to
 // the active theme's `styles/theme.css` (theme-tang or theme-pith), with
 // `<userRoot>/theme/styles/theme.css` overriding when present.
@@ -153,8 +158,12 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
           const root = document.documentElement;
           const isDark = root.classList.toggle("dark");
           try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+          // Re-render mermaid diagrams (if any) under the new theme.
+          document.dispatchEvent(new CustomEvent("tangly:rerender-mermaid"));
         });
       })();
     </script>
+
+    <MermaidLoader />
   </body>
 </html>
