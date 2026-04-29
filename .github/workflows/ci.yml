@@ -41,8 +41,10 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           bun-version: ${{ matrix.bun }}
-      - run: bun run test
+      # Build first so cross-workspace imports (@tanglydocs/schema, etc.)
+      # resolve to emitted dist/ during vitest's vite resolve.
       - run: bun run build
+      - run: bun run test
 
   smoke:
     name: smoke (${{ matrix.os }})
