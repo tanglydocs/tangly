@@ -26,7 +26,9 @@ function findFigure(li: Element): Element | null {
 }
 
 function setActive(parent: Element, selector: string, n: string, on: boolean) {
-  const target = parent.querySelector(`${selector}[data-tangly-annotation${selector === "li" ? "-target" : ""}="${n}"]`);
+  const target = parent.querySelector(
+    `${selector}[data-tangly-annotation${selector === "li" ? "-target" : ""}="${n}"]`,
+  );
   if (!target) return;
   if (on) target.setAttribute("data-active", "");
   else target.removeAttribute("data-active");

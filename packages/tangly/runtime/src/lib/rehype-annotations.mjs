@@ -72,9 +72,7 @@ function hasAnnotatedPre(el) {
   for (const c of el.children) {
     if (!c || c.type !== "element") continue;
     if (c.tagName !== "pre") continue;
-    const v =
-      c.properties?.["data-tangly-annotated"] ??
-      c.properties?.dataTanglyAnnotated;
+    const v = c.properties?.["data-tangly-annotated"] ?? c.properties?.dataTanglyAnnotated;
     if (v === "true" || v === true) return true;
   }
   return false;
@@ -84,11 +82,7 @@ function nextNonWhitespace(flat, fromIndex) {
   for (let j = fromIndex + 1; j < flat.length; j++) {
     const e = flat[j];
     if (!e) continue;
-    if (
-      e.type === "text" &&
-      typeof e.node?.value === "string" &&
-      e.node.value.trim() === ""
-    ) {
+    if (e.type === "text" && typeof e.node?.value === "string" && e.node.value.trim() === "") {
       continue;
     }
     return e.node;

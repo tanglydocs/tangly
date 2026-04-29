@@ -85,7 +85,10 @@
   color: inherit;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 120ms, color 120ms, border-color 120ms;
+  transition:
+    background 120ms,
+    color 120ms,
+    border-color 120ms;
 }
 
 .tangly-code-copy:hover {
@@ -160,7 +163,9 @@
 .tangly-code-figure pre.has-focused code .line:not(.focused) {
   filter: blur(0.075rem);
   opacity: 0.6;
-  transition: filter 200ms, opacity 200ms;
+  transition:
+    filter 200ms,
+    opacity 200ms;
 }
 .tangly-code-figure pre.has-focused:hover code .line:not(.focused),
 .tangly-code-figure pre.has-focused:focus-within code .line:not(.focused) {

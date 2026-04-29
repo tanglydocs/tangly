@@ -105,8 +105,7 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
     // would be parsed as text. Catch the common case (`<UpperCaseTag>`)
     // and surface a clear error pointing the author to rename.
     if (isMd && MD_JSX_RE.test(parsed.content)) {
-      frontmatterError =
-        ".md file contains JSX — rename to .mdx to use components";
+      frontmatterError = ".md file contains JSX — rename to .mdx to use components";
     }
 
     out.push({

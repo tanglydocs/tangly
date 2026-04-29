@@ -185,8 +185,7 @@ export function transformerTanglyChrome(opts = {}) {
  *
  * Defensive: never throws — unexpected AST shapes leave the line alone.
  */
-const ANNOTATION_TAIL_RE =
-  /(\s*(?:\/\/|#|<!--|\/\*)\s*)?\((\d+)\)(\s*(?:-->|\*\/))?\s*$/;
+const ANNOTATION_TAIL_RE = /(\s*(?:\/\/|#|<!--|\/\*)\s*)?\((\d+)\)(\s*(?:-->|\*\/))?\s*$/;
 
 export function transformerTanglyAnnotations() {
   return {
@@ -262,9 +261,7 @@ function stripTrailing(line, n) {
       if (
         c &&
         ((c.type === "text" && c.value === "") ||
-          (c.type === "element" &&
-            Array.isArray(c.children) &&
-            c.children.length === 0))
+          (c.type === "element" && Array.isArray(c.children) && c.children.length === 0))
       ) {
         node.children.splice(i, 1);
       }

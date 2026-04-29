@@ -218,12 +218,7 @@ const CodeSchema = z
      * Object → split. Defaults to github-light/github-dark.
      */
     theme: z
-      .union([
-        z.string(),
-        z
-          .object({ light: z.string(), dark: z.string() })
-          .strict(),
-      ])
+      .union([z.string(), z.object({ light: z.string(), dark: z.string() }).strict()])
       .optional(),
   })
   .strict()

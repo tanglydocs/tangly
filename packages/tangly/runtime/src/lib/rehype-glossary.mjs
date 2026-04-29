@@ -111,10 +111,7 @@ function compile(entries) {
   // Sort longest-first so multi-word terms beat their substrings.
   variants.sort((a, b) => b.length - a.length);
   const pattern = variants.map(escapeRegex).join("|");
-  const re = new RegExp(
-    "(?<![A-Za-z0-9_])(?:" + pattern + ")(?![A-Za-z0-9_])",
-    "gi",
-  );
+  const re = new RegExp("(?<![A-Za-z0-9_])(?:" + pattern + ")(?![A-Za-z0-9_])", "gi");
   return { re, lookups };
 }
 
