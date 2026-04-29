@@ -1,0 +1,39 @@
+---
+/**
+ * Mermaid loader. remark-mermaid emits <pre class="mermaid">…</pre>;
+ * we dynamically import mermaid only when at least one is present so
+ * pages without diagrams pay nothing. Listens to `tangly:rerender-mermaid`
+ * (dispatched by Layout on theme toggle) to re-render under the new theme.
+ *
+ * Each theme's Layout.astro should include this component once at the end
+ * of <body>.
+ */
+---
+
+<script>
+  const mermaidNodes = document.querySelectorAll("pre.mermaid");
+  if (mermaidNodes.length > 0) {
+    const { default: mermaid } = await import("mermaid");
+    const rerender = async () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isDark ? "dark" : "default",
+        securityLevel: "strict",
+        fontFamily: "var(--tangly-font-body)",
+      });
+      // mermaid.run replaces a node's contents with rendered SVG, so on
+      // re-render we restore the source text (cached on first render via
+      // data-source) and clear the processed flag.
+      for (const el of document.querySelectorAll("pre.mermaid")) {
+        const source = el.dataset.source ?? el.textContent ?? "";
+        if (!el.dataset.source) el.dataset.source = source;
+        el.removeAttribute("data-processed");
+        el.textContent = source;
+      }
+      await mermaid.run({ querySelector: "pre.mermaid" });
+    };
+    await rerender();
+    document.addEventListener("tangly:rerender-mermaid", rerender);
+  }
+</script>
