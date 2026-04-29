@@ -1,7 +1,12 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { confirm, intro, isCancel, outro } from "@clack/prompts";
-import { convertMintToDocs, MINTLIFY_THEMES, parseDocsJson, safeParseDocsJson } from "@tangly/schema";
+import {
+  convertMintToDocs,
+  MINTLIFY_THEMES,
+  parseDocsJson,
+  safeParseDocsJson,
+} from "@tangly/schema";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 
@@ -156,9 +161,7 @@ async function migrateExistingDocs(opts: {
   // 1. $schema → Tangly's schema URL.
   const currentSchema = updated.$schema as string | undefined;
   if (currentSchema !== TANGLY_SCHEMA_URL) {
-    changes.push(
-      `  $schema  ${pc.dim(currentSchema ?? "(none)")} → ${pc.cyan(TANGLY_SCHEMA_URL)}`,
-    );
+    changes.push(`  $schema  ${pc.dim(currentSchema ?? "(none)")} → ${pc.cyan(TANGLY_SCHEMA_URL)}`);
   }
 
   // 2. theme: Mintlify theme name aliases to 'tang' unless the user opts
@@ -166,7 +169,8 @@ async function migrateExistingDocs(opts: {
   //    accepted by the schema and Tangly's runtime treats them as 'tang',
   //    but renaming makes intent explicit.
   const currentTheme = updated.theme as string | undefined;
-  const isMintlifyTheme = currentTheme && (MINTLIFY_THEMES as readonly string[]).includes(currentTheme);
+  const isMintlifyTheme =
+    currentTheme && (MINTLIFY_THEMES as readonly string[]).includes(currentTheme);
   if (!keepTheme && isMintlifyTheme && currentTheme !== "tang") {
     changes.push(`  theme    ${pc.dim(currentTheme)} → ${pc.cyan("tang")}`);
   }
