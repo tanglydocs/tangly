@@ -1,0 +1,50 @@
+{
+  "name": "@tangly/theme-readable",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Reader-mode Tangly theme. Cream paper, serif body, book-style chapter navigation. For long-form publishing — books, essays, manuscripts.",
+  "keywords": [
+    "book",
+    "docs",
+    "reader",
+    "tangly",
+    "theme"
+  ],
+  "homepage": "https://github.com/tanglydocs/tangly",
+  "bugs": "https://github.com/tanglydocs/tangly/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanglydocs/tangly.git",
+    "directory": "packages/theme-readable"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "build": "tsgo --build",
+    "typecheck": "tsgo --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@tangly/theme-ui": "workspace:*",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
+  }
+}
