@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { buildBuildReport, writeBuildReport } from "../../build-outputs/build-report.js";
 import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
@@ -37,6 +38,11 @@ export const buildCommand = defineCommand({
       type: "string",
       description: "Deploy under subpath like /docs",
       default: "/",
+    },
+    analyze: {
+      type: "boolean",
+      description: "Write a build-size report to dist/_tangly/",
+      default: false,
     },
   },
   async run({ args }) {
@@ -111,6 +117,25 @@ export const buildCommand = defineCommand({
     if (pagefindIndexed > 0) {
       const note = pagefindExcluded > 0 ? `, ${pagefindExcluded} excluded` : "";
       console.log(pc.dim(`  Pagefind: ${pagefindIndexed} pages indexed${note}`));
+    }
+
+    if (args.analyze) {
+      const report = buildBuildReport(outDir);
+      const paths = writeBuildReport(outDir, report);
+      const t = report.totals;
+      console.log(pc.cyan("\n▲ Build report"));
+      console.log(
+        pc.dim(
+          `  ${t.pages} pages · HTML ${(t.htmlBytes / 1024).toFixed(0)} KB · JS ${(t.jsBytes / 1024).toFixed(0)} KB · CSS ${(t.cssBytes / 1024).toFixed(0)} KB`,
+        ),
+      );
+      console.log(pc.dim(`  Wrote ${paths.html.replace(outDir, "dist")}`));
+      if (report.warnings.length > 0) {
+        console.log(pc.yellow(`  ${report.warnings.length} size warning(s):`));
+        for (const w of report.warnings.slice(0, 5)) {
+          console.log(pc.dim(`    • ${w}`));
+        }
+      }
     }
   },
 });

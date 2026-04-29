@@ -37,10 +37,17 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
 
   for (const p of diskPagesArr) {
     if (p.frontmatterError) {
+      // Pretty-format Zod errors when available; fall back to raw text.
+      let prettyMessage = `Frontmatter invalid: ${p.frontmatterError}`;
+      const zodError = p.frontmatterZodError;
+      if (zodError) {
+        const { formatFrontmatterError } = await import("./frontmatter-errors.js");
+        prettyMessage = formatFrontmatterError({ file: p.file, error: zodError });
+      }
       warnings.push({
         level: "warn",
         source: p.file,
-        message: `Frontmatter invalid: ${p.frontmatterError}`,
+        message: prettyMessage,
       });
     }
   }

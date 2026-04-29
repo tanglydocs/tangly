@@ -3,6 +3,7 @@ import { readdir } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 import { type Frontmatter, safeParseFrontmatter } from "@tangly/schema";
 import matter from "gray-matter";
+import type { ZodError } from "zod";
 import { computeReadingTime, loadGitMeta } from "./git-meta.js";
 
 const MD_JSX_RE = /<[A-Z][A-Za-z0-9]*[\s/>]/;
@@ -32,6 +33,8 @@ export interface PageOnDisk {
   frontmatter: Frontmatter | null;
   /** Raw frontmatter parse error message. */
   frontmatterError?: string;
+  /** Underlying Zod error, when available — used for pretty-printing. */
+  frontmatterZodError?: ZodError;
   /** Body content (without frontmatter). */
   content: string;
   /** ISO timestamp from git log (most recent commit touching this file). */
@@ -96,6 +99,7 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
     const fm = safeParseFrontmatter(parsed.data);
 
     let frontmatterError = fm.success ? undefined : fm.error.message;
+    const frontmatterZodError = fm.success ? undefined : fm.error;
 
     // Plain `.md` files are rendered as Markdown only — JSX components
     // would be parsed as text. Catch the common case (`<UpperCaseTag>`)
@@ -111,6 +115,7 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
       ext: isMdx ? "mdx" : "md",
       frontmatter: fm.success ? fm.data : null,
       ...(frontmatterError ? { frontmatterError } : {}),
+      ...(frontmatterZodError ? { frontmatterZodError } : {}),
       content: parsed.content,
     });
   }
