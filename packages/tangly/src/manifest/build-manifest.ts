@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseDocsJson } from "@tangly/schema";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
+import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
@@ -84,6 +85,10 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     const sidebar = pickSidebar(navigation, slug, tab);
     const { prev, next } = computePrevNext(sidebar, slug);
 
+    // Extract block IDs from the MDX body so <Embed page="..." block="..." />
+    // can resolve targets at SSR time.
+    const blocks = extractBlocks(disk.content).blocks;
+
     pages.set(slug, {
       slug,
       file: disk.file,
@@ -94,6 +99,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       prev,
       next,
       draft: isDraft,
+      ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
     });
   }
 

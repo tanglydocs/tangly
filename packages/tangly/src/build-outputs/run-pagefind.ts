@@ -39,9 +39,7 @@ export interface RunPagefindResult {
  * Pagefind's Node API receives only the included HTML files via
  * `addHTMLFile`, so we never mutate `outDir`.
  */
-export async function runPagefind(
-  opts: RunPagefindOptions,
-): Promise<RunPagefindResult> {
+export async function runPagefind(opts: RunPagefindOptions): Promise<RunPagefindResult> {
   const { manifest, outDir } = opts;
   const userRoot = opts.userRoot ?? manifest.root;
   const outputPath = join(outDir, "pagefind");

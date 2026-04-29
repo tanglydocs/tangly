@@ -43,7 +43,12 @@
     "@tangly/schema": "workspace:*",
     "astro": "^6.1.10",
     "lucide": "^1.12.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
     "tailwindcss": "^4.2.4",
-    "tangly": "workspace:*"
+    "tangly": "workspace:*",
+    "unified": "^11.0.5"
   }
 }

@@ -57,10 +57,7 @@ function writeMdx(slug: string, frontmatter: Record<string, unknown>): void {
   const fm = Object.entries(frontmatter)
     .map(([k, v]) => `${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`)
     .join("\n");
-  writeFileSync(
-    join(dir, `${slug}.mdx`),
-    `---\n${fm}\n---\n\n# ${slug}\n`,
-  );
+  writeFileSync(join(dir, `${slug}.mdx`), `---\n${fm}\n---\n\n# ${slug}\n`);
 }
 
 describe("runPagefind", () => {
@@ -93,9 +90,7 @@ describe("runPagefind", () => {
 
     // intro is the only allowed page; orphan is on disk only and noindex.
     expect(result.indexed).toBe(1);
-    expect(new Set(result.excluded)).toEqual(
-      new Set(["hidden", "draft-page", "orphan"]),
-    );
+    expect(new Set(result.excluded)).toEqual(new Set(["hidden", "draft-page", "orphan"]));
 
     // CRITICAL: noindex/draft HTML stays on disk so deep links still work.
     expect(existsSync(join(TMP, "out/intro/index.html"))).toBe(true);

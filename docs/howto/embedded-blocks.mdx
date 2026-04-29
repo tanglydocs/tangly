@@ -1,0 +1,78 @@
+---
+title: Embedded blocks
+description: Reuse content across pages with <Embed page="x" block="y" />.
+icon: "blocks"
+---
+
+# Embedded blocks
+
+Use `<Embed>` to render a labeled block from another page inline, without copy-pasting. The source page stays the canonical home; embeds re-render with whatever changes upstream.
+
+## Quick example
+
+Suppose `guides/billing.mdx` has:
+
+```md
+## Rate limits
+
+API calls are capped at 1000/min per key.
+```
+
+You can embed that section anywhere:
+
+```md
+<Embed page="guides/billing" block="rate-limits" />
+```
+
+The block renders inline and links back to the source.
+
+## How block IDs are picked
+
+<Steps>
+  <Step title="Auto from headings">
+    Every heading gets an ID derived from its text using the same algorithm as `rehype-slug` / GitHub: lowercase, non-alphanumerics → hyphens, deduped per page.
+
+    `## Rate limits` → `rate-limits`
+  </Step>
+  <Step title="Explicit {#custom-id} markers">
+    Override the auto ID by appending `{#my-id}` to a heading, paragraph, or list item.
+
+    ```md
+    ## Service tiers {#tiers}
+
+    Or label a paragraph: this one. {#highlight}
+    ```
+  </Step>
+</Steps>
+
+## What gets embedded
+
+A heading-anchored block extends from the heading through the next sibling or parent heading. So `## Rate limits` (h2) closes at the next h2 or h1.
+
+A `{#paragraph-id}` marker captures only that paragraph (until the next blank line or heading).
+
+Embeds render Markdown only — no MDX components inside the embedded block. If you need component-rich content shared across pages, use a snippet (`snippets/foo.mdx`) and import it as a component instead.
+
+## Cycle detection
+
+If page A embeds a block that itself embeds something on A, the build fails with a clear trail:
+
+```
+[tangly] Circular <Embed> detected: a#one → b#two → a#one.
+```
+
+Break the cycle by inlining one block or removing one embed.
+
+## Live example
+
+Below is an `<Embed>` pulling the "Status" block from the Introduction page:
+
+<Embed page="introduction" block="status" />
+
+That's the same content you'd see at [/introduction#status](/introduction#status).
+
+## When NOT to embed
+
+- **Snippet content** (callouts, sample code) — use `snippets/` instead. Snippets allow MDX/components.
+- **Versioned changes** — embeds resolve at build time against the current source; they're not historical.
+- **Cross-version content** (Phase 7 versioning) — versions get their own copies.
