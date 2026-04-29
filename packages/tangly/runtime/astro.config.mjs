@@ -30,9 +30,40 @@ const includeDrafts =
   process.env.TANGLY_INCLUDE_DRAFTS === "true" ||
   process.env.TANGLY_MODE === "dev";
 
+// Deploy adapter is selected by the CLI via auto-detect or --adapter.
+//
+// Tangly v1 outputs are fully static, so output stays "static" regardless
+// of adapter — the adapter is wired for forward-compat with Phase 6+ SSR
+// features (AI chat endpoint, edge middleware) but is otherwise a no-op
+// for prerendered docs. Vercel's adapter is safe to wire in static mode
+// (it adds Vercel build metadata for free). Cloudflare + Node adapters
+// reshape output in ways that conflict with our prerender pipeline today
+// (Cloudflare runs Workers checks, Node forces server-mode prerender);
+// they're auto-detected to surface intent in the banner + load behind
+// `--adapter` for future-readiness, but the actual Astro adapter is only
+// applied for vercel right now. When Phase 6 lands, this branch unlocks
+// for all four.
+const adapterName = process.env.TANGLY_ADAPTER ?? "static";
+
+let adapter;
+const output = "static";
+if (adapterName === "vercel") {
+  const { default: vercel } = await import("@astrojs/vercel");
+  adapter = vercel({ webAnalytics: { enabled: false } });
+} else if (
+  adapterName !== "static" &&
+  adapterName !== "cloudflare" &&
+  adapterName !== "node"
+) {
+  throw new Error(
+    `[tangly] Unknown adapter "${adapterName}". Expected: vercel | cloudflare | node | static.`,
+  );
+}
+
 export default defineConfig({
   base: baseUrl,
-  output: "static",
+  output,
+  ...(adapter ? { adapter } : {}),
   integrations: [
     tanglyIntegration({ userRoot, configFile, includeDrafts }),
     mdx({

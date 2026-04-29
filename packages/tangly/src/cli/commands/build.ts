@@ -44,11 +44,28 @@ export const buildCommand = defineCommand({
     const outDir = resolve(userRoot, args.out);
 
     const adapter = args.adapter ?? autoDetectAdapter(userRoot);
+    const validAdapters = ["vercel", "cloudflare", "node", "static"] as const;
+    if (!(validAdapters as readonly string[]).includes(adapter)) {
+      console.error(
+        pc.red(
+          `✗ Unknown --adapter "${adapter}". Expected: ${validAdapters.join(" | ")}.`,
+        ),
+      );
+      process.exit(1);
+    }
     console.log(pc.cyan(`▲ Building Tangly project (${adapter})…`));
+    if (adapter === "cloudflare" || adapter === "node") {
+      console.log(
+        pc.dim(
+          `  Note: ${adapter} adapter is recognized but not yet applied — current builds are static. SSR support lands with the AI chat endpoint.`,
+        ),
+      );
+    }
 
     process.env.TANGLY_USER_ROOT = userRoot;
     process.env.TANGLY_CONFIG_FILE = args.config;
     process.env.TANGLY_BASE = args.base;
+    process.env.TANGLY_ADAPTER = adapter;
 
     // Validate first
     const manifest = await buildManifest({ root: userRoot, configFile: args.config });

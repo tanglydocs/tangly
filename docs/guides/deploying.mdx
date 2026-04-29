@@ -10,12 +10,16 @@ icon: "rocket"
 
 ## Auto-detection
 
-| File present in project root        | Adapter selected |
-| ----------------------------------- | ---------------- |
-| `vercel.json`                       | `vercel`         |
-| `wrangler.toml` or `wrangler.jsonc` | `cloudflare`     |
-| `Dockerfile`                        | `node`           |
-| (none)                              | `static`         |
+| File present in project root | Adapter selected |
+|---|---|
+| `vercel.json` | `vercel` |
+| `wrangler.toml` or `wrangler.jsonc` | `cloudflare` |
+| `Dockerfile` | `node` |
+| (none) | `static` |
+
+<Note>
+  Tangly v1 outputs are fully static, so all adapters currently produce the same `dist/` shape. The Vercel adapter adds Vercel-specific build metadata; `cloudflare` and `node` are recognized for forward-compat (Phase 6 AI chat unlocks real SSR routes) but are no-ops today. Use `--adapter static` if you don't want any adapter applied.
+</Note>
 
 ## Vercel
 
