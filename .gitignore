@@ -9,6 +9,8 @@ build/
 .next/
 .astro/
 .tangly/
+.wrangler/
+.vercel/
 
 # typescript
 *.tsbuildinfo
