@@ -26,6 +26,7 @@
               "guides/components",
               "guides/themes",
               "guides/openapi",
+              "guides/search",
               "guides/deploying"
             ]
           }

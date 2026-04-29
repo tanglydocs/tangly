@@ -157,7 +157,10 @@ const primary = config.navbar?.primary;
   document.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
-      document.getElementById("tangly-search")?.focus();
+      document.dispatchEvent(new CustomEvent("tangly:open-search"));
     }
+  });
+  document.getElementById("tangly-search")?.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("tangly:open-search"));
   });
 </script>

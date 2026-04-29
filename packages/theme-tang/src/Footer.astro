@@ -48,20 +48,24 @@ const SOCIAL_ICON: Record<string, string> = {
     )}
     <div class="flex flex-wrap items-center gap-4 justify-between">
       <div class="flex items-center gap-2">
-        {Object.entries(socials).map(([key, href]) => (
-          <a
-            href={href as string}
-            aria-label={key}
-            class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] hover:text-[var(--tangly-color-fg)]"
-          >
-            <Icon icon={SOCIAL_ICON[key.toLowerCase()] ?? "Link"} size={14} />
-          </a>
-        ))}
+        {Object.entries(socials).map(([key, href]) => {
+          const iconName = SOCIAL_ICON[key.toLowerCase()];
+          if (!iconName) return null;
+          return (
+            <a
+              href={href as string}
+              aria-label={key}
+              class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] hover:text-[var(--tangly-color-fg)]"
+            >
+              <Icon icon={iconName} size={14} />
+            </a>
+          );
+        })}
       </div>
       <div class="text-xs">
         Powered by{" "}
         <a
-          href="https://github.com/tanglydocs/tangly"
+          href="https://tangly.dev"
           class="hover:text-[var(--tangly-color-fg)] underline-offset-2 hover:underline"
         >
           Tangly
