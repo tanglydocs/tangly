@@ -40,6 +40,19 @@ tangly dev [options]
   Verbose logging including the resolved manifest.
 </ParamField>
 
+<ParamField path="--tunnel" type="boolean">
+  Expose the dev server publicly via a [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) quick tunnel. Prints a `*.trycloudflare.com` URL once the tunnel is up. Requires `cloudflared` on `$PATH` (`brew install cloudflared` on macOS); if missing, Tangly logs a warning and continues without the tunnel.
+</ParamField>
+
+```bash
+tangly dev --tunnel
+# ▲ tangly  v0.2.0
+#   My Docs · 47 pages · theme: tang
+# 🌐 Public tunnel: https://noisy-fox-1234.trycloudflare.com
+```
+
+The tunnel child process is killed when you SIGINT the dev server.
+
 ## Banner
 
 Cold start is under 2 seconds for a 100-page project. The banner shows:

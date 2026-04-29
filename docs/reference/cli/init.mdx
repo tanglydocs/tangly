@@ -11,10 +11,26 @@ Interactive wizard that scaffolds a new Tangly project.
 ## Usage
 
 ```bash
-tangly init [dir]
+tangly init [dir] [options]
 ```
 
 If `dir` is omitted, scaffolds into the current directory.
+
+## Options
+
+<ParamField path="--from <dir>" type="string">
+  Walk an existing folder of `.md`/`.mdx` files and synthesize a `docs.json` from the tree (folders → groups). Idempotent — re-running merges new files into the existing nav rather than clobbering it. Use this to bootstrap Tangly on top of a vanilla Markdown repo.
+</ParamField>
+
+```bash
+# Bootstrap from a Markdown corpus.
+tangly init ./my-docs --from ../legacy-wiki
+
+# Re-run later to pick up new files. Existing nav order is preserved.
+tangly init ./my-docs --from ../legacy-wiki
+```
+
+When `--from` is set, the interactive wizard is skipped — Tangly writes `docs.json` and exits. Pages already in `docs.json` keep their positions; new pages are appended to existing groups (matched by folder name) or added under a new group.
 
 ## What it does
 

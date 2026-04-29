@@ -1,12 +1,62 @@
 ---
 title: Media & misc
-description: Icon, Tooltip, Badge, Snippet, Embed, Update.
+description: Video, image lightbox, Frame, Icon, Tooltip, Badge, Snippet, Embed, Update.
 icon: "image"
 ---
 
 # Media & misc
 
-Components that don't fit the other categories: small visual atoms (`Icon`, `Tooltip`, `Badge`), reusable content (`Snippet`, `Embed`), and release blocks (`Update`).
+Visual primitives (`Video`, image lightbox, `Frame`), small atoms (`Icon`, `Tooltip`, `Badge`), reusable content (`Snippet`, `Embed`), and release blocks (`Update`).
+
+## `<Video>`
+
+Embed YouTube, Vimeo, or a direct mp4/webm. The `src` is sniffed and rendered into a 16:9 frame with rounded corners. Iframes are lazy-loaded via `IntersectionObserver` — no embed traffic until the placeholder enters the viewport.
+
+```md
+<Video src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+<Video src="/videos/demo.mp4" poster="/videos/poster.jpg" />
+<Video src="https://vimeo.com/123" transcript="/transcripts/demo.txt" />
+```
+
+### Props
+
+<ParamField path="src" type="string" required>
+  YouTube watch URL, `youtu.be` short link, Vimeo URL, direct `.mp4`/`.webm`/`.mov`/`.m4v`, or any other iframeable URL.
+</ParamField>
+
+<ParamField path="poster" type="string">
+  Poster image shown before the user (or the IntersectionObserver) loads the embed.
+</ParamField>
+
+<ParamField path="transcript" type="string">
+  Optional transcript URL — rendered as a "Transcript" link below the frame for accessibility.
+</ParamField>
+
+<ParamField path="title" type="string" default="Embedded video">
+  Iframe `title` (announced by screen readers).
+</ParamField>
+
+YouTube URLs are rewritten to `youtube-nocookie.com` to avoid third-party tracking.
+
+## Image lightbox
+
+Every inline Markdown image — `![alt](path)` — is wrapped in a clickable button that opens a fullscreen modal. Esc or click-outside closes; mobile pinch-zoom works via CSS `touch-action`. No author setup required.
+
+```md
+![Architecture diagram](/images/architecture.svg)
+```
+
+To opt out for a specific image, drop to JSX and pass `lightbox={false}`:
+
+```md
+<img src="/images/static.svg" alt="Static asset" lightbox={false} />
+```
+
+The default `<Frame>` is a passive border + caption — its children inherit the lightbox automatically. If you want a non-clickable image inside a frame, pass `lightbox={false}` on the inner `<img>`.
+
+## `<Frame>`
+
+A bordered container around an image, video, or any visual block. Optionally captioned. See [Layout → `<Frame>`](/reference/components/layout#frame) for the full reference.
 
 ## `<Icon>`
 

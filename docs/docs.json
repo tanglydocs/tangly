@@ -45,12 +45,15 @@
               "guides/components",
               "guides/themes",
               "guides/openapi",
-              "guides/search"
+              "guides/search",
+              "guides/glossary"
             ]
           },
           {
             "group": "Customization",
             "pages": [
+              "guides/code-blocks",
+              "guides/announcement",
               "guides/custom-components",
               "guides/custom-templates",
               "guides/drafts",

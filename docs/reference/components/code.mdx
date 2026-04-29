@@ -1,23 +1,19 @@
 ---
 title: Code
-description: Code blocks, CodeGroup, syntax highlighting.
+description: Fenced code blocks, line highlight, diff, focus, titles, CodeGroup, PackageManager.
 icon: "code"
 ---
 
 # Code
 
-Tangly uses [Shiki](https://shiki.style) for syntax highlighting — same engine VS Code ships with — through the `rehype-shiki` plugin. Themes are dual: `github-light` follows the page's light mode, `github-dark` follows dark mode. The active theme switches automatically when the user toggles.
+Tangly uses [Shiki](https://shiki.style) for highlighting — same engine VS Code ships — wired through `@shikijs/rehype` with the standard `transformerNotation*` set plus a Tangly-specific chrome transformer that adds a header (filename, language label, copy button) to every block. Themes are dual: `github-light` follows the page's light mode, `github-dark` follows dark.
 
-## Fenced code blocks
+## Fences
 
-Plain triple-backtick fences work as you'd expect:
+Plain triple-backtick fences work as you'd expect. The first word after the opening fence is the language.
 
 ```ts
-interface User {
-  id: string;
-  name: string;
-}
-
+interface User { id: string; name: string }
 const u: User = { id: "abc", name: "Nik" };
 ```
 
@@ -26,22 +22,88 @@ def add(a: int, b: int) -> int:
     return a + b
 ```
 
-```bash
-bun add -D tangly
-bun x tangly dev
+## Titles
+
+Add a title via `title="..."` in the fence info string, or the Mintlify-style bare path token (any token containing a `.` extension).
+
+```ts title="src/users/service.ts"
+export const getUser = (id: string) => fetch(`/api/users/${id}`);
 ```
 
-The first word after the opening backticks is the language. Pass an optional second value for a filename or label:
-
-````md
-```ts user-service.ts
-const fn = () => {};
+```ts src/users/service.ts
+export const getUser = (id: string) => fetch(`/api/users/${id}`);
 ```
-````
+
+The title shows in the header alongside a file-type icon. Authors can mix both forms across a project.
+
+## Line highlight
+
+Pass a brace-delimited line spec right after the language: `{1,3-5}`. Highlighted lines get a subtle yellow background.
+
+```ts {2,4-5}
+const greet = (name: string) => {
+  console.log(`Hello, ${name}`);
+  return name;
+  // these two lines
+  // get highlighted
+};
+```
+
+## Diff
+
+Annotate added/removed lines with `// [!code ++]` and `// [!code --]` line comments. The transformer strips the marker and styles the line as a diff.
+
+```ts
+function login(user: string, pass: string) {
+  // [!code --]
+  return user === "admin" && pass === "hunter2";
+  // [!code ++]
+  return verify(user, pass);
+}
+```
+
+## Focus
+
+Mark lines with `// [!code focus]` to fade the rest of the block.
+
+```ts
+function process(input: Input) {
+  validate(input);
+  // [!code focus]
+  const result = transform(input);
+  return result;
+}
+```
+
+You can combine notations on the same block — focus + diff is a common pair for migration guides.
+
+## Copy button
+
+Every block gets a Copy button by default. Disable globally in `docs.json`:
+
+```json
+{ "code": { "copyButton": false } }
+```
+
+Or per-block by adding `noCopy` to the fence meta:
+
+```bash noCopy
+read -s SECRET
+```
+
+## Theme override
+
+Override the default Shiki theme(s) via `code.theme` in `docs.json`. String → same theme for both modes. Object → split.
+
+```json
+{ "code": { "theme": { "light": "vitesse-light", "dark": "vitesse-dark" } } }
+```
+
+Any theme bundled with Shiki works. The active theme switches with the user's color preference.
 
 ## `<CodeGroup>`
 
-Tabbed code blocks for showing the same thing in multiple languages or frameworks.
+Tabbed code blocks for the same thing in different languages, frameworks, or files. Tab labels come from each fence's title or language.
 
 <CodeGroup>
   ```ts example.ts
@@ -59,43 +121,59 @@ Tabbed code blocks for showing the same thing in multiple languages or framework
   ```
 </CodeGroup>
 
-````md
-<CodeGroup>
-  ```ts example.ts
-  const x: number = 42;
-  ```
+### Syncing across the page
 
-  ```py example.py
-  x = 42
+Pass `name="<key>"` and every `<CodeGroup>` on the page (and in `localStorage` across pages) shows the same tab once one is selected. Useful for "pick your stack" docs:
+
+````mdx
+<CodeGroup name="stack">
+  ```ts node.ts
+  ...
+  ```
+  ```py python.py
+  ...
   ```
 </CodeGroup>
 ````
 
-The label after the language is the tab title. The first child is active by default.
+## `<PackageManager>`
+
+Renders an install or run command across npm, yarn, pnpm, and bun in a synced `<CodeGroup>`. Default sync key is `pkg`, so every block on the page tracks the user's choice.
+
+<PackageManager name="tangly" mode="dev" />
+
+```mdx
+<PackageManager name="tangly" mode="dev" />
+<PackageManager name="zod" />
+<PackageManager command="run build" />
+```
+
+### Props
+
+<ParamField path="name" type="string">
+  Package to install. Required unless `command` is set.
+</ParamField>
+
+<ParamField path="mode" type="enum">
+  `dev` | `prod`. `dev` adds `--save-dev` / `--dev`.
+</ParamField>
+
+<ParamField path="command" type="string">
+  Run a script instead of installing — e.g. `run build`. Renders as `npm run build`, `bun run build`, etc.
+</ParamField>
+
+<ParamField path="syncName" type="string" default="pkg">
+  Sync key. Set to a different value (or `null`) to opt out of page-wide syncing.
+</ParamField>
 
 ## Inline code
 
-Single-backtick `` `inline code` `` renders as monospace with a tinted background.
+Single-backtick `` `inline code` `` renders as monospace with a tinted background. Paths, identifiers, and small literals work well inline; anything multi-line should be a fence.
+
+## Mermaid
+
+Fences with language `mermaid` render as a diagram via `mermaid.js` (lazy-loaded). See [Components guide](/guides/components) for examples.
 
 ## Supported languages
 
-Anything Shiki supports. The full list is in the Shiki docs; the most common ones (`ts`, `tsx`, `js`, `jsx`, `python`, `bash`, `sh`, `zsh`, `json`, `yaml`, `toml`, `html`, `css`, `astro`, `mdx`, `md`, `sql`, `rust`, `go`, `swift`, `kotlin`, `java`, `c`, `cpp`, `csharp`, `dockerfile`, `nginx`, `graphql`, `proto`) all work without configuration.
-
-## Highlighting & line ranges
-
-Tangly currently emits Shiki's default output. Per-line highlighting and `// [!code ++]` annotations are on the roadmap but not wired today. If you need them now, [eject](/reference/cli/eject) and configure Shiki directly.
-
-## Codeblock theme override
-
-Set `styling.codeblocks` in `docs.json`:
-
-```json
-{
-  "styling": { "codeblocks": "system" }
-}
-```
-
-| Value | Behavior |
-| --- | --- |
-| `system` (default) | Light/dark follows the page theme. |
-| `dark` | Always uses `github-dark`, even in light mode. |
+Anything Shiki supports — `ts`, `tsx`, `js`, `jsx`, `python`, `bash`, `sh`, `zsh`, `json`, `yaml`, `toml`, `html`, `css`, `astro`, `mdx`, `md`, `sql`, `rust`, `go`, `swift`, `kotlin`, `java`, `c`, `cpp`, `csharp`, `dockerfile`, `nginx`, `graphql`, `proto`, and the long tail beyond. Unknown languages render as plain text.

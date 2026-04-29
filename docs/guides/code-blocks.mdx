@@ -1,0 +1,138 @@
+---
+title: "Code blocks"
+description: "Highlight, diff, focus, titles, sync, twoslash"
+icon: "code-2"
+---
+
+# Code blocks
+
+Tangly's code surface goes well beyond plain syntax highlighting. Every fenced block ships with a header (filename + language label + copy button), and Shiki notations let you highlight ranges, mark diffs, and dim everything outside a focus block — all from inside the fence info string.
+
+This guide walks through the surface end-to-end. For the API-style reference, see [Code components](/reference/components/code).
+
+## The header
+
+By default, every fence renders with a `Copy` button. Add a title and the header gains a filename and a file-type icon. Two equivalent forms:
+
+```ts title="src/lib/auth.ts"
+export const sign = (payload: object) => jwt.sign(payload, SECRET);
+```
+
+```ts src/lib/auth.ts
+export const sign = (payload: object) => jwt.sign(payload, SECRET);
+```
+
+The bare-path form (Mintlify-compatible) is detected by looking for any whitespace-delimited token containing a `.` extension. The quoted form wins if both are present.
+
+To suppress the copy button on a single block, add `noCopy` to the meta. To suppress globally, set `code.copyButton: false` in `docs.json`.
+
+## Line highlight
+
+A brace-delimited line spec right after the language highlights specific lines:
+
+```ts {2,4-5}
+const greet = (name: string) => {
+  console.log(`Hello, ${name}`);
+  return name;
+  // both of these
+  // are highlighted
+};
+```
+
+## Diff
+
+Add `// [!code ++]` or `// [!code --]` line comments. Shiki strips the marker and renders the line with diff styling.
+
+```ts
+function login(user: string, pass: string) {
+  // [!code --]
+  return user === "admin" && pass === "hunter2";
+  // [!code ++]
+  return await verify(user, pass);
+}
+```
+
+## Focus
+
+`// [!code focus]` fades all unfocused lines:
+
+```ts
+function process(input: Input) {
+  validate(input);
+  // [!code focus]
+  const result = transform(input);
+  return result;
+}
+```
+
+Stack notations on the same block — diff inside a focus is a clean way to show "this is the line that changed, in context".
+
+## Titles + diff + focus
+
+All notations compose. Migration guides typically combine all three:
+
+```ts title="src/db/users.ts" {12}
+import { db } from "./client";
+
+export async function getUser(id: string) {
+  // [!code focus]
+  const cached = cache.get(id);
+  if (cached) return cached;
+
+  // [!code --]
+  const row = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  // [!code ++]
+  const row = await db.query.users.findFirst({ where: eq(users.id, id) });
+  cache.set(id, row);
+  return row;
+}
+```
+
+## Synced tabs
+
+`<CodeGroup name="key">` syncs the active tab across every group with the same `name` on the page (and across pages via `localStorage`). Pick once, the choice sticks.
+
+`<PackageManager>` is the canonical example — it renders npm/yarn/pnpm/bun in a synced group with the default key `pkg`:
+
+<PackageManager name="tangly" mode="dev" />
+
+```mdx
+<PackageManager name="tangly" mode="dev" />
+```
+
+Want your own sync key? Drop a `<CodeGroup>` with your tabs of choice:
+
+````mdx
+<CodeGroup name="stack">
+  ```ts node.ts
+  import express from "express";
+  ```
+  ```py python.py
+  from fastapi import FastAPI
+  ```
+</CodeGroup>
+````
+
+## Theme override
+
+Default themes are `github-light` / `github-dark`, switching automatically with the user's color preference. Override per-project:
+
+```json
+{
+  "code": {
+    "theme": { "light": "vitesse-light", "dark": "vitesse-dark" }
+  }
+}
+```
+
+Any theme bundled with Shiki works. Pass a string instead of an object to use the same theme for both modes.
+
+## Twoslash
+
+Twoslash (rich TypeScript hovers in code blocks) is on the roadmap — not wired in v0.2. Track [Phase 6](/guides/components) for status.
+
+## What's next
+
+- [Code component reference](/reference/components/code) — every prop and notation.
+- [`<PackageManager>`](/reference/components/code#packagemanager) — the multi-runtime install primitive.
+- [Configuration → Code](/guides/configuration#code-blocks) — the `docs.json` knobs.
