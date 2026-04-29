@@ -1,0 +1,70 @@
+---
+import type { PageEntry } from "tangly";
+import Icon from "@tangly/theme-ui/components/Icon.astro";
+
+/**
+ * Readable page shell — chapter framing. Numbered eyebrow ("Chapter II"),
+ * book-style heading, justified body via `.reader-prose`, generous
+ * top/bottom whitespace. Prev/next is "← previous chapter / next →".
+ */
+export interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props as Props;
+const fm = page.frontmatter;
+const title = fm.title ?? fm.sidebarTitle ?? page.slug;
+const description = fm.description;
+const eyebrow = (fm as Record<string, unknown>).chapter as string | undefined;
+const mode = fm.mode ?? "default";
+const custom = mode === "custom";
+---
+{custom ? (
+  <slot />
+) : (
+  <article class="mx-auto max-w-[var(--tangly-content-max-width)]">
+    <header class="mb-12 text-center">
+      {eyebrow && (
+        <div class="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--tangly-color-muted)]">
+          {eyebrow}
+        </div>
+      )}
+      <h1 class="font-[var(--tangly-font-heading)] text-3xl sm:text-4xl font-semibold text-[var(--tangly-color-fg)] leading-[1.15]">
+        {title}
+      </h1>
+      {description && (
+        <p class="mt-4 italic text-[var(--tangly-color-muted)] text-lg leading-relaxed">
+          {description}
+        </p>
+      )}
+      <div class="mt-8 mx-auto h-px w-12 bg-[var(--tangly-color-border)]"></div>
+    </header>
+
+    <div class="prose-tang reader-prose">
+      <slot />
+    </div>
+
+    {(page.prev || page.next) && (
+      <nav aria-label="Pagination" class="mt-24 pt-8 border-t border-[var(--tangly-color-border)] flex items-center justify-between gap-3 text-sm">
+        {page.prev ? (
+          <a
+            href={`/${page.prev.slug}`}
+            class="inline-flex items-center gap-2 italic text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
+          >
+            <Icon icon="ArrowLeft" size={14} />
+            <span>{page.prev.title}</span>
+          </a>
+        ) : (<span></span>)}
+        {page.next ? (
+          <a
+            href={`/${page.next.slug}`}
+            class="inline-flex items-center gap-2 italic text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
+          >
+            <span>{page.next.title}</span>
+            <Icon icon="ArrowRight" size={14} />
+          </a>
+        ) : (<span></span>)}
+      </nav>
+    )}
+  </article>
+)}

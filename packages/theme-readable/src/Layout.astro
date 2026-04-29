@@ -1,0 +1,254 @@
+---
+import type { DocsJson } from "@tangly/schema";
+import type { PageEntry, ResolvedNavigation, SidebarItem } from "tangly";
+import Icon from "@tangly/theme-ui/components/Icon.astro";
+import MermaidLoader from "@tangly/theme-ui/MermaidLoader.astro";
+import "@tangly/theme/theme.css";
+import "@tangly/theme-ui/styles/prose.css";
+import "katex/dist/katex.min.css";
+
+/**
+ * Readable — book-mode layout. Cream paper background. Top strip carries
+ * the book/site title only. Left rail is a chapter list. Reading column
+ * is narrow (36rem) and centred. Designed for sustained sessions.
+ */
+export interface Props {
+  config: DocsJson;
+  page: PageEntry;
+  navigation: ResolvedNavigation;
+  pageTitle: string;
+  pageDescription?: string;
+}
+
+const { config, page, navigation, pageTitle, pageDescription } = Astro.props as Props;
+
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+
+const colors = config.colors ?? {};
+const bgLight = typeof colors.background === "object" ? colors.background?.light : (typeof colors.background === "string" ? colors.background : undefined);
+const bgDark = typeof colors.background === "object" ? colors.background?.dark : undefined;
+
+const cssVars: string[] = [];
+if (colors.primary) cssVars.push(`--tangly-color-primary: ${colors.primary}`);
+if (colors.light) cssVars.push(`--tangly-color-primary-light: ${colors.light}`);
+if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
+if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
+const styleAttr = cssVars.join("; ");
+
+// Flatten the navigation into a chapter list. Groups become section
+// headers; leaves become entries. Tabs are flattened too — books rarely
+// want tab navigation.
+function flattenChapters(items: SidebarItem[]): { title: string; items: { slug: string; title: string }[] }[] {
+  const sections: { title: string; items: { slug: string; title: string }[] }[] = [];
+  let bare: { slug: string; title: string }[] = [];
+  for (const item of items) {
+    if (item.isGroup) {
+      const leafs: { slug: string; title: string }[] = [];
+      for (const child of item.children ?? []) {
+        if (!child.isGroup) leafs.push({ slug: child.slug, title: child.title });
+      }
+      if (leafs.length > 0) sections.push({ title: item.title, items: leafs });
+    } else {
+      bare.push({ slug: item.slug, title: item.title });
+    }
+  }
+  if (bare.length > 0) sections.unshift({ title: "", items: bare });
+  return sections;
+}
+
+const sourceItems = navigation.rootSidebar.length > 0
+  ? navigation.rootSidebar
+  : navigation.tabs.flatMap((t) => t.sidebar);
+const chapterSections = flattenChapters(sourceItems);
+
+const headingFont = config.fonts?.heading?.family ?? "Crimson Pro";
+const bodyFont = config.fonts?.body?.family ?? "Crimson Pro";
+const monoFont = "JetBrains Mono";
+const googleFamilies = [...new Set([headingFont, bodyFont, "Crimson Pro"])]
+  .filter(Boolean)
+  .map((f) => `${(f as string).replace(/ /g, "+")}:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600`)
+  .join("&family=");
+const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
+
+const appearanceDefault = config.appearance?.default ?? "system";
+const ogTitle = pageTitle;
+const ogDesc = pageDescription ?? config.description ?? "";
+const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+---
+<!DOCTYPE html>
+<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="icon" href={favicon} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDesc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsHref} />
+    <style is:inline set:html={`:root{--tangly-font-heading:'${headingFont}','Iowan Old Style','Palatino Linotype',Georgia,serif;--tangly-font-body:'${bodyFont}','Iowan Old Style','Palatino Linotype',Georgia,serif;}`}></style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : (appearanceDefault === "dark" || (appearanceDefault === "system" && sys));
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    {/* Reading-progress bar — populated by inline script. */}
+    <div id="reader-progress" class="fixed left-0 top-0 h-[2px] z-40 bg-[var(--tangly-color-primary)] transition-[width] duration-150" style="width:0%"></div>
+
+    {/* Quiet top strip — book title + theme toggle. */}
+    <header class="sticky top-0 z-30 flex items-center justify-between h-[var(--tangly-topnav-row1-height,3rem)] px-5 sm:px-8 border-b border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)]/95 backdrop-blur">
+      <button type="button" class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]" id="tangly-hamburger" aria-label="Open chapters">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"></path>
+        </svg>
+      </button>
+      <a href="/" class="font-[var(--tangly-font-heading)] text-base sm:text-lg italic tracking-wide text-[var(--tangly-color-fg)] no-underline">{config.name}</a>
+      <button
+        type="button"
+        id="tangly-theme-toggle"
+        class="inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)]"
+        aria-label="Toggle reading mode"
+      >
+        <span class="block dark:hidden"><Icon icon="Moon" size={16} /></span>
+        <span class="hidden dark:block"><Icon icon="Sun" size={16} /></span>
+      </button>
+    </header>
+
+    <div class="flex-1 flex w-full max-w-screen-xl mx-auto">
+      <aside
+        id="reader-chapters"
+        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] w-[var(--tangly-sidebar-width)] overflow-y-auto tangly-scroll px-6 py-8 border-r border-[var(--tangly-color-border)]"
+      >
+        <nav aria-label="Chapters" class="text-sm">
+          {chapterSections.map((section) => (
+            <div class="mb-6">
+              {section.title && (
+                <div class="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--tangly-color-muted)]">
+                  {section.title}
+                </div>
+              )}
+              <ol class="space-y-1 list-none p-0 m-0">
+                {section.items.map((c, idx) => (
+                  <li>
+                    <a
+                      href={`/${c.slug}`}
+                      data-active={c.slug === page.slug ? "true" : "false"}
+                      class="reader-chapter-link flex gap-3 py-1.5 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:font-medium no-underline"
+                    >
+                      <span class="tabular-nums shrink-0 w-6 text-right opacity-70">{String(idx + 1).padStart(2, "0")}</span>
+                      <span class="italic">{c.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      <div class="flex-1 min-w-0 flex flex-col">
+        <main
+          class="flex-1 px-6 sm:px-10 lg:px-16 py-12 sm:py-20 max-w-[calc(var(--tangly-content-max-width)+8rem)] mx-auto w-full"
+          data-pagefind-body
+          data-pagefind-meta={`title:${pageTitle}`}
+        >
+          <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
+          <slot />
+        </main>
+        <footer class="mt-auto py-10 text-center text-xs italic text-[var(--tangly-color-muted)] tracking-wide">
+          Set in Crimson Pro · Built with{" "}
+          <a href="https://tangly.dev" class="hover:text-[var(--tangly-color-fg)] no-underline">Tangly</a>
+        </footer>
+      </div>
+    </div>
+
+    {/* Mobile drawer — chapter list */}
+    <div
+      id="tangly-drawer"
+      class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden"
+      data-state="closed"
+    >
+      <div class="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-[var(--tangly-color-bg)] border-r border-[var(--tangly-color-border)] overflow-y-auto px-6 py-8">
+        <nav aria-label="Chapters (mobile)" class="text-sm">
+          {chapterSections.map((section) => (
+            <div class="mb-6">
+              {section.title && (
+                <div class="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--tangly-color-muted)]">{section.title}</div>
+              )}
+              <ol class="space-y-1 list-none p-0 m-0">
+                {section.items.map((c, idx) => (
+                  <li>
+                    <a
+                      href={`/${c.slug}`}
+                      data-active={c.slug === page.slug ? "true" : "false"}
+                      class="flex gap-3 py-1.5 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] no-underline"
+                    >
+                      <span class="tabular-nums shrink-0 w-6 text-right opacity-70">{String(idx + 1).padStart(2, "0")}</span>
+                      <span class="italic">{c.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </nav>
+      </div>
+    </div>
+
+    <script is:inline>
+      (() => {
+        const drawer = document.getElementById("tangly-drawer");
+        if (!drawer) return;
+        const open = () => { drawer.classList.remove("hidden"); drawer.dataset.state = "open"; };
+        const close = () => { drawer.classList.add("hidden"); drawer.dataset.state = "closed"; };
+        document.addEventListener("tangly:toggle-sidebar", () => {
+          drawer.dataset.state === "open" ? close() : open();
+        });
+        drawer.addEventListener("click", (e) => { if (e.target === drawer) close(); });
+      })();
+
+      document.getElementById("tangly-hamburger")?.addEventListener("click", () => {
+        document.dispatchEvent(new CustomEvent("tangly:toggle-sidebar"));
+      });
+
+      document.addEventListener("tangly:toggle-theme", () => {
+        const root = document.documentElement;
+        const isDark = root.classList.toggle("dark");
+        try { localStorage.setItem("tangly-theme", isDark ? "dark" : "light"); } catch {}
+        document.dispatchEvent(new CustomEvent("tangly:rerender-mermaid"));
+      });
+      document.getElementById("tangly-theme-toggle")?.addEventListener("click", () => {
+        document.dispatchEvent(new CustomEvent("tangly:toggle-theme"));
+      });
+
+      // Reading-progress bar.
+      (() => {
+        const bar = document.getElementById("reader-progress");
+        if (!bar) return;
+        function tick() {
+          const doc = document.documentElement;
+          const max = doc.scrollHeight - window.innerHeight;
+          const pct = max > 0 ? Math.min(100, (doc.scrollTop / max) * 100) : 0;
+          bar.style.width = pct + "%";
+        }
+        document.addEventListener("scroll", tick, { passive: true });
+        tick();
+      })();
+    </script>
+
+    <MermaidLoader />
+  </body>
+</html>

@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../theme-ui/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Readable — Kindle/FT cream-mode aesthetic for long-form reading.
+     Warm sepia paper, serif body, narrow column, generous leading. */
+  --tangly-color-primary: #8b3a1d;
+  --tangly-color-primary-light: #a44a2a;
+  --tangly-color-primary-dark: #6b2a13;
+
+  --tangly-color-bg: #f7f1e3;
+  --tangly-color-bg-elevated: #ede5d3;
+  --tangly-color-fg: #2b2118;
+  --tangly-color-muted: #6b5e4f;
+  --tangly-color-border: #d8cebc;
+
+  --tangly-font-heading: "Crimson Pro", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --tangly-font-body: "Crimson Pro", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Sidebar holds the chapter list. Content is intentionally narrow for
+     reading sessions — books target ~60-66 character lines. */
+  --tangly-sidebar-width: 17rem;
+  --tangly-content-max-width: 36rem;
+  --tangly-toc-width: 0;
+  --tangly-topnav-row1-height: 3rem;
+  --tangly-topnav-row2-height: 0;
+  --tangly-topnav-height: 3rem;
+
+  --tangly-radius: 0.125rem;
+}
+
+.dark {
+  /* Night mode mirrors Kindle's: low-contrast warm dark. */
+  --tangly-color-bg: #1a1410;
+  --tangly-color-bg-elevated: #261d16;
+  --tangly-color-fg: #d8cebc;
+  --tangly-color-muted: #95876f;
+  --tangly-color-border: #36281f;
+  --tangly-color-primary: #c66a47;
+  --tangly-color-primary-light: #d68762;
+  --tangly-color-primary-dark: #8b3a1d;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--tangly-font-heading);
+  font-weight: 600;
+}
+
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 3px;
+}
+
+/* Reading mode: justified body, larger leading, indent first lines after
+   the lead paragraph (book convention). */
+.reader-prose p {
+  font-size: 1.125rem;
+  line-height: 1.85;
+  text-align: justify;
+  hyphens: auto;
+}
+.reader-prose > p + p {
+  text-indent: 1.5em;
+  margin-top: 0;
+}
+.reader-prose h2,
+.reader-prose h3 {
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+[data-active="true"] {
+  color: var(--tangly-color-primary);
+}
