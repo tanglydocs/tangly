@@ -36,6 +36,12 @@ export interface PageEntry {
   next?: { slug: string; title: string };
   /** Whether this page is a draft (hidden in build). */
   draft: boolean;
+  /** ISO timestamp of last git commit touching this file. */
+  lastUpdated?: string;
+  /** Auto-computed reading time in minutes. */
+  readingTime?: number;
+  /** Resolved edit-on-source URL for this page. */
+  editUrl?: string;
   /**
    * Block IDs harvested from this page's MDX body — keys are the auto- or
    * explicitly-set anchor IDs, values are the raw MDX source for that

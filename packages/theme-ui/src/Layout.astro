@@ -75,11 +75,19 @@ const googleFamilies = [...new Set([headingFont, bodyFont].filter(Boolean))]
 const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
 
 const appearanceDefault = config.appearance?.default ?? "system";
+const showReadingProgress = config.appearance?.readingProgress === true;
 const ogTitle = pageTitle;
 const ogDesc = pageDescription ?? config.description ?? "";
 
 // Optional dark-mode background override.
 const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+
+// Banner / announcement bar. `banner` already exists in schema.
+const banner = config.banner as
+  | { content: string; dismissible?: boolean; id?: string; type?: "info" | "warning" | "success" }
+  | undefined;
+const bannerId = banner ? (banner.id ?? "default") : "";
+const bannerType = banner?.type ?? "info";
 ---
 <!DOCTYPE html>
 <html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
@@ -108,6 +116,29 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
     </script>
   </head>
   <body class="min-h-screen flex flex-col">
+    {showReadingProgress && (
+      <div
+        id="tangly-reading-progress"
+        class={`fixed top-0 left-0 right-0 z-50 h-[2px] origin-left bg-[var(--tangly-color-primary)] pointer-events-none transition-opacity duration-200`}
+        style="transform: scaleX(0); opacity: 0;"
+      ></div>
+    )}
+    {banner && (
+      <div
+        data-tangly-banner={bannerId}
+        class={`tangly-banner tangly-banner-${bannerType} text-sm px-4 py-2.5 text-center`}
+      >
+        <span set:html={banner.content}></span>
+        {banner.dismissible !== false && (
+          <button
+            type="button"
+            data-banner-dismiss
+            class="tangly-banner-dismiss ml-3 opacity-70 hover:opacity-100 align-middle"
+            aria-label="Dismiss banner"
+          >×</button>
+        )}
+      </div>
+    )}
     <TopNav config={config} navigation={navigation} currentTabSlug={currentTabSlug} />
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
       <aside
@@ -170,6 +201,8 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
     <script>
       import "./scripts/code-copy.ts";
       import "./scripts/code-sync.ts";
+      import "./scripts/reading-progress.ts";
+      import "./scripts/announcement.ts";
     </script>
   </body>
 </html>

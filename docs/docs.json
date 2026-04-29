@@ -9,6 +9,25 @@
     "dark": "#0284c7"
   },
   "favicon": "/images/favicon.svg",
+  "appearance": {
+    "default": "system",
+    "readingTime": true,
+    "readingProgress": true
+  },
+  "footer": {
+    "lastUpdated": true,
+    "repo": "https://github.com/tanglydocs/tangly",
+    "editUrl": "https://github.com/tanglydocs/tangly/edit/main/docs/{path}",
+    "socials": {
+      "github": "https://github.com/tanglydocs/tangly"
+    }
+  },
+  "banner": {
+    "id": "v02-launch",
+    "type": "info",
+    "dismissible": true,
+    "content": "Tangly v0.2 ships richer code blocks, page chrome, and more — <a href=\"/changelog\">see what's new</a>"
+  },
   "navigation": {
     "tabs": [
       {
@@ -119,11 +138,6 @@
       "type": "button",
       "label": "Star on GitHub",
       "href": "https://github.com/tanglydocs/tangly"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/tanglydocs/tangly"
     }
   }
 }

@@ -1,12 +1,14 @@
 ---
+import type { DocsJson } from "@tangly/schema";
 import type { PageEntry } from "tangly";
 import Icon from "./components/Icon.astro";
 
 export interface Props {
   page: PageEntry;
+  config?: DocsJson;
 }
 
-const { page } = Astro.props as Props;
+const { page, config } = Astro.props as Props;
 
 const fm = page.frontmatter;
 const title = fm.title ?? fm.sidebarTitle ?? page.slug;
@@ -19,6 +21,31 @@ const center = mode === "center";
 const custom = mode === "custom";
 
 const breadcrumbs = page.breadcrumbs ?? [];
+
+// Page-chrome metadata.
+const showReadingTime =
+  fm.readingTime !== false &&
+  config?.appearance?.readingTime === true &&
+  typeof page.readingTime === "number";
+const showLastUpdated =
+  fm.lastUpdated !== false &&
+  config?.footer?.lastUpdated === true &&
+  Boolean(page.lastUpdated);
+
+const lastUpdatedAbs = page.lastUpdated;
+function relativeTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return iso;
+  const diff = Math.max(0, (Date.now() - then) / 1000);
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.round(diff / 60)} min ago`;
+  if (diff < 86400) return `${Math.round(diff / 3600)} h ago`;
+  if (diff < 86400 * 14) return `${Math.round(diff / 86400)} d ago`;
+  if (diff < 86400 * 60) return `${Math.round(diff / (86400 * 7))} w ago`;
+  if (diff < 86400 * 365) return `${Math.round(diff / (86400 * 30))} mo ago`;
+  return `${Math.round(diff / (86400 * 365))} y ago`;
+}
+const lastUpdatedRel = lastUpdatedAbs ? relativeTime(lastUpdatedAbs) : "";
 
 // Layout widths
 const containerClass = custom
@@ -58,11 +85,38 @@ const containerClass = custom
         {description && (
           <p class="text-lg text-[var(--tangly-color-muted)] leading-relaxed">{description}</p>
         )}
+        {showReadingTime && (
+          <p class="mt-3 text-xs text-[var(--tangly-color-muted)] inline-flex items-center gap-1.5">
+            <Icon icon="Clock" size={12} />~ {page.readingTime} min read
+          </p>
+        )}
       </header>
 
       <div class="prose-tang">
         <slot />
       </div>
+
+      {(showLastUpdated || page.editUrl) && (
+        <div class="mt-12 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--tangly-color-muted)] border-t border-[var(--tangly-color-border)] pt-4">
+          {showLastUpdated && lastUpdatedAbs ? (
+            <span class="inline-flex items-center gap-1.5">
+              <Icon icon="History" size={12} />
+              Last updated <time datetime={lastUpdatedAbs}>{lastUpdatedRel}</time>
+            </span>
+          ) : <span></span>}
+          {page.editUrl && (
+            <a
+              href={page.editUrl}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1.5 hover:text-[var(--tangly-color-fg)]"
+            >
+              <Icon icon="Pencil" size={12} />
+              Edit this page
+            </a>
+          )}
+        </div>
+      )}
 
       {(page.prev || page.next) && (
         <nav aria-label="Pagination" class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3">
