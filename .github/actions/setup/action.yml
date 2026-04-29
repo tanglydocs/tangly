@@ -1,0 +1,28 @@
+name: setup
+description: Bun setup + install with cache. Reusable across CI/release workflows.
+
+inputs:
+  bun-version:
+    description: Bun version (matches packageManager in root package.json)
+    required: false
+    default: "1.2.0"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Cache bun install
+      uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    - name: Install
+      shell: bash
+      run: bun install --frozen-lockfile
