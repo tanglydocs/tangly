@@ -4,16 +4,18 @@ import { join, relative, sep } from "node:path";
 import { type Frontmatter, safeParseFrontmatter } from "@tangly/schema";
 import matter from "gray-matter";
 
-const SKIP_DIRS = new Set([
-  "node_modules",
-  "dist",
-  ".git",
-  ".astro",
-  ".tangly",
-  ".next",
+const SKIP_DIRS = new Set(["node_modules", "dist", ".git", ".astro", ".tangly", ".next"]);
+
+// These directories are only skipped at the user-root level. Deeper
+// `components/` or `templates/` directories are legitimate doc paths
+// (e.g. `reference/components/callouts.mdx`).
+const SKIP_DIRS_AT_ROOT = new Set([
   "components",
   "templates",
   "public",
+  "static",
+  "assets",
+  "snippets",
 ]);
 
 export interface PageOnDisk {
@@ -42,8 +44,10 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
   } catch {
     return;
   }
+  const atRoot = dir === root;
   for (const entry of entries) {
     if (SKIP_DIRS.has(entry.name)) continue;
+    if (atRoot && SKIP_DIRS_AT_ROOT.has(entry.name)) continue;
     if (entry.name.startsWith(".")) continue;
 
     const full = join(dir, entry.name);
