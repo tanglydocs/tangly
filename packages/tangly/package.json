@@ -1,14 +1,19 @@
 {
-  "name": "@tanglydocs/tangly",
+  "name": "tangly",
   "version": "0.0.1",
-  "description": "Self-hosted, OSS docs framework. Renders Mintlify projects unmodified.",
+  "description": "Self-hosted, open-source documentation framework. Drop-in compatible with Mintlify projects — render existing docs.json/MDX corpora unmodified, with Astro under the hood. Includes a CLI (init, dev, build, migrate), pluggable themes, and full MDX component parity.",
   "keywords": [
     "astro",
     "docs",
     "documentation",
     "mdx",
     "mintlify",
-    "static-site"
+    "static-site",
+    "site-generator",
+    "ssg",
+    "docs-as-code",
+    "openapi",
+    "content"
   ],
   "homepage": "https://github.com/tanglydocs/tangly",
   "bugs": "https://github.com/tanglydocs/tangly/issues",

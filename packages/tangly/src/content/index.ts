@@ -10,5 +10,5 @@ export {
   serializeCollections,
   type LoadedCollections,
 } from "./load-collections.js";
-// Re-export Zod for ergonomic `import { defineCollection, z } from '@tanglydocs/tangly/content'`.
+// Re-export Zod for ergonomic `import { defineCollection, z } from 'tangly/content'`.
 export { z } from "zod";
