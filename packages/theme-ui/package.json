@@ -46,7 +46,7 @@
     "@scalar/api-reference": "^1.53.1",
     "@tailwindcss/vite": "^4.2.4",
     "@tanglydocs/schema": "workspace:*",
-    "@tanglydocs/tangly": "workspace:*",
+    "tangly": "workspace:*",
     "astro": "^6.1.10",
     "katex": "^0.16.45",
     "lucide": "^1.12.0",

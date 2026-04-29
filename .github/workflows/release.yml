@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   release:
-    name: release @tanglydocs/*
+    name: release tangly + @tanglydocs/*
     runs-on: ubuntu-latest
     env:
       BUMP: ${{ github.event.inputs.bump }}

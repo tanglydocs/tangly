@@ -27,7 +27,7 @@
       },
     },
     "packages/tangly": {
-      "name": "@tanglydocs/tangly",
+      "name": "tangly",
       "version": "0.0.1",
       "bin": {
         "tangly": "./bin/tangly.js",
@@ -141,7 +141,6 @@
         "@scalar/api-reference": "^1.53.1",
         "@tailwindcss/vite": "^4.2.4",
         "@tanglydocs/schema": "workspace:*",
-        "@tanglydocs/tangly": "workspace:*",
         "astro": "^6.1.10",
         "katex": "^0.16.45",
         "lucide": "^1.12.0",
@@ -152,6 +151,7 @@
         "remark-parse": "^11.0.0",
         "remark-rehype": "^11.1.2",
         "tailwindcss": "^4.2.4",
+        "tangly": "workspace:*",
         "unified": "^11.0.5",
       },
       "devDependencies": {
@@ -734,8 +734,6 @@
     "@tailwindcss/vite": ["@tailwindcss/vite@4.2.4", "", { "dependencies": { "@tailwindcss/node": "4.2.4", "@tailwindcss/oxide": "4.2.4", "tailwindcss": "4.2.4" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7 || ^8" } }, "sha512-pCvohwOCspk3ZFn6eJzrrX3g4n2JY73H6MmYC87XfGPyTty4YsCjYTMArRZm/zOI8dIt3+EcrLHAFPe5A4bgtw=="],
 
     "@tanglydocs/schema": ["@tanglydocs/schema@workspace:packages/schema"],
-
-    "@tanglydocs/tangly": ["@tanglydocs/tangly@workspace:packages/tangly"],
 
     "@tanglydocs/theme-geist": ["@tanglydocs/theme-geist@workspace:packages/theme-geist"],
 
@@ -1956,6 +1954,8 @@
     "tailwind-merge": ["tailwind-merge@3.5.0", "", {}, "sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A=="],
 
     "tailwindcss": ["tailwindcss@4.2.4", "", {}, "sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA=="],
+
+    "tangly": ["tangly@workspace:packages/tangly"],
 
     "tapable": ["tapable@2.3.3", "", {}, "sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A=="],
 
