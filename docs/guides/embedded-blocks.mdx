@@ -71,8 +71,18 @@ Below is an `<Embed>` pulling the "Status" block from the Introduction page:
 
 That's the same content you'd see at [/introduction#status](/introduction#status).
 
+## Implementation
+
+`<Embed>` resolves at build time. The manifest extracts every block from every page during `build-manifest.ts`; `<Embed>` looks up the block, sanitizes the Markdown via `rehype-sanitize` with a strict allow-list, and renders the HTML inline.
+
+This means:
+
+- **Zero runtime cost** — the embed is baked into the prerendered HTML.
+- **No client JS** — embeds work without scripts loaded.
+- **Sanitized** — block sources can't smuggle `<script>` or event-handler attributes into the embedding page.
+
 ## When NOT to embed
 
 - **Snippet content** (callouts, sample code) — use `snippets/` instead. Snippets allow MDX/components.
 - **Versioned changes** — embeds resolve at build time against the current source; they're not historical.
-- **Cross-version content** (Phase 7 versioning) — versions get their own copies.
+- **Cross-version content** — when versioning lands, each version will get its own block index.

@@ -1,0 +1,111 @@
+---
+title: tangly migrate
+description: Migrate a Mintlify project to Tangly.
+icon: "arrow-right-left"
+---
+
+# `tangly migrate`
+
+Migrates a project to Tangly. Two paths are supported:
+
+- **Legacy `mint.json`** → full conversion to `docs.json`.
+- **Modern `docs.json`** → validation against Tangly's schema + `$schema` URL update.
+
+In both cases, MDX files render unchanged.
+
+## Usage
+
+```bash
+tangly migrate [options]
+```
+
+Run from the project root. Detects which migration path is needed based on which file is present.
+
+## Options
+
+<ParamField path="--root <path>" type="string" default=".">
+  Project root.
+</ParamField>
+
+<ParamField path="--yes" type="boolean">
+  Skip confirmation prompts. Useful for scripted migrations.
+</ParamField>
+
+<ParamField path="--keep-source" type="boolean">
+  Keep `mint.json` after legacy migration. Default is to rename it to `mint.json.bak`.
+</ParamField>
+
+## What it changes
+
+### `mint.json` → `docs.json`
+
+<Steps>
+  <Step title="Reads mint.json">
+    Parses the file via `@tangly/schema`'s mint.json parser.
+  </Step>
+  <Step title="Converts shape">
+    Translates Mintlify's nav structure (`navigation`, `tabs`, `anchors`, `topbarLinks`, etc.) into Tangly's `docs.json` shape. Theme aliases (mint, maple, palm, willow, linden, almond, aspen, luma, sequoia) map to `tang`.
+  </Step>
+  <Step title="Writes docs.json">
+    Pretty-printed with `$schema` set to Tangly's published URL.
+  </Step>
+  <Step title="Renames the source">
+    `mint.json` → `mint.json.bak` (or `mint.json.bak.1`, `.2`, ...). Override with `--keep-source` to leave the original alone.
+  </Step>
+</Steps>
+
+### Existing `docs.json`
+
+For projects already on Mintlify's `docs.json` format:
+
+<Steps>
+  <Step title="Validates against Tangly's schema">
+    Runs `safeParseDocsJson`. Refuses to migrate if the file doesn't validate; emits the schema errors so you can fix them.
+  </Step>
+  <Step title="Updates $schema">
+    Rewrites the `$schema` URL to Tangly's published schema so editors get Tangly-aware autocomplete.
+  </Step>
+  <Step title="Surfaces theme notices">
+    If the current `theme` value isn't one Tangly ships (`tang`, `pith`, `pip`, or any aliased Mintlify theme), prints a notice prompting you to pick one. The value is *not* changed automatically.
+  </Step>
+</Steps>
+
+## What it does **not** do
+
+- Move or edit any `.mdx` files.
+- Modify `package.json` dependencies (run `bun add -D tangly` yourself).
+- Touch `theme:` if it already resolves to a known theme.
+- Replace components or rewrite content.
+
+## Both files present
+
+If both `mint.json` and `docs.json` exist, Tangly prefers `docs.json` and logs a warning. The `mint.json` is left untouched.
+
+## Example
+
+```bash
+$ bun x tangly migrate
+◇  Tangly migrate
+│
+├  Generated docs.json preview:
+│  {
+│    "$schema": "https://tanglydocs.com/schema/docs.json",
+│    "name": "My Docs",
+│    "theme": "tang",
+│    ...
+│
+◇  Write docs.json and back up mint.json? · Yes
+│  → mint.json renamed to mint.json.bak
+│
+✓ Wrote /path/to/docs.json
+└  Done. Run tangly dev to preview.
+```
+
+## After migration
+
+```bash
+bun add -D tangly
+bun x tangly dev
+```
+
+If anything renders differently from Mintlify, file an issue — tracking visual + behavioral parity is an explicit Tangly goal.

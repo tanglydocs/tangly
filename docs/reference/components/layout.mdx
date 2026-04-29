@@ -1,0 +1,61 @@
+---
+title: Layout
+description: Frame, Columns, Expandable, Accordion — the structural primitives.
+icon: "layout"
+---
+
+# Layout
+
+Components for shaping the visual structure of a page.
+
+## `<Frame>`
+
+A bordered container around an image, video, or any visual block. Optionally captioned.
+
+<Frame caption="The Tangly architecture, simplified.">
+  <img src="/images/architecture.svg" alt="Architecture diagram" />
+</Frame>
+
+```md
+<Frame caption="...">
+  <img src="..." alt="..." />
+</Frame>
+```
+
+### Props
+
+<ParamField path="caption" type="string">
+  Optional centered caption below the framed content.
+</ParamField>
+
+`<Frame>` is content-agnostic — anything inside `<slot>` gets framed. Most commonly: `<img>`, `<video>`, embeds.
+
+## `<Columns>`
+
+Responsive grid for arbitrary content. See [Cards](/reference/components/cards#columns) for usage.
+
+## `<Expandable>`
+
+Inline disclosure widget. See [Tabs, Steps, Accordions](/reference/components/tabs-and-steps#expandable).
+
+## `<Accordion>` / `<AccordionGroup>`
+
+Collapsible Q&A groups. See [Tabs, Steps, Accordions](/reference/components/tabs-and-steps#accordion-accordiongroup).
+
+## Page mode
+
+Page-level layout (sidebar, content width, TOC visibility) is controlled by the `mode` frontmatter field, not by a component. See [Frontmatter](/reference/schema/frontmatter#mode).
+
+```md
+---
+title: Wide page
+mode: wide
+---
+```
+
+| Mode | Sidebar | Content | Right TOC |
+| ---- | ------- | ------- | --------- |
+| `default` | yes | medium | yes |
+| `wide` | yes | wide | no |
+| `center` | no | centered | no |
+| `custom` | no | full-width | no |

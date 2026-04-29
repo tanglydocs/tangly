@@ -1,0 +1,96 @@
+---
+title: tangly add
+description: Scaffold a new page, snippet, or changelog entry.
+icon: "file-plus"
+---
+
+# `tangly add`
+
+Scaffolds a new page, snippet, or changelog entry. Optionally inserts it into `docs.json` navigation.
+
+## Usage
+
+```bash
+tangly add <type> <path> [options]
+```
+
+| `<type>`   | Where it lands                                |
+| ---------- | --------------------------------------------- |
+| `page`     | `<path>.mdx` at project root                  |
+| `snippet`  | `snippets/<path>.mdx`                         |
+| `changelog`| `changelog/<path>.mdx` with an `<Update>` block |
+
+## Options
+
+<ParamField path="--template <name>" type="string">
+  Reserved for project-defined templates. Not yet wired.
+</ParamField>
+
+<ParamField path="--no-nav" type="boolean">
+  Skip auto-insertion into `docs.json`. Use this when you want to manually place the page in a specific group.
+</ParamField>
+
+<ParamField path="--root <path>" type="string" default=".">
+  Project root.
+</ParamField>
+
+## Examples
+
+### Add a page
+
+```bash
+bun x tangly add page guides/billing
+```
+
+Creates `guides/billing.mdx`:
+
+```md
+---
+title: Billing
+description: Billing
+---
+
+# Billing
+
+Body content goes here.
+```
+
+If `docs.json` has a `navigation.groups` array, the new slug is appended to the **last** group. Override placement with `--no-nav` and edit `docs.json` yourself.
+
+### Add a snippet
+
+```bash
+bun x tangly add snippet shared/disclaimer
+```
+
+Creates `snippets/shared/disclaimer.mdx`. Snippets are *not* auto-added to navigation — they're invoked from MDX via `<Snippet file="shared/disclaimer" />`.
+
+### Add a changelog entry
+
+```bash
+bun x tangly add changelog 1.2.0
+```
+
+Creates `changelog/1.2.0.mdx`:
+
+```md
+---
+title: 1.2.0
+description: 2026-04-29
+---
+
+<Update label="1.2.0" description="2026-04-29" tags={[]}>
+
+## Changes
+
+- ...
+
+</Update>
+```
+
+The slug is matched against `\d+\.\d+\.\d+` to extract the version label; if it doesn't match, `0.0.0` is used.
+
+## Errors
+
+- The target file already exists — refuses to overwrite.
+- `<type>` is not `page`, `snippet`, or `changelog` — exits 1.

@@ -1,0 +1,165 @@
+---
+title: API components
+description: ParamField, ResponseField, RequestExample, ResponseExample, OpenApi viewers.
+icon: "webhook"
+---
+
+# API components
+
+Components for documenting REST endpoints, parameters, and responses. Use these for hand-authored API docs; for automatic OpenAPI rendering, see [OpenAPI](/guides/openapi).
+
+## `<ParamField>`
+
+Documents a request parameter. Auto-renders the parameter location (path/query/body/header) as a label.
+
+<ParamField path="userId" type="string" required>
+  The user's unique identifier.
+</ParamField>
+
+<ParamField query="limit" type="number" default="50">
+  Maximum results to return. Capped at 1000.
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Free-form metadata blob. Keys must be lowercase ASCII; values are strings.
+</ParamField>
+
+<ParamField header="X-Request-Id" type="string" deprecated>
+  Idempotency key. Deprecated — use `Idempotency-Key` instead.
+</ParamField>
+
+```md
+<ParamField path="userId" type="string" required>
+  The user's unique identifier.
+</ParamField>
+
+<ParamField query="limit" type="number" default="50">
+  Description.
+</ParamField>
+```
+
+### Props
+
+Pass exactly one of `path`, `query`, `body`, `header` — the chosen one becomes the label and the param name.
+
+<ParamField path="path" type="string">Path parameter name.</ParamField>
+<ParamField path="query" type="string">Query parameter name.</ParamField>
+<ParamField path="body" type="string">Request body field name.</ParamField>
+<ParamField path="header" type="string">Header name.</ParamField>
+<ParamField path="type" type="string">Type label (e.g. `string`, `number`, `User`).</ParamField>
+<ParamField path="required" type="boolean">Show the "required" chip.</ParamField>
+<ParamField path="default" type="string">Default value when omitted.</ParamField>
+<ParamField path="deprecated" type="boolean">Show the "deprecated" chip.</ParamField>
+
+## `<ResponseField>`
+
+Same shape as `<ParamField>` but for response bodies. Accepts the same props plus `name` (for fields not tied to a specific location).
+
+<ResponseField name="id" type="string" required>
+  Resource ID.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO 8601 timestamp.
+</ResponseField>
+
+```md
+<ResponseField name="id" type="string" required>
+  Resource ID.
+</ResponseField>
+```
+
+## `<RequestExample>` / `<ResponseExample>`
+
+Bordered containers for request/response code blocks. They're labeled wrappers — you put a `<CodeGroup>` or fenced code block inside.
+
+<RequestExample>
+  <CodeGroup>
+    ```bash curl
+    curl https://api.example.com/users/abc \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+    ```ts node
+    await fetch("https://api.example.com/users/abc", {
+      headers: { Authorization: `Bearer ${TOKEN}` },
+    });
+    ```
+  </CodeGroup>
+</RequestExample>
+
+<ResponseExample>
+  ```json
+  {
+    "id": "abc",
+    "name": "Nik",
+    "createdAt": "2026-04-29T00:00:00Z"
+  }
+  ```
+</ResponseExample>
+
+````md
+<RequestExample>
+  <CodeGroup>
+    ```bash curl
+    curl https://api.example.com/users/abc
+    ```
+  </CodeGroup>
+</RequestExample>
+
+<ResponseExample>
+  ```json
+  { "id": "abc" }
+  ```
+</ResponseExample>
+````
+
+## OpenAPI viewers
+
+When `openapi: METHOD path` frontmatter is set on a page, Tangly auto-renders the endpoint. The viewer is selected by `docs.json#api.viewer`:
+
+| Value | Component | Notes |
+| ----- | --------- | ----- |
+| `tangly` (default) | `<OpenApiEndpoint>` | Built-in compact render. SSR-fetches the spec at build time. |
+| `scalar` | `<OpenApiScalar>` | Lazy-loaded from CDN. Single-endpoint via spec filtering. |
+| `redoc` | `<OpenApiRedoc>` | Lazy-loaded from CDN. Standalone bundle. |
+| `stoplight` | `<OpenApiStoplight>` | Lazy-loaded from CDN. Web component. |
+
+You don't normally write these components directly — Tangly renders them for you when frontmatter declares an endpoint. See [OpenAPI](/guides/openapi) for end-to-end setup.
+
+### `<OpenApiEndpoint>` props
+
+For completeness, when you want to render an endpoint inline:
+
+<ParamField path="spec" type="string" required>
+  Spec URL or local path (resolved against `<userRoot>`).
+</ParamField>
+
+<ParamField path="method" type="string" required>
+  HTTP method (`GET`, `POST`, etc.).
+</ParamField>
+
+<ParamField path="path" type="string" required>
+  Endpoint path (`/users/{id}`).
+</ParamField>
+
+<ParamField path="baseUrl" type="string">
+  Override the spec's `servers[0]` for try-it-out.
+</ParamField>
+
+<ParamField path="authMethod" type="enum">
+  `bearer | basic | key | none`.
+</ParamField>
+
+<ParamField path="authName" type="string">
+  Header/parameter name when `authMethod` is `key`.
+</ParamField>
+
+```md
+<OpenApiEndpoint
+  spec="./openapi.json"
+  method="GET"
+  path="/users/{id}"
+  authMethod="bearer"
+/>
+```

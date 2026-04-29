@@ -1,83 +1,237 @@
 ---
 title: Deploying
-description: Ship your docs to Vercel, Cloudflare, or any static host.
+description: Ship your docs to Vercel, Cloudflare Pages, Netlify, Docker, or any static host.
 icon: "rocket"
 ---
 
 # Deploying
 
-`tangly build` produces a static site that drops onto any CDN. The adapter is auto-detected from your project; override with `--adapter`.
+`tangly build` produces a static site at `dist/` that drops onto any CDN. The adapter is auto-detected from your project; override with `--adapter`.
 
-## Auto-detection
+## Adapter auto-detection
 
 | File present in project root | Adapter selected |
-|---|---|
+| ---------------------------- | ---------------- |
 | `vercel.json` | `vercel` |
 | `wrangler.toml` or `wrangler.jsonc` | `cloudflare` |
 | `Dockerfile` | `node` |
 | (none) | `static` |
 
 <Note>
-  Tangly v1 outputs are fully static, so all adapters currently produce the same `dist/` shape. The Vercel adapter adds Vercel-specific build metadata; `cloudflare` and `node` are recognized for forward-compat (Phase 6 AI chat unlocks real SSR routes) but are no-ops today. Use `--adapter static` if you don't want any adapter applied.
+  Tangly outputs are fully static. All adapters currently produce the same `dist/` shape — Vercel's adapter only adds Vercel build metadata for free; `cloudflare` and `node` are recognized for forward-compat (they unlock when SSR routes land) but are no-ops today. Use `--adapter static` to opt out of any adapter.
 </Note>
 
 ## Vercel
 
-Add `vercel.json` (any contents — even `{}`) and run:
+The simplest path. Add `vercel.json` (even empty `{}` is fine — its presence is the auto-detect signal) and:
 
 ```bash
 bun x tangly build
 vercel deploy ./dist
 ```
 
-Or push to a Vercel-connected git repo with a build command:
+For a git-connected project, configure the build through `vercel.json`:
 
 ```json
 {
   "buildCommand": "bun x tangly build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "framework": null
 }
 ```
+
+Or set the same in the Vercel dashboard:
+
+| Setting | Value |
+| ------- | ----- |
+| Framework Preset | Other |
+| Build Command | `bun x tangly build` |
+| Output Directory | `dist` |
+| Install Command | `bun install` |
 
 ## Cloudflare Pages
 
 ```bash
 bun x tangly build
-wrangler pages deploy ./dist
+bunx wrangler pages deploy ./dist --project-name my-docs
 ```
 
-For a connected repo, set the build command to `bun x tangly build` and the output dir to `dist`.
+For a git-connected project, in the Cloudflare dashboard:
 
-## Static hosts
+| Setting | Value |
+| ------- | ----- |
+| Framework preset | None |
+| Build command | `bun x tangly build` |
+| Build output directory | `dist` |
+| Root directory | `/` (or your subdir) |
 
-Any static host works (Netlify, GitHub Pages, S3+CloudFront, Cloudflare R2):
+A `wrangler.toml` at the project root triggers auto-detect:
+
+```
+name = "my-docs"
+compatibility_date = "2026-04-29"
+
+[site]
+bucket = "./dist"
+```
+
+<Note>
+  Cloudflare Pages today serves the static `dist/` regardless of the `cloudflare` adapter. The adapter signal is preserved for when SSR routes land and Workers becomes the runtime.
+</Note>
+
+## Netlify
+
+No special adapter — Netlify serves any static directory. Add `netlify.toml`:
+
+```
+[build]
+  command = "bun x tangly build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+Or via the dashboard with the same build command and publish directory.
+
+## Plain static (S3, R2, GitHub Pages, nginx)
 
 ```bash
 bun x tangly build
-# Upload ./dist to your host.
+# Upload dist/ to your host.
+
+# S3:
+aws s3 sync dist/ s3://my-bucket --delete
+
+# rsync to a VPS:
+rsync -avz --delete dist/ user@host:/var/www/docs/
+
+# GitHub Pages: commit dist/ to the gh-pages branch.
 ```
+
+For nginx, point the server root at `dist/`:
+
+```
+server {
+  listen 80;
+  server_name docs.example.com;
+  root /var/www/docs;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/index.html =404;
+  }
+}
+```
+
+## Docker
+
+Drop a `Dockerfile` to trigger the `node` adapter (still static today):
+
+```
+FROM oven/bun:1.2-alpine AS build
+WORKDIR /app
+COPY . .
+RUN bun install --frozen-lockfile
+RUN bun x tangly build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+```
+
+`nginx.conf`:
+
+```
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  location / {
+    try_files $uri $uri/index.html =404;
+  }
+}
+```
+
+Build and run:
+
+```bash
+docker build -t my-docs .
+docker run -p 8080:80 my-docs
+```
+
+## GitHub Pages
+
+```yaml
+name: Deploy docs
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun x tangly build --base /REPO-NAME
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+The `--base` flag is required when serving under `https://USER.github.io/REPO/`.
 
 ## Subpath hosting
 
-Deploy under `/docs` instead of the root:
+Deploy under `/docs` instead of the host root:
 
 ```bash
 bun x tangly build --base /docs
 ```
 
+All internal links and asset URLs are rewritten to include the prefix. Run `tangly preview` after to verify.
+
 ## What gets built
 
 ```
 dist/
-├── index.html
-├── introduction/
-│   └── index.html
-├── images/         # copied from project root
+├── index.html              # redirects to first nav page
+├── introduction/index.html
+├── guides/<slug>/index.html
+├── images/                 # copied verbatim from project root
 ├── logo/
+├── public/
+├── pagefind/               # search index
 ├── sitemap.xml
 ├── robots.txt
-├── llms.txt        # for AI crawlers
-└── llms-full.txt   # full-content variant
+├── llms.txt                # for AI crawlers
+└── llms-full.txt
 ```
 
-Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from sitemap/llms.txt.
+Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from `sitemap.xml`, `llms.txt`, `llms-full.txt`, and the Pagefind index.
+
+## Pre-deploy checklist
+
+```bash
+bun x tangly check --strict   # exit 0 means clean
+bun x tangly build
+bun x tangly preview          # smoke test in browser
+```
+
+CI: drop the same three commands into your pipeline. `tangly check --strict --json` plays well with annotation scripts.

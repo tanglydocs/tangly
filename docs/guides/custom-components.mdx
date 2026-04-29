@@ -1,0 +1,93 @@
+---
+title: Custom components
+description: Override built-in components or add your own.
+icon: "puzzle"
+---
+
+# Custom components
+
+Drop a file at `./components/<Name>.{astro,tsx,jsx,ts,js}` in your project to override the built-in `<Name>` component everywhere it's used in your MDX. No imports, no registration — just the file.
+
+```
+my-docs/
+├── docs.json
+├── introduction.mdx
+└── components/
+    └── Note.astro       # overrides @tangly/theme-ui/Note
+```
+
+## Resolution order
+
+When MDX uses `<Note>`, Vite resolves the import top-down:
+
+1. `<userRoot>/components/<Name>.{astro,tsx,jsx,ts,js}` — your project override.
+2. `@tangly/theme-tang/components/<Name>.astro` (or `theme-pith`, `theme-pip`) — the active theme's version.
+3. `@tangly/theme-ui/components/<Name>.astro` — Tangly's built-in default.
+
+The component-shadow plugin does this with Vite resolve aliases set up at integration time. There's zero runtime overhead — the override is baked into the bundle.
+
+## Overridable components
+
+All 28 built-in components can be shadowed:
+
+`Accordion`, `AccordionGroup`, `Badge`, `Card`, `CardGroup`, `Check`, `CodeGroup`, `Columns`, `Danger`, `Embed`, `Expandable`, `Frame`, `Icon`, `Info`, `Note`, `OpenApiEndpoint`, `ParamField`, `RequestExample`, `ResponseExample`, `ResponseField`, `Snippet`, `Step`, `Steps`, `Tab`, `Tabs`, `Tip`, `Tooltip`, `Update`, `Warning`.
+
+## Contract
+
+Your override must accept the same props as the original. Tangly passes them through verbatim — type signatures live in each built-in's source. For most components, just slot-in your own visual treatment:
+
+```tsx
+---
+// components/Note.astro
+export interface Props {}
+---
+<aside class="my-note">
+  <slot />
+</aside>
+```
+
+For components with structured props (e.g. `<Card title="..." icon="..." href="...">`), copy the `Props` interface from the built-in:
+
+```tsx
+---
+// components/Card.astro
+import Icon from "@tangly/theme-ui/Icon.astro";
+
+export interface Props {
+  title?: string;
+  icon?: string;
+  href?: string;
+  horizontal?: boolean;
+  img?: string;
+  color?: string;
+}
+
+const { title, icon, href, horizontal, img, color } = Astro.props as Props;
+---
+<a class="my-card" href={href}>
+  {icon && <Icon icon={icon} color={color} />}
+  {img && <img src={img} alt="" />}
+  <strong>{title}</strong>
+  <div><slot /></div>
+</a>
+```
+
+## Adding components that aren't built-in
+
+Tangly's auto-injected component map covers the 28 components listed above. To use a component that isn't in that set (e.g. a custom `<Tldr>`), import it explicitly in your MDX:
+
+```md
+import Tldr from "../components/Tldr.astro";
+
+<Tldr>Short summary.</Tldr>
+```
+
+Auto-registration of arbitrary components via `tangly.config.ts` is on the roadmap but not yet wired.
+
+## Testing locally
+
+`tangly dev` hot-reloads component shadows. Edit `./components/Note.astro` and the browser updates without a server restart.
+
+## Per-theme overrides via theme.css
+
+For visual-only changes (colors, spacing, typography), you don't need to shadow the component — drop a `theme/styles/theme.css` and override CSS variables. See [Themes](/reference/schema/themes#project-level-theme-override).

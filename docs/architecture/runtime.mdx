@@ -12,33 +12,53 @@ icon: "cog"
 
 ```
 runtime/
-├── astro.config.mjs
+├── astro.config.mjs              # remark/rehype pipeline, MDX, Tailwind, adapter
 └── src/
-    ├── content.config.ts          # collection: glob over <userRoot>/**/*.mdx
+    ├── content.config.ts         # collection: glob over <userRoot>/**/*.mdx
     ├── pages/
-    │   ├── index.astro            # redirects to first nav page
-    │   └── [...slug].astro        # catch-all, renders any page slug
+    │   ├── index.astro           # redirects to first nav page
+    │   └── [...slug].astro       # catch-all, renders any page slug
     └── lib/
-        ├── mdx-components.ts      # injects Note/Card/Tabs/etc. into MDX
-        └── remark-mintlify-compat.mjs
+        ├── mdx-components.ts     # injects Note/Card/Tabs/etc. into MDX
+        ├── remark-mintlify-compat.mjs
+        ├── remark-explicit-ids.mjs
+        └── remark-mermaid.mjs
 ```
 
-## Catch-all
+## Page render pipeline
 
-`src/pages/[...slug].astro` is the heart of the runtime. For each page:
+```mermaid
+flowchart TD
+  R1[browser request<br/>/some-slug] --> R2["[...slug].astro<br/>getStaticPaths"]
+  R2 --> R3{slug type?}
+  R3 -- mdx page --> R4[load MDX entry<br/>via content collection]
+  R3 -- synth openapi --> R5[fetch spec<br/>extract operation]
+  R4 --> R6[lookup PageEntry<br/>virtual:tangly/manifest]
+  R5 --> R6
+  R6 --> R7[resolve mdxComponents<br/>+ shadowed overrides]
+  R7 --> R8[Layout]
+  R8 --> R9[TopNav<br/>Sidebar<br/>PageShell]
+  R9 --> R10[content.astro Content<br/>or OpenApiEndpoint]
+  R10 --> R11[Footer + SearchModal]
+  R11 --> R12[static HTML in dist/]
+```
+
+## Catch-all in detail
+
+`src/pages/[...slug].astro` is the heart of the runtime. For each request:
 
 <Steps>
   <Step title="getStaticPaths">
-    Reads `getCollection('docs')` (Astro's content layer) and returns one path per MDX entry.
+    Reads `getCollection('docs')` (Astro's content layer) and returns one path per MDX entry, plus one per OpenAPI synth page from `manifest.pages`. All routes prerendered.
   </Step>
   <Step title="Resolve PageEntry">
     Looks up the entry in `virtual:tangly/manifest` to get nav/sidebar/breadcrumb context. Falls back to a synthesized "orphan" entry for pages on disk but not in nav.
   </Step>
-  <Step title="OpenAPI fetch">
-    If frontmatter has `openapi: METHOD path`, SSR-fetches the spec and extracts the operation's title + description for the page banner.
+  <Step title="OpenAPI handling">
+    If frontmatter has `openapi: METHOD path` or the page is a synth endpoint, fetches the spec and renders via `<OpenApiEndpoint>` (or a third-party viewer if `api.viewer` is `scalar` / `redoc` / `stoplight`).
   </Step>
   <Step title="Render">
-    Wraps content in `Layout` + `PageShell`, passes `mdxComponents` into `<Content components={...} />`. Adds `<OpenApiEndpoint>` above content when applicable.
+    Wraps content in `Layout` + `PageShell`, passes `mdxComponents` into `<Content components={...} />`. The Tangly Astro integration has already aliased every component import so user overrides at `<userRoot>/theme/<Name>.astro` intercept transparently.
   </Step>
 </Steps>
 
@@ -60,9 +80,13 @@ Astro's content layer handles MDX parsing, image processing, and per-file cachin
 We could ship as `astro.config` snippets the user adds. Instead, the runtime is fully synthesized:
 
 - User repo never needs Astro deps.
-- `tangly eject` (Phase 2) materializes this directory into the user's repo and removes `tangly` from deps.
+- `tangly eject` materializes this directory into the user's repo and removes `tangly` from deps when you want to leave.
 - We can iterate runtime internals without breaking user code.
 
 ## Discovery
 
 `getRuntimeDir()` finds the runtime by walking up from the CLI's compiled JS until it finds a directory with `astro.config.mjs`. This handles npm install + workspace symlinks transparently.
+
+## Adapter selection
+
+`astro.config.mjs` reads `TANGLY_ADAPTER` (set by the CLI from `--adapter` or auto-detect). Today only `vercel` applies a real adapter; `cloudflare` and `node` are recognized but stay static-only until SSR routes (e.g. AI chat) land. See [Deploying](/guides/deploying) for the matrix.

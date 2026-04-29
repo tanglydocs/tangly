@@ -6,7 +6,9 @@ icon: "message-square"
 
 # Callouts
 
-All callouts are auto-injected. None take props (except `Update`).
+Six callout components plus a release-block component (`Update`). All are auto-injected — no imports required.
+
+## Variants
 
 <Note>Heads up — important context.</Note>
 <Tip>A pro-tip the reader should know about.</Tip>
@@ -24,12 +26,16 @@ All callouts are auto-injected. None take props (except `Update`).
 <Danger>Risk.</Danger>
 ```
 
+None of the six accept props beyond children. Style and icon vary by variant; the underlying `_Callout.astro` shell renders all of them.
+
 ## Update
 
-Used in changelogs. Takes `label`, `description`, `tags`:
+Used in changelogs. Renders a release block with version label, date, and tag chips.
 
-<Update label="v0.0.1" description="2026-04-29" tags={["alpha", "phase-1"]}>
-  ## Phase 1 lands Renders Mintlify projects unmodified.
+<Update label="v0.0.1" description="2026-04-29" tags={["alpha"]}>
+  ## Initial release
+
+  Renders Mintlify projects unmodified.
 </Update>
 
 ```md
@@ -37,3 +43,31 @@ Used in changelogs. Takes `label`, `description`, `tags`:
   Body content goes here.
 </Update>
 ```
+
+### Update props
+
+<ParamField path="label" type="string">
+  Version or release name. Renders as the heading.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Subtitle (typically a date in `YYYY-MM-DD` format).
+</ParamField>
+
+<ParamField path="tags" type="string[]">
+  Optional list of tag chips rendered to the right of the header.
+</ParamField>
+
+`tangly add changelog 1.2.0` scaffolds an `Update` block automatically.
+
+## Custom callout colors / icons
+
+Override any callout via [component shadowing](/guides/custom-components):
+
+```
+my-docs/
+└── theme/
+    └── Note.astro     # your override
+```
+
+Your override receives the same children prop. The internal `_Callout.astro` is also overridable if you want to retheme all six in one file.

@@ -1,0 +1,85 @@
+---
+title: tangly eject
+description: Materialize the synthesized Astro project into your repo.
+icon: "log-out"
+---
+
+# `tangly eject`
+
+Copies Tangly's synthesized Astro project into your repo so you can manage `astro.config.mjs` and Astro deps directly. Use this when you want to leave Tangly's CLI but keep your content + theme.
+
+<Warning>
+  Eject is irreversible in spirit (you can `rm -rf` the ejected directory and re-install Tangly, but any edits you made to the ejected runtime are lost).
+</Warning>
+
+## Usage
+
+```bash
+tangly eject [options]
+```
+
+## Options
+
+<ParamField path="--root <path>" type="string" default=".">
+  Project root.
+</ParamField>
+
+<ParamField path="--out <dir>" type="string" default="./.tangly">
+  Where to materialize the runtime. Conventionally `./.tangly` or `./astro`.
+</ParamField>
+
+<ParamField path="--yes" type="boolean">
+  Skip the confirmation prompt.
+</ParamField>
+
+## What it does
+
+<Steps>
+  <Step title="Copies the runtime">
+    Recursively copies `tangly/runtime/` (the synthesized Astro app) into `<out>/`.
+  </Step>
+  <Step title="Pins userRoot">
+    Patches `<out>/astro.config.mjs` to inline your project root path instead of reading `TANGLY_USER_ROOT` from the env.
+  </Step>
+  <Step title="Adds Astro deps to package.json">
+    Adds `astro`, `@astrojs/mdx`, `@tailwindcss/vite`, `tailwindcss`, `remark-gfm`, `rehype-shiki`, `rehype-slug`, `rehype-autolink-headings`, `rehype-katex`, `remark-math` as direct dependencies. `tangly`, `@tangly/schema`, and `@tangly/theme-ui` are kept — the materialized config still imports `tangly/plugin` and theme components.
+  </Step>
+  <Step title="Rewrites scripts">
+    `dev` → `astro dev --root <out>`, `build` → `astro build --root <out>`, `preview` → `astro preview --root <out>`.
+  </Step>
+</Steps>
+
+## After eject
+
+```bash
+bun install
+bun run dev
+```
+
+You're now driving Astro directly. Tangly's CLI is no longer required, though `tangly migrate`, `tangly check`, and the schema package can still be useful.
+
+## What stays under your control afterwards
+
+- `astro.config.mjs` — your remark/rehype pipeline, integrations, adapters.
+- `<out>/src/pages/[...slug].astro` — the catch-all that renders pages.
+- `<out>/src/lib/mdx-components.ts` — which components MDX has access to.
+
+## What you lose
+
+- Automatic adapter detection (you wire adapters in `astro.config.mjs` yourself).
+- The dev banner, `tangly check`, and `tangly add` (these CLIs still work, but they're less useful when you're already managing Astro directly).
+- Future Tangly runtime updates — you've forked the runtime as of eject time.
+
+## When to eject
+
+Eject if:
+
+- You need to add an Astro integration that isn't in Tangly's pipeline (e.g. a custom MDX plugin).
+- You want full control over routing for non-doc pages (landing pages, marketing).
+- You're committing to staying on Astro long-term and want to drop the abstraction layer.
+
+Don't eject if:
+
+- You just want to override a component — use [component shadowing](/guides/custom-components) instead.
+- You want a custom page template — use the [template](/guides/custom-templates) frontmatter field.
+- You want a different theme — set `theme: "pith"` (or build your own theme package).

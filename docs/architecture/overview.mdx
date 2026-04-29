@@ -6,80 +6,94 @@ icon: "blocks"
 
 # Architecture
 
-Tangly is a thin layer over Astro. The CLI wires user configuration to a synthesized Astro app via virtual modules, and your MDX files get processed by Astro's content-collections pipeline.
+Tangly is a thin layer over Astro 6. Your project is `docs.json` + `*.mdx`; Tangly synthesizes an Astro app, loads your content via virtual modules, and renders prerendered HTML through a single catch-all route.
 
 ## High-level flow
 
+```mermaid
+flowchart TD
+  subgraph user[Your project]
+    A1[docs.json]
+    A2["*.mdx files"]
+    A3[images/, logo/, public/]
+  end
+
+  subgraph cli[tangly CLI]
+    B1["@tangly/schema<br/>parse + validate"]
+    B2[manifest builder]
+    B3[Vite plugin<br/>virtual modules + middleware]
+  end
+
+  subgraph runtime[Tangly runtime]
+    C1["catch-all<br/>[...slug].astro"]
+    C2[Astro content collection<br/>glob over user root]
+    C3[MDX components<br/>auto-injected]
+  end
+
+  subgraph out[Output]
+    D1[dist/]
+  end
+
+  A1 --> B1 --> B2
+  A2 --> B2
+  B2 --> B3
+  A2 --> C2 --> C1
+  C3 --> C1
+  B3 -. virtual:tangly/* .-> C1
+  A3 --> B3
+  C1 --> D1
 ```
-docs.json + *.mdx
-       │
-       ▼
-┌──────────────────┐
-│ @tangly/schema   │  Zod parse → typed config
-└──────────────────┘
-       │
-       ▼
-┌──────────────────┐
-│ manifest builder │  scan pages, resolve nav, compute prev/next + sidebar
-└──────────────────┘
-       │
-       ▼
-┌──────────────────┐
-│ Vite plugin      │  virtual:tangly/{manifest,routes,config,theme}
-└──────────────────┘
-       │
-       ▼
-┌──────────────────┐
-│ Astro runtime    │  catch-all [...slug] + content collection over user root
-└──────────────────┘
-       │
-       ▼
-   dist/ (static)
-```
+
+The flow is one-directional: parse → manifest → expose → render → emit. Dev mode watches the user directory and re-emits virtual modules on change; build mode runs once.
 
 ## Three packages
 
 <CardGroup cols={3}>
   <Card title="@tangly/schema" icon="shield">
-    Zod schema + JSON Schema for `docs.json`. Frontmatter schema. mint.json migrator.
+    Zod schema for `docs.json`, frontmatter validator, mint.json migrator. Generates JSON Schema for editor support.
   </Card>
   <Card title="tangly" icon="terminal">
-    CLI, manifest builder, Vite plugin, runtime Astro app. The thing users install.
+    CLI commands, manifest builder, Vite plugin, and the synthesized Astro app shipped under `runtime/`.
   </Card>
-  <Card title="@tangly/theme-tang" icon="palette">
-    Default theme: Layout, Sidebar, TopNav, Footer, PageShell + 28 MDX components.
+  <Card title="@tangly/theme-ui" icon="palette">
+    Layout, Sidebar, TopNav, Footer, PageShell, plus 28 MDX components. Two consumer themes (`tang`, `pith`) wire it up with their own CSS.
   </Card>
 </CardGroup>
 
 ## Key design decisions
 
 <Note>
-  **User repos never see Astro.** Tangly runs Astro programmatically with `root` pointing at our
-  shipped runtime. Your `docs.json` + MDX is the only thing in your repo.
+  **User repos never see Astro.** Tangly runs Astro programmatically with `root` pointing at our shipped `runtime/`. Your project only contains `docs.json` + MDX. `tangly eject` materializes the runtime into your repo when you want to leave.
 </Note>
 
 <Note>
-  **Content collections + glob loader** point at your project root. Astro handles MDX parsing, HMR,
-  and static generation natively.
+  **Content collections + glob loader** point at your project root via `TANGLY_USER_ROOT`. Astro handles MDX parsing, HMR, asset processing, and static generation natively — Tangly does not reinvent any of it.
 </Note>
 
 <Note>
-  **Virtual modules** carry runtime state. The manifest is computed once per dev session and
-  re-imported via `virtual:tangly/manifest` from any page.
+  **Virtual modules** carry runtime state. The manifest is computed once per dev session and re-imported via `virtual:tangly/manifest` from any page. Chokidar invalidates it on `docs.json` or `.mdx` changes.
 </Note>
 
-## Performance
+<Note>
+  **Component shadowing** resolves bottom-up: project `theme/<Name>.astro` → active theme → built-in default. The Astro integration sets up Vite aliases so `@tangly/theme-ui/Card.astro` transparently resolves to whatever the user has overridden.
+</Note>
 
-Cold dev start: under 2s for 100 pages. Build: under 30s for 100 pages. These are acceptance criteria, not aspirations — profile before merging if anything regresses.
+## Performance targets
+
+- Cold dev start: under 2s for 100 pages.
+- HMR: under 250ms.
+- Build: under 30s for 100 pages.
+
+These are acceptance criteria, not aspirations. Profile before merging if anything regresses.
 
 ## Read more
 
 <CardGroup cols={2}>
   <Card title="Manifest builder" icon="git-branch" href="/architecture/manifest">
-    How nav resolves to a sidebar tree.
+    Page scan, nav resolve, prev/next, breadcrumbs.
   </Card>
   <Card title="Vite plugin" icon="zap" href="/architecture/vite-plugin">
-    Virtual modules + HMR + static asset middleware.
+    Virtual modules, HMR, static-asset middleware, MDX preprocessing.
   </Card>
   <Card title="Runtime" icon="cog" href="/architecture/runtime">
     The Astro app shipped inside `tangly`.

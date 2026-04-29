@@ -15,62 +15,109 @@ description: One-line summary
 icon: book
 tag: Beta
 ---
+
+# My page
 ```
+
+Frontmatter is parsed by `gray-matter` and validated against `@tangly/schema`'s `FrontmatterSchema`. Validation is non-fatal: invalid fields surface as warnings, the page still renders.
 
 ## Recognized fields
 
 <ParamField path="title" type="string">
-  Page title. Falls back to a humanized slug if omitted.
+  Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title.
 </ParamField>
 
 <ParamField path="sidebarTitle" type="string">
-  Override the sidebar entry title (the H1 stays as `title`).
+  Override the sidebar entry title only. The H1 still uses `title`.
 </ParamField>
 
 <ParamField path="description" type="string">
-  Subtitle below the H1. Used as the meta description.
+  Subtitle below the H1. Also used as the meta description and OG description when not overridden by `seo.description`.
 </ParamField>
 
 <ParamField path="icon" type="string">
-  Lucide or Font Awesome icon name. Shown in sidebar + cards that link here.
+  Lucide or Font Awesome icon name. Shown in the sidebar entry and any cards that link to this page. See [Icons](/reference/schema/icons) for the alias map.
 </ParamField>
 
 <ParamField path="tag" type="string">
-  Small badge in the sidebar (e.g. "Beta", "New", "Phase 2").
+  Small badge in the sidebar (e.g. "Beta", "New"). Style is theme-dependent.
 </ParamField>
 
 <ParamField path="api" type="string">
-  Manual narrative for an OpenAPI endpoint (Phase 3).
+  Manual narrative for an OpenAPI endpoint. Tangly merges this Markdown with the auto-generated endpoint render so you can add prose around the auto-content.
 </ParamField>
 
 <ParamField path="openapi" type="string">
-  `METHOD path` to auto-render an endpoint.
+  Auto-render an OpenAPI endpoint. Format: `METHOD path` (e.g. `GET /users/{id}`). Pulls from the spec configured in `docs.json#api.openapi`.
+</ParamField>
+
+<ParamField path="openapi-schema" type="string">
+  Render a single OpenAPI schema component. Format: `#/components/schemas/<Name>`.
 </ParamField>
 
 <ParamField path="keywords" type="string[]">
-  Custom meta keywords.
+  Custom meta keywords for SEO.
 </ParamField>
 
 <ParamField path="noindex" type="boolean">
-  Exclude from sitemap.xml + llms.txt + search index.
+  Exclude from `sitemap.xml`, `llms.txt`, `llms-full.txt`, and the Pagefind search index. Page is still routable.
 </ParamField>
 
-<ParamField path="mode" type="enum">
-  `default | wide | center | custom`. Hides the right TOC at `wide`/`center`/`custom`.
+<ParamField path="mode" type="enum" default="default">
+  Page layout mode. One of:
+
+  - `default` — sidebar + content + right-rail TOC.
+  - `wide` — sidebar + content (no TOC).
+  - `center` — centered content (no sidebar, no TOC).
+  - `custom` — full-width content (no chrome).
+
+  `wide`, `center`, and `custom` hide the right-rail TOC.
 </ParamField>
 
 <ParamField path="draft" type="boolean">
-  Phase 2: hidden in build, visible in dev with badge.
+  Hidden in build, visible in dev with a "Draft" badge. Drafts are also excluded from search and sitemap. Build-time inclusion: `TANGLY_INCLUDE_DRAFTS=1 tangly build`.
 </ParamField>
 
 <ParamField path="template" type="string">
-  Phase 2: render the page through `./templates/<name>.astro`.
+  Render through `templates/<name>.astro` instead of the default page shell. Resolution: `<userRoot>/templates/<name>.astro` → built-in template registry.
 </ParamField>
 
 <ParamField path="aiContext" type="string">
-  Phase 6: extra context sent to the AI assistant when answering on this page.
+  Extra context injected into AI-assistant queries about this page. Reserved for the upcoming chat integration.
+</ParamField>
+
+<ParamField path="seo" type="object">
+  Per-page SEO override.
+
+  - `title: string` — overrides the OG/meta title.
+  - `description: string` — overrides the meta description.
+  - `ogImage: string` — custom Open Graph image URL.
 </ParamField>
 
 ## Custom fields
 
-Any extra field is passed through to the active template via `frontmatter`. Useful for landing-page templates that consume `hero`, `cta`, etc.
+`FrontmatterSchema` uses `passthrough()` — unknown fields are preserved and forwarded to the active template via `frontmatter`. This is how custom landing-page templates consume `hero`, `cta`, `headline`, etc.
+
+```md
+---
+title: Welcome
+template: landing
+hero:
+  headline: Build faster
+  subheadline: Markdown in, deployed site out
+cta:
+  label: Start now
+  href: /quickstart
+---
+```
+
+The `landing` template reads `frontmatter.hero` and `frontmatter.cta` directly.
+
+## Strict parsing
+
+```ts
+import { parseFrontmatter, safeParseFrontmatter } from "@tangly/schema";
+
+const fm = parseFrontmatter(rawObject);
+const result = safeParseFrontmatter(rawObject);
+```

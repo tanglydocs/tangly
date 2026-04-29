@@ -6,7 +6,29 @@ icon: "git-branch"
 
 # Manifest builder
 
-`packages/tangly/src/manifest/` reads `docs.json` and the MDX files in your project, then produces a single typed `Manifest` object that the runtime consumes.
+`packages/tangly/src/manifest/` reads `docs.json` and the MDX files in your project, then produces a single typed `Manifest` object that the runtime consumes for every page render.
+
+## Data flow
+
+```mermaid
+flowchart TD
+  A1[docs.json] --> P1["@tangly/schema<br/>parseDocsJson"]
+  A2["*.mdx on disk"] --> S1[scan-pages.ts]
+  S1 --> S2["frontmatter via gray-matter<br/>+ Zod validate"]
+  P1 --> R1[resolve-nav.ts]
+  R1 --> R2[walk tabs → groups → pages]
+  R2 --> R3[per-tab sidebar trees]
+  S2 --> M1[build-manifest.ts]
+  R3 --> M1
+  M1 --> M2[for each nav slug:<br/>breadcrumbs<br/>prev / next<br/>section defaults]
+  M1 --> M3[OpenAPI expansion<br/>build-openapi-pages]
+  M1 --> M4[content collections<br/>load-collections]
+  M2 --> O[Manifest]
+  M3 --> O
+  M4 --> O
+  M1 --> W[warnings: orphans,<br/>broken refs,<br/>frontmatter errors]
+  W --> O
+```
 
 ## Shape
 
@@ -17,6 +39,7 @@ interface Manifest {
   navigation: ResolvedNavigation;
   orphans: string[];
   warnings: ManifestWarning[];
+  collections?: Record<string, unknown[]>;
   root: string;
 }
 ```
@@ -34,26 +57,40 @@ interface PageEntry {
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
   draft: boolean;
+  blocks?: Record<string, string>;  // for <Embed>
 }
 ```
 
-## Three steps
+## The three steps
 
 <Steps>
   <Step title="scan-pages.ts">
-    Walks the project root recursively, reads MDX frontmatter via `gray-matter`, validates against
-    the Zod frontmatter schema. Skips: `node_modules`, `dist`, `.tangly`, `components/`,
-    `templates/`, hidden dirs, files starting with `_`.
+    Walks the project root recursively, reads MDX frontmatter via `gray-matter`, validates against the Zod frontmatter schema. Skips: `node_modules`, `dist`, `.tangly`, `components/`, `templates/`, hidden dirs, files starting with `_` (those are section-default sources, surfaced separately).
   </Step>
   <Step title="resolve-nav.ts">
-    Walks the recursive nav tree (tabs → groups → pages, plus anchors and dropdowns). Computes
-    per-tab sidebars and collects all referenced slugs. Recursive — groups can nest.
+    Walks the recursive nav tree (tabs → groups → pages, plus anchors and dropdowns). Computes per-tab sidebars and collects all referenced slugs. Recursive — groups can nest arbitrarily deep.
   </Step>
   <Step title="build-manifest.ts">
-    Stitches the two together. For each nav slug, computes breadcrumbs + prev/next + sidebar
-    context. Reports orphans (MDX files on disk not in nav).
+    Stitches the two together. For each nav slug, resolves [section defaults](/guides/configuration#section-defaults) by walking outward to find `_section.mdx` / `_meta.json`, computes breadcrumbs + prev/next from the flat sidebar order, and extracts named blocks for `<Embed>`. Reports orphans (MDX files on disk not in nav) and surfaces them as routable but un-linked.
   </Step>
 </Steps>
+
+## OpenAPI expansion
+
+When `docs.json` declares an OpenAPI spec at the tab level:
+
+```json
+{
+  "tab": "API",
+  "openapi": "https://api.example.com/openapi.json"
+}
+```
+
+`build-openapi-pages.ts` fetches the spec, generates one synthetic `PageEntry` per operation, and appends them to the tab's sidebar. The catch-all renders these via `<OpenApiEndpoint>` instead of MDX.
+
+## Content collections
+
+If the user ships a `tangly.config.ts` with `defineCollections({ ... })`, those collection sources are loaded, validated against their Zod schemas, and serialized into `manifest.collections`. The runtime exposes them via `virtual:tangly/manifest`.
 
 ## Warnings
 
@@ -62,9 +99,7 @@ The manifest never throws on user-content issues — it collects them as `warnin
 - Frontmatter validation errors (per file).
 - Nav references with no MDX file on disk.
 - Unsupported nav node shapes.
+- Failed OpenAPI fetch / parse.
+- Collection schema violations.
 
 The CLI surfaces these via `tangly dev`'s startup banner and `tangly check`.
-
-## Test corpus
-
-`packages/schema/fixtures/opennem-docs.json` is a vendored snapshot of a real Mintlify project's `docs.json` (Open Electricity docs). Used as the schema parsing baseline in CI. The full MDX corpus is referenced via `examples/opennem` (gitignored) for local iteration.

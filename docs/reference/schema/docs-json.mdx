@@ -1,53 +1,259 @@
 ---
 title: docs.json
-description: Top-level schema reference.
+description: Top-level configuration reference. Every field, every type.
 icon: "file-json"
 ---
 
 # `docs.json`
 
-Full Zod schema lives in `@tangly/schema/docs.json`. Below is a quick reference.
+`docs.json` lives at your project root and configures everything that isn't page content: branding, navigation, theme, analytics, redirects, OpenAPI, search.
 
-## Top level
-
-| Field          | Type             | Required | Notes                                           |
-| -------------- | ---------------- | -------- | ----------------------------------------------- |
-| `name`         | string           | ✓        | Display name                                    |
-| `description`  | string           |          | Default meta description                        |
-| `theme`        | enum             |          | `tang` (default), `pith`, or any Mintlify theme |
-| `colors`       | object           |          | Brand colors                                    |
-| `logo`         | string \| object |          | `{ light, dark, href }`                         |
-| `favicon`      | string \| object |          |                                                 |
-| `navigation`   | object           | ✓        | See [Navigation](/guides/navigation)            |
-| `navbar`       | object           |          | Top-bar links + primary CTA                     |
-| `footer`       | object           |          | Socials + link groups                           |
-| `redirects`    | array            |          | `{ source, destination, permanent? }`           |
-| `seo`          | object           |          | Meta tags + indexing                            |
-| `analytics`    | object           |          | PostHog, Plausible, GA4, GTM, Fathom, etc       |
-| `api`          | object           |          | OpenAPI config                                  |
-| `appearance`   | object           |          | Light/dark default + strict mode                |
-| `background`   | object           |          | Page background                                 |
-| `fonts`        | object           |          | Heading + body                                  |
-| `styling`      | object           |          | Eyebrow style, codeblock theme                  |
-| `integrations` | object           |          | Free-form key/value                             |
-| `errors`       | object           |          | 404 redirect rules                              |
-| `contextual`   | object           |          | "Copy / View / ChatGPT / Claude" buttons        |
-| `search`       | object           |          | Search prompt + tweaks                          |
-| `metadata`     | object           |          | Custom meta tags                                |
+The full Zod schema lives at `@tangly/schema` (sources: `packages/schema/src/docs-json.ts`). The published JSON Schema is what your editor uses for autocomplete.
 
 ## Editor support
 
-Add `$schema`:
-
 ```json
 {
-  "$schema": "https://tanglydocs.com/schema/docs.json",
-  "name": "..."
+  "$schema": "./node_modules/tangly/schema/docs.json",
+  "name": "My docs"
 }
 ```
 
-You'll get autocomplete + inline validation in VS Code, Cursor, and JetBrains.
+`tangly migrate` rewrites `$schema` to the canonical URL automatically.
+
+## Top-level fields
+
+<ParamField path="name" type="string" required>
+  Display name. Used in the top-bar logo, OG title, and meta tags. Must be at least one character.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Default meta description. Falls back to `pageDescription` per page when not overridden by frontmatter.
+</ParamField>
+
+<ParamField path="$schema" type="string">
+  JSON Schema URL for editor autocomplete. Tangly's `tangly migrate` sets this; otherwise free-form.
+</ParamField>
+
+<ParamField path="theme" type="string" default="tang">
+  One of `tang` (default), `pith`, `pip`, or any Mintlify theme alias. See [Themes](/reference/schema/themes).
+</ParamField>
+
+<ParamField path="colors" type="object">
+  Brand colors. See [Colors](/reference/schema/colors).
+</ParamField>
+
+<ParamField path="logo" type="string | object">
+  Logo image. String for both modes, or an object with `light`, `dark`, `href`.
+
+  ```json
+  { "logo": { "light": "/logo/light.svg", "dark": "/logo/dark.svg", "href": "/" } }
+  ```
+</ParamField>
+
+<ParamField path="favicon" type="string | object">
+  Favicon path. String for both modes, or `{ light, dark }` for theme-aware variants.
+</ParamField>
+
+<ParamField path="navigation" type="object" required>
+  Navigation tree. Tabs, groups, anchors, dropdowns. See [Navigation](/guides/navigation).
+</ParamField>
+
+<ParamField path="navbar" type="object">
+  Top-bar links and CTA. See below.
+</ParamField>
+
+<ParamField path="footer" type="object">
+  Footer socials and link groups. See below.
+</ParamField>
+
+<ParamField path="redirects" type="array">
+  Static redirects: `[{ source, destination, permanent? }]`. Implemented as HTML `<meta>` redirects in static output.
+</ParamField>
+
+<ParamField path="seo" type="object">
+  Custom meta tags + indexing policy.
+
+  - `metatags: Record<string, string>` — extra `<meta>` tags injected globally.
+  - `indexing: "all" | "navigable"` — `navigable` excludes orphan pages from `sitemap.xml`.
+</ParamField>
+
+<ParamField path="analytics" type="object">
+  Analytics provider keys. See below.
+</ParamField>
+
+<ParamField path="api" type="object">
+  OpenAPI configuration. See below.
+</ParamField>
+
+<ParamField path="appearance" type="object">
+  - `default: "light" | "dark" | "system"` — initial theme. Default: `system`.
+  - `strict: boolean` — disable the user's theme toggle.
+</ParamField>
+
+<ParamField path="background" type="object">
+  Page background.
+
+  - `image: string` — image URL.
+  - `color: { light?, dark? }` — solid color override.
+  - `decoration: "gradient" | "grid" | "windows"` — built-in decorative pattern.
+</ParamField>
+
+<ParamField path="fonts" type="object">
+  Heading + body font families. Each face: `{ family, weight?, source?, format? }`.
+
+  ```json
+  {
+    "fonts": {
+      "heading": { "family": "DM Sans", "weight": "400;500;700" },
+      "body":    { "family": "Inter" }
+    }
+  }
+  ```
+
+  Tangly fetches matching weights from Google Fonts unless `source` provides a self-hosted URL.
+</ParamField>
+
+<ParamField path="styling" type="object">
+  - `eyebrows: "section" | "breadcrumbs"` — what shows above the page H1.
+  - `codeblocks: "system" | "dark"` — codeblock theme follows system or stays dark always.
+</ParamField>
+
+<ParamField path="integrations" type="object">
+  Free-form key/value bag. Used by user-side scripts in custom layouts.
+</ParamField>
+
+<ParamField path="errors" type="object">
+  - `404: { redirect: boolean }` — redirect 404s to `/`.
+
+  Drop a `404.mdx` at project root to override the 404 template.
+</ParamField>
+
+<ParamField path="contextual" type="object">
+  AI-context buttons in the page header.
+
+  - `options: ("copy" | "view" | "chatgpt" | "claude")[]` — which buttons to show.
+
+  `copy` and `view` work today; `chatgpt` / `claude` are reserved for the upcoming chat integration.
+</ParamField>
+
+<ParamField path="search" type="object">
+  - `prompt: string` — placeholder text in the search modal. Default: `Search docs...`.
+</ParamField>
+
+<ParamField path="thumbnails" type="object">
+  - `background: string` — color/gradient for OG thumbnail generation. Reserved.
+</ParamField>
+
+<ParamField path="metadata" type="Record<string, string>">
+  Custom meta tags injected globally.
+</ParamField>
+
+<ParamField path="banner" type="object">
+  Optional notice banner above the top nav.
+
+  - `content: string` — body (Markdown OK).
+  - `dismissible: boolean` — show an X to dismiss.
+</ParamField>
+
+<ParamField path="icons" type="object">
+  - `library: "lucide" | "fontawesome"` — preferred icon library. Tangly defaults to Lucide and aliases known FA names. See [Icons](/reference/schema/icons).
+</ParamField>
+
+## `navbar`
+
+```json
+{
+  "navbar": {
+    "links": [{ "label": "Pricing", "href": "/pricing" }],
+    "primary": { "type": "button", "label": "Sign up", "href": "/signup" }
+  }
+}
+```
+
+`primary` is a discriminated union:
+
+- `{ type: "button", label, href }` — a CTA button.
+- `{ type: "github", href }` — a GitHub-flavored star button.
+
+## `footer`
+
+```json
+{
+  "footer": {
+    "socials": { "github": "https://github.com/...", "twitter": "https://x.com/..." },
+    "links": [
+      {
+        "header": "Product",
+        "items": [{ "label": "Features", "href": "/features" }]
+      }
+    ]
+  }
+}
+```
+
+## `analytics`
+
+Each provider is independently optional. Tangly emits the right snippet for whichever ones are set:
+
+```json
+{
+  "analytics": {
+    "posthog":    { "apiKey": "phc_...", "apiHost": "https://eu.posthog.com" },
+    "plausible":  { "domain": "docs.example.com" },
+    "fathom":     { "siteId": "ABC123" },
+    "ga4":        { "measurementId": "G-XXXX" },
+    "gtm":        { "tagId": "GTM-XXXX" },
+    "amplitude":  { "apiKey": "..." },
+    "hotjar":     { "hjid": "1234567", "hjsv": "6" },
+    "mixpanel":   { "projectToken": "..." },
+    "segment":    { "key": "..." },
+    "pirsch":     { "id": "..." },
+    "logrocket":  { "apiKey": "..." },
+    "heap":       { "appId": "..." }
+  }
+}
+```
+
+## `api`
+
+```json
+{
+  "api": {
+    "baseUrl": "https://api.example.com",
+    "auth":    { "method": "bearer", "name": "Authorization" },
+    "playground": { "mode": "interactive" },
+    "openapi": ["./openapi.json"],
+    "viewer":  "tangly",
+    "asyncapi": "./asyncapi.yaml",
+    "mdx": { "server": "./server.mdx" }
+  }
+}
+```
+
+| Field | Values | Notes |
+| --- | --- | --- |
+| `baseUrl` | `string` or `string[]` | Default base for try-it-out. Array for multi-environment. |
+| `auth.method` | `bearer \| basic \| key \| none` | Auth scheme. |
+| `auth.name` | `string` | Header/parameter name when `method` is `key`. |
+| `playground.mode` | `interactive \| simple \| hide` | Try-it-out UI. |
+| `playground.proxy` | `boolean` | Proxy try-it-out through Tangly's edge. Reserved. |
+| `openapi` | `string` or `string[]` | Spec URL(s) or local file path(s). |
+| `viewer` | `tangly \| scalar \| redoc \| stoplight` | Rendering engine. Default `tangly`. |
+| `asyncapi` | `string` or `string[]` | AsyncAPI spec(s). |
+| `mdx.server` | `string` or `string[]` | Server-side MDX. Reserved for upcoming chat integration. |
 
 ## Strict parsing
 
-`@tangly/schema` exports `parseDocsJson(input)` which throws on validation errors. `safeParseDocsJson(input)` returns a discriminated `{ success, data | error }` result. Use the latter from CI scripts.
+```ts
+import { parseDocsJson, safeParseDocsJson } from "@tangly/schema";
+
+const cfg = parseDocsJson(JSON.parse(raw));        // throws on error
+const result = safeParseDocsJson(JSON.parse(raw)); // discriminated result
+```
+
+Use `safeParseDocsJson` from CI scripts so you can format errors yourself.
+
+## Passthrough
+
+`docs.json` uses Zod's `passthrough()` — unknown top-level keys are preserved on the parsed object so projects mid-migration with extra fields don't fail. Validation only enforces the shape of fields Tangly knows about.

@@ -6,7 +6,7 @@ icon: "plug"
 
 # OpenAPI
 
-Tangly renders OpenAPI specs the same way Mintlify does.
+Point Tangly at an OpenAPI spec; every endpoint becomes a page.
 
 ## Top-level setup
 
@@ -16,12 +16,26 @@ In `docs.json`:
 {
   "api": {
     "openapi": "https://api.example.com/openapi.json",
-    "viewer": "scalar"
+    "viewer": "tangly",
+    "auth":   { "method": "bearer", "name": "Authorization" }
   }
 }
 ```
 
-Tangly fetches the spec at SSR time. `viewer` accepts `scalar` (default), `stoplight`, or `redoc` — Phase 3 wires the viewer choice; today, every endpoint uses Tangly's built-in renderer.
+Tangly fetches the spec at build time. `openapi` accepts a URL, a local path (relative to project root), or an array of either.
+
+## Viewer choice
+
+`viewer` selects the rendering engine:
+
+| Value | Render |
+| ----- | ------ |
+| `tangly` (default) | Built-in compact endpoint render. Server-fetched at build time. |
+| `scalar` | Scalar viewer, lazy-loaded from CDN. |
+| `redoc` | ReDoc viewer, lazy-loaded from CDN. |
+| `stoplight` | Stoplight Elements, lazy-loaded from CDN. |
+
+The default `tangly` renderer is fastest and works without client JS. The third-party viewers add interactivity but pull bundles from CDN at runtime.
 
 ## Per-endpoint pages
 
@@ -29,6 +43,7 @@ A page with `openapi:` in frontmatter auto-generates the endpoint:
 
 ```md
 ---
+title: Get network data
 openapi: get /v4/data/network/{network_code}
 ---
 ```
@@ -36,39 +51,86 @@ openapi: get /v4/data/network/{network_code}
 The page renders:
 
 - HTTP method badge + path
-- Summary heading from the operation
-- Description
-- Parameters table (path/query/header/body)
-- Responses
+- Summary + description from the operation
+- Parameters table (path / query / header / body)
+- Request and response schemas
+- Try-it-out form (when `playground.mode` is `interactive`)
 
-## Companion narrative (Phase 3)
+## Companion narrative
 
-You'll be able to add MDX content alongside an auto-generated endpoint:
+Add MDX content alongside the auto-rendered endpoint by setting `api:` instead of `openapi:`:
 
 ```md
 ---
+title: Get network data
 api: GET /v4/data/network/{network_code}
 ---
 
 # Background
 
-This endpoint returns time-series data...
+This endpoint returns time-series data sliced by network. Cache for at least 60s — backend regenerates the underlying view every minute.
+
+## Common pitfalls
+
+- Pass `interval=5m` for production dashboards.
+- Time ranges over 30 days are rate-limited.
 ```
 
-Tangly merges narrative + endpoint render. Both stay in sync as the spec evolves.
+Tangly merges your narrative with the auto-generated endpoint render. Both stay in sync as the spec evolves.
 
 ## Auto-generated tab
 
-Set `openapi` on a tab node to materialize a page per endpoint:
+Set `openapi` on a tab node to materialize one page per endpoint:
 
 ```json
 {
   "tab": "API Reference",
-  "openapi": "/openapi.json"
+  "openapi": "./openapi.json"
 }
 ```
 
-This is Phase 3 — Phase 1 only handles per-endpoint frontmatter.
+Tangly walks the spec, generates a synthetic `PageEntry` for each operation, and appends them to the tab's sidebar grouped by tag.
+
+## Authentication
+
+Configure auth at the top level so try-it-out forms include credentials:
+
+```json
+{
+  "api": {
+    "auth": { "method": "bearer", "name": "Authorization" }
+  }
+}
+```
+
+| `method` | Behavior |
+| -------- | -------- |
+| `bearer` | Adds `Authorization: Bearer <token>` to requests. Token comes from a per-page input. |
+| `basic` | Adds `Authorization: Basic <base64>`. |
+| `key` | Adds `<name>: <value>` header (or query param if the spec says so). |
+| `none` | No auth. |
+
+## Multi-environment base URLs
+
+```json
+{
+  "api": {
+    "baseUrl": ["https://api.example.com", "https://staging-api.example.com"]
+  }
+}
+```
+
+The try-it-out form gets a server selector.
+
+## Local specs
+
+Local OpenAPI files are resolved relative to project root:
+
+```json
+{ "api": { "openapi": "./openapi.json" } }
+```
+
+The Vite static-asset middleware doesn't auto-serve OpenAPI files — they're loaded server-side at build time, not via HTTP.
 
 ## Validation
 
@@ -78,4 +140,4 @@ This is Phase 3 — Phase 1 only handles per-endpoint frontmatter.
 bun x tangly check --strict
 ```
 
-Bad refs, missing schemas, malformed operations all surface as errors.
+Bad refs, missing schemas, malformed operations all surface as errors before you build.
