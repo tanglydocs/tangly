@@ -13,6 +13,7 @@ const NavGroupBase = z.object({
   root: z.string().optional(),
   tag: Tag,
   expanded: z.boolean().optional(),
+  template: z.string().optional(),
 });
 
 const NavTabBase = z.object({
@@ -20,6 +21,7 @@ const NavTabBase = z.object({
   icon: Icon,
   href: z.string().optional(),
   openapi: z.string().optional(),
+  template: z.string().optional(),
 });
 
 const NavAnchorBase = z.object({

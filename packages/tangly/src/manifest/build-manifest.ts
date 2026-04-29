@@ -47,6 +47,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const {
     navigation,
     navSlugs,
+    navTemplates,
     warnings: navWarnings,
   } = resolveNavigation({
     config,
@@ -69,10 +70,16 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       continue;
     }
     // Cascade section defaults: outer _section.mdx / _meta.json provide
-    // inheritable fields; page frontmatter overrides them.
+    // inheritable fields; page frontmatter overrides them. Nav-level
+    // `template` (on a group/tab) sits at the bottom of the cascade.
     const sectionDefaults = resolveSectionDefaults(disk.file, root);
     const baseFm = disk.frontmatter ?? { title: humanizeSlug(slug) };
-    const fm = { ...sectionDefaults, ...baseFm };
+    const navTemplate = navTemplates.get(slug);
+    const fm = {
+      ...(navTemplate ? { template: navTemplate } : {}),
+      ...sectionDefaults,
+      ...baseFm,
+    };
     const isDraft = Boolean(fm.draft);
 
     if (isDraft && !includeDrafts) {
