@@ -93,3 +93,27 @@ jobs:
       - run: bun run build
       - name: tarball install + run
         run: bun run scripts/smoke-tarball.ts
+
+  # Verify install.sh end-to-end: writes a wrapper that delegates to
+  # bunx/npx, init+build through the wrapper succeeds. Tests the
+  # production user flow (curl-pipe-bash → tangly init → tangly build)
+  # against the published tangly@latest. Catches regressions in install.sh.
+  installer-smoke:
+    name: installer-smoke (${{ matrix.os }} · ${{ matrix.pm }})
+    needs: pack-install-smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        pm: [bun, npm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "20"
+      - name: install.sh + init + build (via wrapper)
+        env:
+          PM: ${{ matrix.pm }}
+        run: bun run scripts/smoke-installer.ts --pm "$PM"
