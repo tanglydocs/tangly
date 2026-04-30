@@ -124,4 +124,25 @@ describe("copyStaticAssets", () => {
     expect(existsSync(join(TMP, "out/.gitignore"))).toBe(false);
     expect(existsSync(join(TMP, "out/.tanglyignore"))).toBe(false);
   });
+
+  test("baseline cannot be re-included via user negation patterns", async () => {
+    // Adversarial .tanglyignore: try to un-ignore baseline-excluded files.
+    writeFileSync(
+      `${TMP}/src/.tanglyignore`,
+      ["!.gitignore", "!.tanglyignore", "!docs.json", "!node_modules/", "!.env"].join("\n") + "\n",
+    );
+    writeFileSync(`${TMP}/src/.gitignore`, "private/\n");
+    writeFileSync(`${TMP}/src/docs.json`, "{}");
+    writeFileSync(`${TMP}/src/.env`, "SECRET=1");
+    mkdirSync(`${TMP}/src/node_modules/foo`, { recursive: true });
+    writeFileSync(`${TMP}/src/node_modules/foo/index.js`, "");
+    const m = fakeManifest(`${TMP}/src`);
+    await copyStaticAssets({ manifest: m, outDir: `${TMP}/out` });
+    // None of these should leak — baseline is non-overridable.
+    expect(existsSync(join(TMP, "out/.gitignore"))).toBe(false);
+    expect(existsSync(join(TMP, "out/.tanglyignore"))).toBe(false);
+    expect(existsSync(join(TMP, "out/docs.json"))).toBe(false);
+    expect(existsSync(join(TMP, "out/.env"))).toBe(false);
+    expect(existsSync(join(TMP, "out/node_modules"))).toBe(false);
+  });
 });

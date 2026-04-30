@@ -66,41 +66,60 @@ export interface IgnoreMatcher {
 }
 
 /**
- * Build the additive ignore stack for the user's project.
+ * Build the ignore stack for the user's project.
  *
- * Order: baseline → .gitignore (root) → .tanglyignore (root). Later layers
- * extend earlier ones; nothing in baseline is overrideable. The `ignore`
- * package supports negation patterns (`!path`) so users can re-include
- * baseline-excluded files in `.tanglyignore` if they really need to —
- * but baseline patterns intentionally cover paths that should never ship.
+ * Two layers, evaluated independently so baseline cannot be undone:
+ *
+ *   1. **Baseline** — its own `Ignore` instance. If it rejects a path,
+ *      we short-circuit before user rules ever see it. This makes
+ *      baseline TRULY non-overridable: a user `!.gitignore` pattern
+ *      can't re-include the gitignore control file, and a user
+ *      `!node_modules/foo` can't undo the build-noise exclusion.
+ *
+ *   2. **User layer** — `.gitignore` (root) + `.tanglyignore` (root)
+ *      merged into a second `Ignore` instance. Additive between the
+ *      two: a `!path` pattern in `.tanglyignore` CAN re-include
+ *      something `.gitignore` excluded (intentional escape hatch
+ *      for "in git but also in build" cases).
+ *
+ * Cascading sub-directory `.gitignore` files are not honored — only
+ * root-level. Documented limitation.
  */
 export function buildIgnoreMatcher(opts: BuildIgnoreMatcherOptions): IgnoreMatcher {
   const sources: string[] = ["baseline"];
-  const ig: Ignore = ignore().add(BASELINE);
+  const baseline: Ignore = ignore().add(BASELINE);
+  const userLayer: Ignore = ignore();
+  let hasUserLayer = false;
 
   const gitignore = join(opts.userRoot, ".gitignore");
   if (existsSync(gitignore)) {
-    ig.add(readFileSync(gitignore, "utf8"));
+    userLayer.add(readFileSync(gitignore, "utf8"));
     sources.push(".gitignore");
+    hasUserLayer = true;
   }
 
   const tanglyignore = join(opts.userRoot, ".tanglyignore");
   if (existsSync(tanglyignore)) {
-    ig.add(readFileSync(tanglyignore, "utf8"));
+    userLayer.add(readFileSync(tanglyignore, "utf8"));
     sources.push(".tanglyignore");
+    hasUserLayer = true;
+  }
+
+  function isIgnored(relativePath: string): boolean {
+    const normalized = relativePath.replaceAll("\\", "/").replace(/^\/+/, "");
+    if (!normalized) return true;
+    // Baseline is the floor — short-circuit so user rules can't unmask it.
+    if (baseline.ignores(normalized)) return true;
+    if (hasUserLayer && userLayer.ignores(normalized)) return true;
+    return false;
   }
 
   return {
     shouldCopy(relativePath: string): boolean {
-      // ignore() requires forward slashes + no leading slash.
-      const normalized = relativePath.replaceAll("\\", "/").replace(/^\/+/, "");
-      if (!normalized) return false;
-      return !ig.ignores(normalized);
+      return !isIgnored(relativePath);
     },
     ignores(relativePath: string): boolean {
-      const normalized = relativePath.replaceAll("\\", "/").replace(/^\/+/, "");
-      if (!normalized) return true;
-      return ig.ignores(normalized);
+      return isIgnored(relativePath);
     },
     sources,
   };
