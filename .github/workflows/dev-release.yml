@@ -26,7 +26,12 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Configure npm auth (write both ~/.npmrc and project .npmrc)
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Verify NPM_TOKEN is set
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -35,13 +40,6 @@ jobs:
             exit 1
           fi
           echo "NPM_TOKEN length: ${#NPM_TOKEN}"
-          {
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN"
-            echo "registry=https://registry.npmjs.org/"
-            echo "always-auth=true"
-          } | tee ~/.npmrc > .npmrc
-          echo "--- ~/.npmrc (token redacted) ---"
-          sed 's|_authToken=.*|_authToken=***|' ~/.npmrc
 
       - name: Compute dev version
         id: ver
@@ -55,7 +53,7 @@ jobs:
 
       - run: bun run build
 
-      - name: Bump all workspace versions in lockstep
+      - name: Bump versions + rewrite workspace:* deps to concrete versions
         env:
           NEW_VERSION: ${{ steps.ver.outputs.version }}
         run: |
@@ -73,55 +71,33 @@ jobs:
               "packages/theme-geist",
               "packages/tangly",
             ];
+            // Build name → version map (all share v in lockstep)
+            const names = dirs.map(d => JSON.parse(fs.readFileSync(path.join(d, "package.json"), "utf8")).name);
+            // Two passes: bump, then rewrite deps
             for (const d of dirs) {
               const p = path.join(d, "package.json");
               const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
               pkg.version = v;
+              for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+                if (!pkg[field]) continue;
+                for (const dep of Object.keys(pkg[field])) {
+                  if (names.includes(dep) && pkg[field][dep] === "workspace:*") {
+                    pkg[field][dep] = v;
+                  }
+                }
+              }
               fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
               console.log(pkg.name, "→", v);
             }
           '
 
-      # bun publish rewrites workspace:* to the concrete version of each
-      # workspace dep at publish time, which npm publish does not do.
-      # Topological order: schema (no internal deps) → theme-ui → themes → tangly.
-      - name: Publish @tanglydocs/schema @dev
-        working-directory: packages/schema
+      # Topological order: schema → theme-ui → 5 themes → tangly.
+      - name: Publish all packages
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-ui @dev
-        working-directory: packages/theme-ui
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-tang @dev
-        working-directory: packages/theme-tang
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-pith @dev
-        working-directory: packages/theme-pith
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-pip @dev
-        working-directory: packages/theme-pip
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-readable @dev
-        working-directory: packages/theme-readable
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish @tanglydocs/theme-geist @dev
-        working-directory: packages/theme-geist
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
-      - name: Publish tangly @dev
-        working-directory: packages/tangly
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun publish --tag dev --access public
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
+            echo "::group::Publish $d @ dev"
+            (cd "$d" && npm publish --tag dev --access public)
+            echo "::endgroup::"
+          done
