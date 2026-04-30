@@ -35,3 +35,10 @@ cwd = "examples/demo-readable"
 host = "readable"
 auto_start = true
 restart_policy = "on-failure"
+
+[tasks.geist]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-geist"
+host = "geist"
+auto_start = true
+restart_policy = "on-failure"
