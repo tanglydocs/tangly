@@ -70,8 +70,13 @@ jobs:
             exit 1
           fi
 
-      - name: Safety gate (format / lint / typecheck / test / build)
+      - name: Safety gate (format / lint / build / typecheck / test)
         run: bun run ci
+
+      # Belt + suspenders: if `bun run ci` somehow doesn't build (bun version
+      # quirks etc.), make sure dist/ exists for every package before publish.
+      - name: Ensure all packages built
+        run: bun run build
 
       - name: Compute next version
         id: ver
