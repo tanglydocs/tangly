@@ -62,3 +62,12 @@ jobs:
         run: bun run scripts/smoke-init.ts
       - name: build own docs
         run: bun run build:docs
+      # Catch packaging regressions (missing files, broken workspace rewrites)
+      # without actually publishing. release.yml reuses the same logic.
+      - name: npm pack dry run (all 8 packages)
+        run: |
+          for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
+            echo "::group::pack $d"
+            (cd "$d" && npm pack --dry-run --json | head -50)
+            echo "::endgroup::"
+          done
