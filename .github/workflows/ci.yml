@@ -71,3 +71,25 @@ jobs:
             (cd "$d" && npm pack --dry-run --json | head -50)
             echo "::endgroup::"
           done
+
+  # Pack every workspace pkg, install into a clean dir outside the
+  # workspace, run init+build. Reproduces what bunx/npx users hit and
+  # catches resolution bugs that bun's hoisted node_modules hides
+  # (e.g. vite version skew under @tailwindcss/vite's permissive peer).
+  pack-install-smoke:
+    name: pack-install-smoke (${{ matrix.os }})
+    needs: smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "20"
+      - run: bun run build
+      - name: tarball install + run
+        run: bun run scripts/smoke-tarball.ts
