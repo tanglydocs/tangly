@@ -36,9 +36,9 @@ function walk(node, base) {
 }
 
 function rewrite(href, base) {
-  if (!href.startsWith("/")) return href;       // relative or anchor
-  if (href.startsWith("//")) return href;       // protocol-relative
-  if (href.startsWith(base)) return href;       // already prefixed
+  if (!href.startsWith("/")) return href; // relative or anchor
+  if (href.startsWith("//")) return href; // protocol-relative
+  if (href.startsWith(base)) return href; // already prefixed
   // base ends with /, href starts with / → strip one
   return base + href.slice(1);
 }
