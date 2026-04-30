@@ -14,6 +14,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeAnnotations from "./src/lib/rehype-annotations.mjs";
+import rehypeBaseLinks from "./src/lib/rehype-base-links.mjs";
 import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
@@ -116,6 +117,7 @@ export default defineConfig({
         remarkMath,
       ],
       rehypePlugins: [
+        [rehypeBaseLinks, { base: baseUrl }],
         rehypeKatex,
         rehypeSlug,
         [
