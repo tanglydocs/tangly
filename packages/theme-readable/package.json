@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-readable",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Reader-mode Tangly theme. Cream paper, serif body, book-style chapter navigation. For long-form publishing — books, essays, manuscripts.",
   "keywords": [
     "book",
@@ -43,7 +43,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tanglydocs/theme-ui": "workspace:*",
+    "@tanglydocs/theme-ui": "0.0.2",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
