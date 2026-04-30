@@ -44,6 +44,9 @@ const BASELINE = [
   ".env",
   ".env.*",
   "Thumbs.db",
+  // Ignore control files — meta/internal, may leak directory + secret filenames.
+  ".gitignore",
+  ".tanglyignore",
   // Convention.
   "README.md",
 ];

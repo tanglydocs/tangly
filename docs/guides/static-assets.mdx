@@ -31,6 +31,7 @@ A baseline list ships with Tangly and is **always applied** — these never end 
 - Lockfiles + `package.json` + `tsconfig*.json`
 - `.env`, `.env.*`, `*.log`, `.DS_Store`
 - `docs.json`, `mint.json` — Tangly's own config
+- `.gitignore`, `.tanglyignore` — ignore control files (often reveal private paths)
 - `README.md` — convention
 
 ## Adding more exclusions
@@ -68,7 +69,11 @@ Same for the other three. Useful for adding extra `Disallow:` lines, customizing
 
 ## Hard-protected paths
 
-`_astro/` is reserved for Astro's hashed asset bundles. Putting a file under `_astro/` is a hard error — the build refuses to overlay it. If you really need to ship a file under that path (you don't), pick a different prefix.
+The `_astro/` namespace is reserved for Astro's hashed asset bundles. Putting any file under `_astro/` — at the project root *or* in a theme's `public/` — is a hard error. The build refuses to copy it because silently merging into that namespace would corrupt the hashed bundles. If you need to ship custom JS/CSS, pick a different prefix.
+
+## Collisions with generated files
+
+If a user file lands at the same path as something Tangly or Astro generated (e.g. you have a `404.html` at root and a page rendered from `404.mdx`), the build emits a warning and your file wins. Placement at the project root is opt-in, so we trust your intent — but the warning is there to catch accidents.
 
 ## Common recipes
 

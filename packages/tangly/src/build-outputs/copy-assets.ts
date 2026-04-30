@@ -24,8 +24,9 @@ import { buildIgnoreMatcher, type IgnoreMatcher } from "./ignore-matcher.js";
  * convention as Docker, Vercel, etc.
  *
  * `astroEmitted` is the set of relative paths Astro just emitted into outDir.
- * Tier 1 refuses to overlay any of them — Astro's hashed asset bundles are
- * load-bearing and silently overwriting them would corrupt the build.
+ * Tier 1 hard-rejects anything in the reserved `_astro/` namespace (those are
+ * load-bearing hashed bundles), and warns + allows for non-`_astro/` paths
+ * that collide with an emitted file (placement is opt-in by the user).
  */
 
 export interface CopyAssetsOptions {
@@ -46,10 +47,14 @@ export async function copyStaticAssets(opts: CopyAssetsOptions): Promise<CopyAss
   const copied: string[] = [];
   const skipped: string[] = [];
 
-  // Tier 4 → Tier 2 (theme cascade). Copy whole `public/` root for each.
+  // Tier 4 → Tier 2 (theme cascade). Copy whole `public/` root for each,
+  // but refuse any source that contains an `_astro/` namespace path —
+  // those would clobber Astro's hashed output once cp() merges the tree.
   const cascade = buildPublicCascade(userRoot, manifest.config.theme);
   // eslint-disable-next-line unicorn/no-array-reverse -- ts target ES2022; toReversed unavailable
   for (const root of cascade.slice(1).reverse()) {
+    // eslint-disable-next-line no-await-in-loop -- sequential check
+    await assertNoAstroNamespace(root);
     // eslint-disable-next-line no-await-in-loop -- sequential overwrite is intentional
     await cp(root, outDir, { recursive: true, force: true });
     copied.push(relative(userRoot, root) || root);
@@ -121,21 +126,32 @@ async function copyTier1(args: {
       if (!entry.isFile()) continue;
       if (matcher.ignores(rel)) continue;
 
-      // Hard-protect Astro-emitted paths.
-      if (astroEmitted.has(rel)) {
+      // Hard-protect: refuse anything in Astro's reserved `_astro/` namespace,
+      // regardless of whether this specific filename matched something Astro
+      // emitted this build. The namespace is reserved as a whole.
+      if (rel === "_astro" || rel.startsWith("_astro/")) {
         throw new Error(
-          `[tangly] Refusing to overwrite Astro-emitted asset: ${rel}\n` +
-            `  Move your file out of /_astro/ — that path is reserved for Astro's hashed output.`,
+          `[tangly] Refusing to copy into Astro's reserved namespace: ${rel}\n` +
+            `  /_astro/ is reserved for Astro's hashed output. Move your file elsewhere.`,
         );
       }
 
-      // Warn if a copied file shadows a rendered page (best-effort: a sibling
-      // <slug>/index.html written by Astro). We let the user file win because
-      // this is opt-in by file placement.
+      // Soft collision: user file lands at the same path as a non-_astro
+      // emitted file (e.g. user CNAME alongside emitted /robots.txt, or
+      // user 404.html shadowing the rendered one). Warn but let the user
+      // file win — placement is opt-in.
+      if (astroEmitted.has(rel)) {
+        console.warn(
+          pc.yellow(
+            `[tangly] ⚠ User file ${rel} overwrites a generated output. Remove one to silence this warning.`,
+          ),
+        );
+      }
+
+      // Best-effort warn for sibling page collisions: a copied non-HTML file
+      // sitting next to a rendered page may indicate an unintended layout.
       const siblingHtml = `${rel.replace(/\.[^/.]+$/, "")}/index.html`;
-      if (rel.endsWith(".html") && astroEmitted.has(rel)) {
-        // Already caught by hard-protect above.
-      } else if (astroEmitted.has(siblingHtml) && !rel.endsWith(".html")) {
+      if (!rel.endsWith(".html") && !astroEmitted.has(rel) && astroEmitted.has(siblingHtml)) {
         console.warn(
           pc.yellow(
             `[tangly] ⚠ User file ${rel} sits next to a rendered page — make sure that's intentional.`,
@@ -149,6 +165,34 @@ async function copyTier1(args: {
       // eslint-disable-next-line no-await-in-loop
       await cp(abs, dest, { force: true });
       copied.push(rel);
+    }
+  }
+}
+
+/**
+ * Walk a theme/public root and throw if any path lives under `_astro/`.
+ * Theme authors should never ship into Astro's reserved namespace; if they
+ * do, `cp(root, outDir)` would silently merge that subtree on top of the
+ * hashed bundles and corrupt the build.
+ */
+async function assertNoAstroNamespace(root: string): Promise<void> {
+  if (!existsSync(root)) return;
+  const stack: string[] = [root];
+  while (stack.length > 0) {
+    const dir = stack.pop()!;
+    // eslint-disable-next-line no-await-in-loop
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const abs = join(dir, entry.name);
+      const rel = relative(root, abs).split(sep).join("/");
+      if (rel === "_astro" || rel.startsWith("_astro/")) {
+        throw new Error(
+          `[tangly] Theme/public source contains an _astro/ path: ${rel}\n` +
+            `  Source: ${root}\n` +
+            `  /_astro/ is reserved for Astro's hashed output. Move the file elsewhere in the theme.`,
+        );
+      }
+      if (entry.isDirectory()) stack.push(abs);
     }
   }
 }

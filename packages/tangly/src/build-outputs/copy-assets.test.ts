@@ -86,16 +86,42 @@ describe("copyStaticAssets", () => {
     expect(existsSync(join(TMP, "out/private"))).toBe(false);
   });
 
-  test("hard-protects Astro-emitted paths", async () => {
+  test("hard-rejects any path in Astro's _astro/ namespace", async () => {
     mkdirSync(`${TMP}/src/_astro`, { recursive: true });
     writeFileSync(`${TMP}/src/_astro/evil.js`, "/* override */");
     const m = fakeManifest(`${TMP}/src`);
+    // Empty astroEmitted — protection applies to the whole namespace,
+    // not just paths Astro happened to emit this run.
     await expect(
-      copyStaticAssets({
+      copyStaticAssets({ manifest: m, outDir: `${TMP}/out`, astroEmitted: new Set() }),
+    ).rejects.toThrow(/Astro's reserved namespace/);
+  });
+
+  test("warns + allows user file when colliding with non-_astro emitted output", async () => {
+    writeFileSync(`${TMP}/src/robots.txt`, "User-agent: BadBot\n");
+    const m = fakeManifest(`${TMP}/src`);
+    const warns: string[] = [];
+    const orig = console.warn;
+    console.warn = (msg: string) => warns.push(msg);
+    try {
+      await copyStaticAssets({
         manifest: m,
         outDir: `${TMP}/out`,
-        astroEmitted: new Set(["_astro/evil.js"]),
-      }),
-    ).rejects.toThrow(/Refusing to overwrite Astro-emitted asset/);
+        astroEmitted: new Set(["robots.txt"]),
+      });
+    } finally {
+      console.warn = orig;
+    }
+    expect(existsSync(join(TMP, "out/robots.txt"))).toBe(true);
+    expect(warns.some((w) => w.includes("overwrites a generated output"))).toBe(true);
+  });
+
+  test("baseline excludes .gitignore + .tanglyignore from passthrough", async () => {
+    writeFileSync(`${TMP}/src/.gitignore`, "private/\n");
+    writeFileSync(`${TMP}/src/.tanglyignore`, "scripts/\n");
+    const m = fakeManifest(`${TMP}/src`);
+    await copyStaticAssets({ manifest: m, outDir: `${TMP}/out` });
+    expect(existsSync(join(TMP, "out/.gitignore"))).toBe(false);
+    expect(existsSync(join(TMP, "out/.tanglyignore"))).toBe(false);
   });
 });
