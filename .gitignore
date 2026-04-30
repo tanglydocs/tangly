@@ -49,3 +49,9 @@ examples/squirrelscan/
 .changeset/*.md
 !.changeset/README.md
 !.changeset/config.json
+
+# local-only — kept out of repo
+plans/
+tests/parity/
+CLAUDE.md
+FUTURE.md
