@@ -62,7 +62,7 @@
           },
           {
             "group": "Deploying",
-            "pages": ["guides/deploying"]
+            "pages": ["guides/deploying", "guides/static-assets"]
           },
           {
             "group": "Migration",

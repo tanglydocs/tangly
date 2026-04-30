@@ -2,6 +2,7 @@ import { existsSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
+import { buildIgnoreMatcher } from "../build-outputs/ignore-matcher.js";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
 import type { Manifest } from "../manifest/types.js";
@@ -11,8 +12,6 @@ async function collectDraftSlugs(userRoot: string): Promise<string[]> {
   const all = await scanPages(userRoot);
   return all.filter((p) => Boolean(p.frontmatter?.draft)).map((p) => p.slug);
 }
-
-const STATIC_PREFIXES = ["images", "logo", "public", "static", "assets"] as const;
 
 const CONTENT_TYPES: Record<string, string> = {
   png: "image/png",
@@ -38,7 +37,8 @@ const CONTENT_TYPES: Record<string, string> = {
 /**
  * Resolve a request URL to an on-disk file by walking the public cascade.
  *
- *   1. <userRoot>/<dir>/<file>          when <dir> is one of STATIC_PREFIXES
+ *   1. <userRoot>/<path>                 any file allowed by the ignore stack
+ *                                        (baseline + .gitignore + .tanglyignore)
  *   2. <userRoot>/theme/public/<path>   any path under the user's theme/public
  *   3. <activeTheme>/public/<path>      bundled with the active theme
  *   4. <theme-ui>/public/<path>         shared baseline
@@ -60,20 +60,14 @@ function resolvePublicAsset(
   if (!suffix || isAbsolute(suffix)) return null;
 
   const cascade = buildPublicCascade(userRoot, themeName);
-  // Tier 1: <userRoot> only matches the known prefix dirs.
-  const prefixMatch = path.match(/^\/([^/]+)\/(.+)$/);
-  if (prefixMatch && STATIC_PREFIXES.includes(prefixMatch[1] as (typeof STATIC_PREFIXES)[number])) {
-    const prefixDir = resolve(userRoot, prefixMatch[1]!);
-    let inner: string;
-    try {
-      inner = decodeURIComponent(prefixMatch[2]!.split("?")[0]!.split("#")[0]!);
-    } catch {
-      return null;
-    }
-    if (!isAbsolute(inner)) {
-      const candidate = resolve(prefixDir, inner);
-      const rel = relative(prefixDir, candidate);
-      if (!rel.startsWith("..") && !isAbsolute(rel) && existsSync(candidate)) {
+  // Tier 1: any file under <userRoot> not excluded by the ignore stack.
+  // Mirrors copy-assets.ts so dev parity matches build output exactly.
+  {
+    const candidate = resolve(userRoot, suffix);
+    const rel = relative(userRoot, candidate);
+    if (!rel.startsWith("..") && !isAbsolute(rel) && existsSync(candidate)) {
+      const matcher = buildIgnoreMatcher({ userRoot });
+      if (matcher.shouldCopy(rel)) {
         try {
           if (statSync(candidate).isFile()) return candidate;
         } catch {

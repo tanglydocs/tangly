@@ -87,9 +87,13 @@ export const buildCommand = defineCommand({
       base: args.base,
     } as never);
 
-    // Copy the canonical static directories (images/, logo/, etc.) and
-    // the configured favicon into the build output.
-    const assetsResult = await copyStaticAssets({ manifest, outDir });
+    // Snapshot what Astro just emitted so copyStaticAssets can hard-protect
+    // those paths (refusing user files that would clobber hashed assets).
+    const astroEmitted = await snapshotEmittedPaths(outDir);
+
+    // Copy everything from the docs root (gated by .gitignore + .tanglyignore
+    // + a baseline) into the build output. Theme cascade still runs first.
+    const assetsResult = await copyStaticAssets({ manifest, outDir, astroEmitted });
 
     // Sitemap, llms.txt, llms-full.txt, robots.txt
     const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
@@ -147,4 +151,34 @@ function autoDetectAdapter(root: string): string {
   }
   if (existsSync(resolve(root, "Dockerfile"))) return "node";
   return "static";
+}
+
+/**
+ * Walk outDir and return every relative POSIX path Astro just emitted.
+ * Used by copyStaticAssets to refuse passthrough overlays that would
+ * clobber Astro's hashed assets.
+ */
+async function snapshotEmittedPaths(outDir: string): Promise<Set<string>> {
+  const { readdir } = await import("node:fs/promises");
+  const { sep } = await import("node:path");
+  const out = new Set<string>();
+  if (!existsSync(outDir)) return out;
+  const stack: string[] = [outDir];
+  while (stack.length > 0) {
+    const dir = stack.pop()!;
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const abs = resolve(dir, entry.name);
+      const rel = abs
+        .slice(outDir.length + 1)
+        .split(sep)
+        .join("/");
+      if (entry.isDirectory()) {
+        stack.push(abs);
+      } else if (entry.isFile()) {
+        out.add(rel);
+      }
+    }
+  }
+  return out;
 }

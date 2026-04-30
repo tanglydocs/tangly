@@ -34,9 +34,35 @@ assertExists(join(projectDir, "docs.json"));
 step("migrate --yes");
 runCli(["migrate", "--yes", "--root", projectDir]);
 
+// Drop deploy-meta files + custom robots.txt + .tanglyignore + .gitignore to
+// exercise the copy-everything passthrough + ignore stack.
+writeFileSync(join(projectDir, "CNAME"), "tangly.dev\n");
+writeFileSync(join(projectDir, "_redirects"), "/old-page  /new-page  301\n");
+writeFileSync(join(projectDir, "robots.txt"), "User-agent: BadBot\nDisallow: /\n");
+writeFileSync(join(projectDir, ".tanglyignore"), "secret.txt\n");
+writeFileSync(join(projectDir, "secret.txt"), "should be excluded\n");
+writeFileSync(join(projectDir, ".gitignore"), "private/\n");
+mkdirSync(join(projectDir, "private"), { recursive: true });
+writeFileSync(join(projectDir, "private", "keys.json"), "{}\n");
+
 step("build --out dist");
 runCli(["build", "--out", "dist", "--root", projectDir], { TANGLY_USER_ROOT: projectDir });
 assertExists(join(projectDir, "dist", "index.html"));
+
+step("passthrough: CNAME shipped");
+assertExists(join(projectDir, "dist", "CNAME"));
+
+step("passthrough: _redirects shipped");
+assertExists(join(projectDir, "dist", "_redirects"));
+
+step("user robots.txt preserved (generator skipped)");
+assertContains(join(projectDir, "dist", "robots.txt"), "BadBot");
+
+step(".tanglyignore exclusion applied");
+assertNotExists(join(projectDir, "dist", "secret.txt"));
+
+step(".gitignore additivity");
+assertNotExists(join(projectDir, "dist", "private"));
 
 log(`\n✓ smoke passed (${work})`);
 
@@ -55,6 +81,21 @@ function runCli(args: string[], env: Record<string, string> = {}): void {
 function assertExists(path: string): void {
   if (!existsSync(path)) fail(`expected ${path} to exist`);
   log(`  ✓ ${path}`);
+}
+
+function assertNotExists(path: string): void {
+  if (existsSync(path)) fail(`expected ${path} to NOT exist`);
+  log(`  ✓ absent ${path}`);
+}
+
+function assertContains(path: string, needle: string): void {
+  if (!existsSync(path)) fail(`expected ${path} to exist`);
+  const { readFileSync } = require("node:fs") as typeof import("node:fs");
+  const body = readFileSync(path, "utf8");
+  if (!body.includes(needle)) {
+    fail(`expected ${path} to contain "${needle}", got:\n${body.slice(0, 200)}`);
+  }
+  log(`  ✓ ${path} contains "${needle}"`);
 }
 
 function log(msg: string): void {

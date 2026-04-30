@@ -39,6 +39,7 @@ export const initCommand = defineCommand({
       const { config, summary } = scaffoldFromDir({ src, existingConfig: existing });
       mkdirSync(dir, { recursive: true });
       writeFileSync(resolve(dir, "docs.json"), JSON.stringify(config, null, 2), "utf8");
+      writeTanglyignoreIfAbsent(dir);
       const verb = existing ? "Merged" : "Generated";
       outro(
         `${pc.green("✓")} ${verb} docs.json with ${summary.pages} pages across ${summary.groups} groups.`,
@@ -101,7 +102,33 @@ export const initCommand = defineCommand({
       "utf8",
     );
 
+    writeTanglyignoreIfAbsent(dir);
+
     outro(`${pc.green("✓")} Project scaffolded at ${pc.cyan(dir)}`);
     console.log(pc.dim(`Run \`tangly dev\` from ${dir} to start.`));
   },
 });
+
+/**
+ * Drop a starter `.tanglyignore` so it's discoverable. Build copies every
+ * file under the project root (minus baseline + .gitignore + .tanglyignore)
+ * — this nudges users to extend the exclusion list.
+ */
+function writeTanglyignoreIfAbsent(dir: string): void {
+  const path = resolve(dir, ".tanglyignore");
+  if (existsSync(path)) return;
+  writeFileSync(
+    path,
+    [
+      "# .tanglyignore — files to exclude from the build output.",
+      "# Additive to .gitignore (no need to repeat node_modules/, dist/, etc.).",
+      "# Syntax: same as .gitignore.",
+      "#",
+      "# Examples:",
+      "# scripts/",
+      "# *.draft.txt",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+}

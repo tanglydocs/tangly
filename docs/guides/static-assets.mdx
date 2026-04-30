@@ -1,0 +1,102 @@
+---
+title: Static assets & passthrough files
+description: How files at your project root get shipped into the build, and how to control it.
+icon: "folder"
+---
+
+# Static assets
+
+Tangly **copies every file at your project root into `dist/`** — same convention as Docker, Vercel, and most modern build tools. Drop a `CNAME`, `_redirects`, `_headers`, `humans.txt`, custom `robots.txt`, `.well-known/security.txt`, or anything else, and it ships verbatim.
+
+```
+my-docs/
+├─ docs.json
+├─ introduction.mdx        ← rendered as a page
+├─ CNAME                   ← copied to dist/CNAME
+├─ _redirects              ← copied to dist/_redirects
+├─ robots.txt              ← copied (overrides Tangly's generated one)
+├─ images/
+│  └─ hero.png             ← copied to dist/images/hero.png
+└─ .well-known/
+   └─ security.txt         ← copied to dist/.well-known/security.txt
+```
+
+## What's excluded by default
+
+A baseline list ships with Tangly and is **always applied** — these never end up in `dist/`:
+
+- `**/*.md`, `**/*.mdx` — these compile to pages, not raw downloads
+- `**/_*.md`, `**/_*.mdx` — snippets / partials
+- `node_modules/`, `dist/`, `.git/`, `.astro/`, `.tangly/`, `.vercel/`, `.wrangler/`, `.next/`
+- Lockfiles + `package.json` + `tsconfig*.json`
+- `.env`, `.env.*`, `*.log`, `.DS_Store`
+- `docs.json`, `mint.json` — Tangly's own config
+- `README.md` — convention
+
+## Adding more exclusions
+
+Two layers, both **additive** to the baseline:
+
+### `.gitignore` (root)
+
+If you already gitignore something, Tangly skips it too. No need to repeat.
+
+### `.tanglyignore` (root)
+
+For files you want in git but not in your build. Same syntax as `.gitignore`:
+
+```
+# .tanglyignore
+scripts/
+*.draft.txt
+notes/
+```
+
+`tangly init` scaffolds an empty `.tanglyignore` so the file is discoverable. Cascading sub-directory `.gitignore` files are not honored — keep your patterns at the project root.
+
+## Overriding generated files
+
+Tangly generates `sitemap.xml`, `robots.txt`, `llms.txt`, and `llms-full.txt` automatically. **If you ship your own version**, Tangly defers to it:
+
+```bash
+echo "User-agent: BadBot" > robots.txt
+tangly build
+# ↳ robots.txt: using project file (skipped generated)
+```
+
+Same for the other three. Useful for adding extra `Disallow:` lines, customizing sitemap entries, or tuning the LLM index for your audience.
+
+## Hard-protected paths
+
+`_astro/` is reserved for Astro's hashed asset bundles. Putting a file under `_astro/` is a hard error — the build refuses to overlay it. If you really need to ship a file under that path (you don't), pick a different prefix.
+
+## Common recipes
+
+<CardGroup cols={2}>
+  <Card title="GitHub Pages custom domain" icon="github">
+    Drop `CNAME` at your project root with the domain on a single line. Tangly copies it to `dist/CNAME` on every build.
+  </Card>
+  <Card title="Netlify redirects" icon="arrow-right">
+    Drop `_redirects` at your project root. One redirect per line: `/old /new 301`.
+  </Card>
+  <Card title="Cloudflare Pages headers" icon="shield">
+    Drop `_headers` at your project root. Standard Cloudflare/Netlify syntax.
+  </Card>
+  <Card title="Custom robots.txt" icon="bot">
+    Drop `robots.txt` at your project root — Tangly's generator backs off and your file ships unchanged.
+  </Card>
+  <Card title="security.txt" icon="lock">
+    Drop `.well-known/security.txt`. Anything under `.well-known/` ships verbatim.
+  </Card>
+  <Card title="PWA manifest" icon="smartphone">
+    Drop `manifest.webmanifest` (or `manifest.json`) and reference it from your custom layout.
+  </Card>
+</CardGroup>
+
+## How this differs from `public/` in Astro
+
+If you've used Astro directly, you know about its `public/` directory. Tangly still supports `public/` (and `images/`, `static/`, `assets/`, `logo/`) — files inside any of these copy to `dist/` flattened, exactly like before. The new behavior is **additive**: anything at the project root that isn't ignored *also* copies. Existing projects keep working without changes.
+
+## Performance
+
+The walk respects ignore rules early — Tangly never recurses into `node_modules/` or any other excluded directory. Doc projects with hundreds of files build in well under a second of asset-copy overhead.
