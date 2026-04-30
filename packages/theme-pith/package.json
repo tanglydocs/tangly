@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-pith",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Editorial Tangly theme. Serif headings + cream palette; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
@@ -41,7 +41,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tanglydocs/theme-ui": "workspace:*",
+    "@tanglydocs/theme-ui": "0.0.2",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {

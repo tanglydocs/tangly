@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-tang",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Default Tangly theme. Mintlify-Mint-inspired token set; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
@@ -41,7 +41,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tanglydocs/theme-ui": "workspace:*",
+    "@tanglydocs/theme-ui": "0.0.2",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
