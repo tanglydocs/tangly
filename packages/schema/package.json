@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/schema",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "docs.json Zod schema + JSON Schema for Tangly.",
   "keywords": [
     "docs",
