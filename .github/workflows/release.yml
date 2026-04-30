@@ -160,8 +160,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add packages/*/package.json
           git commit -m "chore(release): $TAG [skip ci]"
-          git tag "$TAG"
-          git push origin HEAD --follow-tags
+          # Annotated tag (lightweight tags are NOT pushed by --follow-tags).
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin HEAD
+          git push origin "$TAG"
 
       - name: Publish all packages (topological order)
         if: ${{ env.DRY_RUN != 'true' }}
@@ -181,8 +183,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.ver.outputs.tag }}
         run: |
+          # --target $GITHUB_SHA: belt + suspenders in case the tag isn't
+          # visible to gh CLI yet (it just got pushed in a prior step).
           if [ "$BUMP" = "prerelease" ]; then
-            gh release create "$TAG" --generate-notes --prerelease --title "$TAG"
+            gh release create "$TAG" --generate-notes --prerelease --title "$TAG" --target "$GITHUB_SHA"
           else
-            gh release create "$TAG" --generate-notes --latest --title "$TAG"
+            gh release create "$TAG" --generate-notes --latest --title "$TAG" --target "$GITHUB_SHA"
           fi
