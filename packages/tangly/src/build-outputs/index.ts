@@ -1,5 +1,6 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import pc from "picocolors";
 import type { Manifest, PageEntry } from "../manifest/index.js";
 
 export interface BuildOutputsOptions {
@@ -87,12 +88,23 @@ export function writeBuildOutputs(opts: BuildOutputsOptions): {
   const llms = generateLlmsTxt(opts);
   const llmsFull = generateLlmsFullTxt(opts);
 
-  writeFileSync(join(opts.outDir, "sitemap.xml"), sitemap, "utf8");
-  writeFileSync(join(opts.outDir, "robots.txt"), robots, "utf8");
-  writeFileSync(join(opts.outDir, "llms.txt"), llms, "utf8");
-  writeFileSync(join(opts.outDir, "llms-full.txt"), llmsFull, "utf8");
+  // copy-assets runs before this — if the user dropped their own version of
+  // any of these at the project root, it's already in dist. Defer to it.
+  writeIfAbsent(opts.outDir, "sitemap.xml", sitemap);
+  writeIfAbsent(opts.outDir, "robots.txt", robots);
+  writeIfAbsent(opts.outDir, "llms.txt", llms);
+  writeIfAbsent(opts.outDir, "llms-full.txt", llmsFull);
 
   return { sitemap, robots, llms, llmsFull };
+}
+
+function writeIfAbsent(outDir: string, name: string, content: string): void {
+  const dest = join(outDir, name);
+  if (existsSync(dest)) {
+    console.log(pc.dim(`  ↳ ${name}: using project file (skipped generated)`));
+    return;
+  }
+  writeFileSync(dest, content, "utf8");
 }
 
 function escapeXml(s: string): string {

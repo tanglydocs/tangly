@@ -82,6 +82,7 @@
     "citty": "^0.2.2",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
+    "ignore": "^7",
     "katex": "^0.16.45",
     "pagefind": "^1.5.2",
     "picocolors": "^1.1.1",
@@ -104,6 +105,9 @@
   "devDependencies": {
     "vite": "^7.3.2",
     "vitest": "^4.1.5"
+  },
+  "peerDependencies": {
+    "vite": "^7.3.2"
   },
   "engines": {
     "node": ">=20.0.0"
