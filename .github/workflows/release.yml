@@ -56,7 +56,12 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Configure npm auth (write both ~/.npmrc and project .npmrc)
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Verify NPM_TOKEN is set
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -64,11 +69,6 @@ jobs:
             echo "::error::NPM_TOKEN secret is empty or not set"
             exit 1
           fi
-          {
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN"
-            echo "registry=https://registry.npmjs.org/"
-            echo "always-auth=true"
-          } | tee ~/.npmrc > .npmrc
 
       - name: Safety gate (format / lint / typecheck / test / build)
         run: bun run ci
@@ -94,7 +94,7 @@ jobs:
           fi
           echo "Releasing $current → $next"
 
-      - name: Bump all workspace versions in lockstep
+      - name: Bump versions + rewrite workspace:* deps to concrete versions
         env:
           NEW_VERSION: ${{ steps.ver.outputs.version }}
         run: |
@@ -112,10 +112,19 @@ jobs:
               "packages/theme-geist",
               "packages/tangly",
             ];
+            const names = dirs.map(d => JSON.parse(fs.readFileSync(path.join(d, "package.json"), "utf8")).name);
             for (const d of dirs) {
               const p = path.join(d, "package.json");
               const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
               pkg.version = v;
+              for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+                if (!pkg[field]) continue;
+                for (const dep of Object.keys(pkg[field])) {
+                  if (names.includes(dep) && pkg[field][dep] === "workspace:*") {
+                    pkg[field][dep] = v;
+                  }
+                }
+              }
               fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
               console.log(pkg.name, "→", v);
             }
@@ -158,11 +167,11 @@ jobs:
         if: ${{ env.DRY_RUN != 'true' }}
         env:
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
             echo "::group::Publish $d @ $DIST_TAG"
-            (cd "$d" && bun publish --tag "$DIST_TAG" --access public)
+            (cd "$d" && npm publish --tag "$DIST_TAG" --access public)
             echo "::endgroup::"
           done
 
