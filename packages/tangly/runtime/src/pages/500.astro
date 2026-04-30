@@ -55,7 +55,7 @@ const homeSlug =
           An unexpected error occurred. If this keeps happening, please report it.
         </p>
         <a
-          href={`/${homeSlug}`}
+          href={`${import.meta.env.BASE_URL}${homeSlug}`}
           class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-white no-underline hover:opacity-90"
           style="background: var(--tangly-color-primary)"
         >

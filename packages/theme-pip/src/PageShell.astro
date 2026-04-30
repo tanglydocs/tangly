@@ -39,7 +39,7 @@ const custom = mode === "custom";
       <nav aria-label="Pagination" class="mt-16 pt-6 border-t border-[var(--tangly-color-border)] flex items-center justify-between gap-3 text-sm">
         {page.prev ? (
           <a
-            href={`/${page.prev.slug}`}
+            href={`${import.meta.env.BASE_URL}${page.prev.slug}`}
             class="inline-flex items-center gap-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
           >
             <Icon icon="ArrowLeft" size={14} />
@@ -48,7 +48,7 @@ const custom = mode === "custom";
         ) : (<span></span>)}
         {page.next ? (
           <a
-            href={`/${page.next.slug}`}
+            href={`${import.meta.env.BASE_URL}${page.next.slug}`}
             class="inline-flex items-center gap-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] no-underline"
           >
             <span>{page.next.title}</span>

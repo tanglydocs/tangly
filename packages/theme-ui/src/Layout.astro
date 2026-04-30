@@ -5,6 +5,7 @@ import type { PageEntry, ResolvedNavigation } from "tangly";
 // `<userRoot>/theme/<Name>.astro` (wired through Vite alias by the Tangly
 // integration) actually intercept these. Relative imports would bypass
 // the alias and pin to the bundled defaults.
+import { withBase } from "./with-base.ts";
 import TopNav from "@tanglydocs/theme-ui/TopNav.astro";
 import Sidebar from "@tanglydocs/theme-ui/Sidebar.astro";
 import Footer from "@tanglydocs/theme-ui/Footer.astro";
@@ -96,7 +97,7 @@ const bannerType = banner?.type ?? "info";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
-    <link rel="icon" href={favicon} />
+    <link rel="icon" href={withBase(favicon)} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDesc} />
     <meta property="og:type" content="article" />
