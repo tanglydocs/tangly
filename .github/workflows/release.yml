@@ -204,6 +204,14 @@ jobs:
           tarball=$(ls "$RUNNER_TEMP"/tangly-*.tgz | head -1)
           echo "Tarball: $tarball"
 
+      # Pack all 8 packages, install into a clean dir outside the workspace,
+      # run init+build end-to-end. This is the only gate that catches the
+      # resolution bugs visible to bunx/npx users (single-vite hoisting,
+      # peer auto-install) before publish — failing here aborts the release.
+      - name: Tarball install smoke (gates publish)
+        if: ${{ env.DRY_RUN != 'true' }}
+        run: bun run scripts/smoke-tarball.ts
+
       - name: Publish all packages (topological order)
         if: ${{ env.DRY_RUN != 'true' }}
         env:

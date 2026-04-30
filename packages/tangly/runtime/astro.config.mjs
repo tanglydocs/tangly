@@ -105,6 +105,10 @@ if (adapterName === "vercel") {
 export default defineConfig({
   base: baseUrl,
   output,
+  // Astro 6.2 made `server` a required (non-optional) preprocessed field
+  // in its config schema. Specify an empty block so defaults apply on
+  // 6.2+ while remaining a no-op on 6.1.x.
+  server: {},
   ...(adapter ? { adapter } : {}),
   integrations: [
     tanglyIntegration({ userRoot, configFile, includeDrafts }),
