@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-tang",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Default Tangly theme. Mintlify-Mint-inspired token set; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
