@@ -99,7 +99,68 @@ jobs:
           fi
           echo "Releasing $current → $next"
 
-      - name: Bump versions + rewrite workspace:* deps to concrete versions
+      # Step 1: bump VERSION only in source-of-truth (workspace:* preserved).
+      # This is what gets committed back to main.
+      - name: Bump versions in package.json
+        env:
+          NEW_VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const path = require("node:path");
+            const v = process.env.NEW_VERSION;
+            const dirs = [
+              "packages/schema",
+              "packages/theme-ui",
+              "packages/theme-tang",
+              "packages/theme-pith",
+              "packages/theme-pip",
+              "packages/theme-readable",
+              "packages/theme-geist",
+              "packages/tangly",
+            ];
+            for (const d of dirs) {
+              const p = path.join(d, "package.json");
+              const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
+              pkg.version = v;
+              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
+              console.log(pkg.name, "→", v);
+            }
+          '
+
+      - name: Dry run summary
+        if: ${{ env.DRY_RUN == 'true' }}
+        env:
+          NEW_VERSION: ${{ steps.ver.outputs.version }}
+          DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
+        run: |
+          {
+            echo "## Dry run"
+            echo "- version: \`$NEW_VERSION\`"
+            echo "- dist-tag: \`$DIST_TAG\`"
+            echo "- bump: \`$BUMP\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "No tag created, no publish."
+
+      # Step 2: commit & tag the VERSION bump (deps still workspace:* — clean state).
+      - name: Commit + tag
+        if: ${{ env.DRY_RUN != 'true' }}
+        env:
+          TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/*/package.json
+          git commit -m "chore(release): $TAG [skip ci]"
+          # Annotated tag (lightweight tags are NOT pushed by --follow-tags).
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin HEAD
+          git push origin "$TAG"
+
+      # Step 3: rewrite workspace:* → concrete versions IN-PLACE for publish.
+      # NOT committed — so source-of-truth on main stays workspace:*.
+      - name: Rewrite workspace:* deps for publish (working tree only)
+        if: ${{ env.DRY_RUN != 'true' }}
         env:
           NEW_VERSION: ${{ steps.ver.outputs.version }}
         run: |
@@ -121,54 +182,27 @@ jobs:
             for (const d of dirs) {
               const p = path.join(d, "package.json");
               const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
-              pkg.version = v;
               for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
                 if (!pkg[field]) continue;
                 for (const dep of Object.keys(pkg[field])) {
-                  if (names.includes(dep) && pkg[field][dep] === "workspace:*") {
+                  // Always rewrite internal deps to current release version, regardless of prior value.
+                  if (names.includes(dep)) {
                     pkg[field][dep] = v;
                   }
                 }
               }
               fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
-              console.log(pkg.name, "→", v);
             }
+            console.log("Rewrote internal deps →", v);
           '
 
-      - name: Pack & smoke (verify the published tarball works end-to-end)
+      - name: Pack & smoke (verify the published tarball works)
+        if: ${{ env.DRY_RUN != 'true' }}
         run: |
           cd packages/tangly
           bun pm pack --destination "$RUNNER_TEMP"
-          tarball=$(ls "$RUNNER_TEMP"/tanglydocs-tangly-*.tgz | head -1)
+          tarball=$(ls "$RUNNER_TEMP"/tangly-*.tgz | head -1)
           echo "Tarball: $tarball"
-
-      - name: Dry run summary
-        if: ${{ env.DRY_RUN == 'true' }}
-        env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
-          DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
-        run: |
-          {
-            echo "## Dry run"
-            echo "- version: \`$NEW_VERSION\`"
-            echo "- dist-tag: \`$DIST_TAG\`"
-            echo "- bump: \`$BUMP\`"
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo "No tag created, no publish."
-
-      - name: Commit + tag
-        if: ${{ env.DRY_RUN != 'true' }}
-        env:
-          TAG: ${{ steps.ver.outputs.tag }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/*/package.json
-          git commit -m "chore(release): $TAG [skip ci]"
-          # Annotated tag (lightweight tags are NOT pushed by --follow-tags).
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin HEAD
-          git push origin "$TAG"
 
       - name: Publish all packages (topological order)
         if: ${{ env.DRY_RUN != 'true' }}

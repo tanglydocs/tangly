@@ -43,7 +43,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@tanglydocs/theme-ui": "0.0.2",
+    "@tanglydocs/theme-ui": "workspace:*",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
