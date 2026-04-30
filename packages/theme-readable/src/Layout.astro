@@ -144,7 +144,7 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
                 {section.items.map((c, idx) => (
                   <li>
                     <a
-                      href={`/${c.slug}`}
+                      href={`${import.meta.env.BASE_URL}${c.slug}`}
                       data-active={c.slug === page.slug ? "true" : "false"}
                       class="reader-chapter-link flex gap-3 py-1.5 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:font-medium no-underline"
                     >
@@ -192,7 +192,7 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
                 {section.items.map((c, idx) => (
                   <li>
                     <a
-                      href={`/${c.slug}`}
+                      href={`${import.meta.env.BASE_URL}${c.slug}`}
                       data-active={c.slug === page.slug ? "true" : "false"}
                       class="flex gap-3 py-1.5 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] no-underline"
                     >

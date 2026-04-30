@@ -2,6 +2,7 @@
 import type { DocsJson } from "@tanglydocs/schema";
 import type { ResolvedNavigation, SidebarItem } from "tangly";
 import Icon from "@tanglydocs/theme-ui/components/Icon.astro";
+import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
 
 /**
  * Pith's full-chrome sidebar. No separate top bar, so this hosts logo,
@@ -80,7 +81,7 @@ const primary = config.navbar?.primary;
           </details>
         ) : (
           <a
-            href={`/${item.slug}`}
+            href={`${import.meta.env.BASE_URL}${item.slug}`}
             data-active={item.slug === currentSlug ? "true" : "false"}
             class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline text-sm"
           >
@@ -133,7 +134,7 @@ const primary = config.navbar?.primary;
         tabs.map((t) => (
           <section data-tab-slug={t.slug}>
             <a
-              href={t.href ?? (t.pages[0] ? `/${t.pages[0]}` : `/${t.slug}`)}
+              href={t.href ?? (t.pages[0] ? `${import.meta.env.BASE_URL}${t.pages[0]}` : `${import.meta.env.BASE_URL}${t.slug}`)}
               data-active={t.slug === currentTabSlug ? "true" : "false"}
               class="flex items-center gap-1.5 mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--tangly-color-muted)] data-[active=true]:text-[var(--tangly-color-primary)] hover:text-[var(--tangly-color-fg)] no-underline"
             >
@@ -168,7 +169,7 @@ const primary = config.navbar?.primary;
     <div class="pt-4 mt-2 border-t border-[var(--tangly-color-border)] flex flex-col gap-1">
       {anchors.map((a) => (
         <a
-          href={a.href}
+          href={withBase(a.href)}
           class="inline-flex items-center gap-2 text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] py-1 no-underline"
         >
           {a.icon && <Icon icon={a.icon} size={14} />}
@@ -177,7 +178,7 @@ const primary = config.navbar?.primary;
       ))}
       {navbarLinks.map((l) => (
         <a
-          href={l.href}
+          href={withBase(l.href)}
           class="inline-flex items-center gap-2 text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] py-1 no-underline"
         >
           {typeof l.icon === "string" && <Icon icon={l.icon} size={14} />}
@@ -199,7 +200,7 @@ const primary = config.navbar?.primary;
       </button>
       {primary && primary.type === "button" && (
         <a
-          href={primary.href}
+          href={withBase(primary.href)}
           class="mt-1 inline-flex items-center justify-center h-9 px-3.5 rounded-md text-sm font-medium text-white shrink-0 hover:opacity-90 no-underline"
           style="background: var(--tangly-color-primary)"
         >
@@ -208,7 +209,7 @@ const primary = config.navbar?.primary;
       )}
       {primary && primary.type === "github" && (
         <a
-          href={primary.href}
+          href={withBase(primary.href)}
           class="inline-flex items-center gap-2 text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] py-1 no-underline"
           aria-label="GitHub"
         >

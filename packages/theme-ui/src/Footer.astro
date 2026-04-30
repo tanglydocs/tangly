@@ -1,6 +1,7 @@
 ---
 import type { DocsJson } from "@tanglydocs/schema";
 import Icon from "./components/Icon.astro";
+import { withBase } from "./with-base.ts";
 
 export interface Props {
   config: DocsJson;
@@ -36,7 +37,7 @@ const SOCIAL_ICON: Record<string, string> = {
             <ul class="space-y-1.5">
               {group.items.map((l) => (
                 <li>
-                  <a href={l.href} class="hover:text-[var(--tangly-color-fg)]">
+                  <a href={withBase(l.href)} class="hover:text-[var(--tangly-color-fg)]">
                     {l.label}
                   </a>
                 </li>

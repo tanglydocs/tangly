@@ -30,7 +30,7 @@ const breadcrumbs = page.breadcrumbs ?? [];
         {breadcrumbs.map((b, i) => (
           <span class="inline-flex items-center gap-1.5">
             {b.slug ? (
-              <a href={`/${b.slug}`} class="hover:text-[var(--tangly-color-fg)] no-underline">{b.title}</a>
+              <a href={`${import.meta.env.BASE_URL}${b.slug}`} class="hover:text-[var(--tangly-color-fg)] no-underline">{b.title}</a>
             ) : (
               <span>{b.title}</span>
             )}
@@ -60,7 +60,7 @@ const breadcrumbs = page.breadcrumbs ?? [];
       <nav aria-label="Pagination" class="mt-20 pt-8 border-t border-[var(--tangly-color-border)] grid grid-cols-1 sm:grid-cols-2 gap-3">
         {page.prev ? (
           <a
-            href={`/${page.prev.slug}`}
+            href={`${import.meta.env.BASE_URL}${page.prev.slug}`}
             class="group p-4 hover:bg-[var(--tangly-color-bg-elevated)] transition-colors no-underline"
           >
             <div class="text-[10px] uppercase tracking-[0.12em] text-[var(--tangly-color-muted)] inline-flex items-center gap-1">
@@ -71,7 +71,7 @@ const breadcrumbs = page.breadcrumbs ?? [];
         ) : (<span></span>)}
         {page.next ? (
           <a
-            href={`/${page.next.slug}`}
+            href={`${import.meta.env.BASE_URL}${page.next.slug}`}
             class="group p-4 sm:text-right hover:bg-[var(--tangly-color-bg-elevated)] transition-colors no-underline"
           >
             <div class="text-[10px] uppercase tracking-[0.12em] text-[var(--tangly-color-muted)] inline-flex items-center gap-1 sm:justify-end">

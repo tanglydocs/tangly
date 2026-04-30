@@ -40,7 +40,7 @@ const isRoot = _depth === 0;
             </details>
           ) : (
             <a
-              href={`/${item.slug}`}
+              href={`${import.meta.env.BASE_URL}${item.slug}`}
               data-active={item.slug === currentSlug ? "true" : "false"}
               class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
             >
@@ -81,7 +81,7 @@ const isRoot = _depth === 0;
           </details>
         ) : (
           <a
-            href={`/${item.slug}`}
+            href={`${import.meta.env.BASE_URL}${item.slug}`}
             data-active={item.slug === currentSlug ? "true" : "false"}
             class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
           >

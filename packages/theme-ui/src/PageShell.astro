@@ -66,7 +66,7 @@ const containerClass = custom
           {breadcrumbs.map((b, i) => (
             <span class="inline-flex items-center gap-1.5">
               {b.slug ? (
-                <a href={`/${b.slug}`} class="hover:text-[var(--tangly-color-fg)]">{b.title}</a>
+                <a href={`${import.meta.env.BASE_URL}${b.slug}`} class="hover:text-[var(--tangly-color-fg)]">{b.title}</a>
               ) : (
                 <span>{b.title}</span>
               )}
@@ -122,7 +122,7 @@ const containerClass = custom
         <nav aria-label="Pagination" class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {page.prev ? (
             <a
-              href={`/${page.prev.slug}`}
+              href={`${import.meta.env.BASE_URL}${page.prev.slug}`}
               class="group rounded-[var(--tangly-radius)] border border-[var(--tangly-color-border)] p-4 hover:border-[var(--tangly-color-primary)] transition-colors"
             >
               <div class="text-xs uppercase tracking-wide text-[var(--tangly-color-muted)] inline-flex items-center gap-1">
@@ -133,7 +133,7 @@ const containerClass = custom
           ) : (<span></span>)}
           {page.next ? (
             <a
-              href={`/${page.next.slug}`}
+              href={`${import.meta.env.BASE_URL}${page.next.slug}`}
               class="group rounded-[var(--tangly-radius)] border border-[var(--tangly-color-border)] p-4 sm:text-right hover:border-[var(--tangly-color-primary)] transition-colors"
             >
               <div class="text-xs uppercase tracking-wide text-[var(--tangly-color-muted)] inline-flex items-center gap-1 sm:justify-end">

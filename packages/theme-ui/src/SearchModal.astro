@@ -209,10 +209,10 @@ const placeholder = config.search?.prompt ?? "Search docs…";
         class: "rounded-md cursor-pointer",
         role: "option",
         "data-result": String(i),
-        "data-url": d.meta.slug ? `/${d.meta.slug}` : d.url,
+        "data-url": d.meta.slug ? `${import.meta.env.BASE_URL}${d.meta.slug}` : d.url,
       });
       const a = el("a", {
-        href: d.meta.slug ? `/${d.meta.slug}` : d.url,
+        href: d.meta.slug ? `${import.meta.env.BASE_URL}${d.meta.slug}` : d.url,
         class: "block px-3 py-2 no-underline",
       });
       a.appendChild(el("div", { class: "font-medium text-sm text-[var(--tangly-color-fg)]" }, [

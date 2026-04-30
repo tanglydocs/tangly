@@ -21,6 +21,6 @@ export const prerender = true;
     <title>{manifest.config.name}</title>
   </head>
   <body>
-    <p>Loading <a href={`/${target}`}>{manifest.config.name}</a>…</p>
+    <p>Loading <a href={`${import.meta.env.BASE_URL}${target}`}>{manifest.config.name}</a>…</p>
   </body>
 </html>
