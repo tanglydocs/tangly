@@ -16,7 +16,7 @@
     "typecheck": "bun run --filter '*' typecheck",
     "test": "bun run --filter '*' test",
     "build": "bun run --filter '*' build",
-    "ci": "bun run --sequential format:check lint typecheck test build",
+    "ci": "bun run format:check && bun run lint && bun run build && bun run typecheck && bun run test",
     "dev:docs": "cd docs && ../packages/tangly/bin/tangly.js dev --no-open --port 4322",
     "build:docs": "cd docs && ../packages/tangly/bin/tangly.js build --out ./dist",
     "dev:opennem": "cd examples/opennem && ../../packages/tangly/bin/tangly.js dev --no-open --port 4321",

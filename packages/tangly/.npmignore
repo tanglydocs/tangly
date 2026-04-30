@@ -1,0 +1,14 @@
+# Astro / Vercel build artifacts under runtime/ that may exist locally
+**/.vercel/
+**/.astro/
+**/.cache/
+**/.vite/
+runtime/dist/
+runtime/node_modules/
+
+# Tests
+**/*.test.ts
+**/*.spec.ts
+
+# tsbuildinfo doesn't need to ship
+dist/.tsbuildinfo

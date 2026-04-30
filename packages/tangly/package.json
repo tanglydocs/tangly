@@ -29,8 +29,8 @@
   "files": [
     "bin",
     "dist",
-    "runtime",
-    "schema",
+    "runtime/src",
+    "runtime/astro.config.mjs",
     "README.md"
   ],
   "type": "module",
