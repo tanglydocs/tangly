@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-pith",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Editorial Tangly theme. Serif headings + cream palette; UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
