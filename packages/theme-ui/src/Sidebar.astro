@@ -16,38 +16,29 @@ const { items, currentSlug, config, _depth = 0 } = Astro.props as Props;
 const isRoot = _depth === 0;
 ---
 {isRoot ? (
-  <nav aria-label="Sidebar" class="text-sm">
-    <ul class="space-y-0.5">
+  <nav aria-label="Sidebar" class="text-[14px]">
+    <ul class="space-y-6">
       {items.map((item) => (
         <li>
           {item.isGroup ? (
-            <details open={item.expanded ?? true} class="group/det">
-              <summary class="flex items-center gap-1.5 cursor-pointer list-none select-none text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] py-2 px-2">
-                <span class="inline-flex transition-transform group-open/det:rotate-90">
-                  <Icon icon="ChevronRight" size={12} />
-                </span>
-                {item.icon && <Icon icon={item.icon} size={14} />}
-                <span class="flex-1">{item.title}</span>
-                {item.tag && (
-                  <span class="ml-1 text-[10px] font-medium uppercase tracking-wide rounded-full px-1.5 py-0.5 bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] border border-[var(--tangly-color-border)]">
-                    {item.tag}
-                  </span>
-                )}
-              </summary>
-              <div class="mt-0.5 ml-1 pl-3 border-l border-[var(--tangly-color-border)]">
-                <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
+            <div>
+              <div class="px-2 pt-1 pb-2 text-[13px] font-semibold text-[var(--tangly-color-fg)]">
+                {item.title}
               </div>
-            </details>
+              <ul class="space-y-0.5">
+                <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
+              </ul>
+            </div>
           ) : (
             <a
               href={`${import.meta.env.BASE_URL}${item.slug}`}
               data-active={item.slug === currentSlug ? "true" : "false"}
-              class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
+              class="tangly-side-link flex items-center gap-2.5 px-2 py-2 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
             >
-              {item.icon ? <Icon icon={item.icon} size={14} /> : <span class="w-3.5 inline-block"></span>}
+              {item.icon ? <Icon icon={item.icon} size={15} /> : null}
               <span class="flex-1 truncate">{item.title}</span>
               {item.tag && (
-                <span class="text-[10px] font-medium uppercase tracking-wide rounded-full px-1.5 py-0.5 bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] border border-[var(--tangly-color-border)]">
+                <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
                   {item.tag}
                 </span>
               )}
@@ -58,37 +49,28 @@ const isRoot = _depth === 0;
     </ul>
   </nav>
 ) : (
-  <ul class="space-y-0.5">
+  <>
     {items.map((item) => (
       <li>
         {item.isGroup ? (
-          <details open={item.expanded ?? true} class="group/det">
-            <summary class="flex items-center gap-1.5 cursor-pointer list-none select-none py-1.5 px-2 text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] rounded-md">
-              <span class="inline-flex transition-transform group-open/det:rotate-90">
-                <Icon icon="ChevronRight" size={12} />
-              </span>
-              {item.icon && <Icon icon={item.icon} size={14} />}
-              <span class="flex-1">{item.title}</span>
-              {item.tag && (
-                <span class="ml-1 text-[10px] font-medium uppercase tracking-wide rounded-full px-1.5 py-0.5 bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] border border-[var(--tangly-color-border)]">
-                  {item.tag}
-                </span>
-              )}
-            </summary>
-            <div class="mt-0.5 ml-1 pl-3 border-l border-[var(--tangly-color-border)]">
-              <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
+          <div class="pt-4">
+            <div class="px-2 pb-1 text-[12px] font-semibold text-[var(--tangly-color-fg)]">
+              {item.title}
             </div>
-          </details>
+            <ul class="space-y-0.5">
+              <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
+            </ul>
+          </div>
         ) : (
           <a
             href={`${import.meta.env.BASE_URL}${item.slug}`}
             data-active={item.slug === currentSlug ? "true" : "false"}
-            class="tangly-side-link flex items-center gap-2 px-2 py-1.5 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
+            class="tangly-side-link flex items-center gap-2.5 px-2 py-2 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
           >
-            {item.icon ? <Icon icon={item.icon} size={14} /> : <span class="w-3.5 inline-block"></span>}
+            {item.icon ? <Icon icon={item.icon} size={15} /> : null}
             <span class="flex-1 truncate">{item.title}</span>
             {item.tag && (
-              <span class="text-[10px] font-medium uppercase tracking-wide rounded-full px-1.5 py-0.5 bg-[var(--tangly-color-bg-elevated)] text-[var(--tangly-color-muted)] border border-[var(--tangly-color-border)]">
+              <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
                 {item.tag}
               </span>
             )}
@@ -96,5 +78,5 @@ const isRoot = _depth === 0;
         )}
       </li>
     ))}
-  </ul>
+  </>
 )}

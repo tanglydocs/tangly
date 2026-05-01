@@ -91,3 +91,11 @@ h4 {
 [data-active="true"] {
   color: var(--tangly-color-primary);
 }
+
+.tangly-side-link[data-active="true"] {
+  background: color-mix(in oklab, var(--tangly-color-primary) 14%, transparent);
+  font-weight: 600;
+}
+.tangly-side-link[data-active="true"] svg {
+  color: var(--tangly-color-primary);
+}

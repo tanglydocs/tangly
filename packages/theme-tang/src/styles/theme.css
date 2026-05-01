@@ -136,7 +136,11 @@ a {
 /* Active sidebar link */
 .tangly-side-link[data-active="true"] {
   color: var(--tangly-color-primary);
-  background: color-mix(in oklab, var(--tangly-color-primary) 10%, transparent);
+  background: color-mix(in oklab, var(--tangly-color-primary) 14%, transparent);
+  font-weight: 600;
+}
+.tangly-side-link[data-active="true"] svg {
+  color: var(--tangly-color-primary);
 }
 
 .tangly-toc-link[data-active="true"] {
