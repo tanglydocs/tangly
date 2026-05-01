@@ -1,0 +1,66 @@
+---
+title: Themes
+description: Switch the look of your docs without touching CSS.
+icon: "star"
+---
+
+# Themes
+
+Pick a theme by setting `theme` in `docs.json`:
+
+```json
+{ "theme": "tang" }
+```
+
+## Built-in themes
+
+| Theme | Vibe |
+|---|---|
+| `tang` | Default. Clean, Mintlify-Mint-inspired. |
+| `pith` | Editorial. Serif headings, cream background. |
+| `geist` | Vercel-flavored, system sans, dense. |
+| `pip` | Minimal, ultra-light chrome. |
+| `readable` | High-contrast, generous spacing. |
+
+Mintlify aliases (`mint`, `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia`) all map to `tang` so existing `docs.json` files just work.
+
+## Tweak the accent
+
+```json
+{
+  "theme": "tang",
+  "colors": {
+    "primary": "#0ea5e9",
+    "light": "#38bdf8",
+    "dark": "#0284c7"
+  }
+}
+```
+
+`primary` is the only required color. `light` and `dark` override the accent in light/dark mode respectively.
+
+## Add a theme
+
+```bash
+tangly add theme pith
+```
+
+Pulls the theme into your project's deps. Switch `theme` in `docs.json` and reload.
+
+## Eject
+
+If you outgrow theme tokens and want full control:
+
+```bash
+tangly eject
+```
+
+Copies the active theme into your repo so you can edit components and styles directly.
+
+<Tip>
+  Try the alternative themes by editing `theme` in `docs.json` while `tangly dev` is running. The browser reloads with the new look.
+</Tip>
+
+## Live docs
+
+Full reference: [tangly.dev/guides/themes](https://tangly.dev/guides/themes).

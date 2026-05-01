@@ -1,0 +1,22 @@
+{
+  "$schema": "https://tangly.dev/schema/docs.json",
+  "name": "Tangly Starter",
+  "theme": "tang",
+  "colors": { "primary": "#0ea5e9" },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": ["introduction", "getting-started"]
+      },
+      {
+        "group": "Development",
+        "pages": ["development/dev-server", "development/settings", "development/openapi"]
+      },
+      {
+        "group": "Content",
+        "pages": ["content/markdown", "content/navigation", "content/themes", "content/blocks"]
+      }
+    ]
+  }
+}

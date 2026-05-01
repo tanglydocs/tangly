@@ -1,0 +1,63 @@
+---
+title: Settings
+description: Configure your project via docs.json.
+icon: "gear"
+---
+
+# Settings
+
+Tangly reads a single `docs.json` at your project root.
+
+## Minimal
+
+```json
+{
+  "$schema": "https://tangly.dev/schema/docs.json",
+  "name": "My Docs",
+  "theme": "tang",
+  "colors": { "primary": "#0ea5e9" },
+  "navigation": {
+    "groups": [{ "group": "Get Started", "pages": ["introduction"] }]
+  }
+}
+```
+
+That's enough to render.
+
+## Common fields
+
+<ParamField path="name" type="string" required>
+  Display name. Shown in the title bar, sitemap, and `llms.txt`.
+</ParamField>
+
+<ParamField path="description" type="string">
+  Site description. Used in meta tags and `llms.txt`.
+</ParamField>
+
+<ParamField path="theme" type="string" default="tang">
+  Theme to render with. Built-ins: `tang`, `pith`, `geist`, `pip`, `readable`. Mintlify aliases (`mint`, `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia`) all map to `tang`.
+</ParamField>
+
+<ParamField path="colors.primary" type="string">
+  Hex accent color. Drives links, focus rings, and theme accents.
+</ParamField>
+
+<ParamField path="favicon" type="string">
+  Path to a favicon, e.g. `/images/favicon.svg`.
+</ParamField>
+
+<ParamField path="navigation" type="object" required>
+  Defines how pages are grouped. Either `groups` (flat) or `tabs` (top-level tabs containing groups). See [Navigation](/content/navigation).
+</ParamField>
+
+## Validate
+
+```bash
+tangly check
+```
+
+Reports schema violations, missing pages, and broken internal links.
+
+## Live docs
+
+Full reference: [tangly.dev/reference/schema/docs-json](https://tangly.dev/reference/schema/docs-json).

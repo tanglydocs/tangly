@@ -1,0 +1,59 @@
+---
+title: Markdown
+description: Page frontmatter, body syntax, and what Tangly understands.
+icon: "file-lines"
+---
+
+# Markdown
+
+Pages are MDX — Markdown plus JSX. Frontmatter at the top, content below.
+
+## Frontmatter
+
+```yaml
+---
+title: My Page
+description: One-line description used in meta tags and llms.txt.
+icon: "book-open"
+draft: false
+sidebarTitle: Short Name
+---
+```
+
+| Field | Required | Notes |
+|---|---|---|
+| `title` | yes | Page heading + browser title. |
+| `description` | recommended | Meta description, og:description, llms.txt. |
+| `icon` | no | Lucide icon name. Renders next to the nav entry. |
+| `sidebarTitle` | no | Override the nav label without changing the page title. |
+| `draft` | no | `true` hides the page from `tangly build` (visible in `dev`). |
+
+## Body
+
+Standard Markdown plus MDX components. Tangly understands:
+
+- GitHub-flavored Markdown (tables, task lists, strikethrough).
+- Math via `$inline$` and `$$block$$` (KaTeX). Example: $e^{i\pi} + 1 = 0$.
+- Mintlify-style latex blocks (rewritten to `$$` before parse).
+- Relative image paths (`![](../images/foo.png)`) — resolved against project root.
+- Code blocks with Shiki highlighting and `twoslash` for TypeScript.
+
+## Code blocks
+
+Triple-fence with a language and optional title:
+
+````md
+```ts title="example.ts"
+const greet = (name: string) => `hello, ${name}`
+```
+````
+
+Pair multiple variants with `<CodeGroup>` — see [Blocks](/content/blocks).
+
+<Tip>
+  Run `tangly check` to catch broken links and missing frontmatter before you ship.
+</Tip>
+
+## Live docs
+
+Full reference: [tangly.dev/guides/configuration](https://tangly.dev/guides/configuration).
