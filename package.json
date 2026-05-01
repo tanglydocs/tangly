@@ -21,6 +21,7 @@
     "build:docs": "cd docs && ../packages/tangly/bin/tangly.js build --out ./dist",
     "dev:opennem": "cd examples/opennem && ../../packages/tangly/bin/tangly.js dev --no-open --port 4321",
     "changeset": "changeset",
+    "version": "changeset version && bun run scripts/sync-skill-versions.ts",
     "release": "bun run build && changeset publish"
   },
   "dependencies": {

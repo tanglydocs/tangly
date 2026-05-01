@@ -1,6 +1,32 @@
 ---
 name: tech-documentation
-description: Write good technical documentation. Pick the right doc type (tutorial / how-to / reference / explanation per Diátaxis), structure top-down, use plain active voice, ground every claim in a runnable example. Apply when authoring or editing docs, READMEs, API references, guides, release notes, or reviewing a doc PR.
+description: |
+  Write effective technical documentation — READMEs, API references, developer
+  guides, tutorials, runbooks, release notes, and how-to articles. Applies the
+  Diátaxis framework to pick the right document type (tutorial / how-to /
+  reference / explanation), structures pages top-down, enforces plain active
+  voice, and grounds every claim in a runnable example. Distilled from
+  Diátaxis, the Google developer documentation style guide, the Microsoft
+  Writing Style Guide, Write the Docs, and GOV.UK content design.
+
+  Apply when: writing or editing technical documentation, README files, API
+  docs, developer guides, tutorials, runbooks, or release notes; reviewing a
+  documentation PR; auditing existing documentation for clarity or structure;
+  planning a documentation site's information architecture; deciding what
+  document type a page should be; or any task that involves documentation
+  writing, editing, or quality. Trigger keywords: documentation, docs, README,
+  technical writing, API reference, developer guide, tutorial, runbook,
+  release notes, diataxis, style guide, doc review.
+license: MIT
+compatibility: Designed for Claude Code and other agent-skills clients.
+allowed-tools: Read, Write, Edit, Glob, Grep
+metadata:
+  author: tanglydocs
+  version: 0.0.5
+  category: documentation
+  tags: documentation, docs, technical-writing, readme, api-docs, diataxis, style-guide, content, writing, doc-review
+  homepage: https://tangly.dev
+  repository: https://github.com/tanglydocs/tangly
 ---
 
 # tech-documentation

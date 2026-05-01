@@ -1,6 +1,29 @@
 ---
 name: tanglify
-description: Use Tangly — init a project, verify with `tangly check`, structure docs.json + MDX, port from Mintlify via `tangly migrate`, deploy to Vercel/Cloudflare/Netlify/static (incl. subpath via --base). Apply when working in a Tangly repo, scaffolding docs, editing docs.json, or running any `tangly` CLI command.
+description: |
+  Build, customize, and ship documentation sites with Tangly — a self-hosted,
+  open-source documentation framework that renders Mintlify projects unmodified.
+  Covers initializing a documentation project, validating with `tangly check`,
+  authoring docs.json + MDX content, porting an existing Mintlify docs site via
+  `tangly migrate`, and deploying static output to Vercel, Cloudflare Pages,
+  Netlify, or any CDN (including subpath hosting via --base).
+
+  Apply when: working in a Tangly documentation repo; building, scaffolding, or
+  editing a docs site; running any `tangly` CLI command (init, dev, build,
+  preview, check, migrate, add, eject); editing docs.json or MDX frontmatter;
+  migrating documentation from Mintlify or mint.json; deploying a documentation
+  site to production. Trigger keywords: tangly, tanglify, docs.json, mintlify,
+  documentation site, docs framework, mdx docs, static docs.
+license: MIT
+compatibility: Designed for Claude Code and other agent-skills clients. Requires Node 20+ or Bun 1.2+.
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+metadata:
+  author: tanglydocs
+  version: 0.0.5
+  category: documentation
+  tags: tangly, documentation, docs, mintlify, mdx, astro, static-site, site-generator, docs-as-code, openapi
+  homepage: https://tangly.dev
+  repository: https://github.com/tanglydocs/tangly
 ---
 
 # tanglify
