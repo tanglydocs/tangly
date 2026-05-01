@@ -30,9 +30,9 @@ const primary = config.navbar?.primary;
 ---
 
 <header class="tangly-topnav sticky top-0 z-30">
-  {/* Row 1: logo · search · anchors · navbar links · theme · CTA */}
-  <div class="flex items-center gap-4 px-4 sm:px-6 lg:px-10 h-[var(--tangly-topnav-row1-height,3.75rem)]">
-    <div class="flex items-center gap-4 w-full max-w-screen-2xl mx-auto">
+  {/* Row 1: logo column (mirrors sidebar) · controls column (mirrors main) */}
+  <div class="w-full max-w-screen-2xl mx-auto flex items-stretch h-[var(--tangly-topnav-row1-height,3.75rem)]">
+    <div class="flex items-center gap-3 px-4 lg:w-[var(--tangly-sidebar-width)] shrink-0">
       <button
         type="button"
         class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
@@ -54,7 +54,9 @@ const primary = config.navbar?.primary;
         )}
         {!logoLight && !logoDark && <span>{config.name}</span>}
       </a>
+    </div>
 
+    <div class="flex-1 min-w-0 flex items-center gap-4 px-4 sm:px-6 lg:px-10">
       <div class="flex-1"></div>
 
       <button
@@ -71,7 +73,6 @@ const primary = config.navbar?.primary;
         </span>
       </button>
 
-      {/* Anchors + navbar links combined into one icon group */}
       {(anchors.length > 0 || navbarLinks.length > 0) && (
         <div class="hidden lg:flex items-center gap-1 shrink-0">
           {anchors.map((a) => (
@@ -126,24 +127,26 @@ const primary = config.navbar?.primary;
     </div>
   </div>
 
-  {/* Row 2: tabs (only when there are 2+) */}
+  {/* Row 2: tabs (only when there are 2+) — aligned to logo column */}
   {tabs.length > 1 && (
-    <div class="border-t border-[var(--tangly-color-border)] px-4 sm:px-6 lg:px-10">
-      <nav
-        class="hidden md:flex items-center gap-1 max-w-screen-2xl mx-auto h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
-        aria-label="Sections"
-      >
-        {tabs.map((t) => (
-          <a
-            href={t.href ?? (t.pages[0] ? `${import.meta.env.BASE_URL}${t.pages[0]}` : `${import.meta.env.BASE_URL}${t.slug}`)}
-            data-active={t.slug === currentTabSlug ? "true" : "false"}
-            class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap"
-          >
-            {t.icon && <Icon icon={t.icon} size={14} />}
-            <span>{t.title}</span>
-          </a>
-        ))}
-      </nav>
+    <div class="border-t border-[var(--tangly-color-border)]">
+      <div class="w-full max-w-screen-2xl mx-auto flex items-stretch">
+        <nav
+          class="hidden md:flex items-center gap-1 px-4 h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
+          aria-label="Sections"
+        >
+          {tabs.map((t) => (
+            <a
+              href={t.href ?? (t.pages[0] ? `${import.meta.env.BASE_URL}${t.pages[0]}` : `${import.meta.env.BASE_URL}${t.slug}`)}
+              data-active={t.slug === currentTabSlug ? "true" : "false"}
+              class="relative inline-flex items-center gap-1.5 px-3 h-full text-sm text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] data-[active=true]:text-[var(--tangly-color-fg)] data-[active=true]:after:content-[''] data-[active=true]:after:absolute data-[active=true]:after:left-2 data-[active=true]:after:right-2 data-[active=true]:after:bottom-0 data-[active=true]:after:h-[2px] data-[active=true]:after:bg-[var(--tangly-color-primary)] whitespace-nowrap"
+            >
+              {t.icon && <Icon icon={t.icon} size={14} />}
+              <span>{t.title}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
     </div>
   )}
 </header>
