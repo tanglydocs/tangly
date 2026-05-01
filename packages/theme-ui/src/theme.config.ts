@@ -10,8 +10,8 @@ export const themeConfig = {
     tocWidth: "15rem",
     breakpoints: { sm: 640, md: 768, lg: 1024, xl: 1280 },
     fonts: {
-      heading: "DM Sans",
-      body: "DM Sans",
+      heading: "Inter",
+      body: "Inter",
       mono: "JetBrains Mono",
     },
   },

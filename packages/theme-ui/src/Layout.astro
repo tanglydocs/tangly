@@ -66,9 +66,9 @@ if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
 if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
 const styleAttr = cssVars.join("; ");
 
-// Fonts: prefer config.fonts, fall back to DM Sans + JetBrains Mono.
-const headingFont = config.fonts?.heading?.family ?? "DM Sans";
-const bodyFont = config.fonts?.body?.family ?? "DM Sans";
+// Fonts: prefer config.fonts, fall back to Inter + JetBrains Mono.
+const headingFont = config.fonts?.heading?.family ?? "Inter";
+const bodyFont = config.fonts?.body?.family ?? "Inter";
 const monoFont = "JetBrains Mono";
 const googleFamilies = [...new Set([headingFont, bodyFont].filter(Boolean))]
   .map((f) => `${(f as string).replace(/ /g, "+")}:wght@400;500;600;700`)
