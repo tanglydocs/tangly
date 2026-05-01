@@ -4,11 +4,16 @@
   "description": "Self-hosted, open-source documentation framework.",
   "theme": "tang",
   "colors": {
-    "primary": "#0ea5e9",
-    "light": "#38bdf8",
-    "dark": "#0284c7"
+    "primary": "#EA580C",
+    "light": "#F97316",
+    "dark": "#C2410C"
   },
-  "favicon": "/images/favicon.svg",
+  "favicon": "/images/favicon.ico",
+  "logo": {
+    "light": "/images/tangly-logo.png",
+    "dark": "/images/tangly-logo-light.png",
+    "href": "/"
+  },
   "appearance": {
     "default": "system",
     "readingTime": true,
