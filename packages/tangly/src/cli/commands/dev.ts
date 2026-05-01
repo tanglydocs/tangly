@@ -24,10 +24,10 @@ export const devCommand = defineCommand({
       description: "Expose on LAN",
       default: false,
     },
-    "no-open": {
+    open: {
       type: "boolean",
-      description: "Don't open browser",
-      default: false,
+      description: "Open browser on start (use --no-open to suppress)",
+      default: true,
     },
     config: {
       type: "string",
@@ -78,7 +78,10 @@ export const devCommand = defineCommand({
       server: {
         port,
         host: args.host,
-        open: !args["no-open"],
+        open: args.open,
+      },
+      vite: {
+        server: { open: args.open },
       },
     } as never);
 
