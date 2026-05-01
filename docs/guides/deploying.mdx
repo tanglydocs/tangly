@@ -205,7 +205,7 @@ Deploy under `/docs` instead of the host root:
 bun x tangly build --base /docs
 ```
 
-All internal links and asset URLs are rewritten to include the prefix. Run `tangly preview` after to verify.
+Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result is prefixed with the base. See [Hosting docs at a subpath](/guides/subpath-hosting) for the five common strategies — building into a parent site's `public/`, edge rewrites on Vercel/Netlify/Cloudflare, nginx reverse proxy, and GitHub Pages project repos.
 
 ## What gets built
 

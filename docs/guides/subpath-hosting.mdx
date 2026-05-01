@@ -1,0 +1,183 @@
+---
+title: Hosting docs at a subpath
+description: Mount your Tangly docs under /docs (or any path) on an existing site. Build flag, reverse proxies, and edge rewrites.
+icon: "folder-tree"
+---
+
+# Hosting docs at a subpath
+
+You probably already have a marketing site, an app, or both. Putting docs at `docs.example.com` works fine, but a lot of teams prefer `example.com/docs`. One domain, shared analytics, no extra DNS, and links from the homepage stay first-party. This page covers what Tangly does to make that work and the realistic ways to wire it up.
+
+The short version: build with `--base /docs`, then either drop the output into your site or point a rewrite at it.
+
+## What `--base` does
+
+```bash
+bun x tangly build --base /docs
+```
+
+Two things happen. Every internal link in the rendered HTML gets prefixed with `/docs/`: sidebars, breadcrumbs, prev/next, search results, hashed asset URLs, the redirect on the index page. The build outputs that travel alongside (`sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`) and the Pagefind search index also use the prefix, so result clicks land at the right URL.
+
+If you set `siteUrl` in `docs.json`, Tangly composes absolute URLs as `${siteUrl}${base}/${slug}` for the sitemap and robots. Set `siteUrl` to the canonical origin (`https://example.com`) without the prefix. The prefix comes from `--base`. Setting both will double up.
+
+The flag is borrowed from Astro's [`base` config option](https://docs.astro.build/en/reference/configuration-reference/#base), which Tangly threads through. Astro's docs cover the same idea for stand-alone Astro projects, which is useful background if you want to understand what the rendered HTML looks like under the hood.
+
+## Strategy 1: build into your site's public directory
+
+Easiest path if your existing site is built with anything that serves a `public/` (or `static/`, or `dist/`) directory verbatim. Next.js, Vite, Remix, TanStack Start, Astro, SvelteKit, plain HTML, all of them work. Run a Tangly build into that directory before the site build:
+
+```jsonc
+// package.json on the parent site
+{
+  "scripts": {
+    "build:docs": "cd ../docs && bun x tangly build --base /docs --out ../site/public/docs",
+    "build": "bun run build:docs && next build"
+  }
+}
+```
+
+That writes a self-contained tree at `public/docs/` containing `index.html`, every page, the Pagefind index, sitemap, llms.txt, and the hashed assets. Your hosting provider serves it as-is. No rewrite rules. No proxy hop.
+
+Trade-offs: one repo, one deploy, one thing that can break. The docs and the site ship together, so if your docs change daily and your site changes weekly, you'll deploy the site weekly anyway. The file count under `public/` also grows, which can slow CI uploads on some platforms.
+
+## Strategy 2: separate deploy + edge rewrite
+
+Deploy Tangly as its own project (its own Vercel/Cloudflare/Netlify site, its own bucket, anywhere) at `dg-docs.vercel.app/docs`. Then add one rewrite rule on your main site that proxies `/docs/*` to the docs origin. The browser only ever sees `example.com/docs/*`. The docs project URL stays invisible.
+
+Vercel calls this an [external rewrite](https://vercel.com/docs/routing/rewrites#rewrites) and [explicitly supports it](https://vercel.com/kb/guide/vercel-reverse-proxy-rewrites-external) for incremental migrations and reverse-proxy use cases:
+
+```json
+// vercel.json on the parent site
+{
+  "rewrites": [
+    { "source": "/docs", "destination": "https://dg-docs.vercel.app/docs" },
+    { "source": "/docs/:path*", "destination": "https://dg-docs.vercel.app/docs/:path*" }
+  ]
+}
+```
+
+Netlify supports the same pattern via their [`_redirects` file or `netlify.toml`](https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/). A `200` status code is the signal for a proxy rewrite (vs a `301`/`302` redirect):
+
+```
+# _redirects on the parent site
+/docs       https://dg-docs.netlify.app/docs       200
+/docs/*     https://dg-docs.netlify.app/docs/:splat  200
+```
+
+For Next.js sites, use [`next.config.js` rewrites](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites). The shape is similar:
+
+```js
+module.exports = {
+  async rewrites() {
+    return [
+      { source: "/docs", destination: "https://dg-docs.vercel.app/docs" },
+      { source: "/docs/:path*", destination: "https://dg-docs.vercel.app/docs/:path*" },
+    ];
+  },
+};
+```
+
+Trade-offs: two projects, two CI pipelines, two URLs. The upside is that docs and app iterate independently, rollbacks are scoped, preview URLs work for each side, and the docs project is reusable if you ever spin up a second product.
+
+One thing to watch: when the docs project responds, its absolute URLs (canonical, OG image, sitemap entries) need to point at `example.com/docs/...`, not `dg-docs.vercel.app/docs/...`. Set `siteUrl: "https://example.com"` in your `docs.json` and Tangly composes URLs against that, not against the deploy URL. Verify by viewing source on a deployed page and checking the `<link rel="canonical">` tag.
+
+## Strategy 3: Cloudflare
+
+Cloudflare's behaviour depends on how you want to do it.
+
+For simple path rewriting on the same origin, [URL Rewrite Rules](https://developers.cloudflare.com/rules/transform/url-rewrite/) cover it. They rewrite the URI path or query string before the request reaches your origin. They don't proxy to a different origin though, so they won't pull `/docs/*` from a separate Cloudflare Pages project on their own.
+
+For cross-origin path mounting, the standard pattern is a [Cloudflare Worker as a reverse proxy](https://developers.cloudflare.com/workers/examples/respond-with-another-site/). The Worker runs on `example.com`, intercepts requests under `/docs/*`, and fetches the corresponding path from the Pages project hosting your docs. Worth a few lines of code, and the upside is full control over caching headers and request transforms.
+
+```js
+// worker.js
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/docs")) {
+      const target = new URL(url.pathname + url.search, "https://my-docs.pages.dev");
+      return fetch(new Request(target, request));
+    }
+    return fetch(request);
+  },
+};
+```
+
+## Strategy 4: nginx (self-hosted)
+
+If you're behind nginx, two `location` blocks do the job. The trick is making sure the upstream serves the same prefix Tangly was built with, otherwise links break. Build with `--base /docs` and proxy `/docs/` to the upstream root, and the prefixes line up.
+
+```nginx
+# example.com nginx
+location /docs/ {
+  proxy_pass http://docs-upstream:8080/docs/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+The [official nginx reverse-proxy guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) covers the basics. If you ever need to rewrite response bodies (you usually don't, since Tangly already builds with the prefix baked in), [`ngx_http_sub_module`](https://nginx.org/en/docs/http/ngx_http_sub_module.html) can substitute strings in proxied responses, but it's not built into stock nginx in many distributions.
+
+If your upstream is just static files on disk, skip the proxy entirely:
+
+```nginx
+location /docs/ {
+  alias /var/www/docs/;
+  index index.html;
+  try_files $uri $uri/index.html =404;
+}
+```
+
+`alias` maps the URL prefix to a filesystem path. Same idea as Strategy 1, but for hosts that aren't framework-shaped.
+
+## Strategy 5: GitHub Pages under a project repo
+
+GitHub Pages serves project repos at `https://USER.github.io/REPO/`, which is a subpath whether you wanted one or not. Build with `--base /REPO`:
+
+```yaml
+- run: bun x tangly build --base /REPO-NAME
+- uses: actions/upload-pages-artifact@v3
+  with:
+    path: dist
+```
+
+Same flag, different reason for using it. Astro's [GitHub Pages deploy guide](https://docs.astro.build/en/guides/deploy/github/) walks through the surrounding workflow. Tangly inherits the relevant pieces.
+
+## Sub-subpaths and what to set in docs.json
+
+The `--base` flag accepts any path: `/docs`, `/docs/v2`, `/product/docs/v2`. Tangly normalizes leading and trailing slashes, so `/docs`, `/docs/`, `docs`, and `docs/` all behave identically.
+
+Two `docs.json` fields interact with subpath hosting:
+
+| Field | What it does | Recommendation |
+| ----- | ------------ | -------------- |
+| `siteUrl` | Origin for absolute URLs in sitemap, robots, OG metadata, canonical | Set to the public origin only (`https://example.com`), no path. |
+| `--base` (CLI) | Path prefix every internal link gets | Match the path you'll be served at (`/docs`). |
+
+Don't put the path inside `siteUrl`. Tangly composes them itself, and setting both will double-prefix.
+
+## Verifying
+
+After deploying, the smoke test is the same as for any deploy with extra eyes on the prefix:
+
+```bash
+# Built tree should never reference root paths in internal links.
+bun x tangly build --base /docs
+grep -rEn 'href="/[^d]' dist/ | grep -v 'href="/docs' | head
+# (anchors and external URLs are fine; only flag root-relative internal hrefs)
+
+# llms.txt should list every page with the prefix.
+grep '](/' dist/llms.txt | head
+
+# Pagefind result URLs should resolve under /docs.
+# Click a result on the deployed site; the URL bar should land at /docs/<slug>.
+```
+
+The browser test matters more than the grep test. Click the sidebar, click a search result, click an embedded link in an MDX page, click the logo. Every one should stay under `/docs`.
+
+## When not to do this
+
+If your docs need authenticated access, dynamic per-user content, or shell elements (top nav, sidebar, account dropdown) shared with the parent app, a static subpath mount won't help. You need the docs to live inside the app's render tree, which is a bigger project than this guide covers.
+
+For everything else, pick the strategy that matches how the parent site is already deployed. Strategy 1 if you want one deploy and one repo. Strategy 2 if you want them independent.
