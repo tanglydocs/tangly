@@ -1,0 +1,74 @@
+---
+title: Getting Started
+description: Set up your local environment, run the CLI, and edit your first page.
+icon: "rocket"
+---
+
+# Getting Started
+
+## Install the CLI
+
+```bash
+# bun (recommended)
+bun add -d tangly
+
+# or npm
+npm i -D tangly
+```
+
+Or grab a standalone binary:
+
+```bash
+curl -fsSL https://tangly.dev/install.sh | sh
+```
+
+## Run the dev server
+
+From your project root (the directory holding `docs.json`):
+
+```bash
+tangly dev
+```
+
+Tangly opens [http://localhost:4321](http://localhost:4321) and watches MDX, `docs.json`, and theme files for changes.
+
+## Edit a page
+
+Every `.mdx` file in this project is a page. Open `introduction.mdx`, change a heading, save — the browser reloads.
+
+Pages are wired into navigation by their slug in `docs.json`. See [Navigation](/content/navigation).
+
+## Build for production
+
+```bash
+tangly build --out ./dist
+```
+
+Output is plain static HTML/CSS/JS. Drop `./dist` on Vercel, Cloudflare Pages, Netlify, S3, or any static host.
+
+## Useful commands
+
+| Command | What it does |
+|---|---|
+| `tangly init` | Scaffold a new project (you just ran this). |
+| `tangly dev` | Run the dev server with HMR. |
+| `tangly build` | Produce the static `dist/`. |
+| `tangly preview` | Serve `dist/` locally. |
+| `tangly check` | Validate `docs.json` + frontmatter. |
+| `tangly migrate` | Convert a `mint.json` project to Tangly. |
+| `tangly add` | Add a theme or component to your project. |
+
+## Working with Claude Code or Cursor
+
+This repo includes two skills you can install into your agent:
+
+```bash
+npx skills add tanglify
+npx skills add tech-documentation
+```
+
+`tanglify` teaches the agent the Tangly CLI, schema, and conventions. `tech-documentation` teaches it how to write good docs (Diátaxis-grounded). Both make `tangly`-flavored work in an AI editor noticeably better.
+
+<Note>
+  `npx skills add <name>` pulls from the `skills/` directory in the Tangly repo. See [the skills folder](https://github.com/tanglydocs/tangly/tree/main/skills) for the full list.
+</Note>

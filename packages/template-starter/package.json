@@ -1,0 +1,8 @@
+{
+  "name": "@tanglydocs/template-starter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Starter template for `tangly init`. Bundled into the CLI at build time; not published.",
+  "license": "MIT",
+  "type": "module"
+}

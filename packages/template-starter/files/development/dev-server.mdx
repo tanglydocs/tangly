@@ -1,0 +1,38 @@
+---
+title: Dev Server
+description: Run the local dev server with hot reload.
+icon: "play"
+---
+
+# Dev Server
+
+```bash
+tangly dev
+```
+
+Boots Astro under the hood, watches `docs.json`, MDX, and theme files. Changes reload in the browser without a full restart.
+
+## Common flags
+
+| Flag | Default | Notes |
+|---|---|---|
+| `--port <n>` | `4321` | Pick a different port. |
+| `--host <addr>` | `localhost` | Bind to `0.0.0.0` to expose on LAN. |
+| `--no-open` | off | Don't auto-open the browser. |
+| `--base <path>` | `/` | Subpath hosting (e.g. `/docs`). |
+
+## Drafts
+
+Pages with `draft: true` in frontmatter are visible in `dev` and hidden in `build`. To include drafts in a staging build:
+
+```bash
+TANGLY_INCLUDE_DRAFTS=1 tangly build
+```
+
+<Tip>
+  Run `tangly check` before committing. It validates `docs.json`, frontmatter, and broken internal links — faster than waiting for CI.
+</Tip>
+
+## Live docs
+
+Full reference: [tangly.dev/reference/cli/dev](https://tangly.dev/reference/cli/dev).

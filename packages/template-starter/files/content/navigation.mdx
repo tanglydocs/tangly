@@ -1,0 +1,85 @@
+---
+title: Navigation
+description: Wire pages into the sidebar, tabs, and top nav.
+icon: "list"
+---
+
+# Navigation
+
+Navigation lives in `docs.json`. Pages are referenced by slug — the path under your project root, minus the `.mdx` extension.
+
+## Flat groups
+
+Simplest case: one sidebar with grouped pages.
+
+```json
+{
+  "navigation": {
+    "groups": [
+      { "group": "Getting Started", "pages": ["introduction", "getting-started"] },
+      { "group": "Guides", "pages": ["guides/setup", "guides/deploy"] }
+    ]
+  }
+}
+```
+
+`guides/setup` resolves to `guides/setup.mdx`. Folders organize files on disk; the slug just mirrors the path.
+
+## Tabs
+
+Top-level tabs each contain their own `groups`:
+
+```json
+{
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          { "group": "Get Started", "pages": ["introduction"] }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          { "group": "CLI", "pages": ["reference/cli/dev"] }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Top nav links
+
+External links and CTAs go in `navbar`:
+
+```json
+{
+  "navbar": {
+    "links": [
+      { "label": "GitHub", "href": "https://github.com/you/repo" }
+    ],
+    "primary": { "type": "button", "label": "Get started", "href": "/getting-started" }
+  }
+}
+```
+
+## Footer
+
+```json
+{
+  "footer": {
+    "socials": { "github": "https://github.com/you/repo" },
+    "lastUpdated": true
+  }
+}
+```
+
+<Note>
+  Re-running `tangly init --from <dir>` against an existing project merges new pages into your existing `navigation` non-destructively.
+</Note>
+
+## Live docs
+
+Full reference: [tangly.dev/guides/navigation](https://tangly.dev/guides/navigation).

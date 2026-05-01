@@ -1,0 +1,176 @@
+---
+title: Blocks
+description: Quick reference for the MDX components Tangly ships.
+icon: "grid"
+---
+
+# Blocks
+
+Drop these into any `.mdx` page — no imports needed. Each section shows the source, then the rendered result.
+
+## Callouts
+
+```mdx
+<Note>Heads up — context the reader needs.</Note>
+<Tip>An extra suggestion that helps but isn't required.</Tip>
+<Warning>Something that can break if ignored.</Warning>
+<Info>Neutral aside.</Info>
+<Check>Confirmation that something is correct.</Check>
+<Danger>Destructive action — be careful.</Danger>
+```
+
+<Note>Heads up — context the reader needs.</Note>
+<Tip>An extra suggestion that helps but isn't required.</Tip>
+<Warning>Something that can break if ignored.</Warning>
+<Info>Neutral aside.</Info>
+<Check>Confirmation that something is correct.</Check>
+<Danger>Destructive action — be careful.</Danger>
+
+## Cards
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/getting-started">Set up in five minutes.</Card>
+  <Card title="API" icon="code" href="/development/openapi">Generated reference.</Card>
+</CardGroup>
+```
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/getting-started">Set up in five minutes.</Card>
+  <Card title="API" icon="code" href="/development/openapi">Generated reference.</Card>
+</CardGroup>
+
+## Steps
+
+```mdx
+<Steps>
+  <Step title="Install">bun add -d tangly</Step>
+  <Step title="Init">tangly init</Step>
+  <Step title="Run">tangly dev</Step>
+</Steps>
+```
+
+<Steps>
+  <Step title="Install">Run `bun add -d tangly` in your project.</Step>
+  <Step title="Init">`tangly init` scaffolds `docs.json` and a starter page.</Step>
+  <Step title="Run">`tangly dev` boots the dev server with HMR.</Step>
+</Steps>
+
+## Tabs
+
+```mdx
+<Tabs>
+  <Tab title="bun">bun add -d tangly</Tab>
+  <Tab title="npm">npm i -D tangly</Tab>
+</Tabs>
+```
+
+<Tabs>
+  <Tab title="bun">`bun add -d tangly`</Tab>
+  <Tab title="npm">`npm i -D tangly`</Tab>
+  <Tab title="pnpm">`pnpm add -D tangly`</Tab>
+</Tabs>
+
+## Code groups
+
+Stack multiple language variants of the same example. In MDX, write fenced code blocks inside `<CodeGroup>`:
+
+````mdx
+<CodeGroup>
+```ts hello.ts
+console.log("hi")
+```
+
+```py hello.py
+print("hi")
+```
+</CodeGroup>
+````
+
+<CodeGroup>
+```ts hello.ts
+console.log("hi")
+```
+
+```py hello.py
+print("hi")
+```
+</CodeGroup>
+
+## Accordion
+
+```mdx
+<AccordionGroup>
+  <Accordion title="Why MDX?">Markdown plus components — same readable source, richer output.</Accordion>
+  <Accordion title="Why Astro under the hood?">Static-first, zero-JS by default, fast cold reloads.</Accordion>
+</AccordionGroup>
+```
+
+<AccordionGroup>
+  <Accordion title="Why MDX?">Markdown plus components — same readable source, richer output.</Accordion>
+  <Accordion title="Why Astro under the hood?">Static-first, zero-JS by default, fast cold reloads.</Accordion>
+</AccordionGroup>
+
+## API reference fields
+
+```mdx
+<ParamField path="userId" type="string" required>
+  The user's ID.
+</ParamField>
+<ResponseField name="email" type="string">
+  Contact email.
+</ResponseField>
+```
+
+<ParamField path="userId" type="string" required>The user's ID.</ParamField>
+<ResponseField name="email" type="string">Contact email.</ResponseField>
+
+## Frame
+
+```mdx
+<Frame caption="Tangly logo">
+  ![Tangly](/logo/light.svg)
+</Frame>
+```
+
+<Frame caption="Tangly logo (drops in any local image; here we link a remote one).">
+  ![Tangly](https://tangly.dev/logo/light.svg)
+</Frame>
+
+## Update
+
+Mark a release entry inline:
+
+```mdx
+<Update label="v0.2" description="Better code blocks">
+  - New copy button + line numbers.
+  - Twoslash hovers for TypeScript.
+</Update>
+```
+
+<Update label="v0.2" description="Better code blocks">
+  - New copy button + line numbers.
+  - Twoslash hovers for TypeScript.
+</Update>
+
+## Math
+
+Tangly understands KaTeX inline (`$...$`) and block (`$$...$$`):
+
+```md
+The Pythagorean identity: $a^2 + b^2 = c^2$.
+
+$$
+\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}
+$$
+```
+
+The Pythagorean identity: $a^2 + b^2 = c^2$.
+
+$$
+\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}
+$$
+
+## Live docs
+
+Full reference: [tangly.dev/guides/components](https://tangly.dev/guides/components).

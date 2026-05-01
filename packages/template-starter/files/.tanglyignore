@@ -1,0 +1,7 @@
+# .tanglyignore — files to exclude from the build output.
+# Additive to .gitignore (no need to repeat node_modules/, dist/, etc.).
+# Syntax: same as .gitignore.
+#
+# Examples:
+# scripts/
+# *.draft.txt

@@ -1,0 +1,52 @@
+---
+title: OpenAPI
+description: Generate API reference pages from an OpenAPI spec.
+icon: "code"
+---
+
+# OpenAPI
+
+Tangly generates rendered API reference pages from any OpenAPI 3.x spec.
+
+## Wire up a spec
+
+Add an `openapi` field to `docs.json`:
+
+```json
+{
+  "openapi": ["./openapi.json"]
+}
+```
+
+Multiple specs are allowed. Local paths and remote URLs both work:
+
+```json
+{
+  "openapi": [
+    "./api/v1.yaml",
+    "https://api.example.com/openapi.json"
+  ]
+}
+```
+
+## Reference per endpoint
+
+Use `<OpenApiEndpoint>` to embed a single operation in any MDX page:
+
+```mdx
+<OpenApiEndpoint method="POST" path="/users" />
+```
+
+The component pulls from the first spec that defines the operation. Renders the request schema, response shapes, and an executable "Try it" panel.
+
+## Auto-generated pages
+
+If you list an OpenAPI source in `docs.json` and don't author per-endpoint MDX, Tangly emits one page per operation under the path you configure. See the live guide for the routing rules.
+
+<Note>
+  Spec-driven pages render the same components you can use by hand — `<ParamField>`, `<ResponseField>`, `<CodeGroup>`. You can pull the spec into MDX and decorate it with prose around it.
+</Note>
+
+## Live docs
+
+Full reference: [tangly.dev/guides/openapi](https://tangly.dev/guides/openapi).

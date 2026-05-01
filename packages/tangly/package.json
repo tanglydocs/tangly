@@ -55,6 +55,7 @@
     "access": "public"
   },
   "scripts": {
+    "prebuild": "bun run scripts/bundle-templates.ts",
     "build": "tsgo --build",
     "dev": "tsgo --build --watch",
     "typecheck": "tsgo --noEmit",

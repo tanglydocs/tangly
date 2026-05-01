@@ -4,6 +4,7 @@ import { intro, isCancel, outro, select, text } from "@clack/prompts";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 import { readExistingConfig, scaffoldFromDir } from "../init-from-dir.js";
+import { applyTemplate, listTemplates } from "../templates.js";
 
 export const initCommand = defineCommand({
   meta: {
@@ -22,6 +23,14 @@ export const initCommand = defineCommand({
       description:
         "Path to an existing folder of `.md`/`.mdx` files. Synthesizes a docs.json by walking the tree (folders → groups). Idempotent — re-run merges new files into the existing nav.",
     },
+    template: {
+      type: "string",
+      description: "Template to scaffold from. Defaults to `starter`.",
+    },
+    name: {
+      type: "string",
+      description: "Project name. Skips the interactive prompt when provided.",
+    },
   },
   async run({ args }) {
     intro(pc.bgCyan(pc.black(" Tangly ")));
@@ -39,7 +48,6 @@ export const initCommand = defineCommand({
       const { config, summary } = scaffoldFromDir({ src, existingConfig: existing });
       mkdirSync(dir, { recursive: true });
       writeFileSync(resolve(dir, "docs.json"), JSON.stringify(config, null, 2), "utf8");
-      writeTanglyignoreIfAbsent(dir);
       const verb = existing ? "Merged" : "Generated";
       outro(
         `${pc.green("✓")} ${verb} docs.json with ${summary.pages} pages across ${summary.groups} groups.`,
@@ -53,82 +61,53 @@ export const initCommand = defineCommand({
       process.exit(1);
     }
 
-    const name = await text({
-      message: "Project name?",
-      placeholder: "My Docs",
-      validate: (v) => (v && v.length > 0 ? undefined : "Required"),
-    });
-    if (isCancel(name)) process.exit(1);
+    const templates = listTemplates();
+    if (templates.length === 0) {
+      console.error(
+        pc.red("✗ No templates bundled. Did `bun run scripts/bundle-templates.ts` run?"),
+      );
+      process.exit(1);
+    }
 
-    const template = await select({
-      message: "Template",
-      options: [
-        { value: "basic", label: "Basic (hello world)" },
-        { value: "api", label: "API (with OpenAPI)" },
-      ],
-    });
-    if (isCancel(template)) process.exit(1);
+    let name: string;
+    if (args.name) {
+      name = args.name;
+    } else {
+      const prompted = await text({
+        message: "Project name?",
+        placeholder: "My Docs",
+        validate: (v) => (v && v.length > 0 ? undefined : "Required"),
+      });
+      if (isCancel(prompted)) process.exit(1);
+      name = prompted as string;
+    }
 
-    mkdirSync(dir, { recursive: true });
+    let templateName = args.template;
+    if (!templateName) {
+      if (templates.length === 1) {
+        templateName = templates[0]!.name;
+      } else {
+        const picked = await select({
+          message: "Template",
+          options: templates.map((t) => ({
+            value: t.name,
+            label: t.label,
+            hint: t.description,
+          })),
+        });
+        if (isCancel(picked)) process.exit(1);
+        templateName = picked as string;
+      }
+    }
 
-    const config = {
-      $schema: "https://tanglydocs.com/schema/docs.json",
-      name,
-      theme: "tang",
-      colors: { primary: "#0ea5e9" },
-      navigation: {
-        groups: [{ group: "Get Started", pages: ["introduction"] }],
-      },
-    };
-    writeFileSync(resolve(dir, "docs.json"), JSON.stringify(config, null, 2), "utf8");
+    const result = await applyTemplate({ template: templateName, dir, name });
 
-    writeFileSync(
-      resolve(dir, "introduction.mdx"),
-      [
-        "---",
-        "title: Introduction",
-        `description: Welcome to ${name}`,
-        "---",
-        "",
-        `# ${name}`,
-        "",
-        "Welcome to your new Tangly docs site.",
-        "",
-        "<Note>",
-        "  Edit `introduction.mdx` to get started.",
-        "</Note>",
-        "",
-      ].join("\n"),
-      "utf8",
+    outro(
+      `${pc.green("✓")} Scaffolded ${pc.cyan(templateName)} at ${pc.cyan(dir)} (${result.written.length} files)`,
     );
-
-    writeTanglyignoreIfAbsent(dir);
-
-    outro(`${pc.green("✓")} Project scaffolded at ${pc.cyan(dir)}`);
+    if (result.skipped.length > 0) {
+      console.log(pc.yellow(`  Skipped existing: ${result.skipped.join(", ")}`));
+    }
     console.log(pc.dim(`Run \`tangly dev\` from ${dir} to start.`));
   },
 });
-
-/**
- * Drop a starter `.tanglyignore` so it's discoverable. Build copies every
- * file under the project root (minus baseline + .gitignore + .tanglyignore)
- * — this nudges users to extend the exclusion list.
- */
-function writeTanglyignoreIfAbsent(dir: string): void {
-  const path = resolve(dir, ".tanglyignore");
-  if (existsSync(path)) return;
-  writeFileSync(
-    path,
-    [
-      "# .tanglyignore — files to exclude from the build output.",
-      "# Additive to .gitignore (no need to repeat node_modules/, dist/, etc.).",
-      "# Syntax: same as .gitignore.",
-      "#",
-      "# Examples:",
-      "# scripts/",
-      "# *.draft.txt",
-      "",
-    ].join("\n"),
-    "utf8",
-  );
-}
