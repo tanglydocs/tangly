@@ -64,6 +64,15 @@ if (colors.primary) cssVars.push(`--tangly-color-primary: ${colors.primary}`);
 if (colors.light) cssVars.push(`--tangly-color-primary-light: ${colors.light}`);
 if (colors.dark) cssVars.push(`--tangly-color-primary-dark: ${colors.dark}`);
 if (bgLight) cssVars.push(`--tangly-color-bg: ${bgLight}`);
+
+// Topnav row 2 (tabs) only renders when there are 2+ tabs (see Topnav.astro).
+// Collapse --tangly-topnav-height to row 1 when row 2 is hidden so the
+// sidebar offset / sticky threshold matches what's actually painted.
+const hasTabsRow = (navigation.tabs?.length ?? 0) > 1;
+if (!hasTabsRow) {
+  cssVars.push("--tangly-topnav-height: calc(var(--tangly-topnav-row1-height) + 1px)");
+}
+
 const styleAttr = cssVars.join("; ");
 
 // Fonts: prefer config.fonts, fall back to Inter + JetBrains Mono.
