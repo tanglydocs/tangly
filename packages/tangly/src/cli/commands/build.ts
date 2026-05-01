@@ -97,7 +97,7 @@ export const buildCommand = defineCommand({
 
     // Sitemap, llms.txt, llms-full.txt, robots.txt
     const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
-    const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir };
+    const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir, base: args.base };
     if (siteUrl) opts.siteUrl = siteUrl;
     writeBuildOutputs(opts);
 
@@ -106,7 +106,7 @@ export const buildCommand = defineCommand({
     let pagefindIndexed = 0;
     let pagefindExcluded = 0;
     try {
-      const pf = await runPagefind({ manifest, outDir, userRoot });
+      const pf = await runPagefind({ manifest, outDir, userRoot, base: args.base });
       pagefindIndexed = pf.indexed;
       pagefindExcluded = pf.excluded.length;
     } catch (err) {

@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { Manifest, PageEntry } from "../manifest/types.js";
-import { runPagefind } from "./run-pagefind.js";
+import { buildPagefindUrl, runPagefind } from "./run-pagefind.js";
 
 const TMP = "/tmp/tangly-pagefind-test";
 
@@ -100,5 +100,36 @@ describe("runPagefind", () => {
 
     // Pagefind output landed.
     expect(existsSync(join(TMP, "out/pagefind/pagefind.js"))).toBe(true);
+  });
+
+  test("base-prefix URLs still index successfully", async () => {
+    const m = fakeManifest();
+    const result = await runPagefind({
+      manifest: m,
+      outDir: join(TMP, "out"),
+      base: "/docs",
+    });
+    // Indexing succeeds with a non-root base; click-destination correctness
+    // is covered by the buildPagefindUrl unit test below (Pagefind gzips
+    // its fragments so direct payload inspection isn't reliable).
+    expect(result.indexed).toBe(1);
+  });
+});
+
+describe("buildPagefindUrl", () => {
+  test("prefixes slugs with normalized base", () => {
+    expect(buildPagefindUrl("/docs", "intro")).toBe("/docs/intro");
+    expect(buildPagefindUrl("/docs/", "intro")).toBe("/docs/intro");
+    expect(buildPagefindUrl("docs", "intro")).toBe("/docs/intro");
+  });
+
+  test("treats '/' or empty as root", () => {
+    expect(buildPagefindUrl("/", "intro")).toBe("/intro");
+    expect(buildPagefindUrl("", "intro")).toBe("/intro");
+    expect(buildPagefindUrl(undefined, "intro")).toBe("/intro");
+  });
+
+  test("preserves nested slugs", () => {
+    expect(buildPagefindUrl("/docs", "guides/openapi")).toBe("/docs/guides/openapi");
   });
 });

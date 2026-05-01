@@ -77,4 +77,36 @@ describe("build-outputs", () => {
     expect(txt).not.toContain("Hidden");
     expect(txt).not.toContain("Draft");
   });
+
+  test("base prefix prepended to sitemap, robots, llms.txt", () => {
+    const xml = generateSitemap({ manifest, outDir: "/tmp", base: "/docs" });
+    expect(xml).toContain("<loc>/docs/introduction</loc>");
+    expect(xml).not.toMatch(/<loc>\/introduction</);
+
+    const xmlAbs = generateSitemap({
+      manifest,
+      outDir: "/tmp",
+      base: "/docs",
+      siteUrl: "https://example.com",
+    });
+    expect(xmlAbs).toContain("https://example.com/docs/introduction");
+
+    const robots = generateRobots({
+      manifest,
+      outDir: "/tmp",
+      base: "/docs/",
+      siteUrl: "https://example.com",
+    });
+    expect(robots).toContain("Sitemap: https://example.com/docs/sitemap.xml");
+
+    const llms = generateLlmsTxt({ manifest, outDir: "/tmp", base: "/docs" });
+    expect(llms).toContain("- [Introduction](/docs/introduction): Welcome");
+  });
+
+  test("base of '/' or empty is treated as root", () => {
+    const root = generateLlmsTxt({ manifest, outDir: "/tmp", base: "/" });
+    expect(root).toContain("- [Introduction](/introduction): Welcome");
+    const empty = generateLlmsTxt({ manifest, outDir: "/tmp", base: "" });
+    expect(empty).toContain("- [Introduction](/introduction): Welcome");
+  });
 });

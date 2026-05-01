@@ -8,15 +8,26 @@ export interface BuildOutputsOptions {
   outDir: string;
   /** Public site URL (used for absolute URLs in sitemap). */
   siteUrl?: string;
+  /** Subpath the site is deployed under (e.g. "/docs"). Defaults to "/". */
+  base?: string;
+}
+
+/** Normalize "/", "/docs", "/docs/" → "" or "/docs" (no trailing slash). */
+function normalizeBase(base?: string): string {
+  if (!base || base === "/") return "";
+  const trimmed = base.replace(/\/+$/, "");
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
 }
 
 export function generateSitemap(opts: BuildOutputsOptions): string {
-  const base = (opts.siteUrl ?? "").replace(/\/+$/, "");
+  const site = (opts.siteUrl ?? "").replace(/\/+$/, "");
+  const base = normalizeBase(opts.base);
   const urls: string[] = [];
   for (const page of opts.manifest.pages.values()) {
     if (page.draft) continue;
     if (page.frontmatter.noindex) continue;
-    const loc = base ? `${base}/${page.slug}` : `/${page.slug}`;
+    const path = `${base}/${page.slug}`;
+    const loc = site ? `${site}${path}` : path;
     urls.push(`  <url><loc>${escapeXml(loc)}</loc></url>`);
   }
   return [
@@ -29,12 +40,15 @@ export function generateSitemap(opts: BuildOutputsOptions): string {
 }
 
 export function generateRobots(opts: BuildOutputsOptions): string {
-  const base = (opts.siteUrl ?? "").replace(/\/+$/, "");
-  const sitemap = base ? `${base}/sitemap.xml` : "/sitemap.xml";
+  const site = (opts.siteUrl ?? "").replace(/\/+$/, "");
+  const base = normalizeBase(opts.base);
+  const path = `${base}/sitemap.xml`;
+  const sitemap = site ? `${site}${path}` : path;
   return [`User-agent: *`, `Allow: /`, ``, `Sitemap: ${sitemap}`, ""].join("\n");
 }
 
 export function generateLlmsTxt(opts: BuildOutputsOptions): string {
+  const base = normalizeBase(opts.base);
   const lines: string[] = [];
   const cfg = opts.manifest.config;
   lines.push(`# ${cfg.name}`);
@@ -47,13 +61,14 @@ export function generateLlmsTxt(opts: BuildOutputsOptions): string {
     if (page.frontmatter.noindex) continue;
     const title = page.frontmatter.title ?? page.slug;
     const desc = page.frontmatter.description ? `: ${page.frontmatter.description}` : "";
-    lines.push(`- [${title}](/${page.slug})${desc}`);
+    lines.push(`- [${title}](${base}/${page.slug})${desc}`);
   }
   lines.push("");
   return lines.join("\n");
 }
 
 export function generateLlmsFullTxt(opts: BuildOutputsOptions): string {
+  const base = normalizeBase(opts.base);
   const lines: string[] = [];
   const cfg = opts.manifest.config;
   lines.push(`# ${cfg.name}\n`);
@@ -65,7 +80,7 @@ export function generateLlmsFullTxt(opts: BuildOutputsOptions): string {
     const title = page.frontmatter.title ?? page.slug;
     lines.push(`\n---\n\n# ${title}\n`);
     if (page.frontmatter.description) lines.push(`${page.frontmatter.description}\n`);
-    lines.push(`\nURL: /${page.slug}\n\n`);
+    lines.push(`\nURL: ${base}/${page.slug}\n\n`);
     try {
       const raw = readFileSync(page.file, "utf8");
       const body = raw.replace(/^---[\s\S]*?---\n/, "");

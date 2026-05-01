@@ -14,6 +14,8 @@ export interface RunPagefindOptions {
    * draft predicate). Defaults to `manifest.root`.
    */
   userRoot?: string;
+  /** Subpath the site is deployed under (e.g. "/docs"). Defaults to "/". */
+  base?: string;
 }
 
 export interface RunPagefindResult {
@@ -43,6 +45,7 @@ export async function runPagefind(opts: RunPagefindOptions): Promise<RunPagefind
   const { manifest, outDir } = opts;
   const userRoot = opts.userRoot ?? manifest.root;
   const outputPath = join(outDir, "pagefind");
+  const base = normalizeBase(opts.base);
 
   const excludedSet = new Set<string>();
 
@@ -105,13 +108,25 @@ export async function runPagefind(opts: RunPagefindOptions): Promise<RunPagefind
     const content = readFileSync(file, "utf8");
     // URL passed to Pagefind controls click destinations in result UI.
     // eslint-disable-next-line no-await-in-loop -- one-by-one is intentional
-    await index.addHTMLFile({ url: `/${slug}`, content });
+    await index.addHTMLFile({ url: `${base}/${slug}`, content });
     indexed += 1;
   }
 
   await index.writeFiles({ outputPath });
 
   return { indexed, excluded, outputPath };
+}
+
+/** Exposed for tests. */
+export function normalizeBase(base?: string): string {
+  if (!base || base === "/") return "";
+  const trimmed = base.replace(/\/+$/, "");
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
+
+/** Build the URL Pagefind stores for a given page slug under a base prefix. */
+export function buildPagefindUrl(base: string | undefined, slug: string): string {
+  return `${normalizeBase(base)}/${slug}`;
 }
 
 async function collectMdx(root: string, out: string[] = []): Promise<string[]> {
