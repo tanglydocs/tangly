@@ -15,6 +15,27 @@ iwr -useb https://tangly.dev/install.ps1 | iex
 Or use `bunx tangly init` / `npx tangly init` / `bun add tangly`. See
 [`packages/tangly/README.md`](./packages/tangly/README.md#install) for all paths.
 
+## Agent skills
+
+Tangly ships two Claude Code skills under [`skills/`](./skills):
+
+- [`tanglify`](./skills/tanglify) — use Tangly: init, verify, structure docs, port from Mintlify, deploy.
+- [`tech-documentation`](./skills/tech-documentation) — write good technical docs (Diátaxis-grounded).
+
+Install via the npm `skills` convention:
+
+```bash
+npx skills add tanglify
+npx skills add tech-documentation
+```
+
+Or point at this repo directly:
+
+```bash
+npx skills add github:tanglydocs/tangly/skills/tanglify
+npx skills add github:tanglydocs/tangly/skills/tech-documentation
+```
+
 ## Goal
 
 Render any existing Mintlify project (`docs.json` + `*.mdx`) without source edits. Build to a static site that drops onto Vercel or Cloudflare. Stay simple enough that one person can hold the whole codebase in their head.
