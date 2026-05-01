@@ -82,14 +82,31 @@ jobs:
         id: ver
         run: |
           current=$(node -p "require('./packages/tangly/package.json').version")
-          if [ "$BUMP" = "prerelease" ]; then
-            next=$(node -e "
-              const semver = require('semver');
-              console.log(semver.inc('$current', 'prerelease', '$PRERELEASE_ID'));
-            " 2>/dev/null || npx --yes semver -i prerelease --preid "$PRERELEASE_ID" "$current")
-          else
-            next=$(npx --yes semver -i "$BUMP" "$current")
-          fi
+          # Inline semver bump — avoids `npx --yes semver` which has flaked
+          # (registry hiccups produce `sh: 1: semver: not found` and exit 127).
+          next=$(BUMP="$BUMP" PRERELEASE_ID="$PRERELEASE_ID" node -e '
+            const cur = process.argv[1];
+            const bump = process.env.BUMP;
+            const id = process.env.PRERELEASE_ID || "rc";
+            const m = cur.match(/^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/);
+            if (!m) { console.error("bad semver: " + cur); process.exit(1); }
+            let [, maj, min, pat, pre] = m;
+            maj = +maj; min = +min; pat = +pat;
+            if (bump === "major") { maj++; min = 0; pat = 0; pre = undefined; }
+            else if (bump === "minor") { min++; pat = 0; pre = undefined; }
+            else if (bump === "patch") { pat++; pre = undefined; }
+            else if (bump === "prerelease") {
+              if (pre && pre.startsWith(id + ".")) {
+                const n = parseInt(pre.slice(id.length + 1), 10);
+                pre = `${id}.${Number.isFinite(n) ? n + 1 : 0}`;
+              } else {
+                pat++;
+                pre = `${id}.0`;
+              }
+            } else { console.error("unknown bump: " + bump); process.exit(1); }
+            const out = `${maj}.${min}.${pat}` + (pre ? `-${pre}` : "");
+            console.log(out);
+          ' "$current")
           echo "version=$next" >> "$GITHUB_OUTPUT"
           echo "tag=v$next" >> "$GITHUB_OUTPUT"
           if [ "$BUMP" = "prerelease" ]; then
