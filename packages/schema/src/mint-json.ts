@@ -84,7 +84,7 @@ export function convertMintToDocs(mint: MintJson): DocsJson {
   }
 
   const docs: DocsJson = {
-    $schema: "https://tanglydocs.com/schema/docs.json",
+    $schema: "https://tangly.dev/schema/docs.json",
     name: mint.name ?? "Untitled",
     description: mint.description,
     theme: "tang",

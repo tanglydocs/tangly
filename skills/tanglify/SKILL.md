@@ -132,7 +132,7 @@ Minimal valid config:
 
 ```json
 {
-  "$schema": "https://tanglydocs.com/schema/docs.json",
+  "$schema": "https://tangly.dev/schema/docs.json",
   "name": "My Docs",
   "theme": "tang",
   "colors": { "primary": "#0ea5e9" },
@@ -225,7 +225,7 @@ bun x tangly migrate --yes    # non-interactive
 What it does:
 1. Reads `mint.json`, runs `convertMintToDocs` → writes `docs.json`.
 2. Renames `mint.json` → `mint.json.bak` (or keeps with `--keep-source`).
-3. Sets `$schema` to `https://tanglydocs.com/schema/docs.json`.
+3. Sets `$schema` to `https://tangly.dev/schema/docs.json`.
 4. Surfaces a notice if `theme` isn't one of `TANGLY_THEMES`.
 
 Auto-handled at render time (no manual rewrite needed):

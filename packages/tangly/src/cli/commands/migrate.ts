@@ -10,7 +10,7 @@ import {
 import { defineCommand } from "citty";
 import pc from "picocolors";
 
-const TANGLY_SCHEMA_URL = "https://tanglydocs.com/schema/docs.json";
+const TANGLY_SCHEMA_URL = "https://tangly.dev/schema/docs.json";
 
 /**
  * Migrate a project from a legacy docs framework to Tangly. Two paths:

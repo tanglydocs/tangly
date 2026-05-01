@@ -53,7 +53,7 @@ export function scaffoldFromDir(opts: InitFromDirOptions): {
   }));
 
   const baseConfig: ScaffoldedConfig = {
-    $schema: "https://tanglydocs.com/schema/docs.json",
+    $schema: "https://tangly.dev/schema/docs.json",
     name: deriveName(opts.src),
     theme: "tang",
     colors: { primary: "#0ea5e9" },
