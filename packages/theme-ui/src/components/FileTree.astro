@@ -1,66 +1,246 @@
 ---
-// FileTree renders a directory tree from a nested Markdown unordered list.
-// Usage:
-//   <FileTree>
-//     - src
-//       - components
-//         - Button.tsx
-//         - **Card.tsx** (highlighted via bold)
-//     - package.json
-//   </FileTree>
-//
-// Indentation is preserved by the slot's nested <ul> structure. File icons
-// are derived from extensions (using the same lucide names as code-block
-// titles); items wrapped in <strong>...</strong> get a highlighted row.
+import { processFileTree } from "./rehype-file-tree";
+
+export type FileTreeVariant = "default" | "terminal" | "ascii";
+
+export interface Props {
+  variant?: FileTreeVariant;
+  /** When true on `variant="terminal"`, draws three macOS-style window dots. */
+  chrome?: boolean;
+}
+
+const { variant = "default", chrome = false } = Astro.props as Props;
+
+const slotHtml = await Astro.slots.render("default");
+const html = processFileTree(slotHtml);
 ---
-<div class="tangly-filetree">
-  <slot />
+
+<div class:list={["tangly-filetree", `tangly-filetree--${variant}`]}>
+  {variant === "terminal" && chrome && (
+    <div class="tangly-filetree__chrome" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  )}
+  <div class="tangly-filetree__body" set:html={html} />
 </div>
 
 <style is:global>
 .tangly-filetree {
+  --tft-x-space: 1.25rem;
+  --tft-y-space: 0.125rem;
   font-family: var(--tangly-font-mono, "JetBrains Mono"), ui-monospace, monospace;
   font-size: 0.85rem;
+  line-height: 1.55;
   margin: 1rem 0;
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--tangly-color-border, #e5e7eb);
-  border-radius: 0.625rem;
-  background: rgba(0, 0, 0, 0.015);
+  overflow-x: auto;
+  color: var(--tangly-color-fg, #0b0b0f);
 }
-.dark .tangly-filetree {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.06);
-}
+
+.tangly-filetree__body { display: block; }
+
 .tangly-filetree ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.tangly-filetree ul ul {
-  margin-left: 1rem;
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-  padding-left: 0.65rem;
-}
-.dark .tangly-filetree ul ul {
-  border-left-color: rgba(255, 255, 255, 0.1);
-}
+
 .tangly-filetree li {
+  margin: var(--tft-y-space) 0;
+  padding: 0;
   position: relative;
-  padding: 0.05rem 0;
-  color: var(--tangly-color-fg);
 }
-.tangly-filetree li::before {
-  content: "├ ";
-  color: rgba(0, 0, 0, 0.25);
-  margin-right: 0.15rem;
+
+.tangly-filetree .tree-entry {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-width: 100%;
 }
-.dark .tangly-filetree li::before {
-  color: rgba(255, 255, 255, 0.25);
+
+.tangly-filetree .tree-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+  color: var(--tangly-color-muted, #6b6b70);
 }
-.tangly-filetree li strong {
+
+.tangly-filetree .directory > details > summary .tree-icon-wrap,
+.tangly-filetree .file .tree-icon-wrap {
+  flex-shrink: 0;
+}
+
+.tangly-filetree svg.tree-icon {
+  width: 0.95em;
+  height: 0.95em;
+  vertical-align: -0.15em;
+}
+
+.tangly-filetree .comment {
+  color: var(--tangly-color-muted, #6b6b70);
+  font-size: 0.92em;
+  padding-left: 0.25rem;
+}
+
+.tangly-filetree .highlight {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.3rem;
+  padding: 0 0.4rem;
+  background: var(--tangly-color-primary, #ea580c);
+  color: #fff;
+}
+.tangly-filetree .highlight .tree-icon-wrap {
+  color: #fff;
+}
+.tangly-filetree .highlight strong {
   font-weight: 600;
-  background: rgba(56, 189, 248, 0.18);
-  border-radius: 0.25rem;
-  padding: 0 0.25rem;
 }
+
+.tangly-filetree li.empty > .tree-entry {
+  color: var(--tangly-color-muted, #6b6b70);
+}
+
+.tangly-filetree details > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.tangly-filetree details > summary::-webkit-details-marker {
+  display: none;
+}
+.tangly-filetree details > summary::marker {
+  display: none;
+  content: "";
+}
+
+/* === default variant — Starlight-style polished card === */
+.tangly-filetree--default {
+  border: 1px solid var(--tangly-color-border, #e6e4de);
+  border-radius: 0.625rem;
+  background: rgba(0, 0, 0, 0.015);
+  padding: 0.875rem 1rem;
+}
+.dark .tangly-filetree--default {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.tangly-filetree--default ul ul {
+  margin-left: 0.4rem;
+  border-left: 1px solid var(--tangly-color-border, #e6e4de);
+  padding-left: 0.85rem;
+}
+.dark .tangly-filetree--default ul ul {
+  border-left-color: rgba(255, 255, 255, 0.08);
+}
+.tangly-filetree--default details > summary:hover .tree-icon-wrap {
+  color: var(--tangly-color-primary, #ea580c);
+}
+
+/* === terminal variant — looks like `tree` shell output === */
+.tangly-filetree--terminal {
+  background: #0b0b0f;
+  color: #e6e4de;
+  border: 1px solid #1f1f23;
+  border-radius: 0.625rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 6px 24px -8px rgba(0, 0, 0, 0.45);
+}
+.dark .tangly-filetree--terminal {
+  background: #050507;
+  border-color: #2a2a30;
+}
+.tangly-filetree--terminal .tree-icon-wrap { display: none; }
+.tangly-filetree--terminal .comment { color: #8a8a90; }
+.tangly-filetree--terminal .highlight {
+  background: transparent;
+  color: #f97316;
+  padding: 0;
+  font-weight: 600;
+}
+.tangly-filetree--terminal .file,
+.tangly-filetree--terminal .directory > details > summary {
+  color: #c9e3a8;
+}
+.tangly-filetree--terminal .directory > details > summary::before,
+.tangly-filetree--terminal .file::before {
+  content: "├── ";
+  color: #6b6b70;
+  white-space: pre;
+}
+.tangly-filetree--terminal li:last-child > details > summary::before,
+.tangly-filetree--terminal li:last-child.file::before {
+  content: "└── ";
+}
+.tangly-filetree--terminal ul ul {
+  margin-left: 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.tangly-filetree--terminal ul ul::before {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 0;
+  bottom: 0.6rem;
+  width: 1px;
+  background: #2a2a30;
+}
+.tangly-filetree--terminal details > summary { cursor: default; }
+.tangly-filetree__chrome {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.25rem 0 0.6rem;
+  margin: -0.25rem -0.25rem 0.5rem;
+}
+.tangly-filetree__chrome span {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: #3f3f46;
+}
+.tangly-filetree__chrome span:nth-child(1) { background: #ef4444; }
+.tangly-filetree__chrome span:nth-child(2) { background: #f59e0b; }
+.tangly-filetree__chrome span:nth-child(3) { background: #22c55e; }
+
+/* === ascii variant — minimal, no chrome, ASCII connectors only === */
+.tangly-filetree--ascii .tree-icon-wrap { display: none; }
+.tangly-filetree--ascii .highlight {
+  background: rgba(234, 88, 12, 0.12);
+  color: var(--tangly-color-primary, #ea580c);
+  padding: 0 0.3rem;
+}
+.dark .tangly-filetree--ascii .highlight {
+  background: rgba(251, 146, 60, 0.18);
+  color: #fb923c;
+}
+.tangly-filetree--ascii .directory > details > summary::before,
+.tangly-filetree--ascii .file::before {
+  content: "├── ";
+  color: var(--tangly-color-muted, #6b6b70);
+  white-space: pre;
+}
+.tangly-filetree--ascii li:last-child > details > summary::before,
+.tangly-filetree--ascii li:last-child.file::before {
+  content: "└── ";
+}
+.tangly-filetree--ascii ul ul {
+  margin-left: 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.tangly-filetree--ascii ul ul::before {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 0;
+  bottom: 0.6rem;
+  width: 1px;
+  background: var(--tangly-color-border, #e6e4de);
+}
+.dark .tangly-filetree--ascii ul ul::before {
+  background: rgba(255, 255, 255, 0.08);
+}
+.tangly-filetree--ascii details > summary { cursor: default; }
 </style>
