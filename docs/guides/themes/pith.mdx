@@ -1,0 +1,101 @@
+---
+title: Pith
+description: Editorial theme. Serif headings, cream background, all chrome in the left sidebar.
+icon: "book-open"
+---
+
+# Pith
+
+Pith is editorial. Serif headings (Spectral). Cream paper. Single sidebar that holds everything — logo, search, tabs, nav, anchors, navbar links, the primary CTA, the theme toggle. No top bar.
+
+The result is a column of content with chrome out of the way. Reads like a handbook or a long-form essay platform.
+
+## When to use it
+
+- Internal handbooks and knowledge bases.
+- Design-led docs sites where typography matters more than tooling familiarity.
+- Long-form publishing — blog-as-docs, research notes, manuals.
+
+If you want a more conventional dev-tool look, [tang](/guides/themes/tang). If you need a book aesthetic with chapter nav, [readable](/guides/themes/readable).
+
+## Set it
+
+```json
+{ "theme": "pith" }
+```
+
+## Token table
+
+From [`packages/theme-pith/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pith/src/styles/theme.css):
+
+### Colors — light
+
+| Token | Value |
+|---|---|
+| `--tangly-color-primary` | `#1f56c8` |
+| `--tangly-color-primary-light` | `#4f7ed8` |
+| `--tangly-color-primary-dark` | `#133b8c` |
+| `--tangly-color-bg` | `#fbfaf6` (cream) |
+| `--tangly-color-bg-elevated` | `#f5f3ec` |
+| `--tangly-color-fg` | `#1c1917` |
+| `--tangly-color-muted` | `#57534e` |
+| `--tangly-color-border` | `#e7e5e0` |
+
+### Colors — dark
+
+Inky background (`#0c0a09`) with the cream foreground swapped to `#f5f3ec`. Hairlines are `#292524`.
+
+### Typography
+
+| Token | Value |
+|---|---|
+| `--tangly-font-heading` | `Spectral` → `Source Serif Pro` → Georgia → serif |
+| `--tangly-font-body` | `Inter` → system-ui → sans-serif |
+| `--tangly-font-mono` | `JetBrains Mono` |
+
+### Layout
+
+| Token | Value | Notes |
+|---|---|---|
+| `--tangly-sidebar-width` | `18rem` | Wider — hosts every piece of chrome. |
+| `--tangly-content-max-width` | `46rem` | Narrower for editorial reading. |
+| `--tangly-toc-width` | `0` | No right-rail TOC. |
+| `--tangly-topnav-height` | `0` | Top bar is hidden entirely. |
+| `--tangly-radius` | `0.25rem` | Tighter corners. |
+
+## What you don't get with pith
+
+- No top bar. Logo and primary CTA both live in the sidebar.
+- No right-rail TOC. The sidebar handles all navigation.
+- No two-row tab + logo layout. Tabs become a sidebar section.
+
+If you need any of those, switch to tang.
+
+## Customizing
+
+```json
+{
+  "theme": "pith",
+  "colors": {
+    "primary": "#7c3aed",
+    "light":   "#a78bfa",
+    "dark":    "#5b21b6"
+  },
+  "fonts": {
+    "heading": { "family": "Crimson Pro" }
+  }
+}
+```
+
+For wider content columns (you'll know if you need it):
+
+```css
+/* theme/styles/theme.css */
+:root {
+  --tangly-content-max-width: 50rem;
+}
+```
+
+## Source
+
+[`packages/theme-pith/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pith/src/styles/theme.css)

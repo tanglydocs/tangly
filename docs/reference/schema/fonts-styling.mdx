@@ -1,0 +1,105 @@
+---
+title: Fonts & styling
+description: Heading and body fonts, code block theme, eyebrow choice, page background decoration.
+icon: "type"
+---
+
+# `fonts`, `styling`, `code`, `background`
+
+Four objects that let you tweak typography and chrome without forking a theme.
+
+## `fonts`
+
+```json
+{
+  "fonts": {
+    "heading": { "family": "DM Sans", "weight": "400;500;700" },
+    "body":    { "family": "Inter" }
+  }
+}
+```
+
+Each face object:
+
+| Field | Type | Description |
+|---|---|---|
+| `family` | `string` | Required. Font family name. |
+| `weight` | `number \| string` | Optional. Single weight or Google-Fonts-style `"400;500;700"`. |
+| `source` | `string` | Optional. Self-hosted URL. If unset, Tangly fetches from Google Fonts. |
+| `format` | `string` | Optional. Format hint when self-hosting (`woff2`, `woff`). |
+
+### Self-hosted fonts
+
+Drop the file in `static/fonts/` (or anywhere reachable by an absolute URL) and point `source` at it:
+
+```json
+{
+  "fonts": {
+    "body": {
+      "family": "Custom Sans",
+      "source": "/fonts/custom-sans.woff2",
+      "format": "woff2"
+    }
+  }
+}
+```
+
+Self-hosted fonts skip the Google Fonts fetch entirely.
+
+## `styling`
+
+```json
+{
+  "styling": {
+    "eyebrows":   "section",
+    "codeblocks": "system"
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `eyebrows` | `"section" \| "breadcrumbs"` | `section` | What renders above the page H1. `section` shows the parent group name; `breadcrumbs` shows the full path. |
+| `codeblocks` | `"system" \| "dark"` | `system` | Code-block theme. `system` follows light/dark mode; `dark` stays dark always. |
+
+## `code`
+
+```json
+{
+  "code": {
+    "copyButton": true,
+    "theme": { "light": "github-light", "dark": "github-dark" }
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `copyButton` | `boolean` | `true` | Show the copy-to-clipboard button on every code block. |
+| `theme` | `string \| { light, dark }` | `{ light: "github-light", dark: "github-dark" }` | [Shiki](https://shiki.style) theme. String → same theme for both modes; object → split. |
+
+Any [Shiki bundled theme](https://shiki.style/themes) works. Common picks: `github-light` / `github-dark`, `dracula`, `nord`, `monokai`, `vitesse-light` / `vitesse-dark`.
+
+## `background`
+
+```json
+{
+  "background": {
+    "image":      "/images/grid.png",
+    "color":      { "light": "#FAFAF7", "dark": "#0B0B0F" },
+    "decoration": "gradient"
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `image` | `string` | Background image URL. |
+| `color` | `{ light?, dark? }` | Solid background per mode. |
+| `decoration` | `"gradient" \| "grid" \| "windows"` | Built-in decorative pattern. |
+
+For most projects, `colors.background` is enough. Reach for `background` when you want a textured or gradient surface.
+
+## Source
+
+[`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) (`FontsSchema`, `StylingSchema`, `CodeSchema`, `BackgroundSchema`)

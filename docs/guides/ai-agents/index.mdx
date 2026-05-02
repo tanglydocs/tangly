@@ -1,0 +1,53 @@
+---
+title: AI agents & coding assistants
+description: Tangly is built for the agent-assisted era. Skills for Claude Code, JSON Schema for Cursor, llms.txt for everything else.
+icon: "bot"
+---
+
+# AI agents & coding assistants
+
+Most documentation gets written and edited inside an editor that has an AI assistant in the corner. Tangly is built for that — every surface a coding agent might need has a hook.
+
+## What you get
+
+<CardGroup cols={2}>
+  <Card title="Skills" icon="hammer" href="/guides/ai-agents/skills">
+    Tangly ships two Claude Code skills: `tanglify` (for using Tangly itself) and `tech-documentation` (for writing the docs that go in it).
+  </Card>
+  <Card title="Cursor & others" icon="cursor-arrow" href="/guides/ai-agents/cursor-and-others">
+    JSON Schema for `docs.json` autocomplete in any LSP-aware editor — Cursor, VS Code, JetBrains, Zed, Windsurf.
+  </Card>
+  <Card title="llms.txt" icon="bot-message-square" href="/guides/ai-agents/llms-txt">
+    Tangly emits `/llms.txt` and `/llms-full.txt` automatically. Coding agents pull docs from these directly.
+  </Card>
+  <Card title="Conventions" icon="file-text" href="/guides/ai-agents/conventions">
+    `aiContext` frontmatter, `AGENTS.md` and `CLAUDE.md` patterns. Tell agents how to work with your project.
+  </Card>
+</CardGroup>
+
+## Why bother
+
+A docs site is the single source of truth your team has about your product. Agents working on your codebase need to read it, search it, and reason about it. The friction points are the same ones humans hit — except agents read more, faster, and they hate inconsistency.
+
+Three properties make a docs site agent-friendly:
+
+1. **Predictable structure.** Frontmatter spelled the same way on every page. Conventions you can describe in one paragraph.
+2. **Machine-readable index.** Something an agent can fetch to know what pages exist and what they cover. That's `llms.txt`.
+3. **A way to teach the agent how to work with the project.** That's skills (Claude Code) or `AGENTS.md` (general).
+
+Tangly's docs.json schema, default `llms.txt` generation, and bundled skills cover all three.
+
+## Tangly itself uses this
+
+This site you're reading runs on Tangly. The dev workflow is:
+
+1. Edit `.mdx` files in your editor of choice.
+2. Run `tangly dev`.
+3. Hit Cmd-K in your AI assistant; ask it to draft the next section.
+4. Iterate.
+
+The skills are how Tangly's own maintainers stay productive. We documented them so you can do the same.
+
+## Path forward
+
+Read [Skills](/guides/ai-agents/skills) first if you're using Claude Code. [Cursor & others](/guides/ai-agents/cursor-and-others) if you're not. [Conventions](/guides/ai-agents/conventions) once you're past the basics and want to teach the agent your project's specifics.

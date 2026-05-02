@@ -1,24 +1,24 @@
 ---
 title: Introduction
-description: Point Tangly at a directory of Markdown — get a fast, themed, deployable docs site.
+description: A self-hosted, agent-native documentation framework. Markdown in, deployable site out — on your terms.
 icon: "sparkles"
 ---
 
 # Tangly
 
-Tangly turns a directory of Markdown into a documentation site you can deploy anywhere static files are served. You get rich MDX components, a themed shell with sidebar and search, OpenAPI rendering, and a build that drops onto Vercel, Cloudflare, or any CDN with no configuration.
+Tangly is a documentation framework you self-host. Point it at a directory of MDX files, get a fast, themed, deployable site. Built on Astro, MDX, and Tailwind v4 — no proprietary runtime, no vendor lock-in, no monthly bill.
 
-It is a thin layer over Astro: your project is just `docs.json` and `*.mdx` files. Tangly does the routing, navigation, prose styling, and asset pipeline.
+It's small. It's fast. It works the way coding agents already want to work.
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="zap" href="/quickstart">
     Scaffold a project and see it render in under a minute.
   </Card>
-  <Card title="Architecture" icon="blocks" href="/architecture/overview">
-    How the manifest, Vite plugin, and runtime fit together.
+  <Card title="Tutorial" icon="rocket" href="/tutorials/first-docs-site">
+    Empty directory to deployed site in ten minutes.
   </Card>
-  <Card title="Component reference" icon="puzzle" href="/reference/components/callouts">
-    Every built-in MDX component with usage and props.
+  <Card title="Components" icon="puzzle" href="/reference/components">
+    35+ MDX components — Card, Tabs, Steps, OpenAPI, callouts, and more.
   </Card>
   <Card title="docs.json schema" icon="file-json" href="/reference/schema/docs-json">
     Every configuration field, with editor-driven validation.
@@ -27,18 +27,18 @@ It is a thin layer over Astro: your project is just `docs.json` and `*.mdx` file
 
 ## What you get
 
-- **A working dev server** with HMR over MDX and `docs.json` (sub-second reload).
-- **A typed configuration schema** with JSON Schema for `$schema` autocomplete in your editor.
-- **Two themes** out of the box (`tang`, `pith`) with full component shadowing for overrides.
-- **MDX components**: callouts, cards, tabs, steps, accordions, code groups, OpenAPI viewers, embedded blocks.
-- **OpenAPI auto-routing**: drop a spec into `docs.json`, every endpoint becomes a page.
-- **Pagefind search** with Cmd+K modal, indexed at build time, exclusion rules respected.
-- **Static-site fast**: cold dev under 2s, builds under 30s for ~100 pages.
-- **Adapter auto-detection** for Vercel, Cloudflare Pages, Node, or plain static hosts.
+- **A typed schema** for `docs.json` with JSON Schema autocomplete in any LSP-aware editor.
+- **Five themes** out of the box — tang, pith, pip, readable, geist. Switch with one config field.
+- **35+ MDX components** auto-injected. No imports, no setup.
+- **OpenAPI auto-routing** — drop a spec, get pages with try-it-out.
+- **Pagefind search** indexed at build time. Cmd-K modal included.
+- **Static-site fast** — cold dev under 2s, builds under 30s for a hundred pages.
+- **Adapters** for Vercel, Cloudflare Pages, Node, or plain static hosts.
+- **Skills for Claude Code** + JSON Schema for Cursor — the agent integrations you'd build yourself, already done.
 
 ## What you write
 
-A project is just two things:
+Two things — a config file and pages:
 
 ```
 my-docs/
@@ -50,12 +50,30 @@ my-docs/
     └── hero.png
 ```
 
-`docs.json` declares navigation; each `.mdx` file becomes a page. Frontmatter handles metadata (`title`, `description`, `icon`, `draft`, `noindex`). [Section defaults](/guides/configuration#section-defaults) cascade. [Embedded blocks](/guides/embedded-blocks) let you pull a labeled fragment from one page into another.
+`docs.json` declares navigation and configures everything that isn't content. Each `.mdx` file becomes a page. Frontmatter handles per-page metadata (`title`, `description`, `icon`, `draft`, `noindex`). [Embedded blocks](/guides/authoring/embedded-blocks) let you reuse content across pages without copy-paste drift.
 
-## Mintlify compatibility
+## Built for agents
 
-Tangly understands `docs.json` and `mint.json` formats. An existing Mintlify project renders without source edits — same components, same nav shape, same frontmatter. Run `tangly migrate` to upgrade a `mint.json` project to `docs.json`. See [migrating from Mintlify](/guides/migrate-from-mintlify).
+Coding agents — Claude Code, Cursor, Copilot, Aider — work better when the surface they're acting on is predictable. Tangly leans into that:
+
+- **Strict frontmatter schema.** Agents fill it correctly because the rules are unambiguous.
+- **JSON Schema for `docs.json`.** Editor autocomplete in Cursor, VS Code, Zed, JetBrains.
+- **Auto-generated `llms.txt` and `llms-full.txt`** — the standard way to expose docs to LLMs.
+- **A bundled Claude Code skill (`tanglify`)** version-locked to the CLI. Knows every flag, every config field, every migration path.
+
+See [AI agents](/guides/ai-agents) for the full picture.
+
+## Mintlify-compatible
+
+Existing Mintlify projects render unmodified. Same components, same `docs.json` schema, same frontmatter. Run `tangly migrate` to clean up, then `tangly dev`. No source edits.
+
+For the full compatibility matrix, see [Migration → Compatibility](/guides/migration/compatibility).
 
 ## What's next
 
-See [Quickstart](/quickstart) to start a project, or [Architecture](/architecture/overview) for how it works under the hood.
+Two paths forward:
+
+- **First time?** [Quickstart](/quickstart) gets you to a running dev server in 60 seconds. [Tutorial](/tutorials/first-docs-site) takes you from empty directory to deployed site in ten minutes.
+- **Migrating from Mintlify?** [Migration guide](/guides/migration/from-mintlify) handles the swap.
+
+For everything else, the [Components](/reference/components) and [Schema](/reference/schema/docs-json) references cover what you'd want to look up.

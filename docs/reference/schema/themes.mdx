@@ -1,33 +1,38 @@
 ---
 title: Themes
-description: Tangly themes and Mintlify theme aliases.
+description: The `theme:` field — accepted values, resolution rules, alias map.
 icon: "palette"
 ---
 
-# Themes
+# `theme`
 
-Tangly ships four themes:
-
-| Name | Description |
-| ---- | ----------- |
-| `tang` | Default. Mintlify-Mint inspired. Sans-serif headings, white background, sidebar to the left. |
-| `pith` | Editorial. Serif headings, cream background, narrower main column. |
-| `pip` | Compact. Minimal chrome, dense sidebar. Used for Tangly's own docs. |
-| `readable` | Long-form reading mode with a scroll progress bar. |
-
-Set the active theme in `docs.json`:
+Sets the active theme. Schema reference. For a tour of each theme with screenshots and palette tokens, see the [Themes guide](/guides/themes/index).
 
 ```json
 { "theme": "tang" }
 ```
 
-## Mintlify theme aliases
+## Accepted values
+
+Five canonical names:
+
+| Value | Package | Description |
+|---|---|---|
+| `tang` | `@tanglydocs/theme-tang` | Default. Mintlify-Mint inspired. |
+| `pith` | `@tanglydocs/theme-pith` | Editorial. Serif headings, cream background. |
+| `pip` | `@tanglydocs/theme-pip` | Minimal. Topbar-only chrome for tiny sites. |
+| `readable` | `@tanglydocs/theme-readable` | Reader-mode. Cream paper, serif body, book-style chapter nav. |
+| `geist` | `@tanglydocs/theme-geist` | Modern dev-tool aesthetic (Vercel/Linear/Stripe family). |
+
+The Zod schema is `z.enum(TANGLY_THEMES).or(z.string())` — unknown strings are accepted at parse time so projects mid-migration don't fail validation. They fall through to `tang` at render via `resolveTheme()`.
+
+## Mintlify aliases
 
 Existing Mintlify projects often have one of these in `docs.json#theme`:
 
 `mint` · `maple` · `palm` · `willow` · `linden` · `almond` · `aspen` · `luma` · `sequoia`
 
-Tangly's `parseDocsJson` accepts any string for `theme` so projects mid-migration don't fail validation. Unknown values fall through to `tang` at render time via the `resolveTheme` helper:
+All resolve to `tang`. See the [aliases page](/guides/themes/aliases) for the rationale.
 
 ```ts
 import { resolveTheme } from "@tanglydocs/schema";
@@ -41,7 +46,7 @@ resolveTheme(undefined);   // "tang"
 
 ## How themes resolve
 
-The Tangly Astro integration sets up a Vite alias for `@tanglydocs/theme` that points at the active theme's `theme.css`. Theme components (Layout, TopNav, Sidebar, etc.) live in `@tanglydocs/theme-ui` and are shared across all themes; per-theme styling and color tokens are CSS-only.
+The Tangly Astro integration sets up a Vite alias for `@tanglydocs/theme` that points at the active theme's `theme.css`. Components (Layout, TopNav, Sidebar, etc.) live in `@tanglydocs/theme-ui` and are shared across all themes; per-theme styling and color tokens are CSS-only.
 
 ```mermaid
 flowchart LR
@@ -50,10 +55,12 @@ flowchart LR
   A --> T1[theme-tang/styles/theme.css]
   A -.- T2[theme-pith/styles/theme.css]
   A -.- T3[theme-pip/styles/theme.css]
+  A -.- T4[theme-readable/styles/theme.css]
+  A -.- T5[theme-geist/styles/theme.css]
   T1 --> L[Layout.astro renders]
 ```
 
-## Project-level theme override
+## Project-level overrides
 
 Drop a `theme/styles/theme.css` at your project root to override the active theme's CSS:
 
@@ -65,13 +72,9 @@ my-docs/
         └── theme.css   # your overrides — concatenated after the active theme
 ```
 
-The integration's alias resolves project-level files first, falling back to the bundled theme.
+The integration's alias resolves project-level files first, falling back to the bundled theme. See [Customizing themes](/guides/themes/customizing).
 
-## Customizing a theme
+## Source
 
-Third-party theme packages aren't a supported extension point yet — `theme:` only resolves the four built-in names. The recommended path:
-
-1. Set `theme:` to whichever built-in ships closest to your design.
-2. Override at the project level via `theme/styles/theme.css` (CSS variables) and shadowed components.
-
-See [Custom components](/guides/custom-components) for shadowing details.
+- Zod schema: [`packages/schema/src/themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts)
+- Each theme's tokens: [`packages/theme-{tang,pith,pip,readable,geist}/src/styles/theme.css`](https://github.com/tanglydocs/tangly/tree/main/packages)

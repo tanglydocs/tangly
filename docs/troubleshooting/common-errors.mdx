@@ -1,0 +1,143 @@
+---
+title: Common errors
+description: The errors you'll actually see during dev and build, what they mean, and how to fix them.
+icon: "octagon-alert"
+---
+
+# Common errors
+
+Run [`tangly check`](/reference/cli/check) before you debug. Most issues that bite at build time surface there cheaply.
+
+## docs.json: "Expected ... but got ..."
+
+```
+docs.json:42 — Expected string, received boolean
+  at .navigation.tabs[0].groups[1].pages[2]
+```
+
+A nav entry is malformed. The path tells you exactly where. Common causes:
+
+- A nested group missing `"pages": [...]`.
+- A typo on `"group"` (e.g. `"groups"` for a single entry).
+- A boolean where a slug is expected (someone wrote `true` instead of a path).
+
+`tangly check` is the fastest path here — it points at the line.
+
+## "Cannot find page X referenced in navigation"
+
+```
+docs.json: navigation references missing page "guides/setup"
+  did you mean "guides/getting-started"?
+```
+
+The navigation has a slug for a file that doesn't exist. Either:
+
+- Create `guides/setup.mdx`.
+- Update the slug to point at an existing file.
+- Run `bunx tangly add page guides/setup` to scaffold one.
+
+The "did you mean" suggestion uses fuzzy matching — usually accurate.
+
+## "Broken link from X to Y"
+
+```
+✗ guides/billing.mdx — broken link to /reference/api/foo
+```
+
+An internal link points at a slug with no matching `.mdx`. Fix in the source page. If the slug is correct but the file moved, add a redirect to `docs.json#redirects` instead of changing every reference.
+
+## Astro build fails: "Failed to resolve import"
+
+```
+[ERROR] Failed to resolve import "../theme/Custom.astro" from "guides/foo.mdx"
+```
+
+A page imports a custom component that isn't where the page expects it.
+
+- Verify `theme/Custom.astro` exists at the project root.
+- The import path is relative to the page file, not the project root. From `guides/foo.mdx`, the path is `../theme/Custom.astro`, not `./theme/Custom.astro`.
+
+## "Image not found" / 404 on assets
+
+Static assets (images, PDFs, video) have to live in one of the recognized roots: `images/`, `logo/`, `public/`, `static/`, `assets/`. Any other folder isn't served.
+
+- Move the file into `images/` (or one of the others).
+- Use absolute paths (`/images/foo.png`), not relative (`../images/foo.png`).
+
+For the relative-path edge case: Tangly auto-rewrites `![](../images/...)` to absolute. It only works if the rewriter can resolve "the canonical asset roots" — which means non-standard locations break the rewrite. See [Static assets](/guides/deploying/static-assets).
+
+## Frontmatter validation warning
+
+```
+warning: guides/foo.mdx — frontmatter field "draft" should be boolean, got string "true"
+```
+
+Frontmatter is non-fatal — your page renders, but the warning's a sign of a bug. Fix the YAML:
+
+```yaml
+draft: true   # ✓ boolean
+```
+
+Not:
+
+```yaml
+draft: "true"   # ✗ string
+```
+
+## "Unknown component <Foo />"
+
+```
+guides/bar.mdx:14 — Unknown component <Foo /> at column 1
+```
+
+Either:
+
+- The component isn't built-in (not in [the components reference](/reference/components)).
+- You meant a built-in but typo'd (`<Cards>` instead of `<Card>`).
+- The component is custom and you forgot to drop it in `theme/`.
+
+For built-in components: spelling counts (case-sensitive). For custom ones: drop `theme/Foo.astro`, restart `tangly dev`.
+
+## OpenAPI: "Cannot resolve $ref"
+
+```
+openapi.json — cannot resolve "#/components/schemas/User"
+```
+
+Spec references a component that isn't in the spec. Either fix the reference or add the component. Tangly's parser is the same `oas-tools` parser that production tooling uses — if it fails here, it'll fail in production validators too.
+
+## Build is slow
+
+Two common causes:
+
+- **Many large images.** Tangly doesn't optimize them. Pre-process with `sharp` or `squoosh-cli` before committing.
+- **Huge OpenAPI spec.** Splitting one giant spec into per-tag files speeds builds linearly.
+
+Otherwise builds should take under thirty seconds for a hundred pages. If you're seeing minutes, [open an issue](https://github.com/tanglydocs/tangly/issues) with the build's `--debug` output.
+
+## Dark mode doesn't work
+
+The toggle in the topbar is in `theme/`. If you've shadowed the topbar, you may have dropped the toggle.
+
+- Check `appearance.strict: false` in `docs.json` (default — strict mode disables the toggle on purpose).
+- Verify the topbar override carries the original toggle markup.
+- If you've overridden CSS variables, make sure `.dark` selectors are present alongside the `:root` selectors.
+
+## Pagefind search doesn't return hits
+
+Pagefind builds the index at `tangly build` time, not at `tangly dev` time. The dev modal searches a live in-memory index, so dev / prod can diverge if you've recently added pages.
+
+- For dev: works automatically, no config.
+- For prod: ensure `dist/pagefind/` is included in your deploy. Most adapters include it; static-output deploys to S3-style hosts sometimes need an explicit copy.
+
+Excluded pages (`noindex: true`, drafts) are excluded from the search index by design.
+
+## "TANGLY_USER_ROOT not set"
+
+You're running the runtime directly without going through the CLI. Use `tangly dev` / `tangly build`. The runtime is internal — direct invocation is unsupported.
+
+## More
+
+- [`tangly check`](/reference/cli/check) for config validation.
+- [FAQ](/troubleshooting/faq) for "is this supposed to work this way?" questions.
+- [GitHub Issues](https://github.com/tanglydocs/tangly/issues) for bugs not in either.

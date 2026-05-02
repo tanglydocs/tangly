@@ -1,0 +1,45 @@
+---
+title: Tab
+description: A single tab panel. Always nested inside Tabs.
+icon: "tag"
+---
+
+# Tab
+
+`<Tab>` is the per-panel child of [`<Tabs>`](/reference/components/tabs). Each one needs a `title`, optionally an `icon`. Whatever you put inside renders as the panel body — Markdown, MDX components, code blocks, anything.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Tab label. Required. |
+| `icon` | `string` | — | Lucide / Font Awesome alias rendered next to the title. |
+
+## Example
+
+```mdx
+<Tabs>
+  <Tab title="npm" icon="package">
+    ```bash
+    npm install tangly
+    ```
+  </Tab>
+  <Tab title="bun" icon="rocket">
+    ```bash
+    bun add tangly
+    ```
+  </Tab>
+</Tabs>
+```
+
+## Notes
+
+A `<Tab>` outside `<Tabs>` renders nothing useful — the wrapper provides the tablist and activation state.
+
+## Related
+
+- [`<Tabs>`](/reference/components/tabs)
+
+## Source
+
+[`packages/theme-ui/src/components/Tab.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tab.astro)

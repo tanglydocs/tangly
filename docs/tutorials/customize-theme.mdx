@@ -1,0 +1,172 @@
+---
+title: Customize the theme
+description: Swap the palette, change the font, tweak a component, ship it.
+icon: "palette"
+---
+
+# Customize the theme
+
+Most rebrands take five hex values and a font family. The longer your customizations live in `docs.json`, the easier they are to revisit. The further you push toward CSS overrides and component shadowing, the more you own. This tutorial walks the spectrum — start from the easy end, stop wherever you have what you need.
+
+## Before you start
+
+- A working Tangly project.
+- A brand color or two in mind. Hex format. If you only have a Pantone or a vibe, pick something close from [Tailwind's palette](https://tailwindcss.com/docs/customizing-colors) — you can refine later.
+
+## 1. Switch theme
+
+If `tang` (the default) isn't right, try one of the others:
+
+```json
+{ "theme": "geist" }
+```
+
+Reload `tangly dev`. The whole site flips to the new theme — same content, different chrome.
+
+```bash
+bunx tangly dev
+```
+
+Walk a few pages. If something feels wrong (sidebar too narrow, headings too serif), pick a different theme and try again. No content edits, no risk.
+
+The five built-ins are documented in detail at [Themes](/guides/themes/index).
+
+## 2. Override the brand color
+
+Add a `colors` block to `docs.json`:
+
+```json
+{
+  "theme": "tang",
+  "colors": {
+    "primary": "#0ea5e9",
+    "light":   "#38bdf8",
+    "dark":    "#0284c7"
+  }
+}
+```
+
+Three hex values cover the active states, hover states, and gradient stops. The dev server picks up the change.
+
+For a different page background, add:
+
+```json
+{
+  "colors": {
+    "background": { "light": "#FFFFFF", "dark": "#0A0A0A" }
+  }
+}
+```
+
+For the anchor link gradient:
+
+```json
+{
+  "colors": {
+    "anchors": { "from": "#0ea5e9", "to": "#06b6d4" }
+  }
+}
+```
+
+See [Schema → Colors](/reference/schema/colors) for the full token list.
+
+## 3. Change the font
+
+Heading and body fonts are independent.
+
+```json
+{
+  "fonts": {
+    "heading": { "family": "DM Sans", "weight": "400;500;700" },
+    "body":    { "family": "Inter" }
+  }
+}
+```
+
+Tangly fetches matching weights from Google Fonts. For self-hosted fonts, set `source` to a URL:
+
+```json
+{
+  "fonts": {
+    "body": {
+      "family": "Custom Sans",
+      "source": "/fonts/custom-sans.woff2",
+      "format": "woff2"
+    }
+  }
+}
+```
+
+Drop the woff2 file in `static/fonts/` so it ships with the build.
+
+## 4. Tweak layout dimensions
+
+For sidebar width, content column, or radii — values that aren't in `docs.json` — use a CSS override file. Create `theme/styles/theme.css` at your project root:
+
+```css
+:root {
+  --tangly-sidebar-width: 20rem;
+  --tangly-content-max-width: 52rem;
+  --tangly-radius: 0.75rem;
+}
+```
+
+Tangly concatenates this file after the active theme's stylesheet. Any token defined in the theme can be overridden here. See each theme's reference page ([tang](/guides/themes/tang), [pith](/guides/themes/pith), [pip](/guides/themes/pip), [readable](/guides/themes/readable), [geist](/guides/themes/geist)) for the full token list.
+
+For dark-mode-specific overrides:
+
+```css
+.dark {
+  --tangly-color-bg: #050505;
+  --tangly-color-border: #1a1a1a;
+}
+```
+
+## 5. Replace a component
+
+For changes that go beyond CSS, shadow the component. Drop a `theme/Card.astro` file at your project root:
+
+```astro
+---
+// theme/Card.astro
+export interface Props {
+  title?: string;
+  href?: string;
+  icon?: string;
+}
+const { title, href, icon } = Astro.props as Props;
+---
+
+<a href={href} class="my-custom-card">
+  {icon && <i class={`icon-${icon}`} />}
+  {title && <h3>{title}</h3>}
+  <slot />
+</a>
+```
+
+Every `<Card>` in your MDX now renders through this file instead of the bundled one. Same Props interface — read the original at [`packages/theme-ui/src/components/Card.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Card.astro) and start from there.
+
+For more on shadowing, see [Custom components](/guides/customization/custom-components).
+
+## 6. Verify
+
+```bash
+bunx tangly check
+bunx tangly build
+```
+
+The build catches type errors in shadowed components. Nothing else should break — colors and font swaps are CSS-only, no compile-time consequences.
+
+Walk the rendered site:
+
+- Cmd-K search modal — does the placeholder match your theme?
+- Sidebar at `< 768px` — does the mobile menu pop in correctly?
+- Light → dark toggle — do all your overrides apply in both modes?
+
+## Where to go from here
+
+- [Custom templates](/guides/customization/custom-templates) — swap the page shell, not just components.
+- [`tangly eject`](/reference/cli/eject) — full Astro project for total control.
+- [Geist style guide](/guides/themes/geist) — when you want it to look like Vercel.
+
+If your final palette is meaningful enough to share, consider opening a PR with a new theme. Tangly's current five came from this exact path.

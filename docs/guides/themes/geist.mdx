@@ -1,0 +1,104 @@
+---
+title: Geist
+description: Modern dev-tool aesthetic. Vercel / Linear / Stripe family. Hairline borders, restrained grayscale, near-black CTAs.
+icon: "square-asterisk"
+---
+
+# Geist
+
+Geist is the dev-tool aesthetic — Vercel, Linear, Stripe, Resend, Raycast share its DNA. Mostly grayscale. Hairline borders carry depth instead of shadows. The CTA is near-black. No accent color blares for attention.
+
+It feels expensive without being decorative.
+
+## When to use it
+
+- A polished product docs site for a developer audience.
+- Marketing-adjacent docs where the brand wants to feel premium.
+- Anywhere you'd say "make it look like Vercel."
+
+If your brand has a strong accent color you want to feature, [tang](/guides/themes/tang) is friendlier. If you want playful, this isn't the theme.
+
+## Set it
+
+```json
+{ "theme": "geist" }
+```
+
+## Token table
+
+From [`packages/theme-geist/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-geist/src/styles/theme.css):
+
+### Colors — light
+
+| Token | Value |
+|---|---|
+| `--tangly-color-primary` | `#0a0a0a` — near-black |
+| `--tangly-color-primary-light` | `#171717` |
+| `--tangly-color-primary-dark` | `#000000` |
+| `--tangly-color-bg` | `#ffffff` |
+| `--tangly-color-bg-elevated` | `#fafafa` |
+| `--tangly-color-fg` | `#0a0a0a` |
+| `--tangly-color-muted` | `#646464` |
+| `--tangly-color-border` | `rgba(0, 0, 0, 0.08)` (hairline) |
+
+### Colors — dark
+
+Inverts the above: near-white primary on near-black surface. Geist's defining property is that the primary stays consistent — buttons are always `fg`-colored, never bright.
+
+### Typography
+
+| Token | Value |
+|---|---|
+| `--tangly-font-heading` | `Geist` → Inter → system-ui → sans-serif |
+| `--tangly-font-body` | `Geist` |
+| `--tangly-font-mono` | `Geist Mono` → JetBrains Mono → ui-monospace |
+
+If you don't want to ship the Geist webfonts (~95KB total), Tangly falls back gracefully to Inter.
+
+### Layout
+
+| Token | Value | Notes |
+|---|---|---|
+| `--tangly-sidebar-width` | `16rem` | Tighter than tang. |
+| `--tangly-content-max-width` | `48rem` | Same as tang. |
+| `--tangly-toc-width` | `13rem` | Slim TOC rail. |
+| `--tangly-topnav-row1-height` | `3.75rem` | |
+| `--tangly-topnav-row2-height` | `2.75rem` | |
+| `--tangly-radius` | `0.5rem` | |
+
+## What makes geist different
+
+- **No accent color.** Every theme except geist has a tang/blue/green/burnt accent. Geist's primary is the foreground. CTAs are near-black on light, near-white on dark.
+- **Hairline borders.** Borders are `rgba(0, 0, 0, 0.08)` — barely visible, but enough to separate planes without shadows.
+- **Mono UI labels.** Some chrome (filenames, IDs, version numbers) renders in Geist Mono. Looks like a dev tool — because it is.
+
+## Customizing
+
+If you want geist's chrome but a colored accent, it stops being geist — but the theme makes it easy:
+
+```json
+{
+  "theme": "geist",
+  "colors": {
+    "primary": "#7c3aed",
+    "light":   "#a78bfa",
+    "dark":    "#5b21b6"
+  }
+}
+```
+
+Most projects keep geist's grayscale and just override fonts:
+
+```json
+{
+  "theme": "geist",
+  "fonts": {
+    "heading": { "family": "Inter" },
+    "body":    { "family": "Inter" }
+  }
+}
+```
+
+## Source
+
+[`packages/theme-geist/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-geist/src/styles/theme.css)

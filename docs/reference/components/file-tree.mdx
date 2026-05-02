@@ -1,0 +1,166 @@
+---
+title: FileTree
+description: Render a directory tree from a nested Markdown list. Bold rows highlight, comments inline, file icons pick themselves.
+icon: "folder-tree"
+---
+
+# FileTree
+
+`<FileTree>` turns a nested Markdown unordered list into a styled directory tree. Indentation drives nesting. Files pick icons from their extension. `**bold**` highlights a row. Trailing text becomes a comment. `...` is a placeholder.
+
+## When to use
+
+- Project layouts in install or quickstart guides.
+- Calling out which file in a tree the reader should edit.
+- Standing in for a screenshot of an editor's file panel.
+
+## Default variant
+
+<FileTree>
+- src
+  - components
+    - Button.tsx
+    - **Card.tsx** the file you'll edit
+    - Note.astro
+  - styles
+    - globals.css
+  - ...
+- package.json dependencies
+- tangly.config.ts
+</FileTree>
+
+```mdx
+<FileTree>
+- src
+  - components
+    - Button.tsx
+    - **Card.tsx** the file you'll edit
+    - Note.astro
+  - styles
+    - globals.css
+  - ...
+- package.json dependencies
+- tangly.config.ts
+</FileTree>
+```
+
+## Terminal variant
+
+Drops the icons, swaps in literal `├──`/`└──` connectors, and ships a dark background that ignores theme — like running `tree` in a shell. Add `chrome` for the three-dot window header.
+
+<FileTree variant="terminal" chrome>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - guides/
+    - **deploying.mdx**
+    - themes.mdx
+  - images/
+    - logo.svg
+- package.json
+</FileTree>
+
+```mdx
+<FileTree variant="terminal" chrome>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - guides/
+    - **deploying.mdx**
+    - themes.mdx
+- package.json
+</FileTree>
+```
+
+## ASCII variant
+
+Minimal — no card, no background, no icons. Just ASCII connectors in theme colours. Use when a tree sits inside another component (Card, Step, Accordion) and the boxed look would be too heavy.
+
+<FileTree variant="ascii">
+- packages/
+  - theme-ui/
+    - components/
+      - **FileTree.astro**
+      - rehype-file-tree.ts
+      - file-tree-icons.ts
+  - schema/
+- docs/
+</FileTree>
+
+```mdx
+<FileTree variant="ascii">
+- packages/
+  - theme-ui/
+    - components/
+      - **FileTree.astro**
+- docs/
+</FileTree>
+```
+
+## Authoring syntax
+
+Every variant accepts the same source. Five things to know.
+
+### Directories
+
+A line ending in `/` is a directory. So is any line that has nested children. Directories are collapsible (`<details open>`) — readers can fold them shut.
+
+<FileTree>
+- src/
+  - empty-folder/
+  - has-children
+    - nested.txt
+</FileTree>
+
+### Highlighting
+
+Wrap a row in `**bold**` to highlight it. Use it to point at the file the reader should care about right now.
+
+<FileTree>
+- before.mdx
+- **focus.mdx**
+- after.mdx
+</FileTree>
+
+### Comments
+
+Anything after the filename becomes a comment, rendered in muted colour next to the name. Inline Markdown works (`**bold**`, `_italic_`, links).
+
+<FileTree>
+- docs.json the source of truth
+- introduction.mdx **must exist** — it's the home page
+- _draft.mdx hidden in dev only
+</FileTree>
+
+### Placeholders
+
+A row containing only `...` (or `…`) draws a dimmed placeholder — useful for "etc." rows you don't want to enumerate.
+
+<FileTree>
+- guides/
+  - getting-started.mdx
+  - configuration.mdx
+  - ...
+</FileTree>
+
+### Custom icons
+
+Prefix a row with the `<Icon>` component to override the auto-detected file icon.
+
+```mdx
+<FileTree>
+- <Icon icon="cog" /> config
+- <Icon icon="database" /> data
+</FileTree>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `"default" \| "terminal" \| "ascii"` | `"default"` | Visual style — see above. |
+| `chrome` | `boolean` | `false` | Only meaningful on `variant="terminal"`. Draws three macOS-style window dots above the tree. |
+
+## Source
+
+[`packages/theme-ui/src/components/FileTree.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/FileTree.astro)

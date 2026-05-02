@@ -1,0 +1,70 @@
+---
+title: Steps
+description: Numbered procedure. Children are Step components; the wrapper draws the connector line and numbers automatically.
+icon: "list-ordered"
+---
+
+# Steps
+
+`<Steps>` renders a numbered, vertically-connected procedure. Each [`<Step>`](/reference/components/step) child gets an automatic step number unless you override it.
+
+## When to use
+
+- Setup instructions.
+- Tutorial spines.
+- Anything where order matters and you want the reader to feel forward motion.
+
+For unordered checklists, use Markdown `- [ ]` task lists. For collapsible Q&A-style flows, use [`<AccordionGroup>`](/reference/components/accordion-group).
+
+## Props
+
+None on the wrapper. All configuration lives on the [`<Step>`](/reference/components/step) children.
+
+## Example
+
+```mdx
+<Steps>
+  <Step title="Install Tangly">
+    ```bash
+    bun add tangly
+    ```
+  </Step>
+  <Step title="Initialize a project">
+    ```bash
+    bunx tangly init
+    ```
+  </Step>
+  <Step title="Run the dev server">
+    ```bash
+    bunx tangly dev
+    ```
+  </Step>
+</Steps>
+```
+
+<Steps>
+  <Step title="Install Tangly">
+    ```bash
+    bun add tangly
+    ```
+  </Step>
+  <Step title="Initialize a project">
+    ```bash
+    bunx tangly init
+    ```
+  </Step>
+  <Step title="Run the dev server">
+    ```bash
+    bunx tangly dev
+    ```
+  </Step>
+</Steps>
+
+## Related
+
+- [`<Step>`](/reference/components/step)
+- [Tutorials](/tutorials/first-docs-site) — extended use of `<Steps>` for end-to-end flows
+
+## Source
+
+[`packages/theme-ui/src/components/Steps.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Steps.astro)

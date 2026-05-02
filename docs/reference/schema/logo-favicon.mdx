@@ -1,0 +1,105 @@
+---
+title: Logo & favicon
+description: Header logo and favicon. Light/dark variants, optional click target.
+icon: "image"
+---
+
+# `logo`, `favicon`
+
+These two fields control the brand mark in the topbar and the icon shown in the browser tab.
+
+## `logo`
+
+Either a single string (used for both modes) or an object splitting light/dark plus an optional click target.
+
+```json
+{
+  "logo": "/images/tangly-logo.png"
+}
+```
+
+```json
+{
+  "logo": {
+    "light": "/images/tangly-logo.png",
+    "dark":  "/images/tangly-logo-light.png",
+    "href":  "/"
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `light` | `string` | Logo for light mode. |
+| `dark` | `string` | Logo for dark mode. |
+| `href` | `string` | Click target. Defaults to `/`. Set an external URL to bounce out (e.g. your marketing site). |
+
+The string form sets both modes to the same image.
+
+## `favicon`
+
+Either a single string or `{ light, dark }`. Tangly emits the appropriate `<link rel="icon">` tags.
+
+```json
+{ "favicon": "/images/favicon.ico" }
+```
+
+```json
+{
+  "favicon": {
+    "light": "/images/favicon-light.ico",
+    "dark":  "/images/favicon-dark.ico"
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `light` | `string` | Required when using the object form. Path to light-mode favicon. |
+| `dark` | `string` | Required when using the object form. Path to dark-mode favicon. |
+
+## Asset paths
+
+Logos and favicons are static assets — drop them in `images/` (or anywhere under your project root that's not gitignored), and reference them by absolute path:
+
+```json
+{ "logo": "/images/tangly-logo.png" }
+```
+
+For more on the asset pipeline, see [Static assets](/guides/deploying/static-assets).
+
+## Common patterns
+
+### Wordmark + icon split
+
+Use the wordmark in the desktop topbar but a square icon on mobile:
+
+```json
+{
+  "logo": {
+    "light": "/images/wordmark-light.svg",
+    "dark":  "/images/wordmark-dark.svg",
+    "href":  "/"
+  }
+}
+```
+
+Tangly currently ships one logo slot. For mobile-specific marks, [shadow](/guides/customization/custom-components) the topbar component.
+
+### External brand link
+
+If your docs are hosted at `docs.example.com` and clicking the logo should bounce back to `example.com`:
+
+```json
+{
+  "logo": {
+    "light": "/images/logo.png",
+    "dark":  "/images/logo-light.png",
+    "href":  "https://example.com"
+  }
+}
+```
+
+## Source
+
+[`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) (`LogoSchema`, `favicon` field)

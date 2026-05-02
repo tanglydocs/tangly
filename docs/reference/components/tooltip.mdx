@@ -1,0 +1,41 @@
+---
+title: Tooltip
+description: Hover-reveal text on inline content. Lightweight, no JS dependency.
+icon: "message-circle"
+---
+
+# Tooltip
+
+`<Tooltip>` shows a short string on hover or focus. CSS-only — no JS dependency.
+
+## When to use
+
+- Acronym expansions inline ("API <Tooltip tip="Application Programming Interface">…</Tooltip>").
+- Subtle context that would clutter the prose if footnoted.
+- Definitions where [`<GlossaryTerm>`](/reference/components/glossary-term) is overkill.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tip` | `string` | — | Tooltip text. Plain text only — no Markdown. Required. |
+
+## Example
+
+```mdx
+The <Tooltip tip="A directed acyclic graph">DAG</Tooltip> determines build order.
+```
+
+The <Tooltip tip="A directed acyclic graph">DAG</Tooltip> determines build order.
+
+## Accessibility
+
+The tip is exposed to screen readers as the element's accessible name. Don't pack critical information into a tooltip — visible text is always preferable.
+
+## Related
+
+- [`<GlossaryTerm>`](/reference/components/glossary-term) — for terms that should appear in the glossary index
+
+## Source
+
+[`packages/theme-ui/src/components/Tooltip.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tooltip.astro)

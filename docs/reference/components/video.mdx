@@ -1,0 +1,61 @@
+---
+title: Video
+description: Embedded video player. Auto-detects YouTube, Vimeo, and direct mp4 sources. Lazy-loads on scroll.
+icon: "video"
+---
+
+# Video
+
+`<Video>` renders a 16:9 video player. The component sniffs the `src` URL to pick the right embed shape:
+
+- `youtube.com` / `youtu.be` → privacy-mode YouTube embed (`youtube-nocookie.com`)
+- `vimeo.com` → Vimeo player
+- `.mp4` / `.webm` / `.mov` / `.m4v` → native HTML `<video>` tag
+- Anything else → generic iframe
+
+## Lazy loading
+
+The actual iframe / `<video>` element doesn't load until the player scrolls near the viewport (IntersectionObserver-driven). No third-party traffic until the user is about to see the video.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | — | Video URL. Required. |
+| `poster` | `string` | — | Poster image. mp4 only. |
+| `transcript` | `string` | — | URL to a transcript file. Renders a "Transcript" link below the player. |
+| `title` | `string` | — | Accessible title (becomes the iframe `title` attribute). |
+
+## Examples
+
+### YouTube
+
+```mdx
+<Video src="https://www.youtube.com/watch?v=jNQXAC9IVRw" />
+```
+
+### Self-hosted mp4
+
+```mdx
+<Video
+  src="/videos/quickstart.mp4"
+  poster="/videos/quickstart-poster.jpg"
+  transcript="/transcripts/quickstart.txt"
+  title="Tangly quickstart in 60 seconds"
+/>
+```
+
+### Vimeo
+
+```mdx
+<Video src="https://vimeo.com/76979871" />
+```
+
+## Related
+
+- [`<Frame>`](/reference/components/frame) — for static images with captions
+- [`<Embed>`](/reference/components/embed) — labeled block embedding (different shape)
+
+## Source
+
+[`packages/theme-ui/src/components/Video.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Video.astro)

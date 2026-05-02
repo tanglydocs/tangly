@@ -1,0 +1,69 @@
+---
+title: CardGroup
+description: Responsive grid wrapper for cards. Pick a column count; the grid collapses on narrow viewports.
+icon: "grid-3x3"
+---
+
+# CardGroup
+
+`<CardGroup>` lays out child [`<Card>`](/reference/components/card) elements in a grid that collapses to a single column on small screens.
+
+## When to use
+
+- Anywhere you have two or more cards next to each other.
+- The default cols of `2` is the right answer for landing pages with four big tiles. Use `3` or `4` for tight reference indexes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `cols` | `1 \| 2 \| 3 \| 4` | `2` | Maximum columns at the largest breakpoint. Mobile always renders single-column. |
+
+## Examples
+
+### Two columns (default)
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Authoring" icon="pen-line" href="/guides/authoring/pages" />
+  <Card title="Customization" icon="palette" href="/guides/customization/configuration" />
+  <Card title="Deploying" icon="rocket" href="/guides/deploying" />
+  <Card title="Migration" icon="arrow-right-left" href="/guides/migration/from-mintlify" />
+</CardGroup>
+```
+
+<CardGroup cols={2}>
+  <Card title="Authoring" icon="pen-line" href="/guides/authoring/pages" />
+  <Card title="Customization" icon="palette" href="/guides/customization/configuration" />
+  <Card title="Deploying" icon="rocket" href="/guides/deploying" />
+  <Card title="Migration" icon="arrow-right-left" href="/guides/migration/from-mintlify" />
+</CardGroup>
+
+### Four columns
+
+```mdx
+<CardGroup cols={4}>
+  <Card title="dev" icon="play" href="/reference/cli/dev" />
+  <Card title="build" icon="hammer" href="/reference/cli/build" />
+  <Card title="check" icon="circle-check" href="/reference/cli/check" />
+  <Card title="migrate" icon="arrow-right-left" href="/reference/cli/migrate" />
+</CardGroup>
+```
+
+## Responsive behaviour
+
+| Breakpoint | `cols={2}` | `cols={3}` | `cols={4}` |
+|---|---|---|---|
+| `< 640px` | 1 | 1 | 1 |
+| `≥ 640px` | 2 | 2 | 2 |
+| `≥ 768px` | 2 | 3 | 3 |
+| `≥ 1024px` | 2 | 3 | 4 |
+
+## Related
+
+- [`<Card>`](/reference/components/card)
+- [`<Columns>`](/reference/components/columns) — same idea but for arbitrary children, up to 12 columns
+
+## Source
+
+[`packages/theme-ui/src/components/CardGroup.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/CardGroup.astro)

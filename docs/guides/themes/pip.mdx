@@ -1,0 +1,94 @@
+---
+title: Pip
+description: Minimal theme for tiny sites. Single column, topbar-only chrome, no sidebar.
+icon: "sprout"
+---
+
+# Pip
+
+Pip is the smallest theme. No sidebar. One topbar row holding logo + flat nav links + theme toggle. Single content column. Built for sites with 4–5 pages where a sidebar is overhead.
+
+## When to use it
+
+- A small project's docs that's barely more than a README.
+- A landing page + a few deep-link pages (changelog, license, contributing).
+- Internal tools where you want docs but not the full information-architecture treatment.
+
+If your docs grew past ~6 pages, pip starts feeling sparse — switch to [tang](/guides/themes/tang).
+
+## Set it
+
+```json
+{ "theme": "pip" }
+```
+
+## Token table
+
+From [`packages/theme-pip/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pip/src/styles/theme.css):
+
+### Colors — light
+
+| Token | Value |
+|---|---|
+| `--tangly-color-primary` | `#16a34a` (green) |
+| `--tangly-color-primary-light` | `#22c55e` |
+| `--tangly-color-primary-dark` | `#15803d` |
+| `--tangly-color-bg` | `#ffffff` |
+| `--tangly-color-bg-elevated` | `#f7f7f5` |
+| `--tangly-color-fg` | `#18181b` |
+| `--tangly-color-muted` | `#71717a` |
+| `--tangly-color-border` | `#e4e4e7` |
+
+### Colors — dark
+
+Near-black (`#09090b`), brighter green primary (`#22c55e`), zinc-tone hairlines.
+
+### Typography
+
+| Token | Value |
+|---|---|
+| `--tangly-font-heading` | `Inter` → system-ui → sans-serif |
+| `--tangly-font-body` | `Inter` |
+| `--tangly-font-mono` | `JetBrains Mono` |
+
+### Layout
+
+| Token | Value | Notes |
+|---|---|---|
+| `--tangly-sidebar-width` | `0` | No sidebar. |
+| `--tangly-content-max-width` | `42rem` | Narrower than tang. |
+| `--tangly-toc-width` | `0` | No TOC. |
+| `--tangly-topnav-row1-height` | `3.5rem` | Single row — logo, links, toggle. |
+| `--tangly-topnav-row2-height` | `0` | No tabs row. |
+
+## Navigation in pip
+
+Because there's no sidebar, your `navigation.tabs` and `navigation.groups` collapse into the topbar:
+
+```json
+{
+  "theme": "pip",
+  "navigation": {
+    "tabs": [
+      { "tab": "Docs", "groups": [...] },
+      { "tab": "Changelog", "pages": ["changelog/v1"] }
+    ]
+  }
+}
+```
+
+Tabs render inline. Within a tab, groups become a flyout menu.
+
+## Customizing
+
+Same pattern as the other themes — `colors`, `fonts`, then `theme/styles/theme.css` for layout overrides.
+
+```css
+:root {
+  --tangly-content-max-width: 48rem;
+}
+```
+
+## Source
+
+[`packages/theme-pip/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pip/src/styles/theme.css)

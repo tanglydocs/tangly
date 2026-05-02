@@ -1,0 +1,127 @@
+---
+title: Customizing themes
+description: Five layers of customization, from a single hex color to forking the runtime.
+icon: "settings-2"
+---
+
+# Customizing themes
+
+Five layers, increasing in scope. Most projects stop at layer two.
+
+## 1. Override colors
+
+Five hex tokens cover most rebrands.
+
+```json
+{
+  "theme": "tang",
+  "colors": {
+    "primary": "#0ea5e9",
+    "light":   "#38bdf8",
+    "dark":    "#0284c7",
+    "background": { "light": "#FFFFFF", "dark": "#0A0A0A" }
+  }
+}
+```
+
+See [Schema → Colors](/reference/schema/colors) for the full token table.
+
+## 2. Override fonts
+
+```json
+{
+  "fonts": {
+    "heading": { "family": "DM Sans", "weight": "400;500;700" },
+    "body":    { "family": "Inter" }
+  }
+}
+```
+
+Tangly fetches matching weights from Google Fonts. Self-hosted: set `source` to a URL.
+
+```json
+{
+  "fonts": {
+    "body": {
+      "family": "Custom Sans",
+      "source": "/fonts/custom-sans.woff2",
+      "format": "woff2"
+    }
+  }
+}
+```
+
+See [Schema → Fonts & styling](/reference/schema/fonts-styling).
+
+## 3. Override CSS variables
+
+For sidebar widths, content column, line heights, radii — drop a `theme/styles/theme.css` at your project root. The file is concatenated after the bundled theme so your declarations win.
+
+```css
+/* theme/styles/theme.css */
+:root {
+  --tangly-sidebar-width: 20rem;
+  --tangly-content-max-width: 52rem;
+  --tangly-radius: 0.75rem;
+}
+
+.dark {
+  --tangly-color-bg: #050505;
+}
+```
+
+Every theme exposes the same token namespace (`--tangly-color-*`, `--tangly-font-*`, `--tangly-sidebar-*`, etc.). See each theme's reference page for its specific defaults.
+
+## 4. Shadow components
+
+For component-level changes — restyling a Card, replacing the topbar layout, adding a custom callout variant — drop a matching `.astro` file under `theme/`.
+
+<FileTree>
+- my-docs/
+  - docs.json
+  - theme/
+    - Card.astro overrides the built-in Card
+    - Note.astro overrides Note
+    - _Callout.astro overrides **all** callouts at once
+</FileTree>
+
+The shadowed component receives the same props as the built-in. See [Custom components](/guides/customization/custom-components) for the full pattern.
+
+## 5. Eject
+
+For full control — custom Vite plugins, custom Astro integrations, removing parts of the runtime — run:
+
+```bash
+tangly eject
+```
+
+This materializes the synthesized Astro project to `.tangly/`. Edit anything. Tangly's CLI keeps working but now operates on the ejected project.
+
+**One-way operation.** Commit before running.
+
+See [`tangly eject`](/reference/cli/eject) for what gets written and how to roll back if you regret it.
+
+## What lives where
+
+| Want to change… | Layer |
+|---|---|
+| Brand color | 1 |
+| Brand font | 2 |
+| Sidebar width | 3 |
+| Card layout | 4 |
+| Add a custom Astro middleware | 5 |
+| Add a Tailwind plugin | 5 |
+| Render a different OpenAPI viewer | [Schema → API](/reference/schema/api) — no customization needed, just `api.viewer` |
+
+## Cross-theme patterns
+
+Token names are the same across all five built-in themes. Custom CSS overrides written for tang work on geist, pith, etc. — only the values differ.
+
+```css
+/* This works under any theme. */
+:root {
+  --tangly-content-max-width: 50rem;
+}
+```
+
+This is by design: `@tanglydocs/theme-ui` is the single component shell every theme renders through.

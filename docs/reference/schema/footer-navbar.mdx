@@ -1,0 +1,122 @@
+---
+title: Footer & navbar
+description: Top-bar links and CTA, footer socials and link groups, edit-on-source URLs.
+icon: "panels-top-left"
+---
+
+# `navbar`, `footer`
+
+Two objects that together control the chrome around your pages.
+
+## `navbar`
+
+```json
+{
+  "navbar": {
+    "links": [
+      { "label": "Pricing", "href": "/pricing" },
+      { "label": "Blog", "href": "https://example.com/blog" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Sign up",
+      "href": "/signup"
+    }
+  }
+}
+```
+
+### `navbar.links`
+
+Array of secondary links rendered inline in the top bar.
+
+| Field | Type | Description |
+|---|---|---|
+| `label` | `string` | Required. Display text. |
+| `href` | `string` | Required. Internal slug or external URL. |
+| `icon` | `string` | Optional. Icon next to the label. |
+
+### `navbar.primary`
+
+The right-most CTA. Discriminated union — pick `button` or `github`.
+
+```json
+{ "type": "button", "label": "Sign up", "href": "/signup" }
+```
+
+```json
+{ "type": "github", "href": "https://github.com/owner/repo" }
+```
+
+| Variant | Required fields | Notes |
+|---|---|---|
+| `button` | `label`, `href` | Primary-styled CTA. |
+| `github` | `href` | GitHub-flavored star button with auto-derived star count. |
+
+## `footer`
+
+```json
+{
+  "footer": {
+    "socials": {
+      "github":   "https://github.com/owner/repo",
+      "twitter":  "https://x.com/owner",
+      "linkedin": "https://linkedin.com/company/owner"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          { "label": "Features", "href": "/features" },
+          { "label": "Pricing", "href": "/pricing" }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          { "label": "Changelog", "href": "/changelog" },
+          { "label": "Status", "href": "https://status.example.com" }
+        ]
+      }
+    ],
+    "lastUpdated": true,
+    "repo":    "https://github.com/owner/repo",
+    "editUrl": "https://github.com/owner/repo/edit/main/docs/{path}"
+  }
+}
+```
+
+### `footer.socials`
+
+Object of `{ network: url }`. Tangly recognizes common network names (`github`, `twitter` / `x`, `linkedin`, `youtube`, `discord`, `slack`, `mastodon`, `bluesky`, `instagram`) and renders the matching icon. Unknown keys render with a generic link icon.
+
+### `footer.links`
+
+Array of column groups.
+
+| Field | Type | Description |
+|---|---|---|
+| `header` | `string` | Optional column heading. |
+| `items` | `NavbarLink[]` | Array of `{ label, href, icon? }`. |
+
+### `footer.lastUpdated`
+
+`boolean`. Show the last-updated timestamp on every page footer. Default `false`. Per-page override via the [`lastUpdated` frontmatter field](/reference/schema/frontmatter).
+
+### `footer.editUrl`
+
+URL template for the "Edit this page" link. `{path}` is substituted with the page file's path relative to the project root.
+
+```
+"editUrl": "https://github.com/owner/repo/edit/main/docs/{path}"
+```
+
+If omitted, Tangly derives one from `footer.repo` (assumes GitHub `edit/main/`).
+
+### `footer.repo`
+
+Repository URL. Used to derive `editUrl` when not set explicitly. Falls back to `git remote get-url origin` if neither is present.
+
+## Source
+
+[`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) (`NavbarSchema`, `FooterSchema`)

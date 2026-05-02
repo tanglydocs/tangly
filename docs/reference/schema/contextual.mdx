@@ -1,0 +1,46 @@
+---
+title: Contextual
+description: AI-context buttons in the page header. Copy, view, ChatGPT, Claude.
+icon: "sparkles"
+---
+
+# `contextual`
+
+Tangly can show a row of action buttons in the page header. Three are user-facing affordances; two open the page's context in a chatbot.
+
+```json
+{
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
+  }
+}
+```
+
+## Options
+
+| Value | Behavior | Status |
+|---|---|---|
+| `copy` | Copy the page's Markdown source to clipboard. | Live. |
+| `view` | Open the page's raw Markdown in a new tab. | Live. |
+| `chatgpt` | Open ChatGPT with the page pre-loaded as context. | Live. |
+| `claude` | Open Claude with the page pre-loaded as context. | Live. |
+
+The order in the array is the order rendered.
+
+## How it works
+
+For `copy` and `view`, Tangly emits the page's compiled Markdown alongside the HTML so the buttons hit a static `.md` URL. The `chatgpt` / `claude` buttons construct prefilled-prompt URLs that drop the page's content into the chat.
+
+This pairs with [llms.txt generation](/guides/ai-agents/llms-txt) — the same source-of-truth Markdown is what coding agents consume.
+
+## Disabling
+
+Either omit `contextual` entirely or set:
+
+```json
+{ "contextual": { "options": [] } }
+```
+
+## Source
+
+[`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) (`ContextualSchema`)

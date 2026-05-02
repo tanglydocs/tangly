@@ -1,0 +1,80 @@
+---
+title: LaTeX
+description: Inline and display math via KaTeX. Mintlify's <latex> wrapper auto-rewrites.
+icon: "sigma"
+---
+
+# LaTeX
+
+Tangly renders math via [KaTeX](https://katex.org). Two syntaxes:
+
+## Inline math
+
+Single dollar signs:
+
+```md
+The capacity factor is $\rho = E_{actual} / E_{max}$.
+```
+
+Renders inline with surrounding prose.
+
+## Display math
+
+Double dollar signs on their own lines:
+
+```md
+$$
+E = mc^2
+$$
+```
+
+Renders as a centered block with extra vertical spacing.
+
+## Mintlify `<latex>` shim
+
+Mintlify projects use a wrapper element:
+
+```md
+<latex>E = mc^2</latex>
+```
+
+Tangly's preprocessor rewrites this to `$$E = mc^2$$` before MDX parsing. Either form works — author with whichever you prefer.
+
+## Common patterns
+
+```md
+- Fractions: $\frac{a}{b}$
+- Subscripts and superscripts: $x_i^2$
+- Greek letters: $\alpha, \beta, \gamma, \pi$
+- Sums and integrals:
+  $$
+  \sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+  $$
+- Vectors: $\vec{v}, \mathbf{v}$
+- Matrices:
+  $$
+  \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+  $$
+```
+
+## Escaping
+
+Literal dollar signs need escaping:
+
+```md
+The price is \$10.
+```
+
+Without the backslash, the parser would try to open a math expression.
+
+## Performance
+
+KaTeX renders at build time, not in the browser. Output is plain HTML + a small CSS bundle (loaded only on pages that use math). No client-side JS needed.
+
+## Custom macros
+
+For project-wide macros, drop a `theme/styles/katex.css` and import macro definitions in your custom template. KaTeX accepts a `macros` option through `rehype-katex` — exposed for ejected projects.
+
+## Source
+
+Math support is wired in `packages/tangly/src/...` via `remark-math` + `rehype-katex`. The `<latex>` shim lives in the manifest preprocessor.

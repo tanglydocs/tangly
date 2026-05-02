@@ -1,0 +1,38 @@
+---
+title: Tip
+description: Pro-tip callout. Optional advice that makes the reader's life easier without being required.
+icon: "lightbulb"
+---
+
+# Tip
+
+`<Tip>` is for advice the reader can take or leave. Keyboard shortcuts, performance hints, alternative ways to do the same thing.
+
+## When to use
+
+- "You can also do X with Cmd+K — faster than the menu."
+- "If you're on Bun, swap `npm i` for `bun add` and skip the lockfile dance."
+- Anything that starts with "while you're at it…"
+
+If the reader **must** know it, that's a [`<Note>`](/reference/components/note). If skipping it breaks things, that's a [`<Warning>`](/reference/components/warning).
+
+## Props
+
+None.
+
+## Example
+
+```mdx
+<Tip>Hold Shift while clicking to open the page in a new tab.</Tip>
+```
+
+<Tip>Hold Shift while clicking to open the page in a new tab.</Tip>
+
+## Related
+
+- [`<Note>`](/reference/components/note), [`<Info>`](/reference/components/info)
+- [Customizing components](/guides/customization/custom-components) to restyle all callouts via `_Callout.astro`
+
+## Source
+
+[`packages/theme-ui/src/components/Tip.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tip.astro)

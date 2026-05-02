@@ -1,0 +1,163 @@
+---
+title: Build your first docs site
+description: Empty directory to deployed site in about ten minutes. No prior Astro or MDX experience required.
+icon: "rocket"
+---
+
+# Build your first docs site
+
+The first time you set up a docs site for a new project, you're usually short on patience. So this tutorial doesn't dwell — we'll get pages on screen first, deal with polish later.
+
+What you'll have at the end: a five-page docs site running locally with hot reload, a deployed preview URL, and enough orientation to keep adding pages without consulting docs.
+
+## Before you start
+
+You need:
+
+- **Bun ≥ 1.1** (or Node 18+ if you'd rather; the rest of the tutorial assumes Bun).
+- A directory you can write to. Anywhere works.
+
+That's it. You don't need a GitHub account yet. You don't need a domain. Don't need to install Astro, MDX, Tailwind, or anything else — Tangly bundles them.
+
+## 1. Scaffold the project
+
+```bash
+mkdir my-docs && cd my-docs
+bunx tangly init
+```
+
+`tangly init` asks a couple of questions (project name, theme), then writes:
+
+<FileTree>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - quickstart.mdx
+  - guides/
+    - getting-started.mdx
+  - images/
+    - tangly-logo.png
+  - package.json
+</FileTree>
+
+Five pages, a logo, a config file. The `package.json` carries `tangly` as a dependency — `bun install` runs automatically.
+
+If you want to skip the prompts, pass flags:
+
+```bash
+bunx tangly init --name "My Docs" --template starter
+```
+
+## 2. Run the dev server
+
+```bash
+bunx tangly dev
+```
+
+Cold start under two seconds. Browser opens to `http://localhost:4321`. You should see the introduction page rendered with whichever theme you picked.
+
+```
+▲ tangly  v0.2.0
+  My Docs · 5 pages · theme: tang
+  Local:   http://localhost:4321
+```
+
+Edit any `.mdx` file, save, and the browser updates without reloading.
+
+## 3. Add a page
+
+Two options. The slow way: create `guides/installing.mdx` with frontmatter and add it to `docs.json` by hand. The fast way:
+
+```bash
+bunx tangly add page guides/installing
+```
+
+`tangly add` writes the file and inserts the slug into `docs.json` under the right group. Open `guides/installing.mdx` in your editor — it's a short stub:
+
+```mdx
+---
+title: Installing
+description: How to install.
+---
+
+# Installing
+
+Run `npm install ...`.
+```
+
+Replace the stub with whatever you'd actually want there. Save. The browser updates.
+
+## 4. Configure the basics
+
+Open `docs.json`. Set `name` to whatever your project's actually called. Update `colors.primary` to your brand hex. Set `logo` to a real image (drop it in `images/` first).
+
+```json
+{
+  "name": "My Project",
+  "description": "Short, single-line tagline.",
+  "colors": {
+    "primary": "#0ea5e9",
+    "light":   "#38bdf8",
+    "dark":    "#0284c7"
+  },
+  "logo": {
+    "light": "/images/logo-dark.png",
+    "dark":  "/images/logo-light.png"
+  }
+}
+```
+
+The dev server picks up `docs.json` changes the same way it picks up MDX edits — no restart.
+
+## 5. Validate
+
+Before you push:
+
+```bash
+bunx tangly check
+```
+
+Validates `docs.json`, every page's frontmatter, and every internal link. If anything's broken, the output names the file and line.
+
+A clean run looks like:
+
+```
+✓ docs.json
+✓ 5 pages, 12 internal links
+✓ no schema warnings
+OK — no issues found
+```
+
+## 6. Build
+
+```bash
+bunx tangly build
+```
+
+Static HTML lands in `dist/`. Builds for a hundred pages take under thirty seconds.
+
+```bash
+bunx tangly preview
+```
+
+Serves `dist/` locally so you can sanity-check the production output before deploying.
+
+## 7. Deploy
+
+The shortest path is Vercel:
+
+```bash
+bunx tangly build --adapter vercel
+vercel deploy
+```
+
+For Cloudflare Pages, use `--adapter cloudflare` and follow the [deploying guide](/guides/deploying). For "any static host," `--adapter static` writes plain HTML — drop `dist/` on S3, Netlify, or your own server.
+
+## Where to go from here
+
+- [Authoring → Pages](/guides/authoring/pages) — what frontmatter fields exist and when to use them.
+- [Components reference](/reference/components) — the auto-injected MDX components.
+- [Themes](/guides/themes/index) — switch palette / typography in one config field.
+- [AI agents](/guides/ai-agents/index) — the Tangly skill for Claude Code; how Cursor consumes `docs.json`.
+
+If you got stuck, [Troubleshooting](/troubleshooting/common-errors) covers the most common build / dev errors.

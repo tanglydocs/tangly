@@ -1,0 +1,97 @@
+---
+title: MDX
+description: JSX expressions, imports, component composition. The "X" in MDX.
+icon: "braces"
+---
+
+# MDX
+
+Every Tangly page is MDX — Markdown with embedded JSX. You can drop a component anywhere a paragraph would go.
+
+## Built-in components
+
+Every component listed in the [Components reference](/reference/components) is auto-injected. No imports.
+
+```mdx
+<Note>This shows up everywhere — no import.</Note>
+
+<CardGroup cols={2}>
+  <Card title="One" icon="circle" />
+  <Card title="Two" icon="square" />
+</CardGroup>
+```
+
+## JSX expressions
+
+Curly braces interpolate JavaScript:
+
+```mdx
+The current year is {new Date().getFullYear()}.
+
+The next major version is v{0 + 1}.{0 + 0}.
+```
+
+Expressions run at build time. They're useful for computed values that would drift if you hand-typed them, but they don't have access to your data layer — there's no SSR.
+
+## Importing components
+
+For one-off components that aren't built-in, import them at the top of the page:
+
+```mdx
+---
+title: Custom widget
+---
+
+import Widget from "../theme/Widget.astro";
+
+# Custom widget
+
+<Widget data={[1, 2, 3]} />
+```
+
+Resolution rules:
+
+- Relative imports work from the page's location.
+- Absolute imports (`@/components/Widget.astro`) work after [ejecting](/reference/cli/eject).
+- Without ejecting, stick to relative paths or shadow into `theme/`.
+
+## Exporting metadata
+
+Frontmatter is the canonical metadata channel. But for derived metadata that depends on JS computation, MDX `export const` works:
+
+```mdx
+---
+title: Roadmap
+---
+
+export const milestones = [
+  { date: "2026-Q1", focus: "Phase 1" },
+  { date: "2026-Q2", focus: "Phase 2" },
+]
+
+# Roadmap
+
+{milestones.map(m => <p key={m.date}>{m.date} — {m.focus}</p>)}
+```
+
+Custom templates can read these exports via Astro's MDX module API.
+
+## Components inside Markdown
+
+Markdown inside JSX needs blank lines around it:
+
+```mdx
+<Note>
+
+This paragraph is **bold** because the blank line lets it render as Markdown.
+
+</Note>
+```
+
+Without the blank line, the renderer treats the children as a single inline expression and your `**bold**` ships as literal asterisks.
+
+## Limitations
+
+- No client-side React/Vue/Svelte. Tangly outputs static HTML — JSX is server-only.
+- No `import` from npm packages outside what Tangly bundles. For custom logic, drop the file in `theme/` and shadow.
+- HTML inside MDX is allowed but discouraged — most things have a component (`<Frame>` over `<figure>`, `<Kbd>` over `<kbd>`).

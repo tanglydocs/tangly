@@ -1,0 +1,87 @@
+---
+title: Themes overview
+description: Tangly ships five themes. One token swap, no component changes. Pick one or roll your own.
+icon: "palette"
+---
+
+# Themes
+
+Tangly ships five themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`) — what differs is colors, typography, layout dimensions, and chrome.
+
+## The five built-ins
+
+<CardGroup cols={2}>
+  <Card title="Tang" icon="flame" href="/guides/themes/tang">
+    Default. Mintlify-Mint inspired. Sans-serif headings, warm off-white surface, mandarin accent.
+  </Card>
+  <Card title="Pith" icon="book-open" href="/guides/themes/pith">
+    Editorial. Serif headings, cream background, all chrome in the left sidebar.
+  </Card>
+  <Card title="Pip" icon="sprout" href="/guides/themes/pip">
+    Minimal. Single-column, topbar-only chrome. For tiny sites — 4–5 pages.
+  </Card>
+  <Card title="Readable" icon="book-marked" href="/guides/themes/readable">
+    Long-form. Cream paper, serif body, book-style chapter nav. For essays, books, manuscripts.
+  </Card>
+  <Card title="Geist" icon="square-asterisk" href="/guides/themes/geist">
+    Modern dev-tool aesthetic. Vercel / Linear / Stripe family. Hairline borders, near-black CTAs.
+  </Card>
+</CardGroup>
+
+## Switch themes
+
+One field in `docs.json`:
+
+```json
+{ "theme": "tang" }
+```
+
+Reload the dev server (`tangly dev`) to see it. No other changes required — components are theme-agnostic.
+
+## Picking one
+
+| If your docs are… | Pick |
+|---|---|
+| A general OSS / dev-tool site | **Tang** |
+| A handbook, knowledge base, or design-led docs | **Pith** |
+| A 4–5 page README replacement | **Pip** |
+| A book, essay collection, or long manuscript | **Readable** |
+| A modern dev-tool with grayscale + restraint | **Geist** |
+
+## How themes work
+
+Each theme is a separate package: `@tanglydocs/theme-tang`, `@tanglydocs/theme-pith`, `@tanglydocs/theme-pip`, `@tanglydocs/theme-readable`, `@tanglydocs/theme-geist`.
+
+Inside each package: a single `theme.css` file with the token table (colors, fonts, layout dimensions). Components are shared — they consume the tokens at render.
+
+```
+docs.json (theme: "pith")
+   ↓
+resolveTheme()
+   ↓
+@tanglydocs/theme-pith → theme.css with pith's tokens
+   ↓
+@tanglydocs/theme-ui   → renders Layout/TopNav/Sidebar/etc using those tokens
+```
+
+This means **switching themes is risk-free**. Authoring stays the same. No content edits. Just swap the field, rebuild.
+
+## Customization paths
+
+Three knobs, in order of effort:
+
+1. **Override colors via `colors` in `docs.json`.** Five tokens. See [Colors](/reference/schema/colors).
+2. **Override fonts via `fonts` in `docs.json`.** Heading and body. See [Fonts & styling](/reference/schema/fonts-styling).
+3. **Override CSS variables in `theme/styles/theme.css`.** Drop the file at your project root; Tangly concatenates after the active theme. Full control.
+
+For deep custom layouts, [shadow](/guides/customization/custom-components) the components or [eject](/reference/cli/eject).
+
+See [Customizing themes](/guides/themes/customizing) for the full picture.
+
+## Mintlify aliases
+
+Existing Mintlify projects often have `theme: "mint"` or one of: `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia`. All resolve to `tang`. See [Aliases](/guides/themes/aliases) for why.
+
+## Schema reference
+
+For the full `theme:` field definition, see [Schema → Themes](/reference/schema/themes).

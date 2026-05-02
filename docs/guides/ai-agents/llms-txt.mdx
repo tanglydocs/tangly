@@ -1,0 +1,120 @@
+---
+title: llms.txt
+description: Auto-generated `/llms.txt` and `/llms-full.txt`. The standard way to expose docs to coding agents.
+icon: "bot-message-square"
+---
+
+# `llms.txt`
+
+[`llms.txt`](https://llmstxt.org) is a proposed convention: a Markdown file at the root of your site that lists every page agents can read, with brief descriptions. Think `sitemap.xml` for LLMs.
+
+Tangly emits two variants automatically:
+
+- **`/llms.txt`** — index. Page titles and descriptions, one per line, grouped by navigation section.
+- **`/llms-full.txt`** — index + the full Markdown content of every public page.
+
+Both are generated at build time. No configuration. No opt-in.
+
+## What's in them
+
+### `/llms.txt`
+
+```
+# My Docs
+
+> Self-hosted, open-source documentation framework.
+
+## Get Started
+- [Introduction](/introduction): One-line description from frontmatter.
+- [Installation](/installation): How to install Tangly.
+- [Quickstart](/quickstart): 60-second tour.
+
+## Reference
+- [docs.json](/reference/schema/docs-json): Configuration reference.
+- ...
+```
+
+The structure mirrors `docs.json#navigation`. Tabs become `##` headings, groups become sub-sections, page entries link to the rendered page and carry the `description` from frontmatter.
+
+### `/llms-full.txt`
+
+```
+# My Docs
+
+[same header as llms.txt]
+
+---
+
+## /introduction
+
+[full Markdown of introduction.mdx]
+
+---
+
+## /installation
+
+[full Markdown of installation.mdx]
+
+...
+```
+
+Pages are separated by `---`. Each page's frontmatter is dropped; its body is the source Markdown (before MDX components compile).
+
+The full file can be several MB on large docs sites. Coding agents fetching it once and caching is the expected use.
+
+## What's excluded
+
+- Pages with `noindex: true` in frontmatter.
+- Drafts (`draft: true`) when not built with `--include-drafts`.
+- Pages whose slug is in `redirects[].source`.
+
+## How agents use it
+
+Coding agents fetch one of two URLs at the start of a session:
+
+- For an overview: `/llms.txt`. Cheap, small, lets the agent know what pages exist.
+- For full context: `/llms-full.txt`. Heavier, but eliminates the back-and-forth of fetching individual pages.
+
+Tangly's own [`tanglify` skill](/guides/ai-agents/skills) is what Claude Code uses for guidance. Other agents (Cursor's deep mode, Aider) often consume `llms-full.txt` directly.
+
+## Pointing agents at your llms.txt
+
+Tools that auto-discover (Cursor, Continue, several IDE plugins) fetch from `/llms.txt` automatically when given a base URL.
+
+For tools that don't auto-discover, you tell the agent:
+
+```
+This project's docs are at https://docs.example.com.
+The llms.txt is at https://docs.example.com/llms.txt.
+```
+
+Most coding agents pick this up on the first turn.
+
+## Excluding sensitive pages
+
+Use the `noindex` frontmatter field:
+
+```yaml
+---
+title: Internal API
+noindex: true
+---
+```
+
+Excludes from `/llms.txt`, `/llms-full.txt`, `sitemap.xml`, and the search index. Page is still routable — just not discoverable.
+
+For server-rendered access controls (login required to view), Tangly isn't the right tool. Static-site limit: anyone who can view the page can read its source.
+
+## Customizing
+
+The current implementation isn't user-configurable. Roadmap:
+
+- Per-page truncation hints (only the first N words of long pages in `llms-full.txt`).
+- Section-level inclusion rules (whole tabs marked as "external context").
+- Custom front-matter to inject into the header.
+
+If any of those would unblock your team, [open an issue](https://github.com/tanglydocs/tangly/issues).
+
+## Source
+
+The generator lives in `packages/tangly/src/build/llms-txt.ts`.

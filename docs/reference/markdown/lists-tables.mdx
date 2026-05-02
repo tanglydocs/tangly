@@ -1,0 +1,98 @@
+---
+title: Lists & tables
+description: Ordered, unordered, task lists, definition lists, GFM tables with alignment.
+icon: "list"
+---
+
+# Lists & tables
+
+## Unordered lists
+
+Use `-`, `*`, or `+`. Pick one and stick to it. The renderer treats them identically; consistent formatting helps reviewers.
+
+```md
+- First
+- Second
+  - Nested (two-space indent)
+  - Another nested
+- Third
+```
+
+## Ordered lists
+
+```md
+1. First
+2. Second
+3. Third
+```
+
+The numbers don't have to match the order. `1.`, `1.`, `1.` renders as `1. 2. 3.`. Useful when you reorder items mid-edit.
+
+## Task lists
+
+```md
+- [ ] Todo
+- [x] Done
+- [ ] Not yet
+```
+
+- [ ] Todo
+- [x] Done
+- [ ] Not yet
+
+## Definition lists
+
+GitHub-flavored definition lists work:
+
+```md
+Term
+: Definition.
+
+Another term
+: Definition with **emphasis**.
+```
+
+## Tables
+
+```md
+| Field | Type | Required |
+|---|---|---|
+| `name` | string | yes |
+| `description` | string | no |
+| `enabled` | boolean | no |
+```
+
+| Field | Type | Required |
+|---|---|---|
+| `name` | string | yes |
+| `description` | string | no |
+| `enabled` | boolean | no |
+
+### Alignment
+
+Use colons in the divider row:
+
+```md
+| Left | Center | Right |
+|:---|:---:|---:|
+| 1 | 2 | 3 |
+```
+
+| Left | Center | Right |
+|:---|:---:|---:|
+| 1 | 2 | 3 |
+
+### Inline formatting
+
+Markdown emphasis, code, and links work inside table cells:
+
+```md
+| Field | Default | Description |
+|---|---|---|
+| `mode` | `"default"` | One of `default`, `wide`, `center`, `custom`. See [frontmatter](/reference/schema/frontmatter#mode). |
+```
+
+### Limitations
+
+- No multi-line cell content. Use a single line per cell.
+- For complex layouts, drop into HTML or use [`<Columns>`](/reference/components/columns) + plain prose.

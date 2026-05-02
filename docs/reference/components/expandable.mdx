@@ -1,0 +1,44 @@
+---
+title: Expandable
+description: Collapsible section without the chrome of an Accordion. For inline disclosure.
+icon: "chevrons-up-down"
+---
+
+# Expandable
+
+`<Expandable>` is a lighter-weight collapsible than [`<Accordion>`](/reference/components/accordion). No icon, no subtitle — just a clickable title and a hidden body.
+
+## When to use
+
+- Nested response fields inside [`<ResponseField>`](/reference/components/response-field).
+- "Show more" sections inside long reference pages.
+- Optional flag flags / advanced settings.
+
+For top-level FAQ stacks, [`<Accordion>`](/reference/components/accordion) inside [`<AccordionGroup>`](/reference/components/accordion-group) reads better.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Clickable header. Required. |
+| `defaultOpen` | `boolean` | `false` | Render expanded on first paint. |
+
+## Example
+
+```mdx
+<Expandable title="Show all environment variables">
+  - `TANGLY_USER_ROOT` — points at the user's project root
+  - `TANGLY_MODE` — `dev` enables draft visibility
+  - `TANGLY_INCLUDE_DRAFTS` — `1` overrides draft flag for staging
+</Expandable>
+```
+
+<Expandable title="Show all environment variables">
+  - `TANGLY_USER_ROOT` — points at the user's project root
+  - `TANGLY_MODE` — `dev` enables draft visibility
+  - `TANGLY_INCLUDE_DRAFTS` — `1` overrides draft flag for staging
+</Expandable>
+
+## Source
+
+[`packages/theme-ui/src/components/Expandable.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Expandable.astro)

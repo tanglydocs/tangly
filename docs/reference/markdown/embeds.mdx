@@ -1,0 +1,88 @@
+---
+title: Embeds
+description: Video and iframe embeds — YouTube, Vimeo, Loom, CodePen, generic iframes. Lazy-loaded by default.
+icon: "link-2"
+---
+
+# Embeds
+
+Three components handle external content:
+
+| Use case | Component |
+|---|---|
+| Video (YouTube, Vimeo, mp4) | [`<Video>`](/reference/components/video) |
+| Generic iframe with caption | [`<Frame>`](/reference/components/frame) |
+| Cross-page block reuse | [`<Embed>`](/reference/components/embed) |
+
+## YouTube
+
+```mdx
+<Video src="https://www.youtube.com/watch?v=jNQXAC9IVRw" />
+```
+
+`<Video>` detects YouTube URLs (`youtube.com/watch`, `youtu.be/`) and rewrites to the privacy-mode embed (`youtube-nocookie.com`). Lazy-loaded — no third-party traffic until the player scrolls into view.
+
+## Vimeo
+
+```mdx
+<Video src="https://vimeo.com/76979871" />
+```
+
+Same lazy-load story.
+
+## Self-hosted video
+
+```mdx
+<Video
+  src="/videos/quickstart.mp4"
+  poster="/videos/quickstart-poster.jpg"
+  transcript="/transcripts/quickstart.txt"
+/>
+```
+
+## Loom
+
+Loom embeds work via raw iframe inside a `<Frame>`:
+
+```mdx
+<Frame caption="The team kickoff for the v0.3 cycle.">
+  <iframe
+    src="https://www.loom.com/embed/<id>"
+    width="100%"
+    height="400"
+    frameborder="0"
+    allowfullscreen
+  />
+</Frame>
+```
+
+For consistency across projects, define a tiny `theme/Loom.astro` wrapper component once and use `<Loom id="abc" />` everywhere.
+
+## CodePen / CodeSandbox / StackBlitz
+
+Same pattern as Loom — iframe inside a `<Frame>`. CodePen has copy-paste embed code that drops in cleanly.
+
+```mdx
+<Frame>
+  <iframe
+    src="https://codesandbox.io/embed/<id>?view=preview"
+    width="100%"
+    height="500"
+    frameborder="0"
+  />
+</Frame>
+```
+
+## Cross-page block embeds
+
+For embedding labeled prose blocks from one Tangly page into another (no iframes — actual content inlining), use [`<Embed>`](/reference/components/embed):
+
+```mdx
+<Embed page="guides/billing" block="rate-limits" />
+```
+
+Resolves at build time, no runtime cost. See [Authoring → Embedded blocks](/guides/authoring/embedded-blocks) for the workflow.
+
+## Twitter / Bluesky / Mastodon
+
+No first-class component yet. Use the official embed snippets inside a `<Frame>`. For lots of social embeds, build a `theme/Tweet.astro` once and consume it everywhere.

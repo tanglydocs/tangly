@@ -1,0 +1,34 @@
+---
+title: OpenApiRedoc
+description: Embed ReDoc as the OpenAPI viewer for a single operation.
+icon: "book-open"
+---
+
+# OpenApiRedoc
+
+`<OpenApiRedoc>` embeds the [ReDoc](https://redocly.com/redoc) standalone bundle, lazy-loaded from CDN. Use it when you'd rather present the operation in ReDoc's three-panel layout than Tangly's compact default.
+
+Set `api.viewer: "redoc"` in `docs.json` to make every auto-generated OpenAPI page use ReDoc by default.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `spec` | `string` | — | Path or URL to the OpenAPI spec. Required. |
+| `method` | `string` | — | HTTP method. Required. |
+| `path` | `string` | — | Operation path. Required. |
+
+## Example
+
+```mdx
+<OpenApiRedoc spec="/openapi.json" method="POST" path="/v1/orders" />
+```
+
+## Related
+
+- [`<OpenApiEndpoint>`](/reference/components/openapi-endpoint) — Tangly's built-in viewer
+- [`<OpenApiScalar>`](/reference/components/openapi-scalar), [`<OpenApiStoplight>`](/reference/components/openapi-stoplight)
+
+## Source
+
+[`packages/theme-ui/src/components/OpenApiRedoc.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/OpenApiRedoc.astro)

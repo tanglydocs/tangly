@@ -1,0 +1,33 @@
+---
+title: Info
+description: Neutral aside. Background context that doesn't fit Note or Tip.
+icon: "circle-help"
+---
+
+# Info
+
+`<Info>` is the most muted callout. Use it for asides that are too long for parentheses but too tangential for the main flow.
+
+## When to use
+
+- "This is implemented in `packages/tangly/src/manifest/...` — see [Architecture](/architecture/manifest) for the long version."
+- Acknowledgements, attribution, history.
+- Definitions that the reader might already know.
+
+If the aside is actionable, use [`<Tip>`](/reference/components/tip). If it's a heads-up, use [`<Note>`](/reference/components/note).
+
+## Props
+
+None.
+
+## Example
+
+```mdx
+<Info>Mintlify and Tangly both call this file `docs.json`. The schemas are compatible — Tangly's just a strict superset.</Info>
+```
+
+<Info>Mintlify and Tangly both call this file `docs.json`. The schemas are compatible — Tangly's just a strict superset.</Info>
+
+## Source
+
+[`packages/theme-ui/src/components/Info.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Info.astro)

@@ -1,0 +1,45 @@
+---
+title: Markdown & MDX
+description: Every Markdown and MDX feature Tangly supports — what works, what's quirky, and the pipeline that processes it.
+icon: "file-code-2"
+---
+
+# Markdown & MDX
+
+Tangly pages are MDX. That's CommonMark + GitHub-flavored extensions + JSX expressions and JSX components. This section is the reference for what's supported and what gets transformed along the way.
+
+If you're new to MDX, the short version: anything that's valid Markdown is valid MDX, plus you can drop in `<Component />` tags wherever you want. No imports needed for built-in components — Tangly auto-injects the [theme-ui set](/reference/components).
+
+## Pages
+
+<CardGroup cols={2}>
+  <Card title="Text & headings" icon="text" href="/reference/markdown/text-and-headings">Paragraphs, headings, emphasis, blockquotes.</Card>
+  <Card title="Lists & tables" icon="list" href="/reference/markdown/lists-tables">Ordered, unordered, task lists, tables with alignment.</Card>
+  <Card title="Code" icon="code" href="/reference/markdown/code">Fenced blocks, language hints, line highlighting, file titles, diff.</Card>
+  <Card title="Links & images" icon="link" href="/reference/markdown/links-images">Relative path rewriting, the asset pipeline, lightbox behavior.</Card>
+  <Card title="MDX" icon="braces" href="/reference/markdown/mdx">JSX expressions, imports, component composition.</Card>
+  <Card title="LaTeX" icon="sigma" href="/reference/markdown/latex">Inline math, display math, KaTeX rendering.</Card>
+  <Card title="Embeds" icon="link-2" href="/reference/markdown/embeds">YouTube, Loom, CodePen, generic iframes.</Card>
+</CardGroup>
+
+## Pipeline overview
+
+Every `.mdx` file flows through:
+
+1. **Frontmatter parse** (`gray-matter`) — splits YAML frontmatter from body.
+2. **Mintlify shims** — `<latex>...</latex>` rewritten to `$$...$$`, relative image paths (`![](../images/...)`) rewritten to absolute (`/images/...`).
+3. **Remark/rehype** — GitHub-flavored Markdown, math (KaTeX), Shiki highlighter, slug + autolink, glossary auto-linking.
+4. **Astro MDX compiler** — JSX components resolve, imports are inlined.
+5. **Layout render** — page chrome wraps the content (sidebar, TOC, reading progress).
+
+You can [eject](/reference/cli/eject) the project to see the full pipeline configuration as plain Astro/Vite config.
+
+## Mintlify compatibility
+
+Three compat shims worth knowing about:
+
+- `<latex>...</latex>` — Mintlify's wrapper. Tangly rewrites to `$$...$$` (KaTeX display).
+- Relative image paths — Mintlify resolves them at runtime; Tangly rewrites to absolute at build so Astro's MDX pipeline doesn't cache-miss.
+- Image optimization — disabled. Mintlify projects often use absolute external URLs that bypass image pipelines anyway. See [Static assets](/guides/deploying/static-assets).
+
+For the full migration story, see [Migration → Compatibility](/guides/migration/compatibility).

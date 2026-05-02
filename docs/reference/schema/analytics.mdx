@@ -1,0 +1,57 @@
+---
+title: Analytics
+description: PostHog, Plausible, Fathom, GA4, GTM, Amplitude, Hotjar, Mixpanel, Segment, Pirsch, LogRocket, Heap.
+icon: "chart-line"
+---
+
+# `analytics`
+
+Each provider is independently optional. Tangly emits the right snippet for whichever ones are set; omit the field to skip.
+
+```json
+{
+  "analytics": {
+    "posthog":   { "apiKey": "phc_...", "apiHost": "https://eu.posthog.com" },
+    "plausible": { "domain": "docs.example.com" },
+    "fathom":    { "siteId": "ABC123" },
+    "ga4":       { "measurementId": "G-XXXXXXXX" },
+    "gtm":       { "tagId": "GTM-XXXXXXX" },
+    "amplitude": { "apiKey": "..." },
+    "hotjar":    { "hjid": "1234567", "hjsv": "6" },
+    "mixpanel":  { "projectToken": "..." },
+    "segment":   { "key": "..." },
+    "pirsch":    { "id": "..." },
+    "logrocket": { "apiKey": "..." },
+    "heap":      { "appId": "..." }
+  }
+}
+```
+
+## Providers
+
+| Provider | Field shape | Notes |
+|---|---|---|
+| **PostHog** | `{ apiKey, apiHost? }` | EU users: set `apiHost: "https://eu.posthog.com"`. |
+| **Plausible** | `{ domain }` | Self-hosted: also set `apiHost` via `integrations.plausible`. |
+| **Fathom** | `{ siteId }` | — |
+| **GA4** | `{ measurementId }` | gtag.js. |
+| **GTM** | `{ tagId }` | Google Tag Manager container. |
+| **Amplitude** | `{ apiKey }` | — |
+| **Hotjar** | `{ hjid, hjsv? }` | `hjsv` defaults to `"6"`. |
+| **Mixpanel** | `{ projectToken }` | — |
+| **Segment** | `{ key }` | Analytics.js write key. |
+| **Pirsch** | `{ id }` | — |
+| **LogRocket** | `{ apiKey }` | — |
+| **Heap** | `{ appId }` | — |
+
+## Multiple providers
+
+You can enable several at once. Tangly emits each snippet in `<head>`. Use this for transitions (running PostHog and GA4 in parallel) or when product and marketing want different tools.
+
+## Privacy
+
+None of these providers ship without explicit configuration. Tangly doesn't bundle a default tracker. If your audience is privacy-sensitive, [Plausible](https://plausible.io) and [Fathom](https://usefathom.com) are cookie-free; PostHog supports an EU-hosted region.
+
+## Source
+
+[`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) (`AnalyticsSchema`)

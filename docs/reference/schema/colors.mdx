@@ -1,60 +1,62 @@
 ---
 title: Colors
-description: Brand colors and CSS variables.
-icon: "swatch-book"
+description: Brand color tokens. Primary, light, dark, page background, and the anchor gradient.
+icon: "palette"
 ---
 
-# Colors
+# `colors`
 
-Configure brand colors in `docs.json#colors`:
+Five tokens drive every accent and background in the theme. All are hex strings (`#rrggbb`, `#rgb`, or `#rrggbbaa`).
 
 ```json
 {
   "colors": {
-    "primary": "#0ea5e9",
-    "light":   "#38bdf8",
-    "dark":    "#0284c7",
-    "background": { "light": "#ffffff", "dark": "#0a0a0a" },
-    "anchors":    { "from": "#0ea5e9", "to": "#06b6d4" }
+    "primary":    "#EA580C",
+    "light":      "#F97316",
+    "dark":       "#C2410C",
+    "background": { "light": "#FFFFFF", "dark": "#0B0B0F" },
+    "anchors":    { "from": "#F97316", "to": "#C2410C" }
   }
 }
 ```
 
-## Fields
+## Tokens
 
-<ParamField path="primary" type="string">
-  Primary brand color. Used for active sidebar link, link color, primary buttons. Hex format only (`#rgb`, `#rrggbb`, or `#rrggbbaa`).
-</ParamField>
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `primary` | hex | theme | Main accent. Active sidebar link, primary button, focus ring. |
+| `light` | hex | theme | Lighter primary tint. Hover states, gradient highlights. |
+| `dark` | hex | theme | Darker primary shade. Active states, dark-mode tinted UI. |
+| `background` | hex \| `{ light?, dark? }` | theme | Page background. Use the object form to set distinct values per mode. |
+| `anchors` | hex \| `{ from?, to? }` | derived from `light`/`dark` | Linear-gradient stops for anchor link styling. |
 
-<ParamField path="light" type="string">
-  Lighter variant. Used for hover states and highlights.
-</ParamField>
+## Single vs split values
 
-<ParamField path="dark" type="string">
-  Darker variant. Used for active states and dark-mode tinted UI.
-</ParamField>
+Both `background` and `anchors` accept a single hex (same for both modes) or an object.
 
-<ParamField path="background" type="string | object">
-  Page background color. Either a single hex (same for both modes) or `{ light?, dark? }` for theme-aware override.
-</ParamField>
+```json
+"background": "#FAFAF7"
+```
 
-<ParamField path="anchors" type="string | object">
-  Anchor link color. Either a single hex or `{ from?, to? }` for a gradient.
-</ParamField>
+…is equivalent to:
+
+```json
+"background": { "light": "#FAFAF7", "dark": "#FAFAF7" }
+```
 
 ## CSS variables emitted
 
-Tangly's Layout writes inline CSS variables on `<html>`:
+Tangly writes inline CSS variables on `<html>`:
 
 | Variable | Source |
-| -------- | ------ |
+|---|---|
 | `--tangly-color-primary` | `colors.primary` |
 | `--tangly-color-primary-light` | `colors.light` |
 | `--tangly-color-primary-dark` | `colors.dark` |
 | `--tangly-color-bg` | `colors.background.light` (or string form) |
 | `--tangly-color-bg-dark` | `colors.background.dark` |
 
-Themes consume these in their `theme.css`. Overriding them at the project level (in `theme/styles/theme.css`) lets you tweak colors without forking the theme.
+Themes consume these in `theme.css`. Override them at the project level (in `theme/styles/theme.css`) to tweak colors without forking a theme.
 
 ## Validation
 
@@ -64,8 +66,21 @@ Each hex must match `/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/`. Schem
 - Named colors (`"red"`, `"blue"`).
 - Tailwind tokens (`"sky-500"`).
 
-If you need named tokens, set them in `theme/styles/theme.css` as CSS variables and reference those.
+For named tokens, set them in `theme/styles/theme.css` as CSS variables and reference those from your custom components.
 
-## Defaults
+## Defaults from theme
 
-When `colors` is omitted entirely, themes use their bundled defaults from each theme's own `theme.css`. Override CSS variables at the project level via `theme/styles/theme.css` if the bundled palette doesn't match your brand.
+When `colors` is omitted, the active theme's bundled palette kicks in. Tang's defaults:
+
+| Token | Light | Dark |
+|---|---|---|
+| `primary` | `#EA580C` | `#EA580C` |
+| `light` | `#F97316` | `#F97316` |
+| `dark` | `#C2410C` | `#C2410C` |
+| `background` | `#FAFAF7` | `#0B0B0F` |
+
+Other themes ship their own defaults. See each theme's guide: [tang](/guides/themes/tang), [pith](/guides/themes/pith), [pip](/guides/themes/pip), [readable](/guides/themes/readable), [geist](/guides/themes/geist).
+
+## Source
+
+[`packages/schema/src/colors.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/colors.ts)

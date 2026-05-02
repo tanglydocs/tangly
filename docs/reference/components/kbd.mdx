@@ -1,0 +1,49 @@
+---
+title: Kbd
+description: Styled keycap. Use it to render keyboard shortcuts inline. Auto-substitutes Cmd→Ctrl on non-mac.
+icon: "keyboard"
+---
+
+# Kbd
+
+`<Kbd>` renders one or more styled keycaps. Either pass a single key as children, or a chord via the `keys` prop.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `keys` | `string` | — | Chord notation. Split on `+` or whitespace; `Cmd` swaps to `Ctrl` automatically when the user-agent isn't macOS. |
+
+If `keys` is omitted, the children render as a single keycap.
+
+## Examples
+
+### Single key
+
+```mdx
+Press <Kbd>Esc</Kbd> to close.
+```
+
+Press <Kbd>Esc</Kbd> to close.
+
+### Manual chord
+
+```mdx
+<Kbd>Cmd</Kbd>+<Kbd>K</Kbd> opens search.
+```
+
+<Kbd>Cmd</Kbd>+<Kbd>K</Kbd> opens search.
+
+### Auto-platform chord
+
+```mdx
+<Kbd keys="Cmd+K" /> opens search.
+```
+
+<Kbd keys="Cmd+K" /> opens search.
+
+On Linux/Windows, the same tag renders <Kbd>Ctrl</Kbd>+<Kbd>K</Kbd>.
+
+## Source
+
+[`packages/theme-ui/src/components/Kbd.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Kbd.astro)

@@ -1,0 +1,37 @@
+---
+title: ResponseExample
+description: Side-panel container for an API response example. Pairs with RequestExample.
+icon: "arrow-down-to-line"
+---
+
+# ResponseExample
+
+`<ResponseExample>` marks one or more code blocks as the response example for the current API operation. Renders next to the request example in the side panel.
+
+## Props
+
+None. Wrap code blocks inside.
+
+## Example
+
+````mdx
+<ResponseExample>
+  ```json 200
+  { "id": "u_abc", "name": "Ada" }
+  ```
+  ```json 422
+  { "error": "validation", "fields": ["name"] }
+  ```
+</ResponseExample>
+````
+
+The leading status code on the language line (`200`, `422`) becomes the tab label.
+
+## Related
+
+- [`<RequestExample>`](/reference/components/request-example)
+- [`<ResponseField>`](/reference/components/response-field) — describe individual fields
+
+## Source
+
+[`packages/theme-ui/src/components/ResponseExample.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/ResponseExample.astro)

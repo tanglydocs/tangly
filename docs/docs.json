@@ -33,6 +33,32 @@
     "dismissible": true,
     "content": "Tangly v0.2 ships richer code blocks, page chrome, and more — <a href=\"/changelog\">see what's new</a>"
   },
+  "redirects": [
+    { "source": "/guides/migrate-from-mintlify", "destination": "/guides/migration/from-mintlify", "permanent": true },
+    { "source": "/guides/configuration", "destination": "/guides/customization/configuration", "permanent": true },
+    { "source": "/guides/themes", "destination": "/guides/themes/index", "permanent": true },
+    { "source": "/guides/components", "destination": "/guides/customization/components", "permanent": true },
+    { "source": "/guides/custom-components", "destination": "/guides/customization/custom-components", "permanent": true },
+    { "source": "/guides/custom-templates", "destination": "/guides/customization/custom-templates", "permanent": true },
+    { "source": "/guides/search", "destination": "/guides/customization/search", "permanent": true },
+    { "source": "/guides/code-blocks", "destination": "/guides/authoring/code-blocks", "permanent": true },
+    { "source": "/guides/announcement", "destination": "/guides/authoring/announcement", "permanent": true },
+    { "source": "/guides/drafts", "destination": "/guides/authoring/drafts", "permanent": true },
+    { "source": "/guides/embedded-blocks", "destination": "/guides/authoring/embedded-blocks", "permanent": true },
+    { "source": "/guides/glossary", "destination": "/guides/authoring/glossary", "permanent": true },
+    { "source": "/guides/navigation", "destination": "/guides/authoring/navigation", "permanent": true },
+    { "source": "/guides/openapi", "destination": "/guides/authoring/openapi", "permanent": true },
+    { "source": "/guides/static-assets", "destination": "/guides/deploying/static-assets", "permanent": true },
+    { "source": "/guides/subpath-hosting", "destination": "/guides/deploying/subpath-hosting", "permanent": true },
+    { "source": "/guides/deploying", "destination": "/guides/deploying/index", "permanent": true },
+    { "source": "/reference/components/callouts", "destination": "/reference/components/note", "permanent": true },
+    { "source": "/reference/components/cards", "destination": "/reference/components/card", "permanent": true },
+    { "source": "/reference/components/code", "destination": "/reference/components/code-group", "permanent": true },
+    { "source": "/reference/components/tabs-and-steps", "destination": "/reference/components/tabs", "permanent": true },
+    { "source": "/reference/components/layout", "destination": "/reference/components/frame", "permanent": true },
+    { "source": "/reference/components/api", "destination": "/reference/components/param-field", "permanent": true },
+    { "source": "/reference/components/media", "destination": "/reference/components/video", "permanent": true }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -43,35 +69,72 @@
             "pages": ["introduction", "installation", "quickstart"]
           },
           {
-            "group": "Core",
+            "group": "Authoring",
             "pages": [
-              "guides/configuration",
-              "guides/navigation",
-              "guides/components",
-              "guides/themes",
-              "guides/openapi",
-              "guides/search",
-              "guides/glossary"
+              "guides/authoring/pages",
+              "guides/authoring/navigation",
+              "guides/authoring/code-blocks",
+              "guides/authoring/openapi",
+              "guides/authoring/drafts",
+              "guides/authoring/embedded-blocks",
+              "guides/authoring/glossary",
+              "guides/authoring/announcement"
             ]
           },
           {
             "group": "Customization",
             "pages": [
-              "guides/code-blocks",
-              "guides/announcement",
-              "guides/custom-components",
-              "guides/custom-templates",
-              "guides/drafts",
-              "guides/embedded-blocks"
+              "guides/customization/configuration",
+              "guides/customization/components",
+              "guides/customization/custom-components",
+              "guides/customization/custom-templates",
+              "guides/customization/search"
+            ]
+          },
+          {
+            "group": "Themes",
+            "pages": [
+              "guides/themes/index",
+              "guides/themes/tang",
+              "guides/themes/pith",
+              "guides/themes/pip",
+              "guides/themes/readable",
+              "guides/themes/geist",
+              "guides/themes/aliases",
+              "guides/themes/customizing"
             ]
           },
           {
             "group": "Deploying",
-            "pages": ["guides/deploying", "guides/subpath-hosting", "guides/static-assets"]
+            "pages": [
+              "guides/deploying/index",
+              "guides/deploying/subpath-hosting",
+              "guides/deploying/static-assets"
+            ]
           },
           {
             "group": "Migration",
-            "pages": ["guides/migrate-from-mintlify"]
+            "pages": [
+              "guides/migration/from-mintlify",
+              "guides/migration/compatibility"
+            ]
+          },
+          {
+            "group": "AI agents",
+            "pages": [
+              "guides/ai-agents/index",
+              "guides/ai-agents/skills",
+              "guides/ai-agents/cursor-and-others",
+              "guides/ai-agents/llms-txt",
+              "guides/ai-agents/conventions"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/common-errors",
+              "troubleshooting/faq"
+            ]
           }
         ]
       },
@@ -95,22 +158,134 @@
             "group": "Schema",
             "pages": [
               "reference/schema/docs-json",
-              "reference/schema/frontmatter",
-              "reference/schema/themes",
+              "reference/schema/navigation",
               "reference/schema/colors",
-              "reference/schema/icons"
+              "reference/schema/logo-favicon",
+              "reference/schema/footer-navbar",
+              "reference/schema/api",
+              "reference/schema/analytics",
+              "reference/schema/seo",
+              "reference/schema/redirects",
+              "reference/schema/errors-banner",
+              "reference/schema/contextual",
+              "reference/schema/themes",
+              "reference/schema/icons",
+              "reference/schema/fonts-styling",
+              "reference/schema/integrations"
             ]
+          },
+          {
+            "group": "Frontmatter",
+            "pages": ["reference/schema/frontmatter"]
           },
           {
             "group": "Components",
             "pages": [
-              "reference/components/callouts",
-              "reference/components/cards",
-              "reference/components/tabs-and-steps",
-              "reference/components/code",
-              "reference/components/layout",
-              "reference/components/api",
-              "reference/components/media"
+              "reference/components/index",
+              {
+                "group": "Cards & layout",
+                "pages": [
+                  "reference/components/card",
+                  "reference/components/card-group",
+                  "reference/components/columns"
+                ]
+              },
+              {
+                "group": "Callouts",
+                "pages": [
+                  "reference/components/note",
+                  "reference/components/tip",
+                  "reference/components/warning",
+                  "reference/components/info",
+                  "reference/components/check",
+                  "reference/components/danger",
+                  "reference/components/update"
+                ]
+              },
+              {
+                "group": "Tabs & steps",
+                "pages": [
+                  "reference/components/tabs",
+                  "reference/components/tab",
+                  "reference/components/steps",
+                  "reference/components/step"
+                ]
+              },
+              {
+                "group": "Accordion",
+                "pages": [
+                  "reference/components/accordion",
+                  "reference/components/accordion-group"
+                ]
+              },
+              {
+                "group": "Code",
+                "pages": [
+                  "reference/components/code-group",
+                  "reference/components/snippet",
+                  "reference/components/package-manager"
+                ]
+              },
+              {
+                "group": "API",
+                "pages": [
+                  "reference/components/param-field",
+                  "reference/components/response-field",
+                  "reference/components/request-example",
+                  "reference/components/response-example",
+                  "reference/components/openapi-endpoint",
+                  "reference/components/openapi-redoc",
+                  "reference/components/openapi-scalar",
+                  "reference/components/openapi-stoplight"
+                ]
+              },
+              {
+                "group": "Media",
+                "pages": [
+                  "reference/components/frame",
+                  "reference/components/embed",
+                  "reference/components/video",
+                  "reference/components/lightbox-image",
+                  "reference/components/file-tree"
+                ]
+              },
+              {
+                "group": "Text helpers",
+                "pages": [
+                  "reference/components/icon",
+                  "reference/components/kbd",
+                  "reference/components/badge",
+                  "reference/components/tooltip",
+                  "reference/components/expandable",
+                  "reference/components/glossary-term"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Markdown & MDX",
+            "pages": [
+              "reference/markdown/index",
+              "reference/markdown/text-and-headings",
+              "reference/markdown/lists-tables",
+              "reference/markdown/code",
+              "reference/markdown/links-images",
+              "reference/markdown/mdx",
+              "reference/markdown/latex",
+              "reference/markdown/embeds"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Tutorials",
+        "groups": [
+          {
+            "group": "Step-by-step",
+            "pages": [
+              "tutorials/first-docs-site",
+              "tutorials/api-reference",
+              "tutorials/customize-theme"
             ]
           }
         ]

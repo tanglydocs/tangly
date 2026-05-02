@@ -1,0 +1,201 @@
+---
+title: Mintlify compatibility
+description: Every Mintlify component, every docs.json field, every behavioral difference. Bookmark this if you're mid-migration.
+icon: "list-checks"
+---
+
+# Mintlify compatibility
+
+Tangly renders Mintlify projects unmodified. This page is the matrix of *what* and *how* — every component, field, and behavior, with notes on where Tangly and Mintlify differ.
+
+If you're starting from a working Mintlify project, the [migration guide](/guides/migration/from-mintlify) walks the swap. This page is the reference you'd want when something looks off.
+
+## docs.json fields
+
+Every Mintlify-shipped top-level field is supported.
+
+| Mintlify field | Tangly | Notes |
+|---|---|---|
+| `name` | ✅ | Identical. |
+| `description` | ✅ | Identical. |
+| `theme` | ✅ | Mintlify themes (`mint`, `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia`) all alias to `tang`. See [Aliases](/guides/themes/aliases). |
+| `logo` | ✅ | Identical. String + `{ light, dark, href }` both supported. |
+| `favicon` | ✅ | String + `{ light, dark }`. |
+| `colors` | ✅ | `primary`, `light`, `dark`, `background`, `anchors` all match. |
+| `navigation` | ✅ | Tabs, groups, anchors, dropdowns, versions, languages. Identical recursion. |
+| `navbar` | ✅ | `links` + `primary` (button + github variants). |
+| `footer` | ✅ | `socials`, `links`. Tangly adds `lastUpdated`, `editUrl`, `repo`. |
+| `redirects` | ✅ | `[{ source, destination, permanent? }]`. |
+| `seo` | ✅ | `metatags`, `indexing` (`all` / `navigable`). |
+| `analytics` | ✅ | All twelve providers Mintlify supports + same shape. |
+| `api` | ✅ | `baseUrl`, `auth`, `playground`, `openapi`, `viewer`. Tangly adds `asyncapi`, `mdx`. |
+| `appearance` | ✅ | `default`, `strict`. Tangly adds `readingTime`, `readingProgress`. |
+| `fonts` | ✅ | Heading + body. |
+| `styling` | ✅ | `eyebrows`, `codeblocks`. |
+| `code` | ✅ | `copyButton`, `theme`. |
+| `background` | ✅ | `image`, `color`, `decoration`. |
+| `errors` | ✅ | `404.redirect`. |
+| `banner` | ✅ | `content`, `dismissible`, `id`, `type`. |
+| `contextual` | ✅ | `options` (copy, view, chatgpt, claude). |
+| `metadata` | ✅ | Identical. |
+| `icons` | ✅ | `library`. |
+| `search` | ✅ | `prompt`. |
+| `integrations` | ✅ | Free-form bag (Mintlify and Tangly both treat this as passthrough). |
+| `thumbnails` | ⚠️ | Schema accepted; auto-thumbnail generation on roadmap. |
+
+Unknown fields don't fail validation — Zod's `passthrough()` preserves them. Mintlify-extension fields you've added survive `tangly migrate`.
+
+## MDX components
+
+Every component Mintlify ships, plus extras Tangly adds.
+
+### Cards & layout
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Card>` | ✅ | `image` prop is aliased to Tangly's `img`. Same shape. |
+| `<CardGroup>` | ✅ | `cols` 1–4. |
+| `<Columns>` | ✅ | `cols` 1–12. |
+
+### Callouts
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Note>` | ✅ | Identical. |
+| `<Tip>` | ✅ | Identical. |
+| `<Warning>` | ✅ | Identical. |
+| `<Info>` | ✅ | Identical. |
+| `<Check>` | ✅ | Identical. |
+| `<Danger>` | ✅ | Identical. |
+| `<Update>` | ✅ | `label`, `description`, `tags`. Identical. |
+
+### Tabs & steps
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Tabs>` | ✅ | `name` for cross-page sync. |
+| `<Tab>` | ✅ | `title`, `icon`. |
+| `<Steps>` | ✅ | Identical. |
+| `<Step>` | ✅ | `title`, `icon`, `titleSize`, `stepNumber`. |
+
+### Accordion
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Accordion>` | ✅ | `title`, `defaultOpen`, `icon`, `description`. |
+| `<AccordionGroup>` | ✅ | Identical. |
+
+### Code
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<CodeGroup>` | ✅ | `name` for cross-page sync. |
+| `<Snippet>` | ⚠️ | Placeholder. Disk resolution on v0.3 roadmap. Use [`<Embed>`](/reference/components/embed) today. |
+| `<PackageManager>` | ✅ | Tangly extra — pre-built tabs for npm/yarn/pnpm/bun. |
+
+### API
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<ParamField>` | ✅ | `path`/`query`/`body`/`header`, `type`, `required`, `default`, `deprecated`. |
+| `<ResponseField>` | ✅ | Same shape. |
+| `<RequestExample>` | ✅ | Identical. |
+| `<ResponseExample>` | ✅ | Identical. |
+| `<OpenApiEndpoint>` | ✅ | Tangly's built-in viewer. |
+| `<OpenApiRedoc>` | ✅ | Tangly extra. |
+| `<OpenApiScalar>` | ✅ | Tangly extra. |
+| `<OpenApiStoplight>` | ✅ | Tangly extra. |
+
+### Media
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Frame>` | ✅ | `caption`. |
+| `<Video>` | ✅ | YouTube, Vimeo, mp4 auto-detect. Tangly enriches: lazy-load, transcript link. |
+| `<LightboxImage>` | ✅ | Auto-applied to every inline image. |
+| `<Embed>` | ✅ | Tangly extra — labeled-block embedding. |
+| `<FileTree>` | ✅ | Tangly extra. |
+
+### Text helpers
+
+| Component | Tangly | Notes |
+|---|---|---|
+| `<Icon>` | ✅ | Lucide. FA aliases for ~96 common Mintlify names. See [Icons](/reference/schema/icons). |
+| `<Tooltip>` | ✅ | Identical. |
+| `<Badge>` | ✅ | Tangly extra. |
+| `<Kbd>` | ✅ | Tangly extra. Auto Cmd→Ctrl on non-mac. |
+| `<Expandable>` | ✅ | Identical. |
+| `<GlossaryTerm>` | ✅ | Tangly extra. Pairs with [glossary auto-linking](/guides/authoring/glossary). |
+
+## Frontmatter
+
+Every Mintlify-shipped frontmatter field is supported.
+
+| Field | Tangly | Notes |
+|---|---|---|
+| `title` | ✅ | Identical. |
+| `description` | ✅ | Identical. |
+| `sidebarTitle` | ✅ | Identical. |
+| `icon` | ✅ | Lucide / FA aliases. |
+| `tag` | ✅ | Identical. |
+| `openapi` | ✅ | `METHOD path`. |
+| `openapi-schema` | ✅ | `#/components/schemas/<Name>`. |
+| `api` | ✅ | Companion-MDX for hand-curated API pages. |
+| `keywords` | ✅ | Identical. |
+| `noindex` | ✅ | Identical. |
+| `mode` | ✅ | `default`, `wide`, `center`, `custom`. |
+| `seo` | ✅ | `title`, `description`, `ogImage`. |
+
+Tangly adds: `draft`, `template`, `aiContext`, `lastUpdated`, `readingTime`, `editUrl`, `glossary`. See [Frontmatter](/reference/schema/frontmatter).
+
+## Behavioral differences
+
+### Image optimization is off
+
+Mintlify ships some image processing. Tangly disables `@astrojs/mdx` `optimize` and `image.service: noop`. Reason: Mintlify projects often reference absolute external URLs that bypass image pipelines anyway. If you need optimization, [eject](/reference/cli/eject) and turn it back on.
+
+### Relative image paths get rewritten
+
+Mintlify resolves `![](../images/foo.png)` at runtime. Tangly's MDX preprocessor rewrites these to absolute (`/images/foo.png`) before Astro's pipeline sees them. Reason: avoids cache misses on every relative path during HMR.
+
+If you ship a Tangly-native project, use absolute paths from day one.
+
+### `<latex>` rewrite
+
+Mintlify uses `<latex>...</latex>`. Tangly accepts both `<latex>` (rewritten to `$$...$$`) and `$$...$$` directly. KaTeX renders both identically.
+
+### Theme aliases collapse to tang
+
+`mint`, `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia` all resolve to `tang`. Reproduce a specific Mintlify variant by setting `theme: "tang"` and overriding `colors`. See [Aliases](/guides/themes/aliases).
+
+### `tangly migrate` doesn't auto-rewrite themes
+
+Migration validates `docs.json` and updates `$schema` — it does **not** auto-pick a Tangly theme. Run it, see the notice, decide for yourself. If you want it auto-picked, that's a one-line `sed`.
+
+### Search engine: Pagefind, not Mintlify's
+
+Tangly bundles [Pagefind](https://pagefind.app). Mintlify uses a different indexer. Behavior is similar (Cmd-K modal, fuzzy match) but the index file format and tuning knobs differ. Practical impact: zero for readers; for advanced search customization (boost rules, exact-match weighting), you'd configure Pagefind directly via custom build hooks.
+
+### No "API playground proxy"
+
+Mintlify's `api.playground.proxy: true` proxies try-it-out through their edge to bypass CORS. Tangly accepts the field but the proxy is a no-op — you need to fix CORS at your API. If your API can't be CORS-permissive, the try-it-out form won't work; use [`api.playground.mode: "hide"`](/reference/schema/api) to remove it.
+
+## What's not in Tangly yet
+
+These are on the v0.3 roadmap:
+
+- **Snippet disk resolution** — `<Snippet file="..." />` reading from `snippets/`.
+- **OG thumbnail generation** — auto-render social previews.
+- **API playground proxy** — same shape as Mintlify's, server-side.
+
+For workarounds today, see [FAQ](/troubleshooting/faq).
+
+## Where to file gaps
+
+If something doesn't render the same as Mintlify and isn't on the list above, [open an issue](https://github.com/tanglydocs/tangly/issues) with:
+
+- A minimal reproduction.
+- Mintlify's render (screenshot).
+- Tangly's render (screenshot).
+
+Compatibility regressions are a P1 — we run a parity test against the Open Electricity docs corpus on every commit.

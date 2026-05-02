@@ -1,0 +1,71 @@
+---
+title: PackageManager
+description: One block, four package managers. Tabs sync across the page so the reader picks once.
+icon: "package"
+---
+
+# PackageManager
+
+`<PackageManager>` renders an install or run command across npm, yarn, pnpm, and bun. The tabs sync globally on the page (default `syncName="pkg"`) — pick "bun" once, every PackageManager block on the page is now showing bun.
+
+## When to use
+
+- Installation instructions.
+- Run-script invocations in tutorials.
+- Anywhere you'd otherwise hand-roll a 4-tab `<CodeGroup>` for npm-equivalents.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Package name to install. Required unless `command` is set. |
+| `mode` | `"dev" \| "prod"` | (prod) | `"dev"` installs as devDependency. |
+| `command` | `string` | — | Run a script instead of installing. e.g. `"run build"`. |
+| `syncName` | `string` | `"pkg"` | Sync key. Default mirrors all install blocks; pass a different value to break the link. |
+
+## Examples
+
+### Install a package
+
+```mdx
+<PackageManager name="tangly" />
+```
+
+Renders four tabs:
+
+```bash
+npm install tangly
+yarn add tangly
+pnpm add tangly
+bun add tangly
+```
+
+### Install as dev dependency
+
+```mdx
+<PackageManager name="@tanglydocs/schema" mode="dev" />
+```
+
+### Run a script
+
+```mdx
+<PackageManager command="run build" />
+```
+
+## Sync behavior
+
+By default every `<PackageManager>` block on the page shares one tab selection. The user picks bun, every block flips to bun. Persists in `localStorage` so a page reload keeps the choice.
+
+To break the link for a specific block — say, you're documenting a yarn-only feature — set a different `syncName`:
+
+```mdx
+<PackageManager name="@tanglydocs/cli" syncName="yarn-only" />
+```
+
+## Related
+
+- [`<CodeGroup>`](/reference/components/code-group) — for arbitrary tabbed code
+
+## Source
+
+[`packages/theme-ui/src/components/PackageManager.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/PackageManager.astro)

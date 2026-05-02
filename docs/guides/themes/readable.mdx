@@ -1,0 +1,99 @@
+---
+title: Readable
+description: Long-form reading mode. Cream paper, serif body, book-style chapter navigation. For essays, books, manuscripts.
+icon: "book-marked"
+---
+
+# Readable
+
+Readable is for long-form reading sessions. Warm sepia paper. Serif body (Crimson Pro). Narrow column targeting 60–66 character lines. Generous leading. Sidebar holds a chapter list. No top bar, no right-rail TOC.
+
+It mirrors what Kindle and the Financial Times do for long-form: get out of the way.
+
+## When to use it
+
+- Books published as docs.
+- Multi-chapter essay collections.
+- Research papers, manuscripts.
+- Anywhere you'd rather the reader focus than navigate.
+
+For interactive product docs, you don't want this — switch to [tang](/guides/themes/tang) or [pith](/guides/themes/pith).
+
+## Set it
+
+```json
+{ "theme": "readable" }
+```
+
+## Token table
+
+From [`packages/theme-readable/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-readable/src/styles/theme.css):
+
+### Colors — light (paper mode)
+
+| Token | Value | Role |
+|---|---|---|
+| `--tangly-color-primary` | `#8b3a1d` | Burnt sienna — links, accents. |
+| `--tangly-color-primary-light` | `#a44a2a` | |
+| `--tangly-color-primary-dark` | `#6b2a13` | |
+| `--tangly-color-bg` | `#f7f1e3` | Warm sepia paper. |
+| `--tangly-color-bg-elevated` | `#ede5d3` | Slightly recessed paper. |
+| `--tangly-color-fg` | `#2b2118` | Dark warm ink. |
+| `--tangly-color-muted` | `#6b5e4f` | |
+| `--tangly-color-border` | `#d8cebc` | |
+
+### Colors — dark (night mode)
+
+Mirrors Kindle's night mode — low-contrast warm dark surface (`#1a1410`) with cream foreground (`#d8cebc`).
+
+### Typography
+
+| Token | Value |
+|---|---|
+| `--tangly-font-heading` | `Crimson Pro` → Iowan Old Style → Palatino → Georgia → serif |
+| `--tangly-font-body` | Same as heading — uniform serif treatment |
+| `--tangly-font-mono` | `JetBrains Mono` |
+
+### Layout
+
+| Token | Value | Notes |
+|---|---|---|
+| `--tangly-sidebar-width` | `17rem` | Holds chapter list. |
+| `--tangly-content-max-width` | `36rem` | Books target 60–66 char lines. |
+| `--tangly-toc-width` | `0` | No right-rail TOC. |
+| `--tangly-topnav-row1-height` | `3rem` | Minimal topbar. |
+| `--tangly-radius` | `0.125rem` | Tight, almost-square corners. |
+
+## Chapter navigation
+
+The sidebar in `readable` is a chapter list — headings render as chapter numbers when you author with `<Steps>` or numbered top-level groups in `navigation`. Page-bottom "Next chapter →" link is automatic from the navigation order.
+
+## Customizing
+
+Reading-focused projects often want a darker accent or a different serif:
+
+```json
+{
+  "theme": "readable",
+  "colors": {
+    "primary": "#1f4d3f",
+    "light":   "#2a6a55",
+    "dark":    "#143228"
+  },
+  "fonts": {
+    "body": { "family": "Iowan Old Style" }
+  }
+}
+```
+
+For column width tweaks:
+
+```css
+:root {
+  --tangly-content-max-width: 32rem;  /* even narrower for poetry */
+}
+```
+
+## Source
+
+[`packages/theme-readable/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-readable/src/styles/theme.css)

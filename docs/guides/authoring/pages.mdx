@@ -1,0 +1,162 @@
+---
+title: Page anatomy
+description: Frontmatter, body, and the conventions Tangly expects on every page.
+icon: "file-text"
+---
+
+# Page anatomy
+
+A Tangly page is an `.mdx` file with YAML frontmatter at the top and MDX body underneath. That's the whole structure.
+
+```mdx
+---
+title: Page title
+description: One-line description for search results and OG tags.
+icon: book
+---
+
+The page body. Markdown. MDX components. JSX expressions if you need them.
+
+## Sections
+
+Headings auto-generate ids — link to them as `/page#sections`.
+```
+
+## Frontmatter
+
+The YAML block at the top. Parsed by `gray-matter`, validated against the [frontmatter schema](/reference/schema/frontmatter).
+
+### Minimum
+
+Most pages only need two fields:
+
+```yaml
+---
+title: Quickstart
+description: 60-second tour.
+---
+```
+
+### Common
+
+| Field | When to use |
+|---|---|
+| `title` | Always. Renders as page H1, sidebar entry, browser tab, OG title. |
+| `description` | Always. Subtitle below H1, meta description, OG description. |
+| `icon` | If the page is in a Card on a landing page or in a sidebar entry. |
+| `sidebarTitle` | When `title` is too long for the sidebar (e.g. `title: "Authentication and authorization"`, `sidebarTitle: "Auth"`). |
+| `tag` | Beta / new / deprecated chip on the sidebar entry. |
+| `draft` | While drafting. Hidden in production builds. |
+| `noindex` | When the page shouldn't appear in search engines or `llms.txt`. |
+| `mode` | When the page needs an unusual layout (`wide`, `center`, `custom`). |
+
+For the full list, see [Frontmatter](/reference/schema/frontmatter).
+
+## The body
+
+Standard CommonMark + GFM extensions + JSX components. See [Markdown & MDX](/reference/markdown) for the full reference.
+
+### Don't write your own H1
+
+The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line at the top of the body — you'll get two H1s.
+
+```mdx
+---
+title: Quickstart
+---
+
+This is the first paragraph. No `# Quickstart` line above it.
+```
+
+### Use H2 for sections
+
+Top-level sections under the page H1 should be `## H2`. The right-rail TOC indexes H2 and H3 only. Skip levels and you'll confuse the TOC.
+
+### Component conventions
+
+Built-in MDX components are auto-injected. No imports.
+
+```mdx
+<Note>This shows up everywhere — no import needed.</Note>
+```
+
+For custom components, drop them in `theme/` at your project root and reference them by name. See [Custom components](/guides/customization/custom-components).
+
+## Linking
+
+Internal links use absolute slugs without `.mdx`:
+
+```md
+See [Quickstart](/quickstart) for the 60-second tour.
+See [API auth](/reference/schema/api#auth-methods) for headers.
+```
+
+`tangly check` validates internal links at build time.
+
+External links open in new tabs automatically:
+
+```md
+[Astro](https://astro.build)
+```
+
+## Images
+
+Drop them in `images/` (or `static/`, `public/`, `assets/`). Reference by absolute path:
+
+```md
+![Architecture](/images/architecture.png)
+```
+
+Every image gets a lightbox on click. To opt out, see [`<LightboxImage>`](/reference/components/lightbox-image).
+
+## Section headings + anchors
+
+Every heading auto-generates a slug-style id:
+
+```md
+## Rate limits        <!-- id="rate-limits" -->
+## Things & stuff     <!-- id="things-stuff" -->
+```
+
+For stable ids that survive heading renames, pin them:
+
+```md
+## Rate limits {#rate-limits}
+```
+
+## Where pages live
+
+The slug is the path from the project root, no `.mdx`:
+
+| File path | Slug | URL |
+|---|---|---|
+| `introduction.mdx` | `introduction` | `/introduction` |
+| `guides/getting-started.mdx` | `guides/getting-started` | `/guides/getting-started` |
+| `reference/cli/dev.mdx` | `reference/cli/dev` | `/reference/cli/dev` |
+
+The slug is what you reference in [`docs.json#navigation`](/reference/schema/navigation) and what you link from other pages.
+
+## Validation
+
+`tangly check` runs frontmatter validation against the schema, walks every internal link, and confirms every navigation entry resolves to a real file. Run it before committing:
+
+```bash
+bunx tangly check
+```
+
+For strict mode (warnings become errors):
+
+```bash
+bunx tangly check --strict
+```
+
+## What goes where
+
+Coming from Mintlify, the conventions here will feel familiar — Tangly mostly inherits them. The exceptions:
+
+- Tangly auto-renders the H1 from `title`. Don't repeat it in the body.
+- Internal links are absolute slugs; no `.mdx` extension.
+- Images live under recognized roots (`images/`, `static/`, `public/`, `assets/`).
+- Frontmatter is non-fatal — invalid fields warn, don't fail.
+
+For the full delta, see [Migration → Compatibility](/guides/migration/compatibility).

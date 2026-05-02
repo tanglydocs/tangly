@@ -1,0 +1,114 @@
+---
+title: Project conventions for agents
+description: aiContext frontmatter, AGENTS.md / CLAUDE.md, project-scoped rules. Teach agents how your project works.
+icon: "file-text"
+---
+
+# Project conventions for agents
+
+The bundled [skills](/guides/ai-agents/skills) cover Tangly itself. They don't know your project — your conventions, your team's rules, the historical reasons one folder is structured weirdly. That's what these conventions files are for.
+
+## `aiContext` frontmatter
+
+Per-page hint. The string lands in the page's machine-readable index when an agent fetches `llms.txt` and gets passed as additional context when the page is read by AI surfaces (the [`contextual`](/reference/schema/contextual) buttons, future chat integration).
+
+```yaml
+---
+title: Webhook signing
+description: HMAC-SHA256 signing for incoming webhooks.
+aiContext: |
+  Common confusion: developers conflate the signing key (used to verify the
+  signature) with the API key (used to authenticate to the API). They are
+  different secrets with different rotation cycles.
+---
+```
+
+The aiContext is **not** rendered to the page — it's metadata-only. Reach for it when:
+
+- A page has a non-obvious failure mode that agents would otherwise miss.
+- The page documents something the canonical name suggests something different.
+- You've watched agents make the same mistake on this page repeatedly.
+
+If the context belongs in the page itself (a [`<Note>`](/reference/components/note) the reader should see), don't smuggle it into `aiContext`.
+
+## `AGENTS.md`
+
+The emerging standard for "instructions every agent should read on first contact." Drop one at the repo root:
+
+```md
+# AGENTS.md
+
+This repo is a Tangly documentation site.
+
+## Conventions
+
+- Edit `.mdx` under `docs/`. Each page has frontmatter; required fields: `title`, `description`.
+- Run `bunx tangly check` before committing. The build catches more — `bunx tangly build` is the final gate.
+- Internal links: absolute slugs, no `.mdx` (`/guides/foo`, not `./foo.mdx`).
+- Don't add `# Title` to the top of pages — Tangly renders H1 from frontmatter.
+- Use Bun, not npm/yarn/pnpm.
+
+## Tools
+
+- `tangly init` — scaffold.
+- `tangly dev` — dev server (port 4321).
+- `tangly check` — validate.
+- `tangly build` — production build.
+- `tangly migrate` — convert mint.json → docs.json.
+
+See `docs/reference/cli/` for full flags.
+
+## Don'ts
+
+- Don't reach for `eject` to make small changes — the doc has 5 layers of customization before that.
+- Don't introduce frameworks beyond Astro + MDX + Tailwind.
+- Don't run `oxfmt` on `*.mdx` / `*.md` — it mangles them.
+```
+
+[Aider](https://aider.chat), [Codex CLI](https://github.com/openai/codex), [Continue](https://continue.dev), and [Claude Code](https://claude.com/claude-code) all read `AGENTS.md` automatically.
+
+## `CLAUDE.md`
+
+Claude Code's variant. It reads `CLAUDE.md` if present, otherwise `AGENTS.md`. If you have both, Claude Code reads `CLAUDE.md`; everything else reads `AGENTS.md`.
+
+For a Tangly project that exists alongside other agent-driven workflows, the safe default is one `AGENTS.md` file with a `CLAUDE.md` symlink:
+
+```bash
+ln -s AGENTS.md CLAUDE.md
+```
+
+Or vice versa. Both files describing the same conventions is fine; just keep them in sync.
+
+## What to put in conventions files
+
+Three categories:
+
+1. **Tooling.** Which package manager. Which formatter. Which test runner. Which CLI commands matter.
+2. **Code conventions.** Naming, file organization, "we do X this way for historical reasons."
+3. **Don'ts.** Things agents reach for that you've banned. Be explicit — agents don't infer "we don't use npm" from "we use bun."
+
+What NOT to put in:
+
+- The full reference for tools — link out, don't duplicate.
+- Open product roadmap. Goes stale faster than agents respect it.
+- Praise / tone hints ("be helpful"). The agent already has its own posture.
+
+## Per-folder rules (Cursor, Continue)
+
+For different conventions in different parts of the repo, both Cursor (`.cursor/rules/<name>.md`) and Continue (`.continueignore` + per-folder context) support glob-scoped rules.
+
+Tangly's own repo uses this for its docs vs. its source code:
+
+<FileTree>
+- .cursor/rules/
+  - docs.md globs — `docs/**/*.mdx`, `docs/docs.json`
+  - src.md globs — `packages/**/*.ts`
+</FileTree>
+
+The `docs.md` rule pulls in the Tangly skill knowledge; the `src.md` rule talks about TypeScript / Bun / oxlint / oxfmt.
+
+## llms.txt isn't a substitute
+
+[llms.txt](/guides/ai-agents/llms-txt) is what's *in* your docs. AGENTS.md is *how to work with* the repo. They overlap (your conventions probably belong in docs too) but answer different questions.
+
+For a polished agent experience: `AGENTS.md` describes the workflow + tools, `llms.txt` describes the docs content, the bundled skill knows how to use the CLI. All three play different roles.
