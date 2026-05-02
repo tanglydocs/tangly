@@ -1,17 +1,50 @@
 ---
 export interface Props {
-  variant?: "default" | "tip" | "warning" | "error";
+  variant?:
+    | "default"
+    | "note"
+    | "tip"
+    | "success"
+    | "caution"
+    | "warning"
+    | "danger"
+    | "error"
+    | "accent";
+  size?: "small" | "medium" | "large";
+  text?: string;
 }
 
-const { variant = "default" } = Astro.props as Props;
-const VARIANTS: Record<string, string> = {
+const { variant = "default", size = "medium", text } = Astro.props as Props;
+
+const VARIANT_ALIASES: Record<string, string> = {
+  default: "default",
+  note: "default",
+  tip: "tip",
+  success: "tip",
+  warning: "warning",
+  caution: "warning",
+  error: "error",
+  danger: "error",
+  accent: "accent",
+};
+
+const TONES: Record<string, string> = {
   default: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
   tip: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
   warning: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
   error: "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
+  accent: "bg-orange-100 text-orange-800 dark:bg-orange-950/40 dark:text-orange-300",
 };
-const styles = VARIANTS[variant] ?? VARIANTS.default;
+
+const SIZES: Record<string, string> = {
+  small: "px-1.5 py-0 text-[10px] tracking-wide",
+  medium: "px-2 py-0.5 text-xs",
+  large: "px-2.5 py-1 text-sm leading-snug",
+};
+
+const tone = TONES[VARIANT_ALIASES[variant] ?? "default"] ?? TONES.default;
+const sizing = SIZES[size] ?? SIZES.medium;
 ---
-<span class={`tangly-badge inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles}`}>
-  <slot />
+<span class={`tangly-badge inline-flex items-center rounded-full font-medium ${sizing} ${tone}`}>
+  <slot>{text}</slot>
 </span>

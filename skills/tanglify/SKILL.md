@@ -226,6 +226,7 @@ Same names as Mintlify. All 14+ render unmodified:
 - Interactive: `Tabs` + `Tab`, `Steps` + `Step`, `Accordion` + `AccordionGroup`, `Expandable`
 - Code: `CodeGroup` (tab labels via per-block `title`)
 - API: `ParamField`, `ResponseField`, `OpenApiEndpoint`
+- Inline labels: `Badge` — short pill for status/version chips. Variants: `default`, `tip`, `warning`, `error`, `accent` (tang-orange). Sizes: `small`, `medium` (default), `large`. Starlight aliases accepted: `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`.
 - Other: `Snippet` (file=...), Lucide-mapped icons (Font Awesome fallback)
 
 ## Themes
