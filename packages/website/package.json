@@ -5,9 +5,9 @@
   "description": "Marketing website for Tangly — tangly.dev.",
   "type": "module",
   "scripts": {
-    "dev": "astro dev --host --port 5173",
+    "dev": "astro dev --host --port ${PORT:-5173}",
     "build": "astro build",
-    "preview": "astro preview --host --port 5173",
+    "preview": "astro preview --host --port ${PORT:-5173}",
     "prebuild": "bun run scripts/sync-public-assets.ts",
     "astro": "astro",
     "typecheck": "astro check"

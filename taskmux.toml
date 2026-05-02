@@ -53,6 +53,6 @@ restart_policy = "on-failure"
 [tasks.website]
 command = "bun run dev"
 cwd = "packages/website"
-host = "website"
+host = "@"
 auto_start = false
 restart_policy = "on-failure"
