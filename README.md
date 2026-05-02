@@ -1,4 +1,9 @@
-# Tangly
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./brand/logo/tangly-logo-light.png">
+    <img src="./brand/logo/tangly-logo.png" alt="Tangly" width="320">
+  </picture>
+</p>
 
 > **Markdown in. Beautiful docs out.**
 >
