@@ -226,6 +226,7 @@ Same names as Mintlify. All 14+ render unmodified:
 - Interactive: `Tabs` + `Tab`, `Steps` + `Step`, `Accordion` + `AccordionGroup`, `Expandable`
 - Code: `CodeGroup` (tab labels via per-block `title`)
 - API: `ParamField`, `ResponseField`, `OpenApiEndpoint`
+- Trees: `FileTree` — nested Markdown list → directory tree. `**bold**` highlights, trailing text becomes a comment, `...` is a placeholder. Variants: `default` (icons + card, the standard look), `terminal` (dark bg + ASCII connectors, with `chrome` for window dots), `ascii` (plain ASCII connectors, no card). Use this instead of fenced ASCII trees.
 - Inline labels: `Badge` — short pill for status/version chips. Variants: `default`, `tip`, `warning`, `error`, `accent` (tang-orange). Sizes: `small`, `medium` (default), `large`. Starlight aliases accepted: `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`.
 - Other: `Snippet` (file=...), Lucide-mapped icons (Font Awesome fallback)
 
@@ -332,6 +333,7 @@ Five strategies (host the docs at `/docs` on an existing site): build-into-publi
 
 ## Gotchas
 
+- **Frontmatter `title` is the page H1** — don't write `# Title` or `<h1>` in the body. `tangly dev` warns when it finds one. Use `## H2` for top-level sections.
 - **Don't run `oxfmt` on `.mdx` / `.md` / `.astro`** — it mangles them. The repo's `.prettierignore` excludes them; keep it current.
 - **Tailwind content scanner** — theme components must list `@source` in `theme.css`; the consuming project's scanner only auto-detects its own files.
 - **Image optimization is disabled** — Mintlify projects use absolute URLs. Use `/images/foo.png`, not relative paths.

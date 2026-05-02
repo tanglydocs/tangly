@@ -16,7 +16,8 @@ icon: book
 tag: Beta
 ---
 
-# My page
+Body starts here. Don't repeat the title as a `# Heading` — `title` already
+renders as the page H1.
 ```
 
 Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema`'s `FrontmatterSchema`. Validation is non-fatal: invalid fields surface as warnings, the page still renders.
@@ -24,7 +25,7 @@ Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema
 ## Recognized fields
 
 <ParamField path="title" type="string">
-  Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title.
+  Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title. Don't repeat the title as `# Heading` or `<h1>` in the body — `tangly dev` warns when it finds one.
 </ParamField>
 
 <ParamField path="sidebarTitle" type="string">

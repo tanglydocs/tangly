@@ -17,6 +17,7 @@ import rehypeAnnotations from "./src/lib/rehype-annotations.mjs";
 import rehypeBaseLinks from "./src/lib/rehype-base-links.mjs";
 import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
+import remarkH1Warn from "./src/lib/remark-h1-warn.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import {
@@ -115,6 +116,7 @@ export default defineConfig({
     mdx({
       remarkPlugins: [
         remarkMintlifyCompat,
+        remarkH1Warn,
         remarkExplicitIds,
         remarkMermaid,
         remarkGfm,

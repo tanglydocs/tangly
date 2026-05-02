@@ -58,7 +58,7 @@ Standard CommonMark + GFM extensions + JSX components. See [Markdown & MDX](/ref
 
 ### Don't write your own H1
 
-The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line at the top of the body — you'll get two H1s.
+The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line (or `<h1>`) at the top of the body — you'll get two H1s.
 
 ```mdx
 ---
@@ -67,6 +67,8 @@ title: Quickstart
 
 This is the first paragraph. No `# Quickstart` line above it.
 ```
+
+`tangly dev` warns in the terminal when it finds an H1 in content so you can catch this while authoring.
 
 ### Use H2 for sections
 
