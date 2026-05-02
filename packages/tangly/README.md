@@ -1,6 +1,8 @@
 # tangly
 
-> Self-hosted, open-source documentation framework. Drop-in compatible with Mintlify projects.
+> **Markdown in. Beautiful docs out.**
+>
+> Tangly is an open-source documentation framework that turns a folder of markdown into a fast, themed site you self-host.
 
 Tangly renders existing `docs.json` + MDX corpora **unmodified** — point it at a Mintlify-shaped project and it just works. Built on Astro 6, no proprietary backend, no vendor lock-in.
 

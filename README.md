@@ -1,6 +1,8 @@
 # Tangly
 
-> Self-hosted, OSS docs framework. Renders Mintlify projects unmodified.
+> **Markdown in. Beautiful docs out.**
+>
+> Tangly is an open-source documentation framework that turns a folder of markdown into a fast, themed site you self-host.
 
 ## Install
 
