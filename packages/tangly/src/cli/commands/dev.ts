@@ -77,7 +77,9 @@ export const devCommand = defineCommand({
       logLevel: args.debug ? "info" : "warn",
       server: {
         port,
-        host: args.host,
+        // Bind explicit IPv4 so reverse proxies that resolve `localhost`
+        // to 127.0.0.1 don't hit ECONNREFUSED when Node prefers ::1.
+        host: args.host ? "0.0.0.0" : "127.0.0.1",
         open: args.open,
       },
       vite: {
