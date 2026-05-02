@@ -17,7 +17,10 @@ export interface Props {
   mode?: "dev" | "prod" | undefined;
   /** Run a script instead of installing — e.g. "run build". */
   command?: string;
-  /** Sync key. Default "pkg" so all install blocks on a page sync. */
+  /** Sync key. Empty by default so the auto-family detector picks
+   *  `auto:pkg-js` — keeps in lockstep with raw `<CodeGroup>` blocks
+   *  that contain bun/npm/pnpm/yarn fences. Override only if you need
+   *  this block to sync independently. */
   syncName?: string;
 }
 
@@ -25,7 +28,7 @@ const {
   name = "",
   mode,
   command,
-  syncName = "pkg",
+  syncName = "",
 } = Astro.props as Props;
 
 interface Cmd {

@@ -2,12 +2,16 @@
 // CodeGroup wraps multiple code blocks (e.g. <pre> or <figure>) and renders
 // them as tabs. Tab labels come from each child's `data-filename`,
 // `data-language`, or `data-language` on the inner pre, falling back to
-// "Tab N". Pass `name` to sync the active tab across the page (and across
-// pages via localStorage) — every CodeGroup with the same `name` shows
-// the same tab.
+// "Tab N".
+//
+// Sync: pass `name=` and every group with that name shows the same active
+// tab (persisted in localStorage). When `name` is empty, the runtime
+// auto-derives one from the labels — npm/yarn/pnpm/bun, pip/uv, macOS/
+// Linux/Windows, python/typescript, ... all sync without explicit naming.
 
 export interface Props {
-  /** Optional sync key. Same `name` across blocks → matched tab. */
+  /** Optional sync key. Same `name` across blocks → matched tab.
+   *  Leave empty to auto-derive from a known label family. */
   name?: string;
 }
 
@@ -31,9 +35,14 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
     if (!panels || !tabsBar) return;
     const blocks = Array.from(panels.children);
     const labels = [];
+
+    // Mutable holder so the click handler can read the latest sync name
+    // even if it's resolved asynchronously (deriveName runs once the
+    // sync registry script has loaded).
+    const state = { name: name };
+
     blocks.forEach((blk, i) => {
       const el = blk;
-      // For figure-wrapped pre (Tangly chrome), look at the inner pre/code.
       const innerPre = el.tagName === "PRE" ? el : el.querySelector("pre");
       const filename =
         el.getAttribute("data-filename") ||
@@ -56,14 +65,15 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
       btn.dataset.idx = String(i);
       btn.addEventListener("click", () => {
         activate(i);
-        if (name && window.__tanglyCodeGroup) {
-          window.__tanglyCodeGroup.onActivate(groupId, name, label);
+        if (state.name && window.__tanglyCodeGroup) {
+          window.__tanglyCodeGroup.onActivate(groupId, state.name, label);
         }
       });
       tabsBar.appendChild(btn);
       el.classList.add("tangly-code-panel");
       if (i !== 0) el.style.display = "none";
     });
+
     function activate(idx) {
       Array.from(tabsBar.children).forEach((b, i) => {
         const btn = b;
@@ -79,16 +89,18 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
     }
     activate(0);
 
-    // Register with the cross-page sync registry.
-    if (name) {
-      const tryRegister = () => {
-        if (window.__tanglyCodeGroup) {
-          window.__tanglyCodeGroup.register(groupId, name, labels, activate);
-        } else {
-          setTimeout(tryRegister, 50);
-        }
-      };
-      tryRegister();
-    }
+    const tryRegister = () => {
+      if (!window.__tanglyCodeGroup) {
+        setTimeout(tryRegister, 50);
+        return;
+      }
+      if (!state.name) {
+        state.name = window.__tanglyCodeGroup.deriveName(labels);
+      }
+      if (state.name) {
+        window.__tanglyCodeGroup.register(groupId, state.name, labels, activate);
+      }
+    };
+    tryRegister();
   })();
 </script>

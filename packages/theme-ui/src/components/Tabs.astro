@@ -1,13 +1,26 @@
 ---
-export interface Props {}
+// Tabs wraps Tab children and renders them as tabbed panels.
+//
+// Sync: pass `name=` and every Tabs with that name shows the same active
+// tab (persisted in localStorage). When `name` is empty, the runtime
+// auto-derives one from the tab titles — macOS/Linux/Windows, python/
+// typescript, npm/yarn/pnpm/bun all sync across the page and across
+// pages without explicit naming.
 
+export interface Props {
+  /** Optional sync key. Same `name` across blocks → matched tab.
+   *  Leave empty to auto-derive from a known label family. */
+  name?: string;
+}
+
+const { name = "" } = Astro.props as Props;
 const groupId = `tabs-${Math.random().toString(36).slice(2, 9)}`;
 ---
-<div class="tangly-tabs my-6" data-tabs={groupId}>
+<div class="tangly-tabs my-6" data-tabs={groupId} data-tabs-name={name || undefined}>
   <div class="tangly-tabs-strip flex items-center gap-1 border-b border-zinc-200 dark:border-zinc-800 mb-4 overflow-x-auto" role="tablist"></div>
   <div class="tangly-tabs-panels"><slot /></div>
 </div>
-<script is:inline define:vars={{ groupId }}>
+<script is:inline define:vars={{ groupId, name }}>
   (function () {
     const root = document.querySelector(`[data-tabs="${groupId}"]`);
     if (!root) return;
@@ -15,18 +28,28 @@ const groupId = `tabs-${Math.random().toString(36).slice(2, 9)}`;
     const panelsContainer = root.querySelector(".tangly-tabs-panels");
     if (!strip || !panelsContainer) return;
     const panels = Array.from(panelsContainer.querySelectorAll(":scope > .tangly-tab-panel"));
+    const labels = [];
+    const state = { name: name };
+
     panels.forEach((panel, i) => {
       const title = panel.getAttribute("data-tab-title") || `Tab ${i + 1}`;
+      labels.push(title);
       const btn = document.createElement("button");
       btn.type = "button";
       btn.setAttribute("role", "tab");
       btn.textContent = title;
       btn.className =
         "px-4 py-2 -mb-px text-sm font-medium border-b-2 border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors whitespace-nowrap";
-      btn.addEventListener("click", () => activate(i));
+      btn.addEventListener("click", () => {
+        activate(i);
+        if (state.name && window.__tanglyCodeGroup) {
+          window.__tanglyCodeGroup.onActivate(groupId, state.name, title);
+        }
+      });
       strip.appendChild(btn);
       if (i !== 0) panel.style.display = "none";
     });
+
     function activate(idx) {
       Array.from(strip.children).forEach((b, i) => {
         const btn = b;
@@ -43,5 +66,19 @@ const groupId = `tabs-${Math.random().toString(36).slice(2, 9)}`;
       });
     }
     activate(0);
+
+    const tryRegister = () => {
+      if (!window.__tanglyCodeGroup) {
+        setTimeout(tryRegister, 50);
+        return;
+      }
+      if (!state.name) {
+        state.name = window.__tanglyCodeGroup.deriveName(labels);
+      }
+      if (state.name) {
+        window.__tanglyCodeGroup.register(groupId, state.name, labels, activate);
+      }
+    };
+    tryRegister();
   })();
 </script>
