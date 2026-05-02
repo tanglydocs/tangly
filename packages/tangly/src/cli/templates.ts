@@ -1,7 +1,34 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// File extensions safe to read as UTF-8 text and run `{{name}}` substitution
+// against. Everything else (png/jpg/ico/woff/etc) must be byte-copied —
+// reading binary as utf8 replaces non-UTF-8 bytes with U+FFFD and corrupts it.
+const TEXT_EXTS = new Set([
+  ".md",
+  ".mdx",
+  ".mdoc",
+  ".json",
+  ".json5",
+  ".yaml",
+  ".yml",
+  ".toml",
+  ".txt",
+  ".svg",
+  ".css",
+  ".scss",
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".cjs",
+  ".html",
+  ".astro",
+  ".env",
+]);
 
 export interface Template {
   name: string;
@@ -70,8 +97,12 @@ export async function applyTemplate(opts: ApplyTemplateOptions): Promise<ApplyRe
       .filter((p) => !p.skip)
       .map(async (p) => {
         await mkdir(dirname(p.dest), { recursive: true });
-        const contents = await readFile(p.src, "utf8");
-        await writeFile(p.dest, substitute(contents, opts.name), "utf8");
+        if (TEXT_EXTS.has(extname(p.rel).toLowerCase())) {
+          const contents = await readFile(p.src, "utf8");
+          await writeFile(p.dest, substitute(contents, opts.name), "utf8");
+        } else {
+          await copyFile(p.src, p.dest);
+        }
       }),
   );
 

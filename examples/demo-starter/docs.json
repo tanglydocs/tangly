@@ -2,7 +2,17 @@
   "$schema": "https://tangly.dev/schema/docs.json",
   "name": "Tangly Starter",
   "theme": "tang",
-  "colors": { "primary": "#0ea5e9" },
+  "favicon": "/images/favicon.ico",
+  "logo": {
+    "light": "/images/logo.png",
+    "dark": "/images/logo-dark.png",
+    "href": "/"
+  },
+  "colors": {
+    "primary": "#D97706",
+    "light": "#F59E0B",
+    "dark": "#B45309"
+  },
   "navigation": {
     "groups": [
       {
