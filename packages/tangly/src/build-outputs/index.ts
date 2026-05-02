@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import pc from "picocolors";
 import type { Manifest, PageEntry } from "../manifest/index.js";
+import { writePageMarkdown } from "./page-markdown.js";
 
 export interface BuildOutputsOptions {
   manifest: Manifest;
@@ -97,6 +98,7 @@ export function writeBuildOutputs(opts: BuildOutputsOptions): {
   robots: string;
   llms: string;
   llmsFull: string;
+  pageMarkdown: number;
 } {
   const sitemap = generateSitemap(opts);
   const robots = generateRobots(opts);
@@ -110,7 +112,12 @@ export function writeBuildOutputs(opts: BuildOutputsOptions): {
   writeIfAbsent(opts.outDir, "llms.txt", llms);
   writeIfAbsent(opts.outDir, "llms-full.txt", llmsFull);
 
-  return { sitemap, robots, llms, llmsFull };
+  // Per-page markdown for AI agents — `<slug>.md` alongside `<slug>/index.html`.
+  // Discovered via .md URL suffix (universal, every static host) or via
+  // <link rel="alternate"> in the HTML head.
+  const { written: pageMarkdown } = writePageMarkdown(opts);
+
+  return { sitemap, robots, llms, llmsFull, pageMarkdown };
 }
 
 function writeIfAbsent(outDir: string, name: string, content: string): void {

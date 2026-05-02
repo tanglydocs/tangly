@@ -126,6 +126,7 @@
               "guides/ai-agents/skills",
               "guides/ai-agents/cursor-and-others",
               "guides/ai-agents/llms-txt",
+              "guides/ai-agents/markdown-for-agents",
               "guides/ai-agents/conventions"
             ]
           },

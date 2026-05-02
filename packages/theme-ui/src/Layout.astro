@@ -107,6 +107,7 @@ const bannerType = banner?.type ?? "info";
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={withBase(favicon)} />
+    <link rel="alternate" type="text/markdown" href={withBase(`/${page.slug}.md`)} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDesc} />
     <meta property="og:type" content="article" />

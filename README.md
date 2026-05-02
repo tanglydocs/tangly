@@ -4,6 +4,10 @@
 >
 > Tangly is an open-source documentation framework that turns a folder of markdown into a fast, themed site you self-host.
 
+## Built for the agent era
+
+Every page is also served as raw Markdown — append `.md` to any URL, or send `Accept: text/markdown`. ~10× token reduction vs. HTML. Coding assistants like Claude Code, OpenCode, and Cursor get the source, not the chrome. `/llms.txt` and `/llms-full.txt` ship out of the box. See [Markdown for agents](./docs/guides/ai-agents/markdown-for-agents.mdx).
+
 ## Install
 
 ```bash

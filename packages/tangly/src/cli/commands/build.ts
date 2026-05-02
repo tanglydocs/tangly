@@ -95,11 +95,11 @@ export const buildCommand = defineCommand({
     // + a baseline) into the build output. Theme cascade still runs first.
     const assetsResult = await copyStaticAssets({ manifest, outDir, astroEmitted });
 
-    // Sitemap, llms.txt, llms-full.txt, robots.txt
+    // Sitemap, llms.txt, llms-full.txt, robots.txt, per-page <slug>.md
     const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
     const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir, base: args.base };
     if (siteUrl) opts.siteUrl = siteUrl;
-    writeBuildOutputs(opts);
+    const buildOutputs = writeBuildOutputs(opts);
 
     // Pagefind: search index over rendered HTML. Done last so it sees
     // every static asset already in place.
@@ -117,7 +117,11 @@ export const buildCommand = defineCommand({
     if (assetsResult.copied.length > 0) {
       console.log(pc.dim(`  Copied static: ${assetsResult.copied.join(", ")}`));
     }
-    console.log(pc.dim(`  Generated sitemap.xml, robots.txt, llms.txt, llms-full.txt`));
+    console.log(
+      pc.dim(
+        `  Generated sitemap.xml, robots.txt, llms.txt, llms-full.txt, ${buildOutputs.pageMarkdown} agent .md`,
+      ),
+    );
     if (pagefindIndexed > 0) {
       const note = pagefindExcluded > 0 ? `, ${pagefindExcluded} excluded` : "";
       console.log(pc.dim(`  Pagefind: ${pagefindIndexed} pages indexed${note}`));

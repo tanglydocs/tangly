@@ -224,7 +224,13 @@ dist/
 └── llms-full.txt
 ```
 
-Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from `sitemap.xml`, `llms.txt`, `llms-full.txt`, and the Pagefind index.
+Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from `sitemap.xml`, `llms.txt`, `llms-full.txt`, the per-page `.md` files, and the Pagefind index.
+
+## Markdown for agents
+
+Tangly emits a raw-Markdown twin of every page (`<slug>.md` alongside `<slug>/index.html`) so coding assistants can fetch source instead of rendered HTML — ~10× token reduction. Works on any static host with no extra config: append `.md` to any URL and you get the source.
+
+For same-URL content negotiation (`Accept: text/markdown` returns Markdown, browsers still get HTML), add a one-line CDN rewrite — see [Markdown for agents](/guides/ai-agents/markdown-for-agents) for Vercel, Cloudflare, and Netlify recipes.
 
 ## Pre-deploy checklist
 

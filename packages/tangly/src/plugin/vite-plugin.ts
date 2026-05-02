@@ -1,4 +1,4 @@
-import { existsSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
@@ -12,6 +12,42 @@ async function collectDraftSlugs(userRoot: string): Promise<string[]> {
   const all = await scanPages(userRoot);
   return all.filter((p) => Boolean(p.frontmatter?.draft)).map((p) => p.slug);
 }
+
+/**
+ * Parse an Accept header and decide whether the client prefers `text/markdown`
+ * over HTML. Honors q-values per RFC 7231 §5.3.1 — a naive
+ * `header.includes("text/markdown")` check is wrong because browsers send
+ * `Accept: text/html, ..., * /*;q=0.8` and we'd misroute them.
+ */
+function prefersMarkdown(acceptHeader: string | undefined): boolean {
+  if (!acceptHeader) return false;
+  let mdQ = -1;
+  let htmlQ = -1;
+  for (const part of acceptHeader.split(",")) {
+    const segs = part
+      .trim()
+      .split(";")
+      .map((s) => s.trim());
+    const type = segs[0]?.toLowerCase();
+    if (!type) continue;
+    let q = 1;
+    for (let i = 1; i < segs.length; i++) {
+      const seg = segs[i] ?? "";
+      const [k, v] = seg.split("=");
+      if (k === "q" && v != null) {
+        const parsed = Number.parseFloat(v);
+        if (Number.isFinite(parsed)) q = parsed;
+      }
+    }
+    if (type === "text/markdown") mdQ = Math.max(mdQ, q);
+    else if (type === "text/html") htmlQ = Math.max(htmlQ, q);
+  }
+  if (mdQ <= 0) return false;
+  if (htmlQ > mdQ) return false;
+  return true;
+}
+
+const LLMS_LINK_HEADER = '</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"';
 
 const CONTENT_TYPES: Record<string, string> = {
   png: "image/png",
@@ -276,6 +312,50 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
 
     configureServer(devServer) {
       server = devServer;
+
+      // Markdown for agents — serve raw MDX source when the URL ends in `.md`
+      // or the client sent `Accept: text/markdown`. Same wire format as the
+      // build output; `<link rel="alternate">` in the HTML head + Link/
+      // X-Llms-Txt response headers advertise it for crawlers.
+      devServer.middlewares.use((req, res, next) => {
+        const rawUrl = req.url ?? "";
+        if (!rawUrl.startsWith("/")) return next();
+        if (rawUrl.startsWith("/@") || rawUrl.startsWith("/__") || rawUrl.startsWith("/_astro/")) {
+          return next();
+        }
+        const path = rawUrl.split("?")[0]!.split("#")[0]!;
+        const acceptHeader = req.headers.accept;
+        const wantsMd =
+          path.endsWith(".md") ||
+          (typeof acceptHeader === "string" && prefersMarkdown(acceptHeader));
+
+        // Always advertise the markdown twin + llms.txt index on doc responses.
+        // Set BEFORE next() so they ride along on the eventual HTML response.
+        res.setHeader("Vary", "Accept");
+        res.setHeader("Link", LLMS_LINK_HEADER);
+        res.setHeader("X-Llms-Txt", "/llms.txt");
+
+        if (!wantsMd) return next();
+        if (!manifest) return next();
+
+        let slug = path.replace(/^\/+/, "").replace(/\/$/, "");
+        if (slug.endsWith(".md")) slug = slug.slice(0, -3);
+        if (slug === "") slug = "index";
+
+        const page = manifest.pages.get(slug);
+        if (!page || page.draft || page.frontmatter.noindex) return next();
+
+        let body: string;
+        try {
+          body = readFileSync(page.file, "utf8");
+        } catch {
+          return next();
+        }
+        const out = `URL: /${slug}\n\n${body}`;
+        res.setHeader("Content-Type", "text/markdown; charset=utf-8");
+        res.setHeader("X-Robots-Tag", "noindex");
+        res.end(out);
+      });
 
       // Serve assets from the cascading public roots. Tier 1 (userRoot)
       // only matches the canonical prefix dirs (/images, /logo, /public,

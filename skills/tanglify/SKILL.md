@@ -104,7 +104,7 @@ Production static build.
 - `--base <path>` — subpath like `/docs` (default `/`)
 - `--analyze` — write a build-size report to `dist/_tangly/`
 
-Outputs: prerendered HTML, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
 
 ### `tangly preview`
 Serve `./dist` locally to spot-check the build.
