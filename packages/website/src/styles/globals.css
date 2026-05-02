@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Tailwind v4 only auto-scans this package; pull theme-ui sources in too
+   so utilities used by imported components are emitted. */
+@source "../../../theme-ui/src/**/*.astro";
+@source "../../../theme-ui/src/**/*.ts";
+
 @theme {
   --color-ink: #0b0b0f;
   --color-paper: #fafaf7;

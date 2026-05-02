@@ -1,22 +1,47 @@
 ---
-import {
-  Info,
-  Lightbulb,
-  AlertTriangle,
-  XCircle,
-  CircleCheck,
-  RefreshCw,
-  FileText,
-  Folder,
-  ChevronRight,
-  Terminal,
-  Pencil,
-  ChevronDown,
-  Play,
-  Maximize2,
-  Search,
-  Globe,
-} from "lucide-astro";
+import Note from "@tanglydocs/theme-ui/components/Note.astro";
+import Tip from "@tanglydocs/theme-ui/components/Tip.astro";
+import Warning from "@tanglydocs/theme-ui/components/Warning.astro";
+import Danger from "@tanglydocs/theme-ui/components/Danger.astro";
+import Info from "@tanglydocs/theme-ui/components/Info.astro";
+import Check from "@tanglydocs/theme-ui/components/Check.astro";
+import Update from "@tanglydocs/theme-ui/components/Update.astro";
+import Card from "@tanglydocs/theme-ui/components/Card.astro";
+import CardGroup from "@tanglydocs/theme-ui/components/CardGroup.astro";
+import Columns from "@tanglydocs/theme-ui/components/Columns.astro";
+import Frame from "@tanglydocs/theme-ui/components/Frame.astro";
+import Tabs from "@tanglydocs/theme-ui/components/Tabs.astro";
+import Tab from "@tanglydocs/theme-ui/components/Tab.astro";
+import Steps from "@tanglydocs/theme-ui/components/Steps.astro";
+import Step from "@tanglydocs/theme-ui/components/Step.astro";
+import Accordion from "@tanglydocs/theme-ui/components/Accordion.astro";
+import AccordionGroup from "@tanglydocs/theme-ui/components/AccordionGroup.astro";
+import CodeGroup from "@tanglydocs/theme-ui/components/CodeGroup.astro";
+import FileTree from "@tanglydocs/theme-ui/components/FileTree.astro";
+import Snippet from "@tanglydocs/theme-ui/components/Snippet.astro";
+import Video from "@tanglydocs/theme-ui/components/Video.astro";
+import LightboxImage from "@tanglydocs/theme-ui/components/LightboxImage.astro";
+// Embed needs Tangly's manifest virtual module — render a static placeholder.
+import ParamField from "@tanglydocs/theme-ui/components/ParamField.astro";
+import ResponseField from "@tanglydocs/theme-ui/components/ResponseField.astro";
+import RequestExample from "@tanglydocs/theme-ui/components/RequestExample.astro";
+import ResponseExample from "@tanglydocs/theme-ui/components/ResponseExample.astro";
+import Badge from "@tanglydocs/theme-ui/components/Badge.astro";
+import Icon from "@tanglydocs/theme-ui/components/Icon.astro";
+import Kbd from "@tanglydocs/theme-ui/components/Kbd.astro";
+import Tooltip from "@tanglydocs/theme-ui/components/Tooltip.astro";
+import GlossaryTerm from "@tanglydocs/theme-ui/components/GlossaryTerm.astro";
+import Expandable from "@tanglydocs/theme-ui/components/Expandable.astro";
+import PackageManager from "@tanglydocs/theme-ui/components/PackageManager.astro";
+
+const groups: Array<{ label: string; count: number; tiles: string[] }> = [
+  { label: "Callouts", count: 7, tiles: ["Note", "Tip", "Warning", "Danger", "Info", "Check", "Update"] },
+  { label: "Layout", count: 4, tiles: ["Card", "CardGroup", "Columns", "Frame"] },
+  { label: "Navigation", count: 6, tiles: ["Tabs", "Tab", "Steps", "Step", "Accordion", "AccordionGroup"] },
+  { label: "Code & content", count: 6, tiles: ["CodeGroup", "FileTree", "Snippet", "Embed", "Video", "LightboxImage"] },
+  { label: "API", count: 4, tiles: ["ParamField", "ResponseField", "RequestExample", "ResponseExample"] },
+  { label: "Inline & misc", count: 7, tiles: ["Badge", "Icon", "Kbd", "Tooltip", "GlossaryTerm", "Expandable", "PackageManager"] },
+];
 ---
 
 <section class="px-24 pb-30 pt-24">
@@ -29,385 +54,226 @@ import {
     </h2>
     <p class="max-w-[620px] font-sans text-lg leading-7 text-mute">
       Drop a tag in MDX. Every theme ships every component. Render here uses
-      the real package — not screenshots.
+      the real <code class="font-mono text-base text-ink">@tanglydocs/theme-ui</code> package — not screenshots.
     </p>
   </div>
 
-  <div
-    class="mt-14 overflow-hidden rounded-xl border border-line-light bg-paper"
-  >
-    <!-- Callouts (7) -->
-    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
+  <div class="ws-components mt-14 overflow-hidden rounded-xl border border-line-light bg-paper">
+    {
+      groups.map((g, gi) => (
         <div
-          class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute"
+          class:list={[
+            "flex flex-col gap-4 px-8 pb-8 pt-7",
+            gi < groups.length - 1 ? "border-b border-line-light" : "",
+          ]}
         >
-          Callouts
-        </div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">7</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        {[
-          { tag: "Note", icon: Info, color: "rgba(234,88,12", text: "Heads up. Worth a read.", stroke: "#C2410C" },
-          { tag: "Tip", icon: Lightbulb, color: "rgba(22,163,74", text: "Quick win. Try this.", stroke: "#16A34A" },
-          { tag: "Warning", icon: AlertTriangle, color: "rgba(217,119,6", text: "Mind the gap.", stroke: "#D97706" },
-          { tag: "Danger", icon: XCircle, color: "rgba(220,38,38", text: "Don't ship this.", stroke: "#DC2626" },
-          { tag: "Info", icon: Info, color: "rgba(37,99,235", text: "Some context.", stroke: "#2563EB" },
-          { tag: "Check", icon: CircleCheck, color: "rgba(5,150,105", text: "Done. Confirmed.", stroke: "#059669" },
-          { tag: "Update", icon: RefreshCw, color: "rgba(202,138,4", text: "v0.1 — May 2026.", stroke: "#CA8A04" },
-        ].map((c) => (
-          <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-            <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">
-              &lt;{c.tag}&gt;
-            </div>
-            <div
-              class="flex items-start gap-2 rounded-lg px-3 py-2.5"
-              style={`background: ${c.color},0.05); border: 1px solid ${c.color},0.18);`}
-            >
-              <c.icon size={13} color={c.stroke} class="mt-0.5 shrink-0" />
-              <div class="font-sans text-xs leading-[18px] text-line-dark">
-                {c.text}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <!-- Layout (4) -->
-    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
-        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Layout</div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">4</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <!-- Card -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Card&gt;</div>
-          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light p-3">
-            <div class="flex items-center gap-2">
-              <div class="flex h-[22px] w-[22px] items-center justify-center rounded-md" style="background: rgba(234,88,12,0.10);">
-                <Terminal size={11} color="#C2410C" />
-              </div>
-              <div class="font-sans text-xs font-semibold text-ink">Quickstart</div>
-            </div>
-            <div class="font-sans text-[11px] leading-4 text-mute">Three commands.</div>
-          </div>
-        </div>
-        <!-- CardGroup -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;CardGroup&gt;</div>
-          <div class="flex gap-1.5">
-            <div class="flex-1 rounded-md border border-line-light p-2.5 font-sans text-[11px] font-semibold text-ink">Get started</div>
-            <div class="flex-1 rounded-md border border-line-light p-2.5 font-sans text-[11px] font-semibold text-ink">Themes</div>
-          </div>
-        </div>
-        <!-- Columns -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Columns&gt;</div>
-          <div class="flex flex-col gap-1.5">
-            {[0, 1].map(() => (
-              <div class="flex gap-1.5">
-                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
-                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
-                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <!-- Frame -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Frame&gt;</div>
-          <div
-            class="flex items-center justify-center rounded-lg border border-dashed border-line-light p-3.5"
-            style="background: #F2EFE9;"
-          >
-            <div class="font-mono text-[10px] text-mute">img · 16:9</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Navigation (6) -->
-    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
-        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Navigation</div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">6</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <!-- Tabs -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tabs&gt;</div>
-          <div class="flex flex-col overflow-hidden rounded-lg border border-line-light">
-            <div class="flex border-b border-line-light px-1">
-              <div class="-mb-px border-b-2 border-tang-600 px-3 py-2 font-sans text-[11px] font-medium text-ink">macOS</div>
-              <div class="px-3 py-2 font-sans text-[11px] text-mute">Windows</div>
-              <div class="px-3 py-2 font-sans text-[11px] text-mute">bun</div>
-            </div>
-            <div class="px-3 py-2.5 font-mono text-[11px] text-line-dark">brew install tangly</div>
-          </div>
-        </div>
-        <!-- Steps -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Steps&gt;</div>
-          <div class="flex flex-col gap-2 rounded-lg border border-line-light p-3">
-            {[
-              { n: 1, t: "Install", active: true },
-              { n: 2, t: "Init", active: false },
-              { n: 3, t: "Build", active: false },
-            ].map((s) => (
-              <div class="flex items-center gap-2.5">
-                <div
-                  class:list={[
-                    "flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-sans text-[10px] font-semibold",
-                    s.active ? "bg-tang-600 text-paper" : "border border-line-light text-mute",
-                  ]}
-                >
-                  {s.n}
-                </div>
-                <div class:list={["font-sans text-xs", s.active ? "font-medium text-ink" : "text-line-dark"]}>{s.t}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <!-- Accordion -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Accordion&gt;</div>
-          <div class="flex flex-col overflow-hidden rounded-lg border border-line-light">
-            <div class="flex items-center gap-2.5 border-b border-line-light px-3 py-2.5">
-              <ChevronDown size={11} color="#0B0B0F" stroke-width={2.5} />
-              <div class="font-sans text-xs font-semibold text-ink">Why Tangly?</div>
-            </div>
-            <div class="flex items-center gap-2.5 px-3 py-2.5">
-              <ChevronRight size={11} color="#6B6B70" stroke-width={2.5} />
-              <div class="font-sans text-xs text-line-dark">Mintlify compat?</div>
-            </div>
-          </div>
-        </div>
-        <!-- Tab -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tab&gt;</div>
-          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">
-            Child of <code class="font-mono text-ink">&lt;Tabs&gt;</code>. One panel.
-          </div>
-        </div>
-        <!-- Step -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Step&gt;</div>
-          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">
-            Child of <code class="font-mono text-ink">&lt;Steps&gt;</code>. One step.
-          </div>
-        </div>
-        <!-- AccordionGroup -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;AccordionGroup&gt;</div>
-          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">Wrapper. Single-open semantics.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Code & content (6) -->
-    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
-        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Code &amp; content</div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">6</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <!-- CodeGroup -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;CodeGroup&gt;</div>
-          <div class="flex flex-col overflow-hidden rounded-lg border border-line-dark bg-ink">
-            <div class="flex border-b border-line-dark px-1">
-              <div class="-mb-px border-b-2 border-tang-600 px-2.5 py-2 font-mono text-[11px] text-paper">bun</div>
-              <div class="px-2.5 py-2 font-mono text-[11px] text-mute">npm</div>
-              <div class="px-2.5 py-2 font-mono text-[11px] text-mute">pnpm</div>
-            </div>
-            <div class="px-3 py-2.5 font-mono text-[11px]">
-              <span class="text-tang-600">$</span> <span class="text-paper">bun add tangly</span>
-            </div>
-          </div>
-        </div>
-        <!-- FileTree -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;FileTree&gt;</div>
-          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3 font-mono text-[11px] leading-[18px]">
-            <div class="flex items-center gap-1.5">
-              <ChevronDown size={11} color="#6B6B70" />
-              <Folder size={11} color="#C2410C" />
-              <span class="text-ink">my-docs</span>
-            </div>
-            <div class="pl-[22px] text-mute">docs.json</div>
-            <div class="pl-[22px] text-mute">intro.mdx</div>
-          </div>
-        </div>
-        <!-- Snippet -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Snippet&gt;</div>
-          <div class="flex items-center gap-2 rounded-lg border border-line-light px-3 py-2.5 font-mono text-[11px]">
-            <span class="text-tang-600">$</span><span class="text-line-dark">tangly init</span>
-            <div class="flex-1"></div>
-            <div class="rounded border border-line-light px-1.5 py-px font-mono text-[10px] text-mute">copy</div>
-          </div>
-        </div>
-        <!-- Embed -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Embed&gt;</div>
-          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light p-3.5" style="background: rgba(11,11,15,0.02);">
-            <div class="font-mono text-[10px] text-mute">codepen.io / · 240×80</div>
-            <div class="flex gap-1">
-              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
-              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
-              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
-            </div>
-          </div>
-        </div>
-        <!-- Video -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Video&gt;</div>
-          <div class="flex items-center justify-center rounded-lg border border-line-light bg-ink p-4">
-            <Play size={22} color="#FAFAF7" fill="#FAFAF7" />
-          </div>
-        </div>
-        <!-- LightboxImage -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;LightboxImage&gt;</div>
-          <div class="relative flex min-h-14 items-end justify-end rounded-lg border border-line-light p-3.5" style="background: #F2EFE9;">
-            <Maximize2 size={14} color="#6B6B70" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- API (4) -->
-    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
-        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">API</div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">4</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <!-- ParamField -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ParamField&gt;</div>
-          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3">
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-xs font-semibold text-ink">q</span>
-              <span class="font-mono text-[10px] text-mute">string</span>
-              <span class="rounded-full px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.04em] text-tang-700" style="background: rgba(234,88,12,0.08);">required</span>
-            </div>
-            <div class="font-sans text-[11px] text-mute">Search query.</div>
-          </div>
-        </div>
-        <!-- ResponseField -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ResponseField&gt;</div>
-          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3">
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-xs font-semibold text-ink">id</span>
-              <span class="font-mono text-[10px] text-mute">uuid</span>
-            </div>
-            <div class="font-sans text-[11px] text-mute">Domain ID.</div>
-          </div>
-        </div>
-        <!-- RequestExample -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;RequestExample&gt;</div>
-          <div class="flex flex-col gap-1 rounded-lg bg-ink px-3 py-2.5 font-mono text-[11px] leading-[18px]">
-            <div><span class="text-tang-700">curl</span> <span class="text-paper">api.tangly.dev/v1</span></div>
-            <div><span class="text-mute">-H</span> <span class="text-tang-300">"Auth: $TOKEN"</span></div>
-          </div>
-        </div>
-        <!-- ResponseExample -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ResponseExample&gt;</div>
-          <div class="flex flex-col gap-1 rounded-lg bg-ink px-3 py-2.5 font-mono text-[11px] leading-[18px]">
-            <div><span class="text-mute">{"{"}</span></div>
-            <div>  <span class="text-tang-300">"id"</span><span class="text-mute">:</span> <span class="text-tang-300">"d_47"</span></div>
-            <div><span class="text-mute">{"}"}</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Inline & misc (7) -->
-    <div class="flex flex-col gap-4 px-8 pb-8 pt-7">
-      <div class="flex items-center gap-3">
-        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Inline &amp; misc</div>
-        <div class="h-px flex-1 bg-line-light"></div>
-        <div class="font-mono text-[11px] text-mute">7</div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <!-- Badge -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Badge&gt;</div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded-full px-2.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-tang-700" style="background: rgba(234,88,12,0.08); border: 1px solid rgba(234,88,12,0.20);">v0.1</span>
-            <span class="rounded-full px-2.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.04em]" style="background: rgba(5,150,105,0.10); border: 1px solid rgba(5,150,105,0.25); color: #059669;">new</span>
-          </div>
-        </div>
-        <!-- Icon -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Icon&gt;</div>
           <div class="flex items-center gap-3">
-            <FileText size={16} color="#0B0B0F" />
-            <Terminal size={16} color="#0B0B0F" />
-            <Globe size={16} color="#0B0B0F" />
-            <Search size={16} color="#0B0B0F" />
-          </div>
-        </div>
-        <!-- Kbd -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Kbd&gt;</div>
-          <div class="flex items-center gap-2 font-sans text-xs text-line-dark">
-            Press
-            <kbd class="rounded border border-line-light border-b-2 bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">⌘</kbd>
-            <kbd class="rounded border border-line-light border-b-2 bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">K</kbd>
-          </div>
-        </div>
-        <!-- Tooltip -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tooltip&gt;</div>
-          <div class="flex flex-col items-start gap-2">
-            <div class="relative rounded-md bg-ink px-2.5 py-1.5 font-mono text-[11px] text-paper">
-              SSE stream
-              <span class="absolute -bottom-1 left-3.5 h-2 w-2 rotate-45 bg-ink"></span>
+            <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">
+              {g.label}
             </div>
-            <span class="font-sans text-[11px] text-line-dark underline decoration-dotted">hover me</span>
+            <div class="h-px flex-1 bg-line-light"></div>
+            <div class="font-mono text-[11px] text-mute">{g.count}</div>
+          </div>
+          <div class="flex flex-wrap gap-4">
+            {g.tiles.map((tag) => (
+              <div class="ws-tile flex flex-col gap-2" style="width: calc((100% - 32px) / 3);">
+                <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">
+                  &lt;{tag}&gt;
+                </div>
+                <div class="ws-render">
+                  {tag === "Note" && <Note>Heads up — worth a read.</Note>}
+                  {tag === "Tip" && <Tip>Quick win. Try this.</Tip>}
+                  {tag === "Warning" && <Warning>Mind the gap.</Warning>}
+                  {tag === "Danger" && <Danger>Don't ship this.</Danger>}
+                  {tag === "Info" && <Info>Some context.</Info>}
+                  {tag === "Check" && <Check>Done. Confirmed.</Check>}
+                  {tag === "Update" && (
+                    <Update label="v0.1.0" description="May 2026" tags={["feat"]}>
+                      Open-source release.
+                    </Update>
+                  )}
+                  {tag === "Card" && (
+                    <Card title="Quickstart" icon="terminal" href="/start">
+                      Three commands.
+                    </Card>
+                  )}
+                  {tag === "CardGroup" && (
+                    <CardGroup cols={2}>
+                      <Card title="Get started" icon="rocket" href="/start" />
+                      <Card title="Themes" icon="paintbrush" href="/themes" />
+                    </CardGroup>
+                  )}
+                  {tag === "Columns" && (
+                    <Columns cols={3}>
+                      <div class="rounded bg-line-light/60 p-2 text-center font-mono text-[11px] text-mute">A</div>
+                      <div class="rounded bg-line-light/60 p-2 text-center font-mono text-[11px] text-mute">B</div>
+                      <div class="rounded bg-line-light/60 p-2 text-center font-mono text-[11px] text-mute">C</div>
+                    </Columns>
+                  )}
+                  {tag === "Frame" && (
+                    <Frame caption="Hero illustration">
+                      <div class="aspect-video w-full bg-gradient-to-br from-tang-300 to-tang-700"></div>
+                    </Frame>
+                  )}
+                  {tag === "Tabs" && (
+                    <Tabs name="install-demo">
+                      <Tab title="macOS"><pre class="!my-0 font-mono text-xs">brew install tangly</pre></Tab>
+                      <Tab title="Linux"><pre class="!my-0 font-mono text-xs">curl tangly.dev/install.sh | sh</pre></Tab>
+                      <Tab title="bun"><pre class="!my-0 font-mono text-xs">bunx tangly</pre></Tab>
+                    </Tabs>
+                  )}
+                  {tag === "Tab" && (
+                    <p class="py-2 font-sans text-[12px] leading-[18px] text-mute">
+                      Child of <code class="font-mono text-ink">&lt;Tabs&gt;</code>. One panel.
+                    </p>
+                  )}
+                  {tag === "Steps" && (
+                    <Steps>
+                      <Step title="Install">curl tangly.dev/install.sh | sh</Step>
+                      <Step title="Init">tangly init</Step>
+                      <Step title="Build">tangly build</Step>
+                    </Steps>
+                  )}
+                  {tag === "Step" && (
+                    <p class="py-2 font-sans text-[12px] leading-[18px] text-mute">
+                      Child of <code class="font-mono text-ink">&lt;Steps&gt;</code>. One step.
+                    </p>
+                  )}
+                  {tag === "Accordion" && (
+                    <Accordion title="Why Tangly?" defaultOpen>
+                      Self-host. No vendor lock-in.
+                    </Accordion>
+                  )}
+                  {tag === "AccordionGroup" && (
+                    <AccordionGroup>
+                      <Accordion title="Free?">Apache-2.0.</Accordion>
+                      <Accordion title="Mintlify compat?">Drop-in.</Accordion>
+                    </AccordionGroup>
+                  )}
+                  {tag === "CodeGroup" && (
+                    <CodeGroup>
+                      <pre data-tab-title="bun" class="language-bash"><code>bun add tangly</code></pre>
+                      <pre data-tab-title="npm" class="language-bash"><code>npm i tangly</code></pre>
+                      <pre data-tab-title="pnpm" class="language-bash"><code>pnpm add tangly</code></pre>
+                    </CodeGroup>
+                  )}
+                  {tag === "FileTree" && (
+                    <FileTree>
+                      <ul>
+                        <li>my-docs<ul>
+                          <li>docs.json</li>
+                          <li>intro.mdx</li>
+                          <li>api/<ul><li>openapi.yaml</li></ul></li>
+                        </ul></li>
+                      </ul>
+                    </FileTree>
+                  )}
+                  {tag === "Snippet" && (
+                    <Snippet file="install.snippet.mdx">
+                      <pre class="!my-0 rounded-md bg-ink p-3 font-mono text-xs text-paper">$ tangly init my-docs</pre>
+                    </Snippet>
+                  )}
+                  {tag === "Embed" && (
+                    <div class="rounded-lg border border-line-light p-3.5 bg-paper">
+                      <div class="font-mono text-[10px] text-mute mb-1.5">codepen.io / · 240×80</div>
+                      <div class="flex gap-1"><span class="h-1.5 w-1.5 rounded-full bg-line-light"></span><span class="h-1.5 w-1.5 rounded-full bg-line-light"></span><span class="h-1.5 w-1.5 rounded-full bg-line-light"></span></div>
+                    </div>
+                  )}
+                  {tag === "Video" && (
+                    <Video src="/video.mp4" />
+                  )}
+                  {tag === "LightboxImage" && (
+                    <LightboxImage src="/brand/tangly-icon-512.png" alt="Tangly" />
+                  )}
+                  {tag === "ParamField" && (
+                    <ParamField path="q" type="string" required>
+                      Search query.
+                    </ParamField>
+                  )}
+                  {tag === "ResponseField" && (
+                    <ResponseField name="id" type="uuid">
+                      Domain ID.
+                    </ResponseField>
+                  )}
+                  {tag === "RequestExample" && (
+                    <RequestExample>
+                      <pre class="!my-0 language-bash"><code>curl api.tangly.dev/v1
+  -H "Auth: $TOKEN"</code></pre>
+                    </RequestExample>
+                  )}
+                  {tag === "ResponseExample" && (
+                    <ResponseExample>
+                      <pre class="!my-0 language-json"><code>{`{ "id": "d_47" }`}</code></pre>
+                    </ResponseExample>
+                  )}
+                  {tag === "Badge" && (
+                    <p class="!my-0 flex flex-wrap items-center gap-2">
+                      <Badge variant="accent">v0.1</Badge>
+                      <Badge variant="success">new</Badge>
+                      <Badge variant="warning">beta</Badge>
+                    </p>
+                  )}
+                  {tag === "Icon" && (
+                    <p class="!my-0 flex items-center gap-3 text-ink">
+                      <Icon icon="terminal" size={18} />
+                      <Icon icon="rocket" size={18} />
+                      <Icon icon="search" size={18} />
+                      <Icon icon="folder" size={18} />
+                    </p>
+                  )}
+                  {tag === "Kbd" && (
+                    <p class="!my-0 font-sans text-sm text-line-dark">
+                      Press <Kbd keys="Cmd+K" />
+                    </p>
+                  )}
+                  {tag === "Tooltip" && (
+                    <p class="!my-0 font-sans text-sm text-line-dark">
+                      <Tooltip tip="Server-sent events">SSE stream</Tooltip>
+                    </p>
+                  )}
+                  {tag === "GlossaryTerm" && (
+                    <p class="!my-0 font-sans text-sm leading-5 text-line-dark">
+                      An <GlossaryTerm slug="mdx" definition="Markdown plus JSX">MDX</GlossaryTerm> file is markdown plus JSX.
+                    </p>
+                  )}
+                  {tag === "Expandable" && (
+                    <Expandable title="advanced opts">
+                      Three optional fields.
+                    </Expandable>
+                  )}
+                  {tag === "PackageManager" && (
+                    <PackageManager name="tangly" syncName="ws-pm-demo" />
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <!-- GlossaryTerm -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;GlossaryTerm&gt;</div>
-          <p class="font-sans text-xs leading-[18px] text-line-dark">
-            An <span class="cursor-help underline decoration-tang-700 decoration-dotted">MDX</span> file is just markdown plus JSX.
-          </p>
-        </div>
-        <!-- Expandable -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Expandable&gt;</div>
-          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light px-3 py-2.5">
-            <div class="flex items-center gap-2">
-              <ChevronDown size={11} color="#0B0B0F" stroke-width={2.4} />
-              <span class="font-mono text-[11px] font-semibold text-ink">advanced opts</span>
-            </div>
-            <div class="pl-[19px] font-sans text-[11px] text-mute">3 fields shown</div>
-          </div>
-        </div>
-        <!-- PackageManager -->
-        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
-          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;PackageManager&gt;</div>
-          <div class="flex rounded-lg border border-line-light px-1">
-            <div class="-mb-px border-b-2 border-tang-600 px-2.5 py-1.5 font-mono text-[11px] text-ink">bun</div>
-            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">npm</div>
-            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">pnpm</div>
-            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">yarn</div>
-          </div>
-        </div>
-      </div>
-    </div>
+      ))
+    }
   </div>
 </section>
+
+<style>
+  /* Tame theme-ui's vertical rhythm so each component sits inside its tile. */
+  .ws-components :global(.ws-render > *) {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .ws-components :global(.ws-render) {
+    font-size: 13px;
+  }
+  .ws-components :global(.tangly-callout) {
+    padding: 0.6rem 0.75rem;
+  }
+  .ws-components :global(.tangly-tabs) {
+    margin: 0;
+  }
+  .ws-components :global(.tangly-steps) {
+    margin: 0;
+  }
+  .ws-components :global(.tangly-update) {
+    margin: 0;
+    padding: 0.75rem 0.875rem;
+  }
+</style>
