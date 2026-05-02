@@ -1,0 +1,310 @@
+---
+title: Code
+description: CodeGroup, PackageManager, Snippet, FileTree, Kbd — the components for code, files, and keys.
+icon: "code-2"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<CodeGroup>`](#codegroup) | Tab multiple code blocks; auto-syncs on known label families |
+| [`<PackageManager>`](#packagemanager) | npm/yarn/pnpm/bun installs and scripts |
+| [`<Snippet>`](#snippet) | Reuse content across pages |
+| [`<FileTree>`](#filetree) | Render a directory tree from a Markdown list |
+| [`<Kbd>`](#kbd) | Keyboard chord, with auto Cmd→Ctrl on non-Mac |
+
+## CodeGroup
+
+Wraps two or more code blocks and renders them as tabs. Each child's `data-filename` (from the `title="..."` fence attribute) or language hint becomes the tab label.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Sync key. Same `name` on multiple blocks → matched tabs across the page and across navigations (persisted in `localStorage`). When empty, the runtime auto-derives a name if the labels match a known family (npm/yarn/pnpm/bun, pip/uv/poetry, macOS/Linux/Windows, python/typescript, …). |
+
+### Multiple languages
+
+````mdx
+<CodeGroup>
+  ```ts title="fetch.ts"
+  await fetch("https://api.example.com/v1/users")
+  ```
+  ```py title="fetch.py"
+  requests.get("https://api.example.com/v1/users")
+  ```
+  ```sh title="curl"
+  curl https://api.example.com/v1/users
+  ```
+</CodeGroup>
+````
+
+<CodeGroup>
+  ```ts title="fetch.ts"
+  await fetch("https://api.example.com/v1/users")
+  ```
+  ```py title="fetch.py"
+  requests.get("https://api.example.com/v1/users")
+  ```
+  ```sh title="curl"
+  curl https://api.example.com/v1/users
+  ```
+</CodeGroup>
+
+### Synced across blocks
+
+Pick TypeScript on the first block — the second block flips to TypeScript too.
+
+````mdx
+<CodeGroup name="lang">
+  ```ts
+  console.log("hello")
+  ```
+  ```py
+  print("hello")
+  ```
+</CodeGroup>
+
+<CodeGroup name="lang">
+  ```ts
+  console.log("done")
+  ```
+  ```py
+  print("done")
+  ```
+</CodeGroup>
+````
+
+### Auto-sync (no `name`)
+
+When labels match a known family, sync happens automatically — pick `bun` once, every install block on the page flips. Works across pages too.
+
+````mdx
+<CodeGroup>
+  ```bash bun
+  bun add tangly
+  ```
+  ```bash npm
+  npm install tangly
+  ```
+  ```bash pnpm
+  pnpm add tangly
+  ```
+  ```bash yarn
+  yarn add tangly
+  ```
+</CodeGroup>
+````
+
+Recognized families: `auto:pkg-js`, `auto:pkg-py`, `auto:pkg-rust`, `auto:os`, `auto:shell`, `auto:runtime-js`, `auto:lang`, `auto:editor`. Full list in [`code-sync.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/scripts/code-sync.ts).
+
+### Tab label resolution
+
+Per child, in priority order:
+
+1. `data-filename` (from code-fence `title="..."`)
+2. `data-language` (the language token after the opening fence)
+3. `"Tab N"` fallback
+
+## PackageManager
+
+`<PackageManager>` renders an install or run command across npm, yarn, pnpm, and bun. Tabs auto-sync as `auto:pkg-js` so a single pick on any install block (raw `<CodeGroup>` or `<PackageManager>`) propagates everywhere.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Package name to install. Required unless `command` is set. |
+| `mode` | `"dev" \| "prod"` | `"prod"` | `"dev"` installs as devDependency. |
+| `command` | `string` | — | Run a script instead of installing. e.g. `"run build"`. |
+| `syncName` | `string` | `""` | Empty default → joins the `auto:pkg-js` pool. Override only to break the link. |
+
+### Install
+
+```mdx
+<PackageManager name="tangly" />
+```
+
+<PackageManager name="tangly" />
+
+### Install as dev dependency
+
+```mdx
+<PackageManager name="@tanglydocs/schema" mode="dev" />
+```
+
+<PackageManager name="@tanglydocs/schema" mode="dev" />
+
+### Run a script
+
+```mdx
+<PackageManager command="run build" />
+```
+
+<PackageManager command="run build" />
+
+### Independent block
+
+To break sync for a specific block, give it a unique `syncName`:
+
+```mdx
+<PackageManager name="@tanglydocs/cli" syncName="cli-only" />
+```
+
+## Snippet
+
+Reusable inline content. Phase-1 placeholder — accepts inline children for now; the file-resolved form (`file="snippets/x.mdx"`) lands in Phase 2.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `file` | `string` | — | Path under `snippets/`. Phase-2; ignored today. |
+
+```mdx
+<Snippet file="snippets/install.mdx">
+  Inline fallback content. Renders as-is until file resolution lands.
+</Snippet>
+```
+
+For most reuse cases today, [embedded blocks](/guides/authoring/embedded-blocks) cover the same need.
+
+## FileTree
+
+Turns a nested Markdown list into a styled directory tree. Indentation drives nesting. Files pick icons from their extension. `**bold**` highlights a row. Trailing text becomes a comment. `...` is a placeholder.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `"default" \| "terminal" \| "ascii"` | `"default"` | Visual style — see below |
+| `chrome` | `boolean` | `false` | Only on `terminal` — draws three macOS-style window dots |
+
+### Default
+
+<FileTree>
+- src
+  - components
+    - Button.tsx
+    - **Card.tsx** the file you'll edit
+    - Note.astro
+  - styles
+    - globals.css
+  - ...
+- package.json dependencies
+- tangly.config.ts
+</FileTree>
+
+```mdx
+<FileTree>
+- src
+  - components
+    - Button.tsx
+    - **Card.tsx** the file you'll edit
+    - Note.astro
+  - styles
+    - globals.css
+  - ...
+- package.json dependencies
+- tangly.config.ts
+</FileTree>
+```
+
+### Terminal variant
+
+Drops the icons, swaps in literal `├──`/`└──` connectors, ships a dark background that ignores theme — like running `tree` in a shell. Add `chrome` for the macOS window header.
+
+<FileTree variant="terminal" chrome>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - guides/
+    - **deploying.mdx**
+    - themes.mdx
+- package.json
+</FileTree>
+
+```mdx
+<FileTree variant="terminal" chrome>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - guides/
+    - **deploying.mdx**
+- package.json
+</FileTree>
+```
+
+### ASCII variant
+
+Minimal — no card, no background, no icons. Use when a tree sits inside another component (Card, Step, Accordion) and the boxed look would be too heavy.
+
+<FileTree variant="ascii">
+- packages/
+  - theme-ui/
+    - components/
+      - **FileTree.astro**
+      - rehype-file-tree.ts
+- docs/
+</FileTree>
+
+```mdx
+<FileTree variant="ascii">
+- packages/
+  - theme-ui/
+    - components/
+      - **FileTree.astro**
+- docs/
+</FileTree>
+```
+
+### Authoring syntax
+
+Five things to know:
+
+1. **Directories** — A line ending in `/` is a directory; so is any line with nested children. Directories are collapsible (`<details open>`) — readers can fold them shut.
+2. **Highlighting** — Wrap a row in `**bold**` to highlight it.
+3. **Comments** — Anything after the filename becomes a muted comment. Inline Markdown works.
+4. **Placeholders** — A row containing only `...` (or `…`) draws a dimmed placeholder row.
+5. **Custom icons** — Prefix a row with `<Icon icon="..." />` to override the auto-detected file icon.
+
+```mdx
+<FileTree>
+- <Icon icon="cog" /> config
+- <Icon icon="database" /> data
+</FileTree>
+```
+
+## Kbd
+
+Renders styled keycap(s). Either pass children for a single key, or `keys="..."` for a chord — `+` and whitespace separate keys, and `Cmd` / `⌘` swap to `Ctrl` on non-Mac platforms.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `keys` | `string` | — | Chord string. e.g. `"Cmd+K"`, `"Shift Tab"`. |
+
+### Single key
+
+```mdx
+Press <Kbd>Tab</Kbd> to autocomplete.
+```
+
+Press <Kbd>Tab</Kbd> to autocomplete.
+
+### Chord (auto Cmd→Ctrl)
+
+```mdx
+Open the command palette with <Kbd keys="Cmd+K" />.
+```
+
+Open the command palette with <Kbd keys="Cmd+K" />.
+
+On Linux and Windows the same chord renders as `Ctrl + K`.
+
+### Manual chord
+
+```mdx
+<Kbd>Shift</Kbd>+<Kbd>Tab</Kbd>
+```
+
+<Kbd>Shift</Kbd>+<Kbd>Tab</Kbd>
+
+## Source
+
+- [`CodeGroup.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/CodeGroup.astro), [`code-sync.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/scripts/code-sync.ts)
+- [`PackageManager.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/PackageManager.astro)
+- [`Snippet.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Snippet.astro)
+- [`FileTree.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/FileTree.astro), [`rehype-file-tree.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/rehype-file-tree.ts)
+- [`Kbd.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Kbd.astro)

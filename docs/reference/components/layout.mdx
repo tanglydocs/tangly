@@ -1,0 +1,159 @@
+---
+title: Layout
+description: Frame, Accordion, AccordionGroup, Expandable — for framing media and folding content.
+icon: "layers"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<Frame>`](#frame) | Frame around an image or media block, optional caption |
+| [`<Accordion>`](#accordion) | Collapsible section with title + description |
+| [`<AccordionGroup>`](#accordiongroup) | Stack accordions into a single bordered card |
+| [`<Expandable>`](#expandable) | Lightweight inline disclosure — for nested-field reveals |
+
+## Frame
+
+Wraps a slot in a soft framed surface with rounded corners and an optional caption underneath. Most useful for screenshots and diagrams.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `caption` | `string` | — | Centered caption rendered below the slot |
+
+```mdx
+<Frame caption="The default Tangly starter site">
+  <img src="/images/tangly-icon.png" alt="Tangly screenshot" />
+</Frame>
+```
+
+<Frame caption="The default Tangly starter site">
+  <img src="/images/tangly-icon.png" alt="Tangly screenshot" />
+</Frame>
+
+### Without caption
+
+```mdx
+<Frame>
+  <img src="/images/tangly-logo.png" alt="Tangly logo" />
+</Frame>
+```
+
+<Frame>
+  <img src="/images/tangly-logo.png" alt="Tangly logo" />
+</Frame>
+
+## Accordion
+
+Collapsible block — a title and an optional description sit on the always-visible row, the rest is revealed when expanded.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Visible heading (required) |
+| `description` | `string` | — | Smaller subtitle under the title |
+| `icon` | `string` | — | Lucide icon next to the title |
+| `defaultOpen` | `boolean` | `false` | Render expanded on first paint |
+
+```mdx
+<Accordion title="What's the difference between Tangly and Mintlify?" icon="message-circle-question">
+  Mintlify is a SaaS docs platform. Tangly is an OSS framework that renders
+  Mintlify projects unmodified — but you self-host, you ship to any static host,
+  and you can eject to plain Astro at any point.
+</Accordion>
+```
+
+<Accordion title="What's the difference between Tangly and Mintlify?" icon="message-circle-question">
+  Mintlify is a SaaS docs platform. Tangly is an OSS framework that renders
+  Mintlify projects unmodified — but you self-host, you ship to any static host,
+  and you can eject to plain Astro at any point.
+</Accordion>
+
+### With description
+
+```mdx
+<Accordion
+  title="Performance"
+  description="What's the build budget on a 500-page site?"
+  defaultOpen
+>
+  Roughly one second per 100 pages on a stock M1, with full search index.
+</Accordion>
+```
+
+<Accordion
+  title="Performance"
+  description="What's the build budget on a 500-page site?"
+  defaultOpen
+>
+  Roughly one second per 100 pages on a stock M1, with full search index.
+</Accordion>
+
+## AccordionGroup
+
+Wraps multiple `<Accordion>` children into one bordered card with dividers.
+
+```mdx
+<AccordionGroup>
+  <Accordion title="Can I deploy to Cloudflare Pages?">
+    Yes — `tangly build --adapter cloudflare`.
+  </Accordion>
+  <Accordion title="Does search work offline?">
+    Yes. Pagefind builds a static index that runs entirely in the browser.
+  </Accordion>
+  <Accordion title="What about i18n?">
+    Multi-language navigation ships in `docs.json`; per-page translations are MDX-by-MDX.
+  </Accordion>
+</AccordionGroup>
+```
+
+<AccordionGroup>
+  <Accordion title="Can I deploy to Cloudflare Pages?">
+    Yes — `tangly build --adapter cloudflare`.
+  </Accordion>
+  <Accordion title="Does search work offline?">
+    Yes. Pagefind builds a static index that runs entirely in the browser.
+  </Accordion>
+  <Accordion title="What about i18n?">
+    Multi-language navigation ships in `docs.json`; per-page translations are MDX-by-MDX.
+  </Accordion>
+</AccordionGroup>
+
+## Expandable
+
+A lighter-weight disclosure than `<Accordion>` — a dashed border, no description, no icon. Designed for nested field reveals inside `<ParamField>` and `<ResponseField>`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Visible label (required) |
+| `defaultOpen` | `boolean` | `false` | Render expanded on first paint |
+
+````mdx
+<Expandable title="Show schema">
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string" },
+      "name": { "type": "string" }
+    }
+  }
+  ```
+</Expandable>
+````
+
+<Expandable title="Show schema">
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string" },
+      "name": { "type": "string" }
+    }
+  }
+  ```
+</Expandable>
+
+## Source
+
+- [`Frame.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Frame.astro)
+- [`Accordion.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Accordion.astro), [`AccordionGroup.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/AccordionGroup.astro)
+- [`Expandable.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Expandable.astro)

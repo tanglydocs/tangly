@@ -1,93 +1,45 @@
 ---
 title: Components overview
-description: Every built-in MDX component, what it's for, and where to find its reference.
+description: 38 built-in MDX components, grouped into eight reference pages.
 icon: "puzzle"
 ---
 
-# Components
 
-Tangly auto-injects ~35 MDX components into every page. No imports, no configuration. Drop the tag in, render.
+Tangly ships 38 MDX components, auto-injected into every page — no imports, no configuration. Drop the tag in, render.
 
-Every component listed here lives in [`@tanglydocs/theme-ui`](https://github.com/tanglydocs/tangly/tree/main/packages/theme-ui/src/components). Override any of them by [shadowing the file](/guides/customization/custom-components) at `theme/<Name>.astro` in your project.
-
-## Cards & layout
-
-<CardGroup cols={3}>
-  <Card title="Card" icon="square" href="/reference/components/card">Bordered tile with icon, title, image, link.</Card>
-  <Card title="CardGroup" icon="grid-3x3" href="/reference/components/card-group">Responsive grid wrapping cards.</Card>
-  <Card title="Columns" icon="columns-3" href="/reference/components/columns">N-column grid for arbitrary children.</Card>
-</CardGroup>
-
-## Callouts
-
-<CardGroup cols={3}>
-  <Card title="Note" icon="info" href="/reference/components/note">Heads-up info.</Card>
-  <Card title="Tip" icon="lightbulb" href="/reference/components/tip">Pro-tip.</Card>
-  <Card title="Warning" icon="triangle-alert" href="/reference/components/warning">Watch-out.</Card>
-  <Card title="Info" icon="circle-help" href="/reference/components/info">Neutral aside.</Card>
-  <Card title="Check" icon="circle-check" href="/reference/components/check">Verified / passed.</Card>
-  <Card title="Danger" icon="circle-alert" href="/reference/components/danger">Risk / breaking.</Card>
-  <Card title="Update" icon="megaphone" href="/reference/components/update">Changelog release block.</Card>
-</CardGroup>
-
-## Tabs & steps
-
-<CardGroup cols={4}>
-  <Card title="Tabs" icon="layout-panel-top" href="/reference/components/tabs" />
-  <Card title="Tab" icon="tag" href="/reference/components/tab" />
-  <Card title="Steps" icon="list-ordered" href="/reference/components/steps" />
-  <Card title="Step" icon="footprints" href="/reference/components/step" />
-</CardGroup>
-
-## Accordion
+The reference is grouped into eight pages. Each page covers a family with code + rendered examples for every variation.
 
 <CardGroup cols={2}>
-  <Card title="Accordion" icon="chevron-down" href="/reference/components/accordion" />
-  <Card title="AccordionGroup" icon="chevrons-up-down" href="/reference/components/accordion-group" />
+  <Card title="Callouts" icon="message-square-warning" href="/reference/components/callouts">
+    Note, Tip, Warning, Info, Check, Danger, Update
+  </Card>
+  <Card title="Cards" icon="square-stack" href="/reference/components/cards">
+    Card, CardGroup, Columns
+  </Card>
+  <Card title="Code" icon="code-2" href="/reference/components/code">
+    CodeGroup, PackageManager, Snippet, FileTree, Kbd
+  </Card>
+  <Card title="Tabs & Steps" icon="list-ordered" href="/reference/components/tabs-and-steps">
+    Tabs, Tab, Steps, Step
+  </Card>
+  <Card title="Layout" icon="layers" href="/reference/components/layout">
+    Frame, Accordion, AccordionGroup, Expandable
+  </Card>
+  <Card title="API" icon="plug" href="/reference/components/api">
+    ParamField, ResponseField, RequestExample, ResponseExample, OpenAPI viewers
+  </Card>
+  <Card title="Media" icon="image" href="/reference/components/media">
+    Embed, Video, LightboxImage
+  </Card>
+  <Card title="Text" icon="type" href="/reference/components/text">
+    Badge, Icon, Tooltip, GlossaryTerm
+  </Card>
 </CardGroup>
 
-## Code
+## Source of truth
 
-<CardGroup cols={3}>
-  <Card title="CodeGroup" icon="code-2" href="/reference/components/code-group" />
-  <Card title="Snippet" icon="paperclip" href="/reference/components/snippet" />
-  <Card title="PackageManager" icon="package" href="/reference/components/package-manager" />
-</CardGroup>
-
-## API
-
-<CardGroup cols={4}>
-  <Card title="ParamField" icon="text-cursor-input" href="/reference/components/param-field" />
-  <Card title="ResponseField" icon="reply" href="/reference/components/response-field" />
-  <Card title="RequestExample" icon="arrow-up-from-line" href="/reference/components/request-example" />
-  <Card title="ResponseExample" icon="arrow-down-to-line" href="/reference/components/response-example" />
-  <Card title="OpenApiEndpoint" icon="globe" href="/reference/components/openapi-endpoint" />
-  <Card title="OpenApiRedoc" icon="book-open" href="/reference/components/openapi-redoc" />
-  <Card title="OpenApiScalar" icon="ruler" href="/reference/components/openapi-scalar" />
-  <Card title="OpenApiStoplight" icon="traffic-cone" href="/reference/components/openapi-stoplight" />
-</CardGroup>
-
-## Media
-
-<CardGroup cols={3}>
-  <Card title="Frame" icon="frame" href="/reference/components/frame" />
-  <Card title="Embed" icon="link-2" href="/reference/components/embed" />
-  <Card title="Video" icon="video" href="/reference/components/video" />
-  <Card title="LightboxImage" icon="image" href="/reference/components/lightbox-image" />
-  <Card title="FileTree" icon="folder-tree" href="/reference/components/file-tree" />
-</CardGroup>
-
-## Text helpers
-
-<CardGroup cols={3}>
-  <Card title="Icon" icon="sparkles" href="/reference/components/icon" />
-  <Card title="Kbd" icon="keyboard" href="/reference/components/kbd" />
-  <Card title="Badge" icon="badge" href="/reference/components/badge" />
-  <Card title="Tooltip" icon="message-circle" href="/reference/components/tooltip" />
-  <Card title="Expandable" icon="chevrons-up-down" href="/reference/components/expandable" />
-  <Card title="GlossaryTerm" icon="book-marked" href="/reference/components/glossary-term" />
-</CardGroup>
+Every component lives in [`@tanglydocs/theme-ui`](https://github.com/tanglydocs/tangly/tree/main/packages/theme-ui/src/components). Override any of them by [shadowing](/guides/customization/custom-components) the file at `theme/<Name>.astro` in your project.
 
 ## Authoring custom components
 
-Need something we don't ship? Drop a `.astro` file under `theme/` in your project — every MDX page can use it as if it were built-in. See [Custom components](/guides/customization/custom-components).
+Need something we don't ship? Drop a `.astro` file under `components/` (or `theme/`) in your project — every MDX page can use it as if it were built-in. See [Custom components](/guides/customization/custom-components).

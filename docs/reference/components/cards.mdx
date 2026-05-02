@@ -1,0 +1,150 @@
+---
+title: Cards
+description: Card, CardGroup, Columns — for grids, choosers, and at-a-glance landing pages.
+icon: "square-stack"
+---
+
+
+Three components for grids and at-a-glance lists. `<Card>` is the unit; `<CardGroup>` is a card-aware grid; `<Columns>` is a generic grid for any children.
+
+| Component | Use for |
+|---|---|
+| [`<Card>`](#card) | A single tile with title, description, optional icon, image, link |
+| [`<CardGroup>`](#cardgroup) | Grid of cards with sensible breakpoints |
+| [`<Columns>`](#columns) | Generic responsive grid for any children |
+
+## Card
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Bold title at the top of the card |
+| `icon` | `string` | — | Lucide icon name (or any [supported library](/reference/schema#icons)) |
+| `href` | `string` | — | If set, the card becomes an anchor and gets hover styling |
+| `horizontal` | `boolean` | `false` | Lay out icon/image to the left of the body instead of stacked |
+| `img` | `string` | — | Image URL — rendered above the body (or to the left when `horizontal`) |
+| `image` | `string` | — | Mintlify-compatible alias for `img` |
+| `imageAspect` | `string` | `"16/9"` | CSS aspect ratio for the image area |
+| `color` | `string` | — | CSS color used for the icon tint and `--card-accent` variable |
+
+Children render as the description body — you can put any MDX inside.
+
+### Default
+
+```mdx
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Empty directory to live site in under a minute.
+</Card>
+```
+
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Empty directory to live site in under a minute.
+</Card>
+
+### Without icon
+
+```mdx
+<Card title="Reference" href="/reference">
+  Every component, every CLI flag, every schema field.
+</Card>
+```
+
+<Card title="Reference" href="/reference">
+  Every component, every CLI flag, every schema field.
+</Card>
+
+### Horizontal
+
+```mdx
+<Card title="Themes" icon="palette" href="/guides/themes" horizontal>
+  Five built-in themes. Swap with one field in `docs.json`.
+</Card>
+```
+
+<Card title="Themes" icon="palette" href="/guides/themes" horizontal>
+  Five built-in themes. Swap with one field in `docs.json`.
+</Card>
+
+### With image
+
+```mdx
+<Card title="Tang theme" img="/images/tangly-icon.png" href="/guides/themes/tang">
+  Default. Mintlify-Mint inspired. Mandarin accent.
+</Card>
+```
+
+<Card title="Tang theme" img="/images/tangly-icon.png" href="/guides/themes/tang">
+  Default. Mintlify-Mint inspired. Mandarin accent.
+</Card>
+
+### Custom color
+
+```mdx
+<Card title="Live now" icon="zap" color="#EA580C" href="/quickstart">
+  Tang accent — useful for marketing tiles.
+</Card>
+```
+
+<Card title="Live now" icon="zap" color="#EA580C" href="/quickstart">
+  Tang accent — useful for marketing tiles.
+</Card>
+
+## CardGroup
+
+Grid wrapper for `<Card>` children.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `cols` | `1 \| 2 \| 3 \| 4` | `2` | Column count at desktop. Always single-column on mobile, two columns at `sm`. |
+
+### Two columns (default)
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">Empty dir to live site.</Card>
+  <Card title="Themes" icon="palette" href="/guides/themes">Pick or roll your own.</Card>
+</CardGroup>
+```
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">Empty dir to live site.</Card>
+  <Card title="Themes" icon="palette" href="/guides/themes">Pick or roll your own.</Card>
+</CardGroup>
+
+### Three columns
+
+```mdx
+<CardGroup cols={3}>
+  <Card title="CLI" icon="terminal" href="/reference/cli">Every command, every flag.</Card>
+  <Card title="Schema" icon="braces" href="/reference/schema">Every `docs.json` field.</Card>
+  <Card title="Markdown" icon="text" href="/reference/markdown">Authoring reference.</Card>
+</CardGroup>
+```
+
+<CardGroup cols={3}>
+  <Card title="CLI" icon="terminal" href="/reference/cli">Every command, every flag.</Card>
+  <Card title="Schema" icon="braces" href="/reference/schema">Every `docs.json` field.</Card>
+  <Card title="Markdown" icon="text" href="/reference/markdown">Authoring reference.</Card>
+</CardGroup>
+
+## Columns
+
+Generic grid wrapper that accepts arbitrary children — not just cards.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `cols` | `number` | `2` | Column count. Clamped to 1–12. |
+
+```mdx
+<Columns cols={2}>
+  <Frame caption="Light"><img src="/images/tangly-logo.png" /></Frame>
+  <Frame caption="Dark"><img src="/images/tangly-logo-light.png" /></Frame>
+</Columns>
+```
+
+`<Columns>` is the right pick when you want to lay out two screenshots, two code blocks, or any pair of things side-by-side. Reach for `<CardGroup>` when the children are actually cards.
+
+## Source
+
+- [`Card.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Card.astro)
+- [`CardGroup.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/CardGroup.astro)
+- [`Columns.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Columns.astro)

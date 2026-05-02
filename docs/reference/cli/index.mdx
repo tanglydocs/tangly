@@ -1,0 +1,262 @@
+---
+title: CLI
+description: Every Tangly command — init, dev, build, check, migrate, eject, add, preview — with flags, defaults, and examples.
+icon: "terminal"
+---
+
+
+The `tangly` binary is the primary surface for working on Tangly projects. Eight commands cover scaffolding, dev, build, validation, migration, ejection, and content scaffolding.
+
+```bash
+tangly --help
+```
+
+## Install
+
+<PackageManager name="tangly" mode="dev" />
+
+Or install globally:
+
+```bash
+bun add -g tangly
+```
+
+## Common flags
+
+Every command accepts these:
+
+| Flag | Default | Description |
+|---|---|---|
+| `--root <dir>` | `.` | Project root |
+| `--config <path>` | `docs.json` | Path to `docs.json` relative to `--root` |
+
+The other flags vary per command.
+
+## init
+
+Scaffold a new Tangly project. Two paths: pick a built-in template (interactive), or hand `--from <dir>` to ingest an existing folder of `.md`/`.mdx` files.
+
+```bash
+tangly init [dir] [--from <dir>] [--template <name>] [--name <name>]
+```
+
+| Arg / flag | Type | Default | Description |
+|---|---|---|---|
+| `dir` | positional | `.` | Target directory |
+| `--from` | string | — | Path to existing markdown folder. Walks the tree (folders → groups), synthesizes `docs.json`. Idempotent — re-runs merge new files into existing nav. |
+| `--template` | string | `starter` | Template name. Skip the interactive prompt. |
+| `--name` | string | — | Project name. Skip the interactive prompt. |
+
+### Examples
+
+```bash
+tangly init my-docs
+
+tangly init . --from ../legacy-docs
+
+tangly init --template starter --name "My Docs" my-docs
+```
+
+## dev
+
+Start the dev server with HMR.
+
+```bash
+tangly dev [--port 4321] [--host] [--no-open] [--debug] [--tunnel]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--port` | string | `4321` | Port |
+| `--host` | boolean | `false` | Bind `0.0.0.0` so other devices on the LAN can reach the dev server. Without this, only `localhost`/`127.0.0.1` works. |
+| `--open` | boolean | `true` | Open browser on start. Use `--no-open` to suppress. |
+| `--debug` | boolean | `false` | Verbose Vite/Astro logging |
+| `--tunnel` | boolean | `false` | Expose via a `cloudflared` quick tunnel. Requires `cloudflared` on `PATH`. |
+
+The dev server pre-validates your `docs.json` manifest before launching Astro — schema errors surface immediately, not buried in a stack trace.
+
+```bash
+tangly dev --port 8080 --host --no-open
+```
+
+## build
+
+Production build to `dist/`.
+
+```bash
+tangly build [--out ./dist] [--adapter <auto>] [--base /] [--analyze]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--out` | string | `./dist` | Output directory |
+| `--adapter` | `vercel \| cloudflare \| node \| static` | (auto) | Auto-detected from project files: `vercel.json` → vercel, `wrangler.toml`/`wrangler.jsonc` → cloudflare, `Dockerfile` → node, else `static`. |
+| `--base` | string | `/` | Subpath. Pass `--base /docs` to deploy under `/docs`. Rewrites every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result. |
+| `--analyze` | boolean | `false` | Write a build-size report to `dist/_tangly/`. |
+
+### Output
+
+```
+dist/
+├── index.html              redirects to first nav page
+├── introduction/index.html
+├── guides/<slug>/index.html
+├── images/                 copied from project root
+├── logo/
+├── sitemap.xml
+├── robots.txt
+├── llms.txt
+└── llms-full.txt
+```
+
+The build also generates a per-page `<slug>.md` file (markdown, no MDX) so AI agents can fetch a clean text version of any page.
+
+### Examples
+
+```bash
+tangly build
+
+tangly build --adapter cloudflare --base /docs
+
+tangly build --analyze
+```
+
+## check
+
+Validate config, links, and frontmatter.
+
+```bash
+tangly check [--strict] [--no-links] [--json] [--include-drafts]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--strict` | boolean | `false` | Warnings become errors (non-zero exit). Use this in CI. |
+| `--no-links` | boolean | `false` | Skip link checking |
+| `--json` | boolean | `false` | Machine-readable output |
+| `--include-drafts` | boolean | `false` | Include `draft: true` pages in checks |
+
+```bash
+tangly check
+
+tangly check --strict
+
+tangly check --json | jq '.errors'
+```
+
+Exit code is `0` when there are no errors (or no errors+warnings under `--strict`), `1` otherwise.
+
+## migrate
+
+Migrate a project to Tangly. Two paths:
+
+- Legacy: project has `mint.json` → full conversion via `convertMintToDocs`.
+- Modern: project has `docs.json` → validate + update the `$schema` URL.
+
+```bash
+tangly migrate [--yes] [--keep-source]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--yes` | boolean | `false` | Skip confirmation prompts |
+| `--keep-source` | boolean | `false` | Keep `mint.json` after legacy migration. Without this flag, `mint.json` is renamed to `mint.json.bak` (or `.bak.1`, `.bak.2`, …). |
+
+### Examples
+
+```bash
+tangly migrate
+
+tangly migrate --yes
+
+tangly migrate --keep-source
+```
+
+If your `theme:` value isn't a Tangly theme, `migrate` warns but does not change it — you pick the replacement explicitly.
+
+## eject
+
+Materialize the synthesized Astro project into your repo. **Irreversible.**
+
+```bash
+tangly eject [--out ./.tangly] [--yes]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--out` | string | `./.tangly` | Eject destination |
+| `--yes` | boolean | `false` | Skip confirmation |
+
+After eject:
+
+- `./.tangly/` contains a real Astro project (`astro.config.mjs`, `src/`, etc.)
+- `package.json` adds raw Astro deps (`astro`, `@astrojs/mdx`, `tailwindcss`, …) and rewrites `dev`/`build`/`preview` scripts to call `astro` directly. The `tangly` package is **kept** as a dep — the materialized `astro.config` still imports `tangly/plugin` for the docs runtime, and theme components still import from `@tanglydocs/theme-ui`.
+
+You manage `astro.config.mjs` and integrations from then on.
+
+```bash
+tangly eject --out ./astro-site --yes
+```
+
+## add
+
+Scaffold a new page, snippet, or changelog entry.
+
+```bash
+tangly add <type> <path> [--template <name>] [--no-nav]
+```
+
+| Arg / flag | Type | Default | Description |
+|---|---|---|---|
+| `type` | positional | — | `page` \| `snippet` \| `changelog` |
+| `path` | positional | — | Slug or filename. e.g. `guides/billing`, `shared/disclaimer`, `1.2.0` |
+| `--template` | string | — | Template name from `./templates/` |
+| `--no-nav` | boolean | `false` | Don't auto-insert into `docs.json` navigation |
+
+### Page
+
+Writes `<path>.mdx` and inserts the slug into the last `navigation.groups` (or `navigation.pages`) entry in `docs.json`.
+
+```bash
+tangly add page guides/billing
+```
+
+### Snippet
+
+Writes `snippets/<path>.mdx`. Snippets aren't inserted into nav (they're not pages).
+
+```bash
+tangly add snippet shared/disclaimer
+```
+
+### Changelog
+
+Writes `changelog/<path>.mdx` with an `<Update>` block ready to fill in. Date is today; version is parsed from the slug if it looks semver-shaped.
+
+```bash
+tangly add changelog 1.2.0
+```
+
+## preview
+
+Serve the built `dist/` locally (Astro's static preview server).
+
+```bash
+tangly preview [--port 4321] [--out ./dist]
+```
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--port` | string | `4321` | Port |
+| `--out` | string | `./dist` | Output directory to serve |
+
+Use this to verify the production build before deploying.
+
+```bash
+tangly build && tangly preview
+```
+
+## Source
+
+- [`packages/tangly/src/cli/commands/`](https://github.com/tanglydocs/tangly/tree/main/packages/tangly/src/cli/commands)
+- Each command's source: [`init.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/init.ts), [`dev.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/dev.ts), [`build.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/build.ts), [`check.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/check.ts), [`migrate.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/migrate.ts), [`eject.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/eject.ts), [`add.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/add.ts), [`preview.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/src/cli/commands/preview.ts)

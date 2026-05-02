@@ -1,0 +1,161 @@
+---
+title: Tabs & Steps
+description: Tabs/Tab for switchable panels, Steps/Step for ordered procedures.
+icon: "list-ordered"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<Tabs>`](#tabs) + [`<Tab>`](#tab) | Switchable content panels — auto-syncs on known label families |
+| [`<Steps>`](#steps) + [`<Step>`](#step) | Numbered procedures with auto-incrementing badges |
+
+## Tabs
+
+Wraps `<Tab>` children and renders them as tabbed panels.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Sync key. Same `name` across `<Tabs>` blocks → matched panel. Empty default → auto-derived if labels match a known family (macOS/Linux/Windows, python/typescript, …). |
+
+### Default
+
+```mdx
+<Tabs>
+  <Tab title="MacOS">
+    Use Homebrew: `brew install bun`
+  </Tab>
+  <Tab title="Linux">
+    `curl -fsSL https://bun.sh/install | bash`
+  </Tab>
+  <Tab title="Windows">
+    Use WSL or `npm install -g bun`
+  </Tab>
+</Tabs>
+```
+
+<Tabs>
+  <Tab title="MacOS">
+    Use Homebrew: `brew install bun`
+  </Tab>
+  <Tab title="Linux">
+    `curl -fsSL https://bun.sh/install | bash`
+  </Tab>
+  <Tab title="Windows">
+    Use WSL or `npm install -g bun`
+  </Tab>
+</Tabs>
+
+The `MacOS / Linux / Windows` labels match `auto:os`, so picking one syncs every OS-tabbed component on the page.
+
+### Synced explicitly
+
+```mdx
+<Tabs name="auth">
+  <Tab title="JWT">…</Tab>
+  <Tab title="Session">…</Tab>
+</Tabs>
+```
+
+## Tab
+
+A single panel inside `<Tabs>`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Tab label (required) |
+| `icon` | `string` | — | Lucide icon next to the title |
+
+```mdx
+<Tabs>
+  <Tab title="TypeScript" icon="braces">
+    `import { z } from "zod"`
+  </Tab>
+  <Tab title="Python" icon="code">
+    `from pydantic import BaseModel`
+  </Tab>
+</Tabs>
+```
+
+<Tabs>
+  <Tab title="TypeScript" icon="braces">
+    `import { z } from "zod"`
+  </Tab>
+  <Tab title="Python" icon="code">
+    `from pydantic import BaseModel`
+  </Tab>
+</Tabs>
+
+## Steps
+
+Ordered procedure. Renders as a vertical list with auto-numbered badges and a connecting rail. No props — wrap as many `<Step>` children as you need.
+
+```mdx
+<Steps>
+  <Step title="Install Tangly">
+    `bun add -g tangly`
+  </Step>
+  <Step title="Initialize a docs project">
+    `tangly init my-docs && cd my-docs`
+  </Step>
+  <Step title="Start the dev server">
+    `tangly dev` then open `http://localhost:4321`.
+  </Step>
+</Steps>
+```
+
+<Steps>
+  <Step title="Install Tangly">
+    `bun add -g tangly`
+  </Step>
+  <Step title="Initialize a docs project">
+    `tangly init my-docs && cd my-docs`
+  </Step>
+  <Step title="Start the dev server">
+    `tangly dev` then open `http://localhost:4321`.
+  </Step>
+</Steps>
+
+## Step
+
+A single step inside `<Steps>`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | — | Step heading (required) |
+| `icon` | `string` | — | Lucide icon shown in the badge instead of the auto-number |
+| `titleSize` | `"p" \| "h2" \| "h3"` | `"p"` | Element used for the title — `h2`/`h3` opt the step into the page outline |
+| `stepNumber` | `number` | (auto) | Manual override for the badge number |
+
+### Custom icons
+
+```mdx
+<Steps>
+  <Step title="Plan" icon="map">Sketch the IA.</Step>
+  <Step title="Build" icon="hammer">Write the docs.</Step>
+  <Step title="Ship" icon="rocket">Deploy.</Step>
+</Steps>
+```
+
+<Steps>
+  <Step title="Plan" icon="map">Sketch the IA.</Step>
+  <Step title="Build" icon="hammer">Write the docs.</Step>
+  <Step title="Ship" icon="rocket">Deploy.</Step>
+</Steps>
+
+### Headings as step titles
+
+Use `titleSize="h2"` (or `h3`) when each step deserves its own entry in the table-of-contents.
+
+```mdx
+<Steps>
+  <Step title="Configure" titleSize="h2">…</Step>
+  <Step title="Build" titleSize="h2">…</Step>
+  <Step title="Deploy" titleSize="h2">…</Step>
+</Steps>
+```
+
+## Source
+
+- [`Tabs.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tabs.astro), [`Tab.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tab.astro)
+- [`Steps.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Steps.astro), [`Step.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Step.astro)

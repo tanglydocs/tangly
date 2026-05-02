@@ -1,0 +1,474 @@
+---
+title: Schema
+description: Every top-level field in docs.json — colors, navigation, logo, navbar, footer, redirects, SEO, analytics, API, themes, fonts, and more.
+icon: "braces"
+---
+
+
+`docs.json` is the source of truth for everything that isn't page content — branding, navigation, integrations, behavior. The full schema is defined in [`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/docs-json.ts).
+
+For per-page metadata, see [Frontmatter](/reference/schema/frontmatter).
+
+## Skeleton
+
+```json
+{
+  "$schema": "https://tangly.dev/schema/docs.json",
+  "name": "My Docs",
+  "theme": "tang",
+  "colors": { "primary": "#EA580C" },
+  "logo": { "light": "/logo-light.svg", "dark": "/logo-dark.svg" },
+  "favicon": "/favicon.ico",
+  "navigation": {
+    "groups": [
+      { "group": "Getting started", "pages": ["introduction", "quickstart"] }
+    ]
+  }
+}
+```
+
+Only `name` and `navigation` are required. Everything else has a sensible default.
+
+## `$schema`
+
+Type: `string` (URL). Default: none.
+
+Editor autocomplete + validation. Set to `https://tangly.dev/schema/docs.json` so VS Code, Cursor, etc. surface field hints inline.
+
+## `name`
+
+Type: `string` (required). Site name. Renders in the topnav and `<title>`.
+
+## `description`
+
+Type: `string`. Site-wide description. Used as the default OpenGraph description.
+
+## `theme`
+
+Type: `"tang" | "pith" | "pip" | "readable" | "geist" | string`. Default: `"tang"`.
+
+Pick a built-in theme. Unknown values fall back to `tang` — kept tolerant so projects mid-migration don't fail validation. Legacy aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) all resolve to `tang`.
+
+```json
+{ "theme": "pith" }
+```
+
+See [Themes](/guides/themes) for screenshots and tradeoffs.
+
+## `colors`
+
+Override the theme palette. Five tokens.
+
+| Field | Type | Description |
+|---|---|---|
+| `primary` | hex | Primary brand color — buttons, links, accents |
+| `light` | hex | Lighter shade for highlights |
+| `dark` | hex | Darker shade for hovers / active states |
+| `background` | hex \| `{ light, dark }` | Page background. Object form splits light/dark mode. |
+| `anchors` | hex \| `{ from, to }` | Anchor accent. Object form is a 135° linear gradient. |
+
+```json
+{
+  "colors": {
+    "primary": "#EA580C",
+    "light": "#F97316",
+    "dark": "#C2410C",
+    "background": { "light": "#FAFAF7", "dark": "#0B0B0F" },
+    "anchors": { "from": "#F97316", "to": "#C2410C" }
+  }
+}
+```
+
+Hex must be 3, 6, or 8 hex digits with a leading `#`.
+
+## `logo`
+
+Type: `string | { light?, dark?, href? }`. Site logo.
+
+```json
+{ "logo": "/logo.svg" }
+```
+
+```json
+{
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg",
+    "href": "https://example.com"
+  }
+}
+```
+
+`href` overrides the default link target (`/`). Useful when the docs site is part of a larger landing page.
+
+## `favicon`
+
+Type: `string | { light, dark }`. Path under your project root.
+
+```json
+{ "favicon": "/favicon.ico" }
+```
+
+Light/dark form is rare — most browsers ignore it.
+
+## `navigation`
+
+The nav tree. Three forms — pick one or combine. Schema in [`packages/schema/src/navigation.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/navigation.ts).
+
+```json
+{
+  "navigation": {
+    "pages": ["introduction", "quickstart"],
+    "groups": [
+      { "group": "Guides", "pages": ["guides/billing", "guides/auth"] }
+    ],
+    "tabs": [
+      {
+        "tab": "Reference",
+        "groups": [
+          { "group": "API", "pages": ["reference/api/users"] }
+        ]
+      }
+    ],
+    "anchors": [{ "anchor": "Community", "href": "https://discord.gg/x" }],
+    "dropdowns": [{ "dropdown": "Resources", "pages": [] }],
+    "versions": [
+      { "version": "v2", "default": true, "groups": [] },
+      { "version": "v1", "groups": [] }
+    ],
+    "languages": [{ "language": "en", "groups": [] }],
+    "global": {
+      "anchors": [{ "anchor": "GitHub", "href": "https://github.com/tanglydocs/tangly" }]
+    }
+  }
+}
+```
+
+Each node type:
+
+| Node | Required keys | Description |
+|---|---|---|
+| Page | (string) | Page slug — relative path without `.mdx` |
+| Group | `group`, `pages` | Sidebar group |
+| Tab | `tab` | Top-level nav tab. Children: `pages` \| `groups` \| `anchors` |
+| Anchor | `anchor`, `href` | External link in nav |
+| Dropdown | `dropdown` | Group of sub-links shown via dropdown |
+| Version | `version` | Version selector — children scoped to that version |
+| Language | `language` | Language selector — children scoped to that locale |
+
+`global` lists anchors/dropdowns/tabs that should appear on every variant (every version, every language).
+
+## `navbar`
+
+Top navigation bar.
+
+| Field | Type | Description |
+|---|---|---|
+| `links` | `{ label, href, icon? }[]` | Inline links in the navbar |
+| `primary` | `{ type: "button" \| "github", label?, href }` | Primary CTA — either a labeled button or a GitHub-icon button |
+
+```json
+{
+  "navbar": {
+    "links": [{ "label": "Pricing", "href": "/pricing" }],
+    "primary": { "type": "button", "label": "Sign up", "href": "https://app.example.com" }
+  }
+}
+```
+
+```json
+{
+  "navbar": {
+    "primary": { "type": "github", "href": "https://github.com/tanglydocs/tangly" }
+  }
+}
+```
+
+## `footer`
+
+| Field | Type | Description |
+|---|---|---|
+| `socials` | `Record<string, string>` | Map of icon name → URL. e.g. `{ "x": "https://x.com/...", "github": "https://github.com/..." }` |
+| `links` | `{ header?, items: NavbarLink[] }[]` | Grouped link columns |
+| `lastUpdated` | `boolean` | Show last-updated timestamp on every page footer |
+| `editUrl` | `string` | Edit-this-page URL template. `{path}` substitutes the page file's path. |
+| `repo` | `string` | Repository URL — derives `editUrl` if not set explicitly. Falls back to `git remote get-url origin`. |
+
+```json
+{
+  "footer": {
+    "socials": {
+      "github": "https://github.com/tanglydocs/tangly",
+      "x": "https://x.com/tanglydocs"
+    },
+    "links": [
+      {
+        "header": "Resources",
+        "items": [
+          { "label": "Blog", "href": "https://example.com/blog" },
+          { "label": "Status", "href": "https://status.example.com" }
+        ]
+      }
+    ],
+    "lastUpdated": true,
+    "editUrl": "https://github.com/owner/repo/edit/main/{path}"
+  }
+}
+```
+
+## `redirects`
+
+Permanent or temporary URL redirects. Used by every adapter.
+
+```json
+{
+  "redirects": [
+    { "source": "/old-path", "destination": "/new-path", "permanent": true },
+    { "source": "/api/v1/:slug", "destination": "/api/v2/:slug" }
+  ]
+}
+```
+
+## `seo`
+
+| Field | Type | Description |
+|---|---|---|
+| `metatags` | `Record<string, string>` | Extra `<meta>` tags on every page |
+| `indexing` | `"all" \| "navigable"` | `"navigable"` excludes pages not in nav from search engines |
+
+```json
+{
+  "seo": {
+    "metatags": { "robots": "index,follow", "twitter:site": "@tanglydocs" },
+    "indexing": "navigable"
+  }
+}
+```
+
+## `analytics`
+
+Wire up an analytics provider. Tangly ships providers for posthog, plausible, fathom, ga4, gtm, amplitude, hotjar, mixpanel, segment, pirsch, logrocket, heap.
+
+```json
+{
+  "analytics": {
+    "posthog": { "apiKey": "phc_…", "apiHost": "https://app.posthog.com" }
+  }
+}
+```
+
+```json
+{ "analytics": { "plausible": { "domain": "docs.example.com" } } }
+```
+
+```json
+{ "analytics": { "ga4": { "measurementId": "G-XXXXXX" } } }
+```
+
+You can configure multiple providers at once — they all fire.
+
+## `api`
+
+OpenAPI / AsyncAPI integration.
+
+| Field | Type | Description |
+|---|---|---|
+| `baseUrl` | `string \| string[]` | Default base URL(s) for try-it-out. Multiple → user picks |
+| `auth.method` | `"bearer" \| "basic" \| "key" \| "none"` | Auth scheme for the try-it-out form |
+| `auth.name` | `string` | Header name when `method="key"` |
+| `playground.mode` | `"interactive" \| "simple" \| "hide"` | Try-it form behavior |
+| `playground.proxy` | `boolean` | Send through a server-side CORS proxy |
+| `openapi` | `string \| string[]` | Path(s) to OpenAPI spec(s) — auto-generates pages |
+| `viewer` | `"tangly" \| "scalar" \| "redoc" \| "stoplight"` | Default viewer for OpenAPI pages |
+| `asyncapi` | `string \| string[]` | Path(s) to AsyncAPI spec(s) |
+| `mdx.server` | `string \| string[]` | MCP-style server URL(s) for AI agents |
+
+```json
+{
+  "api": {
+    "baseUrl": "https://api.example.com",
+    "auth": { "method": "bearer" },
+    "playground": { "mode": "interactive" },
+    "openapi": "/openapi.json",
+    "viewer": "tangly"
+  }
+}
+```
+
+## `appearance`
+
+| Field | Type | Description |
+|---|---|---|
+| `default` | `"light" \| "dark" \| "system"` | Default color mode |
+| `strict` | `boolean` | Hide the theme toggle (force `default`) |
+| `readingTime` | `boolean` | Show estimated reading time in page header |
+| `readingProgress` | `boolean` | Render a 2px scroll-progress bar across the top |
+
+```json
+{
+  "appearance": {
+    "default": "system",
+    "strict": false,
+    "readingTime": true,
+    "readingProgress": true
+  }
+}
+```
+
+## `code`
+
+| Field | Type | Description |
+|---|---|---|
+| `copyButton` | `boolean` | Show copy button on every code block (default `true`) |
+| `theme` | `string \| { light, dark }` | Shiki theme. Default: `github-light` / `github-dark`. |
+
+```json
+{
+  "code": {
+    "copyButton": true,
+    "theme": { "light": "github-light", "dark": "github-dark" }
+  }
+}
+```
+
+## `background`
+
+Site-wide background.
+
+| Field | Type | Description |
+|---|---|---|
+| `image` | `string` | Path to background image |
+| `color` | `{ light?, dark? }` | Per-mode background colors (hex) |
+| `decoration` | `"gradient" \| "grid" \| "windows"` | Subtle decorative pattern |
+
+```json
+{
+  "background": {
+    "color": { "light": "#FAFAF7", "dark": "#0B0B0F" },
+    "decoration": "grid"
+  }
+}
+```
+
+## `fonts`
+
+Override heading and/or body fonts.
+
+| Field | Type | Description |
+|---|---|---|
+| `heading` | `{ family, weight?, source?, format? }` | Heading font face |
+| `body` | `{ family, weight?, source?, format? }` | Body font face |
+
+```json
+{
+  "fonts": {
+    "heading": {
+      "family": "Inter",
+      "weight": "400 700",
+      "source": "https://rsms.me/inter/font-files/InterVariable.woff2",
+      "format": "woff2-variations"
+    }
+  }
+}
+```
+
+## `styling`
+
+Subtle layout flags.
+
+| Field | Type | Description |
+|---|---|---|
+| `eyebrows` | `"section" \| "breadcrumbs"` | Heading eyebrow style |
+| `codeblocks` | `"system" \| "dark"` | Force code blocks to always use dark theme regardless of page mode |
+
+## `integrations`
+
+Free-form bag for third-party integrations not listed above. Schema is `Record<string, unknown>` — Tangly itself reads only what it knows about.
+
+## `errors`
+
+| Field | Type | Description |
+|---|---|---|
+| `404.redirect` | `boolean` | Redirect to the closest navigable page on 404. Default `false` (show the 404 template instead) |
+
+```json
+{ "errors": { "404": { "redirect": true } } }
+```
+
+You can also override the 404 page entirely by dropping a `404.mdx` at your project root.
+
+## `contextual`
+
+Which contextual actions to expose on each page.
+
+```json
+{ "contextual": { "options": ["copy", "view", "chatgpt", "claude"] } }
+```
+
+| Action | Effect |
+|---|---|
+| `copy` | "Copy page as Markdown" button |
+| `view` | "View source" link to the raw `.md` |
+| `chatgpt` | "Open in ChatGPT" deep link |
+| `claude` | "Open in Claude" deep link |
+
+## `search`
+
+| Field | Type | Description |
+|---|---|---|
+| `prompt` | `string` | Placeholder text in the search input |
+
+```json
+{ "search": { "prompt": "Search the docs…" } }
+```
+
+## `thumbnails`
+
+| Field | Type | Description |
+|---|---|---|
+| `background` | `string` | Background image used for auto-generated OpenGraph thumbnails |
+
+## `metadata`
+
+Free-form `Record<string, string>`. Surfaced as extra `<meta>` tags. Use for `application-name`, `apple-mobile-web-app-title`, etc.
+
+## `banner`
+
+A site-wide announcement bar above the topnav.
+
+| Field | Type | Description |
+|---|---|---|
+| `content` | `string` | MDX-flavored body |
+| `dismissible` | `boolean` | User can close it |
+| `id` | `string` | Stable ID — used as the `localStorage` dismissal key. Change the id to re-show after a previous dismiss. |
+| `type` | `"info" \| "warning" \| "success"` | Color tone |
+
+```json
+{
+  "banner": {
+    "content": "🎉 Tangly v1.0 is out — [read the announcement](/blog/v1).",
+    "dismissible": true,
+    "id": "v1-launch",
+    "type": "success"
+  }
+}
+```
+
+## `icons`
+
+Pick the icon library for `<Icon icon="..." />` and Mintlify-aliased prop strings.
+
+| Field | Type | Description |
+|---|---|---|
+| `library` | `"lucide" \| "fontawesome"` | Default icon library. Tangly ships with Lucide. |
+
+```json
+{ "icons": { "library": "lucide" } }
+```
+
+## Source
+
+- [`docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) — top-level schema
+- [`navigation.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/navigation.ts) — nav tree
+- [`colors.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/colors.ts) — color palette
+- [`themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts) — theme enum + resolver

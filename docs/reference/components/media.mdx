@@ -1,0 +1,108 @@
+---
+title: Media
+description: Embed for cross-page block reuse, Video for any video provider, LightboxImage for click-to-zoom.
+icon: "image"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<Embed>`](#embed) | Reuse a labeled block from another page (cross-page transclusion) |
+| [`<Video>`](#video) | YouTube / Vimeo / mp4 — auto-detects provider, lazy-loads |
+| [`<LightboxImage>`](#lightboximage) | Click-to-zoom image — used by default for inline `<img>` |
+
+## Embed
+
+Cross-page block reuse. Tangly's manifest extracts blocks during build (anything between two headings, optionally with an explicit `{#id}` marker) so you can pull a section into another page without copy-paste drift.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `page` | `string` | — | Page slug (no leading slash) |
+| `block` | `string` | — | Heading ID or explicit `{#id}` marker on the source page |
+
+```mdx
+<Embed page="reference/billing" block="rate-limits" />
+```
+
+Embedded blocks render as **Markdown only** — no MDX/JSX. This keeps the cycle invariant honest: there's no way for an embed to load another embed at render time. Build fails with a trail (`a#one → b#two → a#one`) when a cycle is detected.
+
+For full authoring guidance — when to embed vs duplicate vs link — see [Embedded blocks](/guides/authoring/embedded-blocks).
+
+## Video
+
+Universal video block. Detects the provider from `src`:
+
+- YouTube (`youtube.com/watch`, `youtu.be/...`) → `youtube-nocookie.com` iframe
+- Vimeo (`vimeo.com/...`) → Vimeo player iframe
+- Direct file (`.mp4`, `.webm`, `.mov`, `.m4v`) → native `<video>` with controls
+- Anything else → generic iframe
+
+Iframes load **lazily** via `IntersectionObserver` — no embed traffic until the player enters the viewport.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | — | Video URL or path |
+| `poster` | `string` | — | Image shown until the iframe loads |
+| `transcript` | `string` | — | Path to a transcript file — rendered as a link below the player |
+| `title` | `string` | `"Embedded video"` | Accessible title |
+
+### YouTube
+
+```mdx
+<Video src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+```
+
+### Vimeo
+
+```mdx
+<Video src="https://vimeo.com/123456789" />
+```
+
+### Self-hosted mp4
+
+```mdx
+<Video
+  src="/videos/demo.mp4"
+  poster="/videos/poster.jpg"
+  transcript="/transcripts/demo.txt"
+  title="Tangly install demo"
+/>
+```
+
+## LightboxImage
+
+Click-to-zoom wrapper around a regular `<img>`. Tangly's MDX renderer wraps every inline image in `<LightboxImage>` by default — so `![alt](path)` already gives you a lightbox.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | — | Image URL |
+| `alt` | `string` | `""` | Accessible alt text |
+| `width` | `number \| string` | — | Native `width` attribute |
+| `height` | `number \| string` | — | Native `height` attribute |
+| `lightbox` | `boolean` | `true` | Set `false` to opt out — renders a plain `<img>` instead |
+
+### Default (lightbox on)
+
+Inline images in MDX get the lightbox treatment automatically:
+
+```md
+![Tangly logo](/images/tangly-logo.png)
+```
+
+![Tangly logo](/images/tangly-logo.png)
+
+Click the image — it opens fullscreen. Esc or outside-click closes.
+
+### Plain image (no lightbox)
+
+```mdx
+<LightboxImage src="/images/tangly-icon.png" alt="Tangly icon" lightbox={false} />
+```
+
+For inline `<img>` written in plain Markdown, opt out by wrapping in a `<Frame>` (the frame variant reads `lightbox={false}` from its props). The `<LightboxImage>` component itself isn't auto-injected as a JSX tag — author images as Markdown and they get the lightbox via the default `img` mapper.
+
+## Source
+
+- [`Embed.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Embed.astro)
+- [`Video.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Video.astro)
+- [`LightboxImage.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/LightboxImage.astro)

@@ -51,13 +51,85 @@
     { "source": "/guides/static-assets", "destination": "/guides/deploying/static-assets", "permanent": true },
     { "source": "/guides/subpath-hosting", "destination": "/guides/deploying/subpath-hosting", "permanent": true },
     { "source": "/guides/deploying", "destination": "/guides/deploying/index", "permanent": true },
-    { "source": "/reference/components/callouts", "destination": "/reference/components/note", "permanent": true },
-    { "source": "/reference/components/cards", "destination": "/reference/components/card", "permanent": true },
-    { "source": "/reference/components/code", "destination": "/reference/components/code-group", "permanent": true },
-    { "source": "/reference/components/tabs-and-steps", "destination": "/reference/components/tabs", "permanent": true },
-    { "source": "/reference/components/layout", "destination": "/reference/components/frame", "permanent": true },
-    { "source": "/reference/components/api", "destination": "/reference/components/param-field", "permanent": true },
-    { "source": "/reference/components/media", "destination": "/reference/components/video", "permanent": true }
+
+    { "source": "/reference/components/note", "destination": "/reference/components/callouts#note", "permanent": true },
+    { "source": "/reference/components/tip", "destination": "/reference/components/callouts#tip", "permanent": true },
+    { "source": "/reference/components/warning", "destination": "/reference/components/callouts#warning", "permanent": true },
+    { "source": "/reference/components/info", "destination": "/reference/components/callouts#info", "permanent": true },
+    { "source": "/reference/components/check", "destination": "/reference/components/callouts#check", "permanent": true },
+    { "source": "/reference/components/danger", "destination": "/reference/components/callouts#danger", "permanent": true },
+    { "source": "/reference/components/update", "destination": "/reference/components/callouts#update", "permanent": true },
+
+    { "source": "/reference/components/card", "destination": "/reference/components/cards#card", "permanent": true },
+    { "source": "/reference/components/card-group", "destination": "/reference/components/cards#cardgroup", "permanent": true },
+    { "source": "/reference/components/columns", "destination": "/reference/components/cards#columns", "permanent": true },
+
+    { "source": "/reference/components/code-group", "destination": "/reference/components/code#codegroup", "permanent": true },
+    { "source": "/reference/components/snippet", "destination": "/reference/components/code#snippet", "permanent": true },
+    { "source": "/reference/components/package-manager", "destination": "/reference/components/code#packagemanager", "permanent": true },
+    { "source": "/reference/components/file-tree", "destination": "/reference/components/code#filetree", "permanent": true },
+    { "source": "/reference/components/kbd", "destination": "/reference/components/code#kbd", "permanent": true },
+
+    { "source": "/reference/components/tabs", "destination": "/reference/components/tabs-and-steps#tabs", "permanent": true },
+    { "source": "/reference/components/tab", "destination": "/reference/components/tabs-and-steps#tab", "permanent": true },
+    { "source": "/reference/components/steps", "destination": "/reference/components/tabs-and-steps#steps", "permanent": true },
+    { "source": "/reference/components/step", "destination": "/reference/components/tabs-and-steps#step", "permanent": true },
+
+    { "source": "/reference/components/frame", "destination": "/reference/components/layout#frame", "permanent": true },
+    { "source": "/reference/components/accordion", "destination": "/reference/components/layout#accordion", "permanent": true },
+    { "source": "/reference/components/accordion-group", "destination": "/reference/components/layout#accordiongroup", "permanent": true },
+    { "source": "/reference/components/expandable", "destination": "/reference/components/layout#expandable", "permanent": true },
+
+    { "source": "/reference/components/param-field", "destination": "/reference/components/api#paramfield", "permanent": true },
+    { "source": "/reference/components/response-field", "destination": "/reference/components/api#responsefield", "permanent": true },
+    { "source": "/reference/components/request-example", "destination": "/reference/components/api#requestexample", "permanent": true },
+    { "source": "/reference/components/response-example", "destination": "/reference/components/api#responseexample", "permanent": true },
+    { "source": "/reference/components/openapi-endpoint", "destination": "/reference/components/api#openapiendpoint", "permanent": true },
+    { "source": "/reference/components/openapi-redoc", "destination": "/reference/components/api#openapiredoc", "permanent": true },
+    { "source": "/reference/components/openapi-scalar", "destination": "/reference/components/api#openapiscalar", "permanent": true },
+    { "source": "/reference/components/openapi-stoplight", "destination": "/reference/components/api#openapistoplight", "permanent": true },
+
+    { "source": "/reference/components/embed", "destination": "/reference/components/media#embed", "permanent": true },
+    { "source": "/reference/components/video", "destination": "/reference/components/media#video", "permanent": true },
+    { "source": "/reference/components/lightbox-image", "destination": "/reference/components/media#lightboximage", "permanent": true },
+
+    { "source": "/reference/components/badge", "destination": "/reference/components/text#badge", "permanent": true },
+    { "source": "/reference/components/icon", "destination": "/reference/components/text#icon", "permanent": true },
+    { "source": "/reference/components/tooltip", "destination": "/reference/components/text#tooltip", "permanent": true },
+    { "source": "/reference/components/glossary-term", "destination": "/reference/components/text#glossaryterm", "permanent": true },
+
+    { "source": "/reference/cli/init", "destination": "/reference/cli#init", "permanent": true },
+    { "source": "/reference/cli/dev", "destination": "/reference/cli#dev", "permanent": true },
+    { "source": "/reference/cli/build", "destination": "/reference/cli#build", "permanent": true },
+    { "source": "/reference/cli/check", "destination": "/reference/cli#check", "permanent": true },
+    { "source": "/reference/cli/migrate", "destination": "/reference/cli#migrate", "permanent": true },
+    { "source": "/reference/cli/eject", "destination": "/reference/cli#eject", "permanent": true },
+    { "source": "/reference/cli/add", "destination": "/reference/cli#add", "permanent": true },
+    { "source": "/reference/cli/preview", "destination": "/reference/cli#preview", "permanent": true },
+
+    { "source": "/reference/schema/docs-json", "destination": "/reference/schema", "permanent": true },
+    { "source": "/reference/schema/navigation", "destination": "/reference/schema#navigation", "permanent": true },
+    { "source": "/reference/schema/colors", "destination": "/reference/schema#colors", "permanent": true },
+    { "source": "/reference/schema/logo-favicon", "destination": "/reference/schema#logo", "permanent": true },
+    { "source": "/reference/schema/footer-navbar", "destination": "/reference/schema#footer", "permanent": true },
+    { "source": "/reference/schema/api", "destination": "/reference/schema#api", "permanent": true },
+    { "source": "/reference/schema/analytics", "destination": "/reference/schema#analytics", "permanent": true },
+    { "source": "/reference/schema/seo", "destination": "/reference/schema#seo", "permanent": true },
+    { "source": "/reference/schema/redirects", "destination": "/reference/schema#redirects", "permanent": true },
+    { "source": "/reference/schema/errors-banner", "destination": "/reference/schema#errors", "permanent": true },
+    { "source": "/reference/schema/contextual", "destination": "/reference/schema#contextual", "permanent": true },
+    { "source": "/reference/schema/themes", "destination": "/reference/schema#theme", "permanent": true },
+    { "source": "/reference/schema/icons", "destination": "/reference/schema#icons", "permanent": true },
+    { "source": "/reference/schema/fonts-styling", "destination": "/reference/schema#fonts", "permanent": true },
+    { "source": "/reference/schema/integrations", "destination": "/reference/schema#integrations", "permanent": true },
+
+    { "source": "/reference/markdown/text-and-headings", "destination": "/reference/markdown#text--headings", "permanent": true },
+    { "source": "/reference/markdown/lists-tables", "destination": "/reference/markdown#lists--tables", "permanent": true },
+    { "source": "/reference/markdown/code", "destination": "/reference/markdown#code", "permanent": true },
+    { "source": "/reference/markdown/links-images", "destination": "/reference/markdown#links--images", "permanent": true },
+    { "source": "/reference/markdown/mdx", "destination": "/reference/markdown#mdx-the-jsx-in-mdx", "permanent": true },
+    { "source": "/reference/markdown/latex", "destination": "/reference/markdown#latex", "permanent": true },
+    { "source": "/reference/markdown/embeds", "destination": "/reference/markdown#embeds", "permanent": true }
   ],
   "navigation": {
     "tabs": [
@@ -144,137 +216,29 @@
         "groups": [
           {
             "group": "CLI",
-            "pages": [
-              "reference/cli/dev",
-              "reference/cli/build",
-              "reference/cli/preview",
-              "reference/cli/check",
-              "reference/cli/init",
-              "reference/cli/migrate",
-              "reference/cli/add",
-              "reference/cli/eject"
-            ]
+            "pages": ["reference/cli/index"]
           },
           {
             "group": "Schema",
-            "pages": [
-              "reference/schema/docs-json",
-              "reference/schema/navigation",
-              "reference/schema/colors",
-              "reference/schema/logo-favicon",
-              "reference/schema/footer-navbar",
-              "reference/schema/api",
-              "reference/schema/analytics",
-              "reference/schema/seo",
-              "reference/schema/redirects",
-              "reference/schema/errors-banner",
-              "reference/schema/contextual",
-              "reference/schema/themes",
-              "reference/schema/icons",
-              "reference/schema/fonts-styling",
-              "reference/schema/integrations"
-            ]
-          },
-          {
-            "group": "Frontmatter",
-            "pages": ["reference/schema/frontmatter"]
+            "pages": ["reference/schema/index", "reference/schema/frontmatter"]
           },
           {
             "group": "Components",
             "pages": [
               "reference/components/index",
-              {
-                "group": "Cards & layout",
-                "pages": [
-                  "reference/components/card",
-                  "reference/components/card-group",
-                  "reference/components/columns"
-                ]
-              },
-              {
-                "group": "Callouts",
-                "pages": [
-                  "reference/components/note",
-                  "reference/components/tip",
-                  "reference/components/warning",
-                  "reference/components/info",
-                  "reference/components/check",
-                  "reference/components/danger",
-                  "reference/components/update"
-                ]
-              },
-              {
-                "group": "Tabs & steps",
-                "pages": [
-                  "reference/components/tabs",
-                  "reference/components/tab",
-                  "reference/components/steps",
-                  "reference/components/step"
-                ]
-              },
-              {
-                "group": "Accordion",
-                "pages": [
-                  "reference/components/accordion",
-                  "reference/components/accordion-group"
-                ]
-              },
-              {
-                "group": "Code",
-                "pages": [
-                  "reference/components/code-group",
-                  "reference/components/snippet",
-                  "reference/components/package-manager"
-                ]
-              },
-              {
-                "group": "API",
-                "pages": [
-                  "reference/components/param-field",
-                  "reference/components/response-field",
-                  "reference/components/request-example",
-                  "reference/components/response-example",
-                  "reference/components/openapi-endpoint",
-                  "reference/components/openapi-redoc",
-                  "reference/components/openapi-scalar",
-                  "reference/components/openapi-stoplight"
-                ]
-              },
-              {
-                "group": "Media",
-                "pages": [
-                  "reference/components/frame",
-                  "reference/components/embed",
-                  "reference/components/video",
-                  "reference/components/lightbox-image",
-                  "reference/components/file-tree"
-                ]
-              },
-              {
-                "group": "Text helpers",
-                "pages": [
-                  "reference/components/icon",
-                  "reference/components/kbd",
-                  "reference/components/badge",
-                  "reference/components/tooltip",
-                  "reference/components/expandable",
-                  "reference/components/glossary-term"
-                ]
-              }
+              "reference/components/callouts",
+              "reference/components/cards",
+              "reference/components/code",
+              "reference/components/tabs-and-steps",
+              "reference/components/layout",
+              "reference/components/api",
+              "reference/components/media",
+              "reference/components/text"
             ]
           },
           {
             "group": "Markdown & MDX",
-            "pages": [
-              "reference/markdown/index",
-              "reference/markdown/text-and-headings",
-              "reference/markdown/lists-tables",
-              "reference/markdown/code",
-              "reference/markdown/links-images",
-              "reference/markdown/mdx",
-              "reference/markdown/latex",
-              "reference/markdown/embeds"
-            ]
+            "pages": ["reference/markdown/index"]
           }
         ]
       },

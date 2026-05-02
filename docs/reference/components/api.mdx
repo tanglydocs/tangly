@@ -1,0 +1,208 @@
+---
+title: API
+description: ParamField, ResponseField, RequestExample, ResponseExample, OpenApi viewers — for hand-rolled and generated API docs.
+icon: "plug"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<ParamField>`](#paramfield) | Document a single request parameter (path/query/body/header) |
+| [`<ResponseField>`](#responsefield) | Document a single response field |
+| [`<RequestExample>`](#requestexample) | Wrap one or more request snippets |
+| [`<ResponseExample>`](#responseexample) | Wrap one or more response snippets |
+| [`<OpenApiEndpoint>`](#openapiendpoint) | Native Tangly viewer for one operation, with try-it-out |
+| [`<OpenApiRedoc>`](#openapiredoc) | Embed Redoc for one operation |
+| [`<OpenApiScalar>`](#openapiscalar) | Embed Scalar for one operation |
+| [`<OpenApiStoplight>`](#openapistoplight) | Embed Stoplight Elements for one operation |
+
+If you have an OpenAPI spec, point at it from `docs.json` (`api.openapi`) and Tangly auto-generates pages — these components are for **manual reference pages** or for embedding a single operation in prose.
+
+## ParamField
+
+Documents one request parameter. The location flag (path/query/body/header) is mutually exclusive — set exactly one.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `path` | `string` | — | Param is in the URL path. The string is the param name. |
+| `query` | `string` | — | Param is in the query string. |
+| `body` | `string` | — | Param is in the request body. |
+| `header` | `string` | — | Param is in a request header. |
+| `type` | `string` | — | Type label, e.g. `string`, `integer`, `string[]`. |
+| `required` | `boolean` | `false` | Renders a "required" badge. |
+| `default` | `string` | — | Default value, monospaced. |
+| `deprecated` | `boolean` | `false` | Renders a "deprecated" badge. |
+
+```mdx
+<ParamField path="userId" type="string" required>
+  ID of the user. Always a UUIDv4.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Page size, max 100.
+</ParamField>
+
+<ParamField body="email" type="string" required deprecated>
+  Use `contact.email` instead.
+</ParamField>
+```
+
+<ParamField path="userId" type="string" required>
+  ID of the user. Always a UUIDv4.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Page size, max 100.
+</ParamField>
+
+<ParamField body="email" type="string" required deprecated>
+  Use `contact.email` instead.
+</ParamField>
+
+## ResponseField
+
+Documents one response field. Same shape as `<ParamField>` minus the location flags. Pass `name` (or any of the location aliases — they all act as the field name).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Field name. |
+| `type` | `string` | — | Type label. |
+| `required` | `boolean` | `false` | Renders a "required" badge. |
+| `default` | `string` | — | Default value. |
+| `deprecated` | `boolean` | `false` | Renders a "deprecated" badge. |
+
+```mdx
+<ResponseField name="id" type="string" required>
+  Stable identifier. Never reused.
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Implementation hint — see [Meta](#meta) for the inner shape.
+</ResponseField>
+```
+
+<ResponseField name="id" type="string" required>
+  Stable identifier. Never reused.
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Implementation hint — see [Meta](#meta) for the inner shape.
+</ResponseField>
+
+For nested fields, wrap a child set in [`<Expandable>`](/reference/components/layout#expandable).
+
+## RequestExample
+
+Container for one or more request snippets, with a labeled header. Most useful with a `<CodeGroup>` inside so the reader can flip between cURL/JS/Python.
+
+````mdx
+<RequestExample>
+  <CodeGroup>
+    ```bash curl
+    curl https://api.example.com/v1/users/42 \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+    ```ts ts
+    await fetch("https://api.example.com/v1/users/42", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    ```
+    ```py python
+    requests.get(
+      "https://api.example.com/v1/users/42",
+      headers={"Authorization": f"Bearer {token}"},
+    )
+    ```
+  </CodeGroup>
+</RequestExample>
+````
+
+## ResponseExample
+
+Same shape as `<RequestExample>`, but labeled "Response example."
+
+````mdx
+<ResponseExample>
+  ```json
+  {
+    "id": "u_abc123",
+    "name": "Ada Lovelace",
+    "createdAt": "2026-04-29T00:00:00Z"
+  }
+  ```
+</ResponseExample>
+````
+
+## OpenApiEndpoint
+
+Native Tangly OpenAPI viewer. Renders one operation with summary, parameters, responses, and a built-in try-it-out form. The spec can be a URL or a path under your project root.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `spec` | `string` | — | URL or project-relative path to the OpenAPI document |
+| `method` | `string` | — | HTTP method (`get`/`post`/…) |
+| `path` | `string` | — | OpenAPI path template, e.g. `/users/{id}` |
+| `baseUrl` | `string` | (first server) | Override the base URL — falls back to the first `servers[0].url` in the spec |
+| `authMethod` | `"bearer" \| "basic" \| "key" \| "none"` | (from `docs.json`) | Auth scheme for the try-it form |
+| `authName` | `string` | — | Header name when `authMethod="key"` |
+
+```mdx
+<OpenApiEndpoint
+  spec="/openapi.json"
+  method="get"
+  path="/users/{id}"
+/>
+```
+
+The `Try it` panel sends a real cross-origin `fetch`. CORS rules apply — if your server doesn't allow the docs origin, you'll see a CORS error in the response panel.
+
+## OpenApiRedoc
+
+Embeds [Redoc](https://redocly.com/redoc) for one operation. Standalone bundle is loaded lazily from CDN on first paint.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `spec` | `string` | — | URL to the OpenAPI document |
+| `method` | `string` | — | HTTP method |
+| `path` | `string` | — | OpenAPI path |
+
+```mdx
+<OpenApiRedoc spec="/openapi.json" method="get" path="/users/{id}" />
+```
+
+## OpenApiScalar
+
+Embeds [Scalar](https://scalar.com) for one operation. Lazy-loaded ESM bundle (~50KB gzipped).
+
+```mdx
+<OpenApiScalar spec="/openapi.json" method="post" path="/users" />
+```
+
+Same prop shape as `<OpenApiRedoc>`.
+
+## OpenApiStoplight
+
+Embeds [Stoplight Elements](https://stoplight.io/open-source/elements) for one operation. Lazy-loaded styles + web components from CDN.
+
+```mdx
+<OpenApiStoplight spec="/openapi.json" method="delete" path="/users/{id}" />
+```
+
+Same prop shape as `<OpenApiRedoc>`.
+
+### Picking a viewer
+
+The four OpenAPI components are interchangeable in usage — pick the one that matches your aesthetic. Or skip them entirely and let `docs.json` `api.viewer` pick the global default; Tangly will then auto-generate full pages from the spec.
+
+| Viewer | Bundle | Try-it |
+|---|---|---|
+| `<OpenApiEndpoint>` | Native (no CDN) | Built-in |
+| `<OpenApiRedoc>` | ~150KB | No |
+| `<OpenApiScalar>` | ~50KB | Yes (Scalar UI) |
+| `<OpenApiStoplight>` | ~200KB | No |
+
+## Source
+
+- [`ParamField.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/ParamField.astro), [`ResponseField.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/ResponseField.astro)
+- [`RequestExample.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/RequestExample.astro), [`ResponseExample.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/ResponseExample.astro)
+- [`OpenApiEndpoint.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/OpenApiEndpoint.astro), [`OpenApiRedoc.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/OpenApiRedoc.astro), [`OpenApiScalar.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/OpenApiScalar.astro), [`OpenApiStoplight.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/OpenApiStoplight.astro)

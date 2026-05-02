@@ -1,0 +1,148 @@
+---
+title: Text
+description: Badge, Icon, Tooltip, GlossaryTerm — small inline pieces for tags, icons, hover hints.
+icon: "type"
+---
+
+
+| Component | Use for |
+|---|---|
+| [`<Badge>`](#badge) | Small status / version chip |
+| [`<Icon>`](#icon) | Render an icon by name (Lucide + Mintlify aliases + brand glyphs) |
+| [`<Tooltip>`](#tooltip) | Hover tooltip on inline text |
+| [`<GlossaryTerm>`](#glossaryterm) | Glossary link with hover definition |
+
+## Badge
+
+Status / version / category chip.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `"default" \| "note" \| "tip" \| "success" \| "caution" \| "warning" \| "danger" \| "error" \| "accent"` | `"default"` | Color tone. `note`/`success`/`caution`/`danger`/`error` alias to the same five tones. |
+| `size` | `"small" \| "medium" \| "large"` | `"medium"` | Padding/font size |
+| `text` | `string` | — | Convenience for inline use without children |
+
+### All variants
+
+```mdx
+<Badge>default</Badge> <Badge variant="tip">tip</Badge> <Badge variant="warning">warning</Badge> <Badge variant="error">error</Badge> <Badge variant="accent">accent</Badge>
+```
+
+<Badge>default</Badge> <Badge variant="tip">tip</Badge> <Badge variant="warning">warning</Badge> <Badge variant="error">error</Badge> <Badge variant="accent">accent</Badge>
+
+### All sizes
+
+```mdx
+<Badge size="small">small</Badge> <Badge size="medium">medium</Badge> <Badge size="large">large</Badge>
+```
+
+<Badge size="small">small</Badge> <Badge size="medium">medium</Badge> <Badge size="large">large</Badge>
+
+### As a tag
+
+```mdx
+Tangly v0.3 — <Badge variant="accent" size="small">new</Badge> AI agent skills.
+```
+
+Tangly v0.3 — <Badge variant="accent" size="small">new</Badge> AI agent skills.
+
+## Icon
+
+Renders an icon by name. Resolution order:
+
+1. Inline brand glyph (GitHub, Twitter/X, LinkedIn, YouTube, Slack, Discord)
+2. Lucide registry — direct match (`Rocket`, `Code`, …)
+3. Font Awesome / Mintlify alias map (`circle-check` → `CircleCheck`, `cog` → `Settings`, `search` → `Search`, …)
+4. PascalCase fallback (`my-icon` → `MyIcon`)
+5. Fallback to `CircleHelp` (with a console warning)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `icon` | `string` | — | Icon name (required) |
+| `size` | `number \| string` | `16` | Pixel size |
+| `color` | `string` | (currentColor) | Stroke color override |
+| `class` | `string` | — | Additional CSS classes |
+
+### Lucide name
+
+```mdx
+<Icon icon="rocket" /> Launch ready
+```
+
+<Icon icon="rocket" /> Launch ready
+
+### Font Awesome alias
+
+```mdx
+<Icon icon="cog" /> Settings · <Icon icon="circle-check" /> Done
+```
+
+<Icon icon="cog" /> Settings · <Icon icon="circle-check" /> Done
+
+### Brand glyph
+
+```mdx
+<Icon icon="github" size={20} /> GitHub · <Icon icon="x" size={20} /> X · <Icon icon="discord" size={20} /> Discord
+```
+
+<Icon icon="github" size={20} /> GitHub · <Icon icon="x" size={20} /> X · <Icon icon="discord" size={20} /> Discord
+
+### Larger, custom color
+
+```mdx
+<Icon icon="zap" size={32} color="#EA580C" />
+```
+
+<Icon icon="zap" size={32} color="#EA580C" />
+
+## Tooltip
+
+Hover-revealed tooltip on inline text.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tip` | `string` | — | Tooltip body (required) |
+
+```mdx
+The build runs through <Tooltip tip="Just-in-time esbuild + Vite, no bundling step">esbuild</Tooltip> for sub-second startup.
+```
+
+The build runs through <Tooltip tip="Just-in-time esbuild + Vite, no bundling step">esbuild</Tooltip> for sub-second startup.
+
+## GlossaryTerm
+
+Inline link to a glossary entry with a hover-revealed definition. Most authors don't write `<GlossaryTerm>` by hand — Tangly's `rehype-glossary` plugin auto-wraps the first occurrence of each glossary entry on every page. This component is the manual opt-in form.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string` | — | Glossary entry slug — anchors to `/glossary#<slug>` |
+| `term` | `string` | — | Term name (used as `data-term`) |
+| `definition` | `string` | `""` | Definition body — appears in the hover tooltip |
+| `href` | `string` | `/glossary#<slug>` | Override the link target |
+
+```mdx
+<GlossaryTerm
+  slug="capacity-factor"
+  term="Capacity factor"
+  definition="The ratio of actual energy generated to the theoretical maximum if a plant ran at full power continuously."
+>
+  CF
+</GlossaryTerm>
+```
+
+<GlossaryTerm
+  slug="capacity-factor"
+  term="Capacity factor"
+  definition="The ratio of actual energy generated to the theoretical maximum if a plant ran at full power continuously."
+>
+  CF
+</GlossaryTerm>
+
+For the auto-linking behavior, see [Glossary](/guides/authoring/glossary).
+
+## Source
+
+- [`Badge.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Badge.astro)
+- [`Icon.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Icon.astro)
+- [`Tooltip.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tooltip.astro)
+- [`GlossaryTerm.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/GlossaryTerm.astro)

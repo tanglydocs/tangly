@@ -1,0 +1,152 @@
+---
+title: Callouts
+description: Inline asides — Note, Tip, Warning, Info, Check, Danger — plus the Update release block.
+icon: "message-square-warning"
+---
+
+
+Seven block-level components for inline asides and changelog entries. All but `<Update>` share a single `_Callout.astro` shell — so to restyle every callout in one go, [shadow](/guides/customization/custom-components) `theme/_Callout.astro`.
+
+| Component | Use for |
+|---|---|
+| [`<Note>`](#note) | Heads-up context the reader should notice but doesn't need to act on |
+| [`<Tip>`](#tip) | Optional advice that improves their outcome |
+| [`<Warning>`](#warning) | "Be careful — this can break things" |
+| [`<Info>`](#info) | Neutral aside, slightly cooler than Note |
+| [`<Check>`](#check) | Confirmation that a step worked |
+| [`<Danger>`](#danger) | Active danger — destructive ops, irreversible state |
+| [`<Update>`](#update) | Dated release block for changelogs |
+
+None of the callouts take props — they accept MDX children. `<Update>` is the exception.
+
+## Note
+
+Most common callout. Caveats, environment requirements, references to related docs.
+
+```mdx
+<Note>This page assumes Bun ≥ 1.1.</Note>
+```
+
+<Note>This page assumes Bun ≥ 1.1.</Note>
+
+If you're writing "be careful — this can break things," reach for [`<Warning>`](#warning). If it's actively dangerous, use [`<Danger>`](#danger).
+
+## Tip
+
+Optional advice that improves the reader's outcome.
+
+```mdx
+<Tip>Use `tangly dev --debug` to see the full Vite log when something looks off.</Tip>
+```
+
+<Tip>Use `tangly dev --debug` to see the full Vite log when something looks off.</Tip>
+
+## Warning
+
+Reach for `<Warning>` when the reader could lose work, get stuck, or break something — but the action is still recoverable.
+
+```mdx
+<Warning>
+  Running `tangly migrate` rewrites `mint.json` in place. Commit your changes first.
+</Warning>
+```
+
+<Warning>
+  Running `tangly migrate` rewrites `mint.json` in place. Commit your changes first.
+</Warning>
+
+## Info
+
+Neutral aside — slightly cooler in tone than `<Note>`. Use for "by the way" context that doesn't fit the prose flow.
+
+```mdx
+<Info>
+  Tangly's MDX pipeline disables Astro's image optimization. Mintlify projects use absolute URLs that bypass the asset pipeline anyway.
+</Info>
+```
+
+<Info>
+  Tangly's MDX pipeline disables Astro's image optimization. Mintlify projects use absolute URLs that bypass the asset pipeline anyway.
+</Info>
+
+## Check
+
+Confirmation. Use after a step in a tutorial to mark "you should see X now."
+
+```mdx
+<Check>
+  Visit `http://localhost:4321` — you should see the default starter page.
+</Check>
+```
+
+<Check>
+  Visit `http://localhost:4321` — you should see the default starter page.
+</Check>
+
+## Danger
+
+Active, hard-to-recover danger. Destructive commands, schema migrations on prod, force-pushes.
+
+```mdx
+<Danger>
+  `tangly eject --force` overwrites the runtime in place. There is no undo.
+</Danger>
+```
+
+<Danger>
+  `tangly eject --force` overwrites the runtime in place. There is no undo.
+</Danger>
+
+## Update
+
+Dated release block for changelog entries. Heading on the left, date on the right, tag chips beside the heading, MDX body underneath.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` | `string` | — | Version or release name. Renders as the heading. |
+| `description` | `string` | — | Subtitle, typically `YYYY-MM-DD`. |
+| `tags` | `string[]` | `[]` | Tag chips rendered to the right of the heading. |
+
+```mdx
+<Update label="v0.2.0" description="2026-04-29" tags={["alpha"]}>
+  ## Initial release
+
+  Renders Mintlify projects unmodified.
+</Update>
+```
+
+<Update label="v0.2.0" description="2026-04-29" tags={["alpha"]}>
+  ## Initial release
+
+  Renders Mintlify projects unmodified.
+</Update>
+
+### Multi-tag
+
+```mdx
+<Update label="v0.3.0" description="2026-06-15" tags={["minor", "ai-agents"]}>
+  - New `<PackageManager>` component
+  - `aiContext` frontmatter for agent hints
+  - Bun 1.3 minimum
+</Update>
+```
+
+<Update label="v0.3.0" description="2026-06-15" tags={["minor", "ai-agents"]}>
+  - New `<PackageManager>` component
+  - `aiContext` frontmatter for agent hints
+  - Bun 1.3 minimum
+</Update>
+
+### Scaffolding
+
+```bash
+tangly add changelog 1.2.0
+```
+
+Creates `changelog/1.2.0.mdx` with the `<Update>` block ready to fill in.
+
+## Source
+
+- [`Note.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Note.astro), [`Tip.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Tip.astro), [`Warning.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Warning.astro), [`Info.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Info.astro), [`Check.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Check.astro), [`Danger.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Danger.astro)
+- Shared shell: [`_Callout.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/_Callout.astro)
+- [`Update.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Update.astro)

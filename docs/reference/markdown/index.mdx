@@ -1,45 +1,505 @@
 ---
 title: Markdown & MDX
-description: Every Markdown and MDX feature Tangly supports — what works, what's quirky, and the pipeline that processes it.
-icon: "file-code-2"
+description: Every Markdown / MDX feature Tangly understands — text, headings, lists, tables, code, links, images, MDX, LaTeX, embeds.
+icon: "text"
 ---
 
-# Markdown & MDX
 
-Tangly pages are MDX. That's CommonMark + GitHub-flavored extensions + JSX expressions and JSX components. This section is the reference for what's supported and what gets transformed along the way.
+Tangly pages are MDX — Markdown with embedded JSX. The Markdown half is GitHub-flavored CommonMark + a few additions. The JSX half lets you drop a [component](/reference/components) anywhere a paragraph would go.
 
-If you're new to MDX, the short version: anything that's valid Markdown is valid MDX, plus you can drop in `<Component />` tags wherever you want. No imports needed for built-in components — Tangly auto-injects the [theme-ui set](/reference/components).
+This page covers every Markdown / MDX feature Tangly understands. For per-page metadata see [Frontmatter](/reference/schema/frontmatter); for the JSX components themselves see [Components](/reference/components).
 
-## Pages
+## Text & headings
+
+### Headings
+
+Use ATX-style headings (`#`, `##`, `###`, …). Setext headings (`=====` underlines) work but aren't recommended — they don't survive automated edits well.
+
+```md
+## H2 — section
+### H3 — subsection
+#### H4 — sub-subsection
+```
+
+The page H1 is rendered automatically from the `title` frontmatter field. **Don't write your own `# Title`** at the top — you'll get two H1s.
+
+### Auto-generated heading IDs
+
+Every heading gets a slug-style `id` derived from the heading text. Punctuation strips, spaces become hyphens, casing lowercases. `## Rate limits` → `id="rate-limits"` → linkable as `/page#rate-limits`.
+
+### Explicit IDs
+
+Pin a heading's id to keep it stable across renames:
+
+```md
+## Rate limits {#rate-limits}
+```
+
+The marker survives even if you rephrase the heading. Used by [`<Embed>`](/reference/components/media#embed) for cross-page block embeds.
+
+### Paragraphs and breaks
+
+Blank lines separate paragraphs. Single newlines are soft breaks (typically rendered as a space). For an explicit hard break, end a line with two spaces or a backslash.
+
+### Emphasis
+
+| Markdown | Renders |
+|---|---|
+| `*italic*` or `_italic_` | *italic* |
+| `**bold**` or `__bold__` | **bold** |
+| `***bold italic***` | ***bold italic*** |
+| `~~strikethrough~~` | ~~strikethrough~~ |
+| `` `inline code` `` | `inline code` |
+
+### Blockquotes
+
+```md
+> A quote.
+>
+> Multiple paragraphs work — leading `>` on every line, blank `>` between.
+```
+
+> A quote.
+>
+> Multiple paragraphs work.
+
+For "callout-shaped" content, use the [callout components](/reference/components/callouts) instead.
+
+### Horizontal rule
+
+Three or more `-`, `*`, or `_` on a line by itself.
+
+```md
+---
+```
+
+(At the start of a file, `---` is frontmatter, not a horizontal rule.)
+
+### Footnotes
+
+GitHub-flavored footnotes work. The footnote text renders at the bottom of the page with a back-link.
+
+```md
+Here is a fact.[^1]
+
+[^1]: With a citation.
+```
+
+## Lists & tables
+
+### Unordered lists
+
+Use `-`, `*`, or `+`. Pick one and stick to it.
+
+```md
+- First
+- Second
+  - Nested (two-space indent)
+- Third
+```
+
+### Ordered lists
+
+```md
+1. First
+2. Second
+3. Third
+```
+
+The numbers don't have to match the order — `1. 1. 1.` renders as `1. 2. 3.`.
+
+### Task lists
+
+```md
+- [ ] Todo
+- [x] Done
+```
+
+### Definition lists
+
+```md
+Term
+: Definition.
+```
+
+### Tables
+
+```md
+| Field | Type | Required |
+|---|---|---|
+| `name` | string | yes |
+| `enabled` | boolean | no |
+```
+
+Use colons in the divider row for alignment:
+
+```md
+| Left | Center | Right |
+|:---|:---:|---:|
+| 1 | 2 | 3 |
+```
+
+Tables don't support multi-line cells. For complex layouts, drop into HTML or use [`<Columns>`](/reference/components/cards#columns).
+
+## Code
+
+Tangly highlights code with [Shiki](https://shiki.style). Every fenced block carries a copy button by default.
+
+### Fenced blocks
+
+````md
+```ts
+const greeting = "hello"
+```
+````
+
+### File titles
+
+Add `title="..."` after the language hint. Renders a chip above the code block with an icon derived from the extension.
+
+````md
+```ts title="src/main.ts"
+import { Tangly } from "tangly"
+```
+````
+
+```ts title="src/main.ts"
+import { Tangly } from "tangly"
+```
+
+### Line highlighting
+
+`{1,3-5}` after the language hint highlights specific lines.
+
+````md
+```ts {2,4-5}
+const a = 1
+const b = 2
+const c = 3
+const d = 4
+const e = 5
+```
+````
+
+### Line numbers
+
+`showLineNumbers` toggles a number gutter. Combine with line highlighting:
+
+````md
+```ts showLineNumbers {2}
+const a = 1
+const b = 2
+```
+````
+
+### Diff syntax
+
+`diff` as the language renders +/- lines. For a diff that *also* keeps language highlighting, use Shiki transforms:
+
+````md
+```ts
+const a = 1 // [!code --]
+const a = 2 // [!code ++]
+const b = 3
+```
+````
+
+### Inline code
+
+Single backticks: `` `tangly check` ``. Use for function names, file paths, env vars, CLI commands, version numbers.
+
+### Multi-language tabs
+
+For the same code in multiple languages, wrap in [`<CodeGroup>`](/reference/components/code#codegroup) — auto-syncs across pages on known label families (npm/yarn/pnpm/bun, macOS/Linux/Windows, etc.).
+
+### Theme & copy button
+
+Pick the Shiki theme via [`code.theme`](/reference/schema#code) in `docs.json`:
+
+```json
+{ "code": { "theme": { "light": "github-light", "dark": "github-dark" } } }
+```
+
+To disable the copy button globally:
+
+```json
+{ "code": { "copyButton": false } }
+```
+
+## Links & images
+
+### Internal links
+
+Reference page slugs with a leading slash. No `.mdx` extension.
+
+```md
+See [Quickstart](/quickstart) for the 60-second tour.
+See [API auth](/reference/schema#api) for header configuration.
+```
+
+`tangly check` validates every internal link at build time. A broken `[text](/some/page)` fails the build.
+
+### External links
+
+```md
+[Astro](https://astro.build)
+```
+
+External links open in a new tab when they contain a different host than the docs site. Tangly auto-adds `target="_blank" rel="noopener noreferrer"`.
+
+### Reference-style links
+
+```md
+See the [docs][1] and the [repo][2].
+
+[1]: https://tangly.dev
+[2]: https://github.com/tanglydocs/tangly
+```
+
+### Anchor links
+
+Heading slugs are auto-generated. `## Rate limits` → `#rate-limits`. For stable anchors that survive heading renames, pin the id:
+
+```md
+[Skip to rate limits](#rate-limits)
+[Cross-page anchor](/billing#rate-limits)
+
+## Rate limits {#rate-limits}
+```
+
+### Images
+
+```md
+![Alt text](/images/diagram.png)
+```
+
+Every inline image is wrapped in [`<LightboxImage>`](/reference/components/media#lightboximage) automatically — click to expand fullscreen.
+
+### Image paths
+
+Tangly serves the project root. `/images/foo.png` resolves to `<project>/images/foo.png`.
+
+### The relative-path rewrite
+
+Mintlify projects often write `![](../images/foo.png)` from inside a nested guide. Tangly's MDX preprocessor rewrites these to absolute paths (`/images/foo.png`) before the Astro asset pipeline sees them. Without the rewrite, Astro cache-misses on every relative path during HMR.
+
+If you ship a Tangly-native project, use absolute paths from day one — faster, less surprising.
+
+### Image optimization
+
+**Disabled by default.** Tangly turns off `@astrojs/mdx`'s `optimize` and sets `image.service: noop`. Mintlify projects often reference absolute external URLs (CDN-hosted assets) that bypass image pipelines anyway, and the cost of resizing every image isn't worth it for static docs.
+
+If you want optimization, [eject](/reference/cli#eject) and turn it back on in the resulting `astro.config.ts`.
+
+### Captioning + lightbox opt-out
+
+Use [`<Frame>`](/reference/components/layout#frame) for figure-style framing and a caption.
+
+```mdx
+<Frame caption="The default tang theme.">
+  ![](/images/screenshot.png)
+</Frame>
+```
+
+To opt out of the lightbox:
+
+```mdx
+<LightboxImage src="/images/icon.png" lightbox={false} />
+```
+
+### Image formats
+
+Whatever your browser supports — png, jpg, webp, avif, gif (animated), svg. Tangly doesn't transcode.
+
+For SVGs as inline icons, use [`<Icon>`](/reference/components/text#icon) with a Lucide name.
+
+## MDX (the JSX in MDX)
+
+### Built-in components
+
+Every component listed in [Components](/reference/components) is auto-injected. No imports.
+
+```mdx
+<Note>This shows up everywhere — no import.</Note>
 
 <CardGroup cols={2}>
-  <Card title="Text & headings" icon="text" href="/reference/markdown/text-and-headings">Paragraphs, headings, emphasis, blockquotes.</Card>
-  <Card title="Lists & tables" icon="list" href="/reference/markdown/lists-tables">Ordered, unordered, task lists, tables with alignment.</Card>
-  <Card title="Code" icon="code" href="/reference/markdown/code">Fenced blocks, language hints, line highlighting, file titles, diff.</Card>
-  <Card title="Links & images" icon="link" href="/reference/markdown/links-images">Relative path rewriting, the asset pipeline, lightbox behavior.</Card>
-  <Card title="MDX" icon="braces" href="/reference/markdown/mdx">JSX expressions, imports, component composition.</Card>
-  <Card title="LaTeX" icon="sigma" href="/reference/markdown/latex">Inline math, display math, KaTeX rendering.</Card>
-  <Card title="Embeds" icon="link-2" href="/reference/markdown/embeds">YouTube, Loom, CodePen, generic iframes.</Card>
+  <Card title="One" icon="circle" />
+  <Card title="Two" icon="square" />
 </CardGroup>
+```
 
-## Pipeline overview
+### JSX expressions
 
-Every `.mdx` file flows through:
+Curly braces interpolate JavaScript:
 
-1. **Frontmatter parse** (`gray-matter`) — splits YAML frontmatter from body.
-2. **Mintlify shims** — `<latex>...</latex>` rewritten to `$$...$$`, relative image paths (`![](../images/...)`) rewritten to absolute (`/images/...`).
-3. **Remark/rehype** — GitHub-flavored Markdown, math (KaTeX), Shiki highlighter, slug + autolink, glossary auto-linking.
-4. **Astro MDX compiler** — JSX components resolve, imports are inlined.
-5. **Layout render** — page chrome wraps the content (sidebar, TOC, reading progress).
+```mdx
+The current year is {new Date().getFullYear()}.
+```
 
-You can [eject](/reference/cli/eject) the project to see the full pipeline configuration as plain Astro/Vite config.
+Expressions run at build time. They don't have access to your data layer — there's no SSR.
 
-## Mintlify compatibility
+### Importing components
 
-Three compat shims worth knowing about:
+For one-off components that aren't built-in, import at the top of the page:
 
-- `<latex>...</latex>` — Mintlify's wrapper. Tangly rewrites to `$$...$$` (KaTeX display).
-- Relative image paths — Mintlify resolves them at runtime; Tangly rewrites to absolute at build so Astro's MDX pipeline doesn't cache-miss.
-- Image optimization — disabled. Mintlify projects often use absolute external URLs that bypass image pipelines anyway. See [Static assets](/guides/deploying/static-assets).
+```mdx
+---
+title: Custom widget
+---
 
-For the full migration story, see [Migration → Compatibility](/guides/migration/compatibility).
+import Widget from "../theme/Widget.astro";
+
+# Custom widget
+
+<Widget data={[1, 2, 3]} />
+```
+
+- Relative imports work from the page's location.
+- Absolute imports (`@/components/Widget.astro`) work after [ejecting](/reference/cli#eject).
+- Without ejecting, stick to relative paths or shadow into `theme/`.
+
+### Exporting metadata
+
+For derived metadata that depends on JS computation, MDX `export const` works:
+
+```mdx
+---
+title: Roadmap
+---
+
+export const milestones = [
+  { date: "2026-Q1", focus: "Phase 1" },
+  { date: "2026-Q2", focus: "Phase 2" },
+]
+
+# Roadmap
+
+{milestones.map(m => <p key={m.date}>{m.date} — {m.focus}</p>)}
+```
+
+### Markdown inside JSX
+
+Markdown inside a JSX block needs blank lines around it:
+
+```mdx
+<Note>
+
+This paragraph is **bold** because the blank line lets it render as Markdown.
+
+</Note>
+```
+
+Without the blank line, the renderer treats the children as a single inline expression and `**bold**` ships as literal asterisks.
+
+### Limitations
+
+- No client-side React/Vue/Svelte. Tangly outputs static HTML — JSX is server-only.
+- No `import` from npm packages outside what Tangly bundles. For custom logic, drop the file in `theme/` and shadow.
+- HTML inside MDX is allowed but discouraged — most things have a component (`<Frame>` over `<figure>`, `<Kbd>` over `<kbd>`).
+
+## LaTeX
+
+Tangly renders math via [KaTeX](https://katex.org). Two syntaxes:
+
+### Inline math
+
+Single dollar signs:
+
+```md
+The capacity factor is $\rho = E_{actual} / E_{max}$.
+```
+
+### Display math
+
+Double dollar signs on their own lines:
+
+```md
+$$
+E = mc^2
+$$
+```
+
+### Mintlify `<latex>` shim
+
+Mintlify projects use a wrapper element. Tangly's preprocessor rewrites it to `$$…$$` before MDX parsing — either form works.
+
+```md
+<latex>E = mc^2</latex>
+```
+
+### Common patterns
+
+```md
+- Fractions: $\frac{a}{b}$
+- Subscripts/superscripts: $x_i^2$
+- Greek letters: $\alpha, \beta, \pi$
+- Sums:
+  $$
+  \sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+  $$
+- Matrices:
+  $$
+  \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+  $$
+```
+
+### Escaping
+
+Literal dollar signs need escaping: `The price is \$10.` Without the backslash the parser tries to open a math expression.
+
+### Performance
+
+KaTeX renders at build time, not in the browser. Output is plain HTML + a small CSS bundle (loaded only on pages that use math). No client-side JS needed.
+
+## Embeds
+
+Three components handle external or cross-page content:
+
+| Use case | Component |
+|---|---|
+| Video (YouTube, Vimeo, mp4) | [`<Video>`](/reference/components/media#video) |
+| Generic iframe with caption | [`<Frame>`](/reference/components/layout#frame) |
+| Cross-page block reuse | [`<Embed>`](/reference/components/media#embed) |
+
+### YouTube / Vimeo / self-hosted video
+
+`<Video>` detects the provider from `src` and rewrites to the privacy-mode embed where applicable. Lazy-loaded — no third-party traffic until the player scrolls into view.
+
+```mdx
+<Video src="https://www.youtube.com/watch?v=jNQXAC9IVRw" />
+<Video src="https://vimeo.com/76979871" />
+<Video src="/videos/quickstart.mp4" poster="/videos/poster.jpg" transcript="/transcripts/quickstart.txt" />
+```
+
+### Loom / CodePen / CodeSandbox / StackBlitz
+
+Use raw `<iframe>` inside a `<Frame>`:
+
+```mdx
+<Frame caption="Team kickoff, v0.3 cycle">
+  <iframe
+    src="https://www.loom.com/embed/<id>"
+    width="100%"
+    height="400"
+    frameborder="0"
+    allowfullscreen
+  />
+</Frame>
+```
+
+For consistency across projects, drop a `theme/Loom.astro` wrapper once and use `<Loom id="abc" />` everywhere.
+
+### Cross-page block embeds
+
+```mdx
+<Embed page="guides/billing" block="rate-limits" />
+```
+
+Resolves at build time. See [Embedded blocks](/guides/authoring/embedded-blocks) for the workflow.
+
+## Source
+
+- Markdown plugins: [`packages/tangly/runtime/src/lib/`](https://github.com/tanglydocs/tangly/tree/main/packages/tangly/runtime/src/lib)
+- Shiki transformers: [`shiki-transformers.mjs`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/runtime/src/lib/shiki-transformers.mjs)
+- Mintlify-compat preprocessing: [`remark-mintlify-compat.mjs`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/runtime/src/lib/remark-mintlify-compat.mjs)
+- Heading IDs: [`remark-explicit-ids.mjs`](https://github.com/tanglydocs/tangly/blob/main/packages/tangly/runtime/src/lib/remark-explicit-ids.mjs)
