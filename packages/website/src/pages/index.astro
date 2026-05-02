@@ -1,0 +1,43 @@
+---
+import "~/styles/globals.css";
+import Hero from "~/sections/hero.astro";
+import QuickExample from "~/sections/quick-example.astro";
+import Components from "~/sections/components.astro";
+import TheRest from "~/sections/the-rest.astro";
+import Themes from "~/sections/themes.astro";
+import OpenApi from "~/sections/openapi.astro";
+import Deploy from "~/sections/deploy.astro";
+import Footer from "~/sections/footer.astro";
+import Nav from "~/sections/nav.astro";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/brand/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600&family=EB+Garamond:wght@400;500&display=swap"
+    />
+    <title>Tangly — open-source documentation, self-hosted</title>
+    <meta
+      name="description"
+      content="Tangly turns a folder of Markdown into a fast, themed, deployable docs site. No proprietary backend, no monthly bill — just a static binary and your repo."
+    />
+  </head>
+  <body>
+    <Nav />
+    <Hero />
+    <QuickExample />
+    <Components />
+    <TheRest />
+    <Themes />
+    <OpenApi />
+    <Deploy />
+    <Footer />
+  </body>
+</html>

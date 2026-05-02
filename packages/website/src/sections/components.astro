@@ -1,0 +1,413 @@
+---
+import {
+  Info,
+  Lightbulb,
+  AlertTriangle,
+  XCircle,
+  CircleCheck,
+  RefreshCw,
+  FileText,
+  Folder,
+  ChevronRight,
+  Terminal,
+  Pencil,
+  ChevronDown,
+  Play,
+  Maximize2,
+  Search,
+  Globe,
+} from "lucide-astro";
+---
+
+<section class="px-24 pb-30 pt-24">
+  <div class="flex max-w-[880px] flex-col gap-4">
+    <h2
+      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+    >
+      <span class="text-ink">34 components,</span>
+      <span class="text-tang-700">no imports.</span>
+    </h2>
+    <p class="max-w-[620px] font-sans text-lg leading-7 text-mute">
+      Drop a tag in MDX. Every theme ships every component. Render here uses
+      the real package — not screenshots.
+    </p>
+  </div>
+
+  <div
+    class="mt-14 overflow-hidden rounded-xl border border-line-light bg-paper"
+  >
+    <!-- Callouts (7) -->
+    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div
+          class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute"
+        >
+          Callouts
+        </div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">7</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {[
+          { tag: "Note", icon: Info, color: "rgba(234,88,12", text: "Heads up. Worth a read.", stroke: "#C2410C" },
+          { tag: "Tip", icon: Lightbulb, color: "rgba(22,163,74", text: "Quick win. Try this.", stroke: "#16A34A" },
+          { tag: "Warning", icon: AlertTriangle, color: "rgba(217,119,6", text: "Mind the gap.", stroke: "#D97706" },
+          { tag: "Danger", icon: XCircle, color: "rgba(220,38,38", text: "Don't ship this.", stroke: "#DC2626" },
+          { tag: "Info", icon: Info, color: "rgba(37,99,235", text: "Some context.", stroke: "#2563EB" },
+          { tag: "Check", icon: CircleCheck, color: "rgba(5,150,105", text: "Done. Confirmed.", stroke: "#059669" },
+          { tag: "Update", icon: RefreshCw, color: "rgba(202,138,4", text: "v0.1 — May 2026.", stroke: "#CA8A04" },
+        ].map((c) => (
+          <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+            <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">
+              &lt;{c.tag}&gt;
+            </div>
+            <div
+              class="flex items-start gap-2 rounded-lg px-3 py-2.5"
+              style={`background: ${c.color},0.05); border: 1px solid ${c.color},0.18);`}
+            >
+              <c.icon size={13} color={c.stroke} class="mt-0.5 shrink-0" />
+              <div class="font-sans text-xs leading-[18px] text-line-dark">
+                {c.text}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Layout (4) -->
+    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Layout</div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">4</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <!-- Card -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Card&gt;</div>
+          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light p-3">
+            <div class="flex items-center gap-2">
+              <div class="flex h-[22px] w-[22px] items-center justify-center rounded-md" style="background: rgba(234,88,12,0.10);">
+                <Terminal size={11} color="#C2410C" />
+              </div>
+              <div class="font-sans text-xs font-semibold text-ink">Quickstart</div>
+            </div>
+            <div class="font-sans text-[11px] leading-4 text-mute">Three commands.</div>
+          </div>
+        </div>
+        <!-- CardGroup -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;CardGroup&gt;</div>
+          <div class="flex gap-1.5">
+            <div class="flex-1 rounded-md border border-line-light p-2.5 font-sans text-[11px] font-semibold text-ink">Get started</div>
+            <div class="flex-1 rounded-md border border-line-light p-2.5 font-sans text-[11px] font-semibold text-ink">Themes</div>
+          </div>
+        </div>
+        <!-- Columns -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Columns&gt;</div>
+          <div class="flex flex-col gap-1.5">
+            {[0, 1].map(() => (
+              <div class="flex gap-1.5">
+                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
+                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
+                <div class="h-2 flex-1 rounded-sm bg-line-light"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <!-- Frame -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Frame&gt;</div>
+          <div
+            class="flex items-center justify-center rounded-lg border border-dashed border-line-light p-3.5"
+            style="background: #F2EFE9;"
+          >
+            <div class="font-mono text-[10px] text-mute">img · 16:9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation (6) -->
+    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Navigation</div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">6</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <!-- Tabs -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tabs&gt;</div>
+          <div class="flex flex-col overflow-hidden rounded-lg border border-line-light">
+            <div class="flex border-b border-line-light px-1">
+              <div class="-mb-px border-b-2 border-tang-600 px-3 py-2 font-sans text-[11px] font-medium text-ink">macOS</div>
+              <div class="px-3 py-2 font-sans text-[11px] text-mute">Windows</div>
+              <div class="px-3 py-2 font-sans text-[11px] text-mute">bun</div>
+            </div>
+            <div class="px-3 py-2.5 font-mono text-[11px] text-line-dark">brew install tangly</div>
+          </div>
+        </div>
+        <!-- Steps -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Steps&gt;</div>
+          <div class="flex flex-col gap-2 rounded-lg border border-line-light p-3">
+            {[
+              { n: 1, t: "Install", active: true },
+              { n: 2, t: "Init", active: false },
+              { n: 3, t: "Build", active: false },
+            ].map((s) => (
+              <div class="flex items-center gap-2.5">
+                <div
+                  class:list={[
+                    "flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-sans text-[10px] font-semibold",
+                    s.active ? "bg-tang-600 text-paper" : "border border-line-light text-mute",
+                  ]}
+                >
+                  {s.n}
+                </div>
+                <div class:list={["font-sans text-xs", s.active ? "font-medium text-ink" : "text-line-dark"]}>{s.t}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <!-- Accordion -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Accordion&gt;</div>
+          <div class="flex flex-col overflow-hidden rounded-lg border border-line-light">
+            <div class="flex items-center gap-2.5 border-b border-line-light px-3 py-2.5">
+              <ChevronDown size={11} color="#0B0B0F" stroke-width={2.5} />
+              <div class="font-sans text-xs font-semibold text-ink">Why Tangly?</div>
+            </div>
+            <div class="flex items-center gap-2.5 px-3 py-2.5">
+              <ChevronRight size={11} color="#6B6B70" stroke-width={2.5} />
+              <div class="font-sans text-xs text-line-dark">Mintlify compat?</div>
+            </div>
+          </div>
+        </div>
+        <!-- Tab -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tab&gt;</div>
+          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">
+            Child of <code class="font-mono text-ink">&lt;Tabs&gt;</code>. One panel.
+          </div>
+        </div>
+        <!-- Step -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Step&gt;</div>
+          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">
+            Child of <code class="font-mono text-ink">&lt;Steps&gt;</code>. One step.
+          </div>
+        </div>
+        <!-- AccordionGroup -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;AccordionGroup&gt;</div>
+          <div class="py-2 font-sans text-[11px] leading-[18px] text-mute">Wrapper. Single-open semantics.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code & content (6) -->
+    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Code &amp; content</div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">6</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <!-- CodeGroup -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;CodeGroup&gt;</div>
+          <div class="flex flex-col overflow-hidden rounded-lg border border-line-dark bg-ink">
+            <div class="flex border-b border-line-dark px-1">
+              <div class="-mb-px border-b-2 border-tang-600 px-2.5 py-2 font-mono text-[11px] text-paper">bun</div>
+              <div class="px-2.5 py-2 font-mono text-[11px] text-mute">npm</div>
+              <div class="px-2.5 py-2 font-mono text-[11px] text-mute">pnpm</div>
+            </div>
+            <div class="px-3 py-2.5 font-mono text-[11px]">
+              <span class="text-tang-600">$</span> <span class="text-paper">bun add tangly</span>
+            </div>
+          </div>
+        </div>
+        <!-- FileTree -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;FileTree&gt;</div>
+          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3 font-mono text-[11px] leading-[18px]">
+            <div class="flex items-center gap-1.5">
+              <ChevronDown size={11} color="#6B6B70" />
+              <Folder size={11} color="#C2410C" />
+              <span class="text-ink">my-docs</span>
+            </div>
+            <div class="pl-[22px] text-mute">docs.json</div>
+            <div class="pl-[22px] text-mute">intro.mdx</div>
+          </div>
+        </div>
+        <!-- Snippet -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Snippet&gt;</div>
+          <div class="flex items-center gap-2 rounded-lg border border-line-light px-3 py-2.5 font-mono text-[11px]">
+            <span class="text-tang-600">$</span><span class="text-line-dark">tangly init</span>
+            <div class="flex-1"></div>
+            <div class="rounded border border-line-light px-1.5 py-px font-mono text-[10px] text-mute">copy</div>
+          </div>
+        </div>
+        <!-- Embed -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Embed&gt;</div>
+          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light p-3.5" style="background: rgba(11,11,15,0.02);">
+            <div class="font-mono text-[10px] text-mute">codepen.io / · 240×80</div>
+            <div class="flex gap-1">
+              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
+              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
+              <div class="h-1.5 w-1.5 rounded-full bg-line-light"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Video -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Video&gt;</div>
+          <div class="flex items-center justify-center rounded-lg border border-line-light bg-ink p-4">
+            <Play size={22} color="#FAFAF7" fill="#FAFAF7" />
+          </div>
+        </div>
+        <!-- LightboxImage -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 24px) / 3);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;LightboxImage&gt;</div>
+          <div class="relative flex min-h-14 items-end justify-end rounded-lg border border-line-light p-3.5" style="background: #F2EFE9;">
+            <Maximize2 size={14} color="#6B6B70" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API (4) -->
+    <div class="flex flex-col gap-4 border-b border-line-light px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">API</div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">4</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <!-- ParamField -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ParamField&gt;</div>
+          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-semibold text-ink">q</span>
+              <span class="font-mono text-[10px] text-mute">string</span>
+              <span class="rounded-full px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.04em] text-tang-700" style="background: rgba(234,88,12,0.08);">required</span>
+            </div>
+            <div class="font-sans text-[11px] text-mute">Search query.</div>
+          </div>
+        </div>
+        <!-- ResponseField -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ResponseField&gt;</div>
+          <div class="flex flex-col gap-1 rounded-lg border border-line-light p-3">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-semibold text-ink">id</span>
+              <span class="font-mono text-[10px] text-mute">uuid</span>
+            </div>
+            <div class="font-sans text-[11px] text-mute">Domain ID.</div>
+          </div>
+        </div>
+        <!-- RequestExample -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;RequestExample&gt;</div>
+          <div class="flex flex-col gap-1 rounded-lg bg-ink px-3 py-2.5 font-mono text-[11px] leading-[18px]">
+            <div><span class="text-tang-700">curl</span> <span class="text-paper">api.tangly.dev/v1</span></div>
+            <div><span class="text-mute">-H</span> <span class="text-tang-300">"Auth: $TOKEN"</span></div>
+          </div>
+        </div>
+        <!-- ResponseExample -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;ResponseExample&gt;</div>
+          <div class="flex flex-col gap-1 rounded-lg bg-ink px-3 py-2.5 font-mono text-[11px] leading-[18px]">
+            <div><span class="text-mute">{"{"}</span></div>
+            <div>  <span class="text-tang-300">"id"</span><span class="text-mute">:</span> <span class="text-tang-300">"d_47"</span></div>
+            <div><span class="text-mute">{"}"}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inline & misc (7) -->
+    <div class="flex flex-col gap-4 px-8 pb-8 pt-7">
+      <div class="flex items-center gap-3">
+        <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-mute">Inline &amp; misc</div>
+        <div class="h-px flex-1 bg-line-light"></div>
+        <div class="font-mono text-[11px] text-mute">7</div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <!-- Badge -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Badge&gt;</div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="rounded-full px-2.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.04em] text-tang-700" style="background: rgba(234,88,12,0.08); border: 1px solid rgba(234,88,12,0.20);">v0.1</span>
+            <span class="rounded-full px-2.5 py-px font-mono text-[10px] font-semibold uppercase tracking-[0.04em]" style="background: rgba(5,150,105,0.10); border: 1px solid rgba(5,150,105,0.25); color: #059669;">new</span>
+          </div>
+        </div>
+        <!-- Icon -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Icon&gt;</div>
+          <div class="flex items-center gap-3">
+            <FileText size={16} color="#0B0B0F" />
+            <Terminal size={16} color="#0B0B0F" />
+            <Globe size={16} color="#0B0B0F" />
+            <Search size={16} color="#0B0B0F" />
+          </div>
+        </div>
+        <!-- Kbd -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Kbd&gt;</div>
+          <div class="flex items-center gap-2 font-sans text-xs text-line-dark">
+            Press
+            <kbd class="rounded border border-line-light border-b-2 bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">⌘</kbd>
+            <kbd class="rounded border border-line-light border-b-2 bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">K</kbd>
+          </div>
+        </div>
+        <!-- Tooltip -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Tooltip&gt;</div>
+          <div class="flex flex-col items-start gap-2">
+            <div class="relative rounded-md bg-ink px-2.5 py-1.5 font-mono text-[11px] text-paper">
+              SSE stream
+              <span class="absolute -bottom-1 left-3.5 h-2 w-2 rotate-45 bg-ink"></span>
+            </div>
+            <span class="font-sans text-[11px] text-line-dark underline decoration-dotted">hover me</span>
+          </div>
+        </div>
+        <!-- GlossaryTerm -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;GlossaryTerm&gt;</div>
+          <p class="font-sans text-xs leading-[18px] text-line-dark">
+            An <span class="cursor-help underline decoration-tang-700 decoration-dotted">MDX</span> file is just markdown plus JSX.
+          </p>
+        </div>
+        <!-- Expandable -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;Expandable&gt;</div>
+          <div class="flex flex-col gap-1.5 rounded-lg border border-line-light px-3 py-2.5">
+            <div class="flex items-center gap-2">
+              <ChevronDown size={11} color="#0B0B0F" stroke-width={2.4} />
+              <span class="font-mono text-[11px] font-semibold text-ink">advanced opts</span>
+            </div>
+            <div class="pl-[19px] font-sans text-[11px] text-mute">3 fields shown</div>
+          </div>
+        </div>
+        <!-- PackageManager -->
+        <div class="flex flex-col gap-2" style="width: calc((100% - 36px) / 4);">
+          <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">&lt;PackageManager&gt;</div>
+          <div class="flex rounded-lg border border-line-light px-1">
+            <div class="-mb-px border-b-2 border-tang-600 px-2.5 py-1.5 font-mono text-[11px] text-ink">bun</div>
+            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">npm</div>
+            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">pnpm</div>
+            <div class="px-2.5 py-1.5 font-mono text-[11px] text-mute">yarn</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

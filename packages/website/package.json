@@ -1,0 +1,25 @@
+{
+  "name": "@tanglydocs/website",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Marketing website for Tangly — tangly.dev.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host --port 5173",
+    "build": "astro build",
+    "preview": "astro preview --host --port 5173",
+    "prebuild": "bun run scripts/sync-public-assets.ts",
+    "astro": "astro",
+    "typecheck": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/mdx": "^5.0.4",
+    "@tailwindcss/vite": "^4.2.4",
+    "@tanglydocs/theme-ui": "workspace:*",
+    "astro": "^6.1.10",
+    "lucide-astro": "^0.556.0",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^5.7.0"
+  }
+}

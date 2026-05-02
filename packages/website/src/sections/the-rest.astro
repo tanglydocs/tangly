@@ -1,0 +1,185 @@
+---
+import { Search } from "lucide-astro";
+
+const rows = [
+  {
+    label: "Search",
+    title: "Built-in, instant, ⌘K.",
+    body: 'Static index built at <code class="font-mono text-sm text-ink">tangly build</code>. No Algolia key, no third-party request, no per-month cost.',
+    demo: "search",
+  },
+  {
+    label: "Drafts",
+    title: "Frontmatter is the CMS.",
+    body: 'Mark a page <code class="font-mono text-sm text-ink">draft: true</code>. Hidden in production, visible in <code class="font-mono text-sm text-ink">tangly dev</code>. Ship preview builds with <code class="font-mono text-sm text-ink">--include-drafts</code>.',
+    demo: "drafts",
+  },
+  {
+    label: "Custom components",
+    title: "Drop a .tsx, use it.",
+    body: 'Put a component into <code class="font-mono text-sm text-ink">components/</code>. Use it from MDX. Hot reloads. No registration.',
+    demo: "custom",
+  },
+  {
+    label: "Subpath hosting",
+    title: "Mount under any path.",
+    body: 'Build with <code class="font-mono text-sm text-ink">--base /docs/</code>. All asset paths rewrite. Works behind Caddy, nginx, or a Cloudflare Worker.',
+    demo: "subpath",
+  },
+  {
+    label: "Migrate",
+    title: "From Mintlify, in a minute.",
+    body: '<code class="font-mono text-sm text-ink">tangly migrate</code> reads <code class="font-mono text-sm text-ink">mint.json</code> and emits a Tangly-shaped <code class="font-mono text-sm text-ink">docs.json</code>. MDX stays untouched.',
+    demo: "migrate",
+  },
+  {
+    label: "Eject",
+    title: "Ejects to a raw Astro project.",
+    body: 'Outgrown the magic? <code class="font-mono text-sm text-ink">tangly eject</code> materializes the synthesized Astro project into your repo. <code class="font-mono text-sm text-ink">astro.config.mjs</code> is yours to edit. One-way, no Tangly required after.',
+    demo: "eject",
+  },
+  {
+    label: "Deploy from CI",
+    title: "Drop a workflow. Done.",
+    body: "A 14-line GitHub Actions workflow ships your docs to GitHub Pages on every push. Bun caches resolve in seconds. The Tangly monorepo deploys itself this way.",
+    demo: "ci",
+  },
+];
+---
+
+<section class="border-t border-line-light px-24 pb-30 pt-24">
+  <div class="flex max-w-[880px] flex-col gap-4">
+    <h2
+      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+    >
+      <span class="text-ink">The rest</span>
+      <span class="text-tang-700">is here.</span>
+    </h2>
+    <p class="max-w-[580px] font-sans text-lg leading-7 text-mute">
+      Every feature you'd reach for. Each does what it says.
+    </p>
+  </div>
+
+  <div class="mt-14 flex flex-col border-t border-line-light">
+    {
+      rows.map((row, i) => (
+        <div
+          class:list={[
+            "flex items-stretch gap-14 py-9",
+            i < rows.length - 1 ? "border-b border-line-light" : "",
+          ]}
+        >
+          <div class="flex w-[280px] shrink-0 flex-col gap-2">
+            <div class="font-mono text-[11px] uppercase tracking-[0.05em] text-mute">
+              {row.label}
+            </div>
+            <div class="font-sans text-[22px] font-semibold leading-7 tracking-[-0.015em] text-ink">
+              {row.title}
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col gap-4">
+            <p
+              class="max-w-[540px] font-sans text-[15px] leading-6 text-mute"
+              set:html={row.body}
+            />
+            {row.demo === "search" && (
+              <div class="flex max-w-[520px] flex-col overflow-hidden rounded-[10px] border border-line-light bg-paper">
+                <div class="flex items-center gap-2.5 border-b border-line-light px-4 py-3">
+                  <Search size={14} color="#6B6B70" />
+                  <div class="flex-1 font-sans text-sm text-mute">openapi</div>
+                  <div class="rounded border border-line-light px-1.5 py-px font-mono text-[11px] text-mute">⌘K</div>
+                </div>
+                <div class="flex flex-col">
+                  <div
+                    class="flex items-center gap-3 border-l-2 border-tang-600 px-4 py-2.5"
+                    style="background: rgba(234,88,12,0.05);"
+                  >
+                    <div class="flex-1 font-sans text-[13px] font-medium text-ink">
+                      OpenAPI <span style="background: rgba(234,88,12,0.20); padding: 0 2px;">— rendered references, schemas, try-it</span>
+                    </div>
+                    <div class="font-mono text-[11px] text-mute">/api</div>
+                  </div>
+                  <div class="flex items-center gap-3 px-4 py-2.5">
+                    <div class="flex-1 font-sans text-[13px] text-line-dark">
+                      Migrating from Mintlify <span class="text-mute">— OpenAPI compat notes</span>
+                    </div>
+                    <div class="font-mono text-[11px] text-mute">/migrate</div>
+                  </div>
+                  <div class="flex items-center gap-3 px-4 py-2.5">
+                    <div class="flex-1 font-sans text-[13px] text-line-dark">
+                      docs.json reference <span class="text-mute">— openapi field</span>
+                    </div>
+                    <div class="font-mono text-[11px] text-mute">/reference/docs-json</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {row.demo === "drafts" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div class="text-mute">---</div>
+                <div><span class="text-tang-700">title:</span> <span class="text-tang-300">"New billing flow"</span></div>
+                <div><span class="text-tang-700">description:</span> <span class="text-tang-300">"Stripe + per-seat metering"</span></div>
+                <div><span class="text-tang-700">draft:</span> <span class="text-tang-300">true</span> <span class="text-mute"># hidden in prod</span></div>
+                <div class="text-mute">---</div>
+              </div>
+            )}
+            {row.demo === "custom" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div class="text-mute"><span class="text-tang-300">// </span>components/PriceTable.tsx</div>
+                <div><span class="text-tang-700">export default</span> <span class="text-tang-300">function</span> <span class="text-paper">PriceTable</span>(<span class="text-paper">{`{ tiers }`}</span>) {`{`}</div>
+                <div>  <span class="text-tang-700">return</span> &lt;<span class="text-tang-300">table</span>&gt; ... &lt;/<span class="text-tang-300">table</span>&gt;</div>
+                <div>{`}`}</div>
+                <div class="h-2"></div>
+                <div class="text-mute"><span class="text-tang-300">// </span>pricing.mdx</div>
+                <div><span class="text-tang-300">&lt;PriceTable tiers={`{tiers}`} /&gt;</span></div>
+              </div>
+            )}
+            {row.demo === "subpath" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">tangly build --out ./dist --base /docs/</span></div>
+                <div class="text-mute">↳ rewrote 247 asset paths</div>
+                <div class="text-mute">↳ ./dist/index.html → /docs/</div>
+                <div class="text-mute">↳ ./dist/api/ → /docs/api/</div>
+              </div>
+            )}
+            {row.demo === "migrate" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">tangly migrate</span></div>
+                <div class="text-mute">↳ found mint.json (v2.4)</div>
+                <div class="text-mute">↳ mapped 14 fields → docs.json</div>
+                <div class="text-mute">↳ <span class="text-tang-300">done.</span> 0 MDX files modified.</div>
+              </div>
+            )}
+            {row.demo === "eject" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">tangly eject</span></div>
+                <div class="text-mute">↳ wrote .tangly/ (47 files)</div>
+                <div class="text-mute">↳ rewrote package.json scripts → astro</div>
+                <div class="text-mute">↳ added astro, @astrojs/mdx, tailwindcss</div>
+                <div class="text-mute">↳ <span class="text-tang-300">done.</span> astro.config.mjs is yours.</div>
+              </div>
+            )}
+            {row.demo === "ci" && (
+              <div class="flex max-w-[580px] flex-col rounded-[10px] bg-ink px-5 py-4 font-mono text-[12.5px] leading-[21px]">
+                <div class="text-mute"># .github/workflows/pages.yml</div>
+                <div><span class="text-tang-700">name:</span> <span class="text-tang-300">deploy</span></div>
+                <div><span class="text-tang-700">on:</span> [<span class="text-tang-300">push</span>]</div>
+                <div><span class="text-tang-700">permissions:</span> {`{ pages: write, id-token: write }`}</div>
+                <div><span class="text-tang-700">jobs:</span></div>
+                <div>  <span class="text-tang-700">build:</span></div>
+                <div>    <span class="text-tang-700">runs-on:</span> <span class="text-tang-300">ubuntu-latest</span></div>
+                <div>    <span class="text-tang-700">steps:</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">uses:</span> <span class="text-tang-300">actions/checkout@v4</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">uses:</span> <span class="text-tang-300">oven-sh/setup-bun@v2</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">run:</span> <span class="text-tang-300">bun install --frozen-lockfile</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">run:</span> <span class="text-tang-300">bunx tangly build --base /$REPO</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">uses:</span> <span class="text-tang-300">actions/upload-pages-artifact@v3</span></div>
+                <div>      <span class="text-mute">- </span><span class="text-tang-700">uses:</span> <span class="text-tang-300">actions/deploy-pages@v4</span></div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,156 @@
+---
+import { ArrowUpRight } from "lucide-astro";
+
+const themes = [
+  {
+    name: "Tang",
+    badge: "default",
+    blurb: "Mintlify-Mint inspired. Sidebar nav, on-page TOC, monospace headings.",
+    init: "tangly init --theme tang",
+    tile: { bg: "#FAFAF7", textColor: "#0B0B0F", muteColor: "#1F1F23", font: '"Inter"', headlineWeight: 600, headlineSize: 28, bodyFont: '"Inter"', bodyWeight: 400 },
+  },
+  {
+    name: "Pith",
+    badge: "editorial",
+    blurb: "Serif headings, cream surface, generous measure. For long-form writing.",
+    init: "tangly init --theme pith",
+    tile: { bg: "#F5EFDD", textColor: "#0B0B0F", muteColor: "#1F1F23", font: '"Source Serif 4", serif', headlineWeight: 600, headlineSize: 30, bodyFont: '"Source Serif 4", serif', bodyWeight: 400 },
+  },
+  {
+    name: "Pip",
+    badge: "minimal",
+    blurb: "No sidebar. Single-column reading mode. Headings as the only navigation.",
+    init: "tangly init --theme pip",
+    tile: { bg: "#FAFAF7", textColor: "#0B0B0F", muteColor: "#1F1F23", font: '"Inter"', headlineWeight: 700, headlineSize: 26, bodyFont: '"Inter"', bodyWeight: 400 },
+  },
+  {
+    name: "Readable",
+    badge: "book-like",
+    blurb: "Narrow column, large body type, drop caps. Reads like a manual.",
+    init: "tangly init --theme readable",
+    tile: { bg: "#FAFAF7", textColor: "#0B0B0F", muteColor: "#1F1F23", font: '"EB Garamond", serif', headlineWeight: 500, headlineSize: 32, bodyFont: '"EB Garamond", serif', bodyWeight: 400 },
+  },
+  {
+    name: "Geist",
+    badge: "developer",
+    blurb: "Vercel/Linear register. Ink ground, thin rules, dense type scale.",
+    init: "tangly init --theme geist",
+    tile: { bg: "#0B0B0F", textColor: "#FAFAF7", muteColor: "#A0A0A8", font: '"Geist"', headlineWeight: 600, headlineSize: 28, bodyFont: '"Geist"', bodyWeight: 400, dark: true },
+  },
+  {
+    name: "Starter",
+    badge: "scaffold",
+    blurb: "Three sections, three pages, no opinions. The fastest way to start typing.",
+    init: "tangly init --theme starter",
+    tile: { bg: "#FAFAF7", textColor: "#0B0B0F", muteColor: "#1F1F23", font: '"Inter"', headlineWeight: 500, headlineSize: 28, bodyFont: '"Inter"', bodyWeight: 400 },
+  },
+];
+---
+
+<section class="px-24 pb-30 pt-24">
+  <div class="flex items-end justify-between gap-10">
+    <div class="flex max-w-[880px] flex-col gap-4">
+      <h2
+        class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+      >
+        <span class="text-ink">Six themes.</span>
+        <span class="text-tang-700">Same Markdown.</span>
+      </h2>
+      <p class="max-w-[580px] font-sans text-lg leading-7 text-mute">
+        Swap a one-line value in <code class="font-mono text-base text-ink"
+          >docs.json</code
+        >. Same content, new register.
+      </p>
+    </div>
+    <a
+      href="/themes"
+      class="flex items-center gap-2 font-sans text-sm font-medium text-ink"
+      >Browse the gallery <span class="text-tang-600">→</span></a
+    >
+  </div>
+
+  <div class="mt-14 flex flex-wrap gap-5">
+    {
+      themes.map((t) => {
+        const dark = t.tile.dark;
+        return (
+          <div
+            class:list={[
+              "flex flex-col overflow-hidden rounded-xl border",
+              dark ? "border-line-dark" : "border-line-light",
+            ]}
+            style={`background: ${t.tile.bg}; width: calc((100% - 40px) / 3);`}
+          >
+            <div
+              class:list={[
+                "flex items-center justify-between border-b px-[18px] py-3.5",
+                dark ? "border-line-dark" : "border-line-light",
+              ]}
+            >
+              <div class="flex items-center gap-2">
+                <div class="h-2 w-2 rounded-full bg-tang-600"></div>
+                <div
+                  class="font-sans text-[13px] font-semibold"
+                  style={`color: ${t.tile.textColor};`}
+                >
+                  {t.name}
+                </div>
+                <div
+                  class:list={[
+                    "rounded-full border px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.04em]",
+                    dark ? "border-line-dark text-mute" : "border-line-light text-mute",
+                  ]}
+                >
+                  {t.badge}
+                </div>
+              </div>
+              <div class="font-mono text-[11px] text-mute">/theme</div>
+            </div>
+            <div
+              class="flex min-h-[220px] flex-1 flex-col gap-3 px-7 py-8"
+            >
+              <div
+                class="font-mono text-[11px] uppercase tracking-[0.04em]"
+                style={`color: ${dark ? "#6B6B70" : "#6B6B70"};`}
+              >
+                Get started
+              </div>
+              <div
+                style={`font-family: ${t.tile.font}; font-weight: ${t.tile.headlineWeight}; font-size: ${t.tile.headlineSize}px; line-height: ${t.tile.headlineSize + 4}px; letter-spacing: -0.02em; color: ${t.tile.textColor};`}
+              >
+                Self-host your docs.
+              </div>
+              <div
+                style={`font-family: ${t.tile.bodyFont}; font-weight: ${t.tile.bodyWeight}; font-size: 14px; line-height: 22px; color: ${t.tile.muteColor};`}
+              >
+                Tangly turns Markdown into a fast, themed, deployable site.
+                Point at a folder and ship.
+              </div>
+            </div>
+            <div
+              class:list={[
+                "flex items-center justify-between border-t px-[18px] py-3.5",
+                dark ? "border-line-dark" : "border-line-light",
+              ]}
+            >
+              <div
+                class:list={["font-mono text-[11px]", "text-mute"]}
+              >
+                {t.init}
+              </div>
+              <a
+                href="/themes"
+                class:list={[
+                  "flex items-center gap-1 font-sans text-xs font-medium",
+                ]}
+                style={`color: ${t.tile.textColor};`}
+              >
+                Live preview <ArrowUpRight size={12} color="#EA580C" />
+              </a>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</section>

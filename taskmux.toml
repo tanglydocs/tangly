@@ -49,3 +49,10 @@ cwd = "examples/demo-starter"
 host = "starter"
 auto_start = false
 restart_policy = "on-failure"
+
+[tasks.website]
+command = "bun run dev"
+cwd = "packages/website"
+host = "website"
+auto_start = false
+restart_policy = "on-failure"
