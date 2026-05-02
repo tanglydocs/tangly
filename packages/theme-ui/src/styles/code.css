@@ -10,6 +10,22 @@
   background: var(--shiki-light-bg, #ffffff);
 }
 
+/* Inside CodeGroup, the outer chrome (tabs + container) replaces the
+ * per-block chrome. Flatten the inner figure: drop the border, the
+ * margin, and hide the duplicate header (filename pill + Copy button). */
+.tangly-code-group .tangly-code-figure {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+.tangly-code-group .tangly-code-figure > .tangly-code-header {
+  display: none;
+}
+.dark .tangly-code-group .tangly-code-figure {
+  background: transparent;
+}
+
 .dark .tangly-code-figure {
   background: var(--shiki-dark-bg, #0d1117);
   border-color: rgba(255, 255, 255, 0.08);

@@ -41,16 +41,34 @@ function iconForFilename(filename) {
   return FILE_ICONS[ext] ?? "file";
 }
 
+// Tokens consumed by shiki built-in transformers — never a title.
+const META_FLAG_TOKENS = new Set([
+  "showLineNumbers",
+  "showLineNumbers=true",
+  "showLineNumbers=false",
+  "noCopy",
+  "annotate",
+  "diff",
+  "twoslash",
+]);
+
 function parseMetaTitle(meta) {
   if (!meta) return null;
   const quoted = meta.match(/title="([^"]+)"/);
   if (quoted) return quoted[1];
   const single = meta.match(/title='([^']+)'/);
   if (single) return single[1];
-  // Mintlify-style bare path token.
+  // Bare token: anything that isn't a shiki flag, a key=val pair, or a
+  // line-highlight range like `{1,3-5}`. First match wins.
+  // Path tokens with dots (`package.json`, `src/foo.ts`) and plain labels
+  // (`bun`, `pnpm`) both qualify.
   const tokens = meta.split(/\s+/).filter(Boolean);
   for (const t of tokens) {
-    if (/^[A-Za-z0-9._/-]+\.[A-Za-z0-9]+$/.test(t)) return t;
+    if (META_FLAG_TOKENS.has(t)) continue;
+    if (t.startsWith("{")) continue;
+    if (t.startsWith("//")) continue;
+    if (/^[a-zA-Z][a-zA-Z0-9_-]*=/.test(t)) continue;
+    if (/^[A-Za-z0-9._/-]+$/.test(t)) return t;
   }
   return null;
 }
