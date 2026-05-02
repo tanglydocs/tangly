@@ -40,15 +40,15 @@ It's small. It's fast. It works the way coding agents already want to work.
 
 Two things — a config file and pages:
 
-```
-my-docs/
-├── docs.json
-├── introduction.mdx
-├── guides/
-│   └── getting-started.mdx
-└── images/
-    └── hero.png
-```
+<FileTree>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - guides/
+    - getting-started.mdx
+  - images/
+    - hero.png
+</FileTree>
 
 `docs.json` declares navigation and configures everything that isn't content. Each `.mdx` file becomes a page. Frontmatter handles per-page metadata (`title`, `description`, `icon`, `draft`, `noindex`). [Embedded blocks](/guides/authoring/embedded-blocks) let you reuse content across pages without copy-paste drift.
 

@@ -38,33 +38,33 @@ The `tangly` binary becomes available via `bun x tangly`, `pnpm exec tangly`, `n
 
 A minimal Tangly project is two files:
 
-```
-my-docs/
-├── docs.json          # navigation + branding (required)
-├── introduction.mdx
-└── package.json
-```
+<FileTree>
+- my-docs/
+  - docs.json navigation + branding (required)
+  - introduction.mdx
+  - package.json
+</FileTree>
 
 A typical project grows like this:
 
-```
-my-docs/
-├── docs.json
-├── introduction.mdx
-├── quickstart.mdx
-├── guides/
-│   ├── concepts.mdx
-│   └── advanced.mdx
-├── reference/
-│   └── api.mdx
-├── images/
-│   └── logo.svg
-├── theme/                    # optional component overrides
-│   └── components/
-│       └── Card.astro
-├── tangly.config.ts          # optional content collections
-└── package.json
-```
+<FileTree>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - quickstart.mdx
+  - guides/
+    - concepts.mdx
+    - advanced.mdx
+  - reference/
+    - api.mdx
+  - images/
+    - logo.svg
+  - theme/ optional component overrides
+    - components/
+      - Card.astro
+  - tangly.config.ts optional content collections
+  - package.json
+</FileTree>
 
 Tangly does not require `src/`, `pages/`, or any framework files. The MDX files at any depth are the source of truth; `docs.json` decides which ones appear in navigation. Files prefixed with `_` (e.g. `_section.mdx`) and the `snippets/` folder are skipped.
 

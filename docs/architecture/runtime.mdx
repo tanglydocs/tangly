@@ -10,20 +10,20 @@ icon: "cog"
 
 ## Layout
 
-```
-runtime/
-├── astro.config.mjs              # remark/rehype pipeline, MDX, Tailwind, adapter
-└── src/
-    ├── content.config.ts         # collection: glob over <userRoot>/**/*.mdx
-    ├── pages/
-    │   ├── index.astro           # redirects to first nav page
-    │   └── [...slug].astro       # catch-all, renders any page slug
-    └── lib/
-        ├── mdx-components.ts     # injects Note/Card/Tabs/etc. into MDX
-        ├── remark-mintlify-compat.mjs
-        ├── remark-explicit-ids.mjs
-        └── remark-mermaid.mjs
-```
+<FileTree>
+- runtime/
+  - astro.config.mjs remark/rehype pipeline, MDX, Tailwind, adapter
+  - src/
+    - content.config.ts collection — glob over `<userRoot>/**/*.mdx`
+    - pages/
+      - index.astro redirects to first nav page
+      - `[...slug].astro` catch-all, renders any page slug
+    - lib/
+      - mdx-components.ts injects Note/Card/Tabs/etc. into MDX
+      - remark-mintlify-compat.mjs
+      - remark-explicit-ids.mjs
+      - remark-mermaid.mjs
+</FileTree>
 
 ## Page render pipeline
 

@@ -209,20 +209,22 @@ Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result
 
 ## What gets built
 
-```
-dist/
-├── index.html              # redirects to first nav page
-├── introduction/index.html
-├── guides/<slug>/index.html
-├── images/                 # copied verbatim from project root
-├── logo/
-├── public/
-├── pagefind/               # search index
-├── sitemap.xml
-├── robots.txt
-├── llms.txt                # for AI crawlers
-└── llms-full.txt
-```
+<FileTree>
+- dist/
+  - index.html redirects to first nav page
+  - introduction/index.html
+  - introduction.md raw source for AI agents
+  - `guides/<slug>/index.html`
+  - `guides/<slug>.md`
+  - images/ copied verbatim from project root
+  - logo/
+  - public/
+  - pagefind/ search index
+  - sitemap.xml
+  - robots.txt
+  - llms.txt for AI crawlers
+  - llms-full.txt
+</FileTree>
 
 Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from `sitemap.xml`, `llms.txt`, `llms-full.txt`, the per-page `.md` files, and the Pagefind index.
 

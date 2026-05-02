@@ -8,13 +8,13 @@ icon: "puzzle"
 
 Drop a file at `./components/<Name>.{astro,tsx,jsx,ts,js}` in your project to override the built-in `<Name>` component everywhere it's used in your MDX. No imports, no registration — just the file.
 
-```
-my-docs/
-├── docs.json
-├── introduction.mdx
-└── components/
-    └── Note.astro       # overrides @tanglydocs/theme-ui/Note
-```
+<FileTree>
+- my-docs/
+  - docs.json
+  - introduction.mdx
+  - components/
+    - **Note.astro** overrides `@tanglydocs/theme-ui/Note`
+</FileTree>
 
 ## Resolution order
 
