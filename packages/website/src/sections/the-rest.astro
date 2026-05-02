@@ -47,39 +47,43 @@ const rows = [
 ];
 ---
 
-<section class="border-t border-line-light px-24 pb-30 pt-24">
-  <div class="flex max-w-[880px] flex-col gap-4">
+<section class="border-t border-line-light bg-paper">
+  <div class="mx-auto max-w-[1200px] px-10 pb-24 pt-20">
+  <div class="flex max-w-[760px] flex-col gap-3">
+    <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+      Features
+    </div>
     <h2
-      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+      class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
     >
       <span class="text-ink">The rest</span>
       <span class="text-tang-700">is here.</span>
     </h2>
-    <p class="max-w-[580px] font-sans text-lg leading-7 text-mute">
+    <p class="max-w-[520px] font-sans text-[15px] leading-6 text-mute">
       Every feature you'd reach for. Each does what it says.
     </p>
   </div>
 
-  <div class="mt-14 flex flex-col border-t border-line-light">
+  <div class="mt-10 flex flex-col border-t border-line-light">
     {
       rows.map((row, i) => (
         <div
           class:list={[
-            "flex items-stretch gap-14 py-9",
+            "flex items-stretch gap-12 py-7",
             i < rows.length - 1 ? "border-b border-line-light" : "",
           ]}
         >
-          <div class="flex w-[280px] shrink-0 flex-col gap-2">
-            <div class="font-mono text-[11px] uppercase tracking-[0.05em] text-mute">
+          <div class="flex w-[240px] shrink-0 flex-col gap-1.5">
+            <div class="font-mono text-[10px] uppercase tracking-[0.05em] text-mute">
               {row.label}
             </div>
-            <div class="font-sans text-[22px] font-semibold leading-7 tracking-[-0.015em] text-ink">
+            <div class="font-sans text-[17px] font-semibold leading-[22px] tracking-[-0.015em] text-ink">
               {row.title}
             </div>
           </div>
-          <div class="flex flex-1 flex-col gap-4">
+          <div class="flex flex-1 flex-col gap-3">
             <p
-              class="max-w-[540px] font-sans text-[15px] leading-6 text-mute"
+              class="max-w-[480px] font-sans text-[13.5px] leading-[20px] text-mute"
               set:html={row.body}
             />
             {row.demo === "search" && (
@@ -181,5 +185,6 @@ const rows = [
         </div>
       ))
     }
+  </div>
   </div>
 </section>

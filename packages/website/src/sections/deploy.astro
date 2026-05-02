@@ -29,41 +29,46 @@ const providers = [
 ];
 ---
 
-<section class="border-t border-line-light px-24 pb-30 pt-24">
-  <div class="flex max-w-[880px] flex-col gap-4">
+<section class="border-t border-line-light bg-paper">
+  <div class="mx-auto max-w-[1200px] px-10 pb-24 pt-20">
+  <div class="flex max-w-[760px] flex-col gap-3">
+    <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+      Deploy
+    </div>
     <h2
-      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+      class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
     >
       <span class="text-ink">Static output.</span>
       <span class="text-tang-700">Ship anywhere.</span>
     </h2>
-    <p class="max-w-[640px] font-sans text-lg leading-7 text-mute">
-      <code class="font-mono text-base text-ink">tangly build</code> emits a
+    <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
+      <code class="font-mono text-[14px] text-ink">tangly build</code> emits a
       folder. Drop it on any host that serves files. No runtime, no Node
       process.
     </p>
   </div>
 
-  <div class="mt-14 flex flex-wrap items-center">
+  <div class="mt-10 flex flex-wrap items-center rounded-xl border border-line-light overflow-hidden">
     {
       providers.map((p, i) => (
         <a
           href={p.href}
           class:list={[
-            "flex flex-1 flex-col items-start gap-4 border border-line-light px-8 py-7",
-            i < providers.length - 1 ? "border-r-0" : "",
+            "flex flex-1 flex-col items-start gap-3 px-6 py-5 hover:bg-line-light/30",
+            i < providers.length - 1 ? "border-r border-line-light" : "",
           ]}
-          style="min-width: 220px;"
+          style="min-width: 200px;"
         >
-          <Fragment set:html={p.svg} />
-          <div class="flex flex-col gap-1">
-            <div class="font-sans text-base font-semibold text-ink">
+          <div class="flex h-6 items-center"><Fragment set:html={p.svg} /></div>
+          <div class="flex flex-col gap-0.5">
+            <div class="font-sans text-[14px] font-semibold text-ink">
               {p.name}
             </div>
-            <div class="font-mono text-xs text-mute">{p.cmd}</div>
+            <div class="font-mono text-[11px] text-mute">{p.cmd}</div>
           </div>
         </a>
       ))
     }
+  </div>
   </div>
 </section>

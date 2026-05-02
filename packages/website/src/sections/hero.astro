@@ -2,13 +2,11 @@
 import { Copy, ArrowRight } from "lucide-astro";
 ---
 
-<section
-  class="relative flex flex-col gap-14 overflow-hidden bg-paper px-24 pb-12 pt-24"
->
+<section class="relative overflow-hidden bg-paper">
   <!-- decorative tang glow -->
   <div
     aria-hidden="true"
-    class="pointer-events-none absolute -top-[260px] -right-[300px] h-[720px] w-[720px] rounded-full"
+    class="pointer-events-none absolute -right-[180px] -top-[160px] h-[460px] w-[460px] rounded-full"
     style="background: radial-gradient(circle at center, rgba(234,88,12,0.10) 0%, rgba(234,88,12,0.03) 45%, rgba(234,88,12,0) 70%);"
   >
   </div>
@@ -16,8 +14,8 @@ import { Copy, ArrowRight } from "lucide-astro";
   <!-- decorative grid -->
   <div
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 opacity-60"
-    style="background-image: linear-gradient(to right, rgba(31,31,35,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(31,31,35,0.025) 1px, transparent 1px); background-size: 48px 48px;"
+    class="pointer-events-none absolute inset-0 opacity-50"
+    style="background-image: linear-gradient(to right, rgba(31,31,35,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(31,31,35,0.025) 1px, transparent 1px); background-size: 40px 40px;"
   >
   </div>
 
@@ -26,47 +24,50 @@ import { Copy, ArrowRight } from "lucide-astro";
     aria-hidden="true"
     src="/brand/tangly-icon-1024.png"
     alt=""
-    class="pointer-events-none absolute top-[100px] -right-[120px] h-[520px] w-[520px] rotate-[-8deg] opacity-10"
+    class="pointer-events-none absolute -right-[80px] top-16 h-[360px] w-[360px] rotate-[-8deg] opacity-[0.09]"
   />
 
-  <div class="relative z-10 flex max-w-[1100px] flex-col gap-9">
-    <h1 class="flex flex-col font-sans font-extrabold tracking-[-0.04em]">
-      <span
-        class="text-[132px] leading-[0.92] text-ink"
-      >Open-source<br />documentation,</span>
-      <span
-        class="text-[132px] leading-[0.92]"
-        style="background: linear-gradient(135deg, #F97316 0%, #C2410C 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;"
-      >self-hosted.</span>
-    </h1>
-    <p class="max-w-[660px] font-sans text-[22px] leading-8 text-mute">
-      Tangly turns a folder of Markdown into a fast, themed, deployable docs
-      site. No proprietary backend, no monthly bill — just a static binary and
-      your repo.
-    </p>
-  </div>
-
-  <div class="relative z-10 flex items-center gap-3">
-    <div
-      class="flex h-[52px] items-center gap-3 rounded-[10px] bg-ink px-[22px] font-mono text-sm text-paper"
-      style="box-shadow: 0 0 0 1px rgba(234,88,12,0.25), 0 8px 24px -8px rgba(234,88,12,0.35);"
-    >
-      <span class="text-tang-600">$</span>
-      <span>curl tangly.dev/install.sh | sh</span>
-      <button
-        type="button"
-        aria-label="Copy command"
-        class="ml-4 flex h-6 w-6 items-center justify-center rounded-md bg-line-dark text-mute"
-      >
-        <Copy size={11} />
-      </button>
+  <div
+    class="relative z-10 mx-auto flex max-w-[1200px] flex-col gap-10 px-10 pb-20 pt-24"
+  >
+    <div class="flex max-w-[860px] flex-col gap-6">
+      <h1 class="flex flex-col font-sans font-extrabold tracking-[-0.035em]">
+        <span class="text-[88px] leading-[0.95] text-ink"
+          >Open-source<br />documentation,</span>
+        <span
+          class="text-[88px] leading-[0.95]"
+          style="background: linear-gradient(135deg, #F97316 0%, #C2410C 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;"
+        >self-hosted.</span>
+      </h1>
+      <p class="max-w-[560px] font-sans text-[17px] leading-[26px] text-mute">
+        Tangly turns a folder of Markdown into a fast, themed, deployable docs
+        site. No proprietary backend, no monthly bill — just a static binary
+        and your repo.
+      </p>
     </div>
-    <a
-      href="https://github.com/tanglydocs/tangly"
-      class="flex h-[52px] items-center gap-2 rounded-[10px] border border-line-light px-[22px] font-sans text-sm font-medium text-ink"
-    >
-      View README.md
-      <ArrowRight size={14} />
-    </a>
+
+    <div class="flex items-center gap-3">
+      <div
+        class="flex h-11 items-center gap-2.5 rounded-lg bg-ink px-4 font-mono text-[13px] text-paper"
+        style="box-shadow: 0 0 0 1px rgba(234,88,12,0.22), 0 6px 20px -8px rgba(234,88,12,0.30);"
+      >
+        <span class="text-tang-600">$</span>
+        <span>curl tangly.dev/install.sh | sh</span>
+        <button
+          type="button"
+          aria-label="Copy command"
+          class="ml-3 flex h-5 w-5 items-center justify-center rounded text-mute hover:text-paper"
+        >
+          <Copy size={11} />
+        </button>
+      </div>
+      <a
+        href="https://github.com/tanglydocs/tangly"
+        class="flex h-11 items-center gap-1.5 rounded-lg border border-line-light bg-paper px-4 font-sans text-[13px] font-medium text-ink hover:border-ink/30"
+      >
+        View README.md
+        <ArrowRight size={13} />
+      </a>
+    </div>
   </div>
 </section>

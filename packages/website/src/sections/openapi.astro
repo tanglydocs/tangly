@@ -2,24 +2,28 @@
 import { File } from "lucide-astro";
 ---
 
-<section class="relative px-24 pb-30 pt-24">
+<section class="relative border-t border-line-light bg-paper">
   <!-- decorative tang glow -->
   <div
     aria-hidden="true"
-    class="pointer-events-none absolute left-1/2 top-[70%] -translate-x-1/2 -translate-y-1/2"
-    style="width: 80%; height: 60%; background: radial-gradient(ellipse at center, rgba(234,88,12,0.12) 0%, rgba(234,88,12,0.04) 40%, rgba(234,88,12,0) 70%); z-index: 0;"
+    class="pointer-events-none absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2"
+    style="width: 70%; height: 55%; background: radial-gradient(ellipse at center, rgba(234,88,12,0.10) 0%, rgba(234,88,12,0.03) 40%, rgba(234,88,12,0) 70%); z-index: 0;"
   >
   </div>
 
-  <div class="relative z-10 flex max-w-[880px] flex-col gap-4">
+  <div class="relative z-10 mx-auto max-w-[1200px] px-10 pb-24 pt-20">
+  <div class="flex max-w-[760px] flex-col gap-3">
+    <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+      OpenAPI
+    </div>
     <h2
-      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+      class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
     >
       <span class="text-ink">Point at an OpenAPI spec.</span>
       <span class="text-tang-700">Get a real API reference.</span>
     </h2>
-    <p class="max-w-[640px] font-sans text-lg leading-7 text-mute">
-      Drop a 3.0 or 3.1 spec into <code class="font-mono text-base text-ink"
+    <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
+      Drop a 3.0 or 3.1 spec into <code class="font-mono text-[14px] text-ink"
         >docs.json</code
       >. Tangly generates browseable endpoint pages with schemas, examples,
       and a try-it panel — no third-party explorer required.
@@ -27,8 +31,8 @@ import { File } from "lucide-astro";
   </div>
 
   <div
-    class="relative z-10 mt-14 flex flex-col overflow-hidden rounded-[14px] border border-line-light bg-paper"
-    style="box-shadow: 0 30px 60px -20px rgba(234,88,12,0.18), 0 1px 0 rgba(11,11,15,0.04);"
+    class="mt-10 flex flex-col overflow-hidden rounded-xl border border-line-light bg-paper"
+    style="box-shadow: 0 24px 48px -20px rgba(234,88,12,0.16), 0 1px 0 rgba(11,11,15,0.04);"
   >
     <!-- Tab bar -->
     <div
@@ -36,17 +40,17 @@ import { File } from "lucide-astro";
       style="background: #F2EFE9;"
     >
       <div
-        class="flex items-center gap-2 border-r border-line-light bg-paper px-[18px] py-3.5 font-mono text-[13px] text-ink"
+        class="flex items-center gap-2 border-r border-line-light bg-paper px-4 py-3 font-mono text-[12px] text-ink"
       >
-        <File size={14} color="#6B6B70" />
+        <File size={12} color="#6B6B70" />
         openapi.yaml
       </div>
       <div class="flex-1"></div>
       <div
-        class="flex items-center gap-2 px-[18px] py-3.5 font-mono text-xs text-mute"
+        class="flex items-center gap-2 px-4 py-3 font-mono text-[11px] text-mute"
       >
         <span
-          class="rounded-full px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.04em] text-tang-700"
+          class="rounded-full px-1.5 py-px font-mono text-[9.5px] uppercase tracking-[0.04em] text-tang-700"
           style="background: rgba(234,88,12,0.06);"
           >v3.1</span
         >
@@ -57,7 +61,7 @@ import { File } from "lucide-astro";
     <div class="flex">
       <!-- YAML source -->
       <div
-        class="flex flex-1 flex-col border-r border-line-light bg-ink p-7 font-mono text-[13px] leading-[22px] text-line-light"
+        class="flex flex-1 flex-col border-r border-line-light bg-ink p-6 font-mono text-[12.5px] leading-[20px] text-line-light"
       >
         <div><span class="text-tang-700">openapi:</span> <span class="text-tang-300">3.1.0</span></div>
         <div><span class="text-tang-700">info:</span></div>
@@ -81,74 +85,73 @@ import { File } from "lucide-astro";
 
       <!-- Rendered API -->
       <div class="flex flex-1 flex-col bg-paper">
-        <div class="flex flex-col gap-3.5 px-9 pb-6 pt-8">
-          <div class="flex items-center gap-2.5">
+        <div class="flex flex-col gap-3 px-7 pb-5 pt-7">
+          <div class="flex items-center gap-2">
             <div
-              class="rounded-md px-2.5 py-1 font-mono text-[11px] font-bold tracking-[0.04em] text-tang-700"
+              class="rounded-md px-2 py-0.5 font-mono text-[10px] font-bold tracking-[0.04em] text-tang-700"
               style="background: rgba(234,88,12,0.08);"
             >
               GET
             </div>
-            <div class="font-mono text-sm text-ink">/v1/domains/search-stream</div>
+            <div class="font-mono text-[13px] text-ink">/v1/domains/search-stream</div>
           </div>
           <h3
-            class="font-sans text-[22px] font-semibold leading-7 tracking-[-0.015em] text-ink"
+            class="font-sans text-[18px] font-semibold leading-6 tracking-[-0.015em] text-ink"
           >
             Stream domain results
           </h3>
-          <p class="font-sans text-sm leading-[22px] text-mute">
+          <p class="font-sans text-[13px] leading-5 text-mute">
             Returns a server-sent event stream of domain availability results
-            as the registry resolves them. Connection holds open until results
-            complete or the client disconnects.
+            as the registry resolves them.
           </p>
         </div>
         <div
-          class="flex flex-col gap-3.5 border-t border-line-light px-9 pb-6 pt-[18px]"
+          class="flex flex-col gap-3 border-t border-line-light px-7 pb-5 pt-4"
         >
-          <div class="font-mono text-[11px] uppercase tracking-[0.04em] text-mute">
+          <div class="font-mono text-[10px] uppercase tracking-[0.04em] text-mute">
             Query parameters
           </div>
-          <div class="flex flex-col gap-1 border-b border-line-light pb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="font-mono text-[13px] font-semibold text-ink">q</span>
-              <span class="font-mono text-[11px] text-mute">string</span>
+          <div class="flex flex-col gap-0.5 border-b border-line-light pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[12px] font-semibold text-ink">q</span>
+              <span class="font-mono text-[10px] text-mute">string</span>
               <span
-                class="rounded-full px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.04em] text-tang-700"
+                class="rounded-full px-1.5 py-px font-mono text-[9.5px] uppercase tracking-[0.04em] text-tang-700"
                 style="background: rgba(234,88,12,0.08);"
               >required</span>
             </div>
-            <p class="font-sans text-[13px] leading-5 text-mute">
+            <p class="font-sans text-[12px] leading-[18px] text-mute">
               Search query. May include wildcards.
             </p>
           </div>
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-2.5">
-              <span class="font-mono text-[13px] font-semibold text-ink">limit</span>
-              <span class="font-mono text-[11px] text-mute">integer</span>
-              <span class="font-mono text-[11px] text-mute">default 50</span>
+          <div class="flex flex-col gap-0.5">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[12px] font-semibold text-ink">limit</span>
+              <span class="font-mono text-[10px] text-mute">integer</span>
+              <span class="font-mono text-[10px] text-mute">default 50</span>
             </div>
-            <p class="font-sans text-[13px] leading-5 text-mute">
+            <p class="font-sans text-[12px] leading-[18px] text-mute">
               Maximum results. Capped at 250.
             </p>
           </div>
         </div>
         <div
-          class="flex flex-col gap-3.5 border-t border-line-light px-9 pb-7 pt-[18px]"
+          class="flex flex-col gap-3 border-t border-line-light px-7 pb-6 pt-4"
           style="background: #F2EFE9;"
         >
           <div class="flex items-center justify-between">
-            <div class="font-mono text-[11px] uppercase tracking-[0.04em] text-mute">
+            <div class="font-mono text-[10px] uppercase tracking-[0.04em] text-mute">
               Try it &middot; <span class="text-ink">200 OK</span> &middot; 412 ms
             </div>
             <button
               type="button"
-              class="flex h-[30px] items-center rounded-md bg-ink px-3.5 font-mono text-xs text-paper"
+              class="flex h-7 items-center rounded-md bg-ink px-3 font-mono text-[11px] text-paper"
             >
               Send →
             </button>
           </div>
           <div
-            class="flex flex-col gap-1 rounded-lg bg-ink px-4 py-3.5 font-mono text-xs leading-5"
+            class="flex flex-col gap-0.5 rounded-lg bg-ink px-3.5 py-3 font-mono text-[11px] leading-[18px]"
           >
             <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"name":"opennem.dev","status":"available"}`}</span></div>
             <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"name":"opennem.io","status":"taken"}`}</span></div>
@@ -157,5 +160,6 @@ import { File } from "lucide-astro";
         </div>
       </div>
     </div>
+  </div>
   </div>
 </section>

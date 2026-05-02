@@ -44,21 +44,25 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
 ];
 ---
 
-<section class="px-24 pb-30 pt-24">
-  <div class="flex max-w-[880px] flex-col gap-4">
+<section id="components" class="border-t border-line-light bg-paper">
+  <div class="mx-auto max-w-[1200px] px-10 pb-24 pt-20">
+  <div class="flex max-w-[760px] flex-col gap-3">
+    <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+      Components
+    </div>
     <h2
-      class="flex flex-col font-sans text-[64px] font-extrabold leading-none tracking-[-0.035em]"
+      class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
     >
       <span class="text-ink">34 components,</span>
       <span class="text-tang-700">no imports.</span>
     </h2>
-    <p class="max-w-[620px] font-sans text-lg leading-7 text-mute">
+    <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
       Drop a tag in MDX. Every theme ships every component. Render here uses
-      the real <code class="font-mono text-base text-ink">@tanglydocs/theme-ui</code> package — not screenshots.
+      the real <code class="font-mono text-[14px] text-ink">@tanglydocs/theme-ui</code> package — not screenshots.
     </p>
   </div>
 
-  <div class="ws-components mt-14 overflow-hidden rounded-xl border border-line-light bg-paper">
+  <div class="ws-components mt-10 overflow-hidden rounded-xl border border-line-light bg-paper">
     {
       groups.map((g, gi) => (
         <div
@@ -251,6 +255,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
         </div>
       ))
     }
+  </div>
   </div>
 </section>
 

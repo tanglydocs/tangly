@@ -2,24 +2,39 @@
 import { Github } from "lucide-astro";
 ---
 
-<nav class="flex items-center justify-between px-24 py-8">
-  <div class="flex items-center gap-2">
-    <img
-      src="/brand/tangly-icon-256.png"
-      alt=""
-      width="22"
-      height="22"
-      class="h-[22px] w-[22px]"
-    />
-    <span class="font-sans text-[18px] font-bold tracking-[-0.015em] text-ink"
-      >Tangly</span
-    >
-  </div>
-  <a
-    href="https://github.com/tanglydocs/tangly"
-    aria-label="GitHub"
-    class="flex h-8 w-8 items-center justify-center text-ink"
+<nav
+  class="sticky top-0 z-50 border-b border-line-light/70 bg-paper/85 backdrop-blur"
+>
+  <div
+    class="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-10"
   >
-    <Github size={20} />
-  </a>
+    <a href="/" class="flex items-center gap-2">
+      <img
+        src="/brand/tangly-icon-256.png"
+        alt=""
+        width="20"
+        height="20"
+        class="h-5 w-5"
+      />
+      <span class="font-sans text-[14px] font-bold tracking-[-0.015em] text-ink"
+        >Tangly</span
+      >
+      <span
+        class="ml-1 rounded-full border border-line-light/80 px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.04em] text-mute"
+        >v0.1</span
+      >
+    </a>
+    <div class="flex items-center gap-7 font-sans text-[13px] text-mute">
+      <a href="https://docs.tangly.dev" class="hover:text-ink">Docs</a>
+      <a href="#themes" class="hover:text-ink">Themes</a>
+      <a href="#components" class="hover:text-ink">Components</a>
+      <a
+        href="https://github.com/tanglydocs/tangly"
+        aria-label="GitHub"
+        class="flex h-7 w-7 items-center justify-center hover:text-ink"
+      >
+        <Github size={15} />
+      </a>
+    </div>
+  </div>
 </nav>
