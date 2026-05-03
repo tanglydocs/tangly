@@ -60,28 +60,27 @@ import { File } from "lucide-astro";
 
     <div class="flex">
       <!-- YAML source -->
-      <div
-        class="flex flex-1 flex-col border-r border-line-light bg-ink p-6 font-mono text-[12.5px] leading-[20px] text-line-light"
-      >
-        <div><span class="text-tang-700">openapi:</span> <span class="text-tang-300">3.1.0</span></div>
-        <div><span class="text-tang-700">info:</span></div>
-        <div>  <span class="text-tang-700">title:</span> <span class="text-tang-300">Search Stream</span></div>
-        <div>  <span class="text-tang-700">version:</span> <span class="text-tang-300">2026.05.01</span></div>
-        <div><span class="text-tang-700">paths:</span></div>
-        <div>  <span class="text-tang-700">/v1/domains/search-stream:</span></div>
-        <div>    <span class="text-tang-700">get:</span></div>
-        <div>      <span class="text-tang-700">summary:</span> <span class="text-tang-300">Stream domain results</span></div>
-        <div>      <span class="text-tang-700">parameters:</span></div>
-        <div>        <span class="text-mute">- </span><span class="text-tang-700">in:</span> <span class="text-tang-300">query</span></div>
-        <div>          <span class="text-tang-700">name:</span> <span class="text-tang-300">q</span></div>
-        <div>          <span class="text-tang-700">required:</span> <span class="text-tang-300">true</span></div>
-        <div>          <span class="text-tang-700">schema:</span></div>
-        <div>            <span class="text-tang-700">type:</span> <span class="text-tang-300">string</span></div>
-        <div>      <span class="text-tang-700">responses:</span></div>
-        <div>        <span class="text-tang-300">'200':</span></div>
-        <div>          <span class="text-tang-700">content:</span></div>
-        <div>            <span class="text-tang-300">text/event-stream:</span> ...</div>
-      </div>
+      <pre
+        class="m-0 flex-1 overflow-x-auto whitespace-pre border-r border-line-light bg-ink p-6 font-mono text-[12.5px] leading-[20px] text-line-light"
+      ><span class="text-tang-700">openapi:</span> <span class="text-tang-300">3.1.0</span>
+<span class="text-tang-700">info:</span>
+  <span class="text-tang-700">title:</span> <span class="text-tang-300">Search Stream</span>
+  <span class="text-tang-700">version:</span> <span class="text-tang-300">2026.05.01</span>
+<span class="text-tang-700">paths:</span>
+  <span class="text-tang-700">/v1/search-stream:</span>
+    <span class="text-tang-700">get:</span>
+      <span class="text-tang-700">summary:</span> <span class="text-tang-300">Stream search results</span>
+      <span class="text-tang-700">parameters:</span>
+        <span class="text-mute">-</span> <span class="text-tang-700">in:</span> <span class="text-tang-300">query</span>
+          <span class="text-tang-700">name:</span> <span class="text-tang-300">q</span>
+          <span class="text-tang-700">required:</span> <span class="text-tang-300">true</span>
+          <span class="text-tang-700">schema:</span>
+            <span class="text-tang-700">type:</span> <span class="text-tang-300">string</span>
+      <span class="text-tang-700">responses:</span>
+        <span class="text-tang-300">'200':</span>
+          <span class="text-tang-700">content:</span>
+            <span class="text-tang-300">text/event-stream:</span> ...
+</pre>
 
       <!-- Rendered API -->
       <div class="flex flex-1 flex-col bg-paper">
@@ -93,16 +92,16 @@ import { File } from "lucide-astro";
             >
               GET
             </div>
-            <div class="font-mono text-[13px] text-ink">/v1/domains/search-stream</div>
+            <div class="font-mono text-[13px] text-ink">/v1/search-stream</div>
           </div>
           <h3
             class="font-sans text-[18px] font-semibold leading-6 tracking-[-0.015em] text-ink"
           >
-            Stream domain results
+            Stream search results
           </h3>
           <p class="font-sans text-[13px] leading-5 text-mute">
-            Returns a server-sent event stream of domain availability results
-            as the registry resolves them.
+            Returns a server-sent event stream of search results as they're
+            resolved.
           </p>
         </div>
         <div
@@ -153,8 +152,8 @@ import { File } from "lucide-astro";
           <div
             class="flex flex-col gap-0.5 rounded-lg bg-ink px-3.5 py-3 font-mono text-[11px] leading-[18px]"
           >
-            <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"name":"opennem.dev","status":"available"}`}</span></div>
-            <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"name":"opennem.io","status":"taken"}`}</span></div>
+            <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"id":"d_47","title":"Stream basics","score":0.92}`}</span></div>
+            <div><span class="text-mute">data:</span> <span class="text-tang-300">{`{"id":"d_91","title":"Try-it panels","score":0.81}`}</span></div>
             <div><span class="text-mute">data:</span> <span class="text-paper">[stream] 47 results &middot; complete</span></div>
           </div>
         </div>
