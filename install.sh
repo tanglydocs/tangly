@@ -114,7 +114,7 @@ case "\$RUNNER" in
     exec bunx --bun "tangly@\$TANGLY_VERSION" "\$@"
     ;;
   npm)
-    exec npx --yes "tangly@\$TANGLY_VERSION" "\$@"
+    exec npm exec --yes -- "tangly@\$TANGLY_VERSION" "\$@"
     ;;
 esac
 EOF
