@@ -28,6 +28,21 @@ Tangly ships five themes out of the box. They share the same component shell (`@
   </Card>
 </CardGroup>
 
+## Live demos
+
+Every theme renders a real Tangly project at [examples.tangly.dev](https://examples.tangly.dev). Each is a different `docs.json` + MDX corpus; the only thing that changes between them is the `theme` field.
+
+<CardGroup cols={3}>
+  <Card title="Tang demo" icon="flame" href="https://examples.tangly.dev/tang/">Cipher — encryption SDK docs.</Card>
+  <Card title="Pith demo" icon="book-open" href="https://examples.tangly.dev/pith/">On Craft — handbook of small ideas.</Card>
+  <Card title="Pip demo" icon="sprout" href="https://examples.tangly.dev/pip/">Sprig — tiny CLI for shell history.</Card>
+  <Card title="Readable demo" icon="book-marked" href="https://examples.tangly.dev/readable/">The Long Wait — short novel.</Card>
+  <Card title="Geist demo" icon="square-asterisk" href="https://examples.tangly.dev/geist/">Halo — edge platform docs.</Card>
+  <Card title="Starter demo" icon="seedling" href="https://examples.tangly.dev/starter/">The default `tangly init` scaffold.</Card>
+</CardGroup>
+
+The source for each demo lives in [`examples/demo-<theme>/`](https://github.com/tanglydocs/tangly/tree/main/examples) in the Tangly repo — clone, edit, `tangly dev` to play.
+
 ## Switch themes
 
 One field in `docs.json`:
