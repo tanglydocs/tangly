@@ -27,17 +27,12 @@ import { File } from "lucide-astro";
           <File size={12} class="text-mute" />
           introduction.mdx
         </div>
-        <div
-          class="border-r border-line-light px-4 py-3 font-mono text-[12px] text-mute"
-        >
-          docs.json
-        </div>
         <div class="flex-1"></div>
         <div
-          class="flex items-center gap-2 px-4 py-3 font-mono text-[12px] text-mute"
+          class="flex items-center gap-2 px-4 py-3 font-mono text-[11px] text-mute"
         >
           <span class="inline-block h-1.5 w-1.5 rounded-full bg-tang-600"></span>
-          localhost:4322/introduction
+          rendered with <code class="font-mono text-ink">tangly dev</code>
         </div>
       </div>
 
@@ -51,8 +46,6 @@ import { File } from "lucide-astro";
           <div><span class="text-tang-700">description:</span> <span class="text-tang-300">"What Tangly is"</span></div>
           <div><span class="text-mute">---</span></div>
           <div class="h-3"></div>
-          <div><span class="text-mute"># </span>Self-host your docs.</div>
-          <div class="h-1"></div>
           <div>Tangly turns Markdown into a fast,</div>
           <div>themed, deployable docs site.</div>
           <div class="h-3"></div>
@@ -80,16 +73,21 @@ import { File } from "lucide-astro";
         <!-- Rendered -->
         <div class="flex flex-1 flex-col bg-paper px-10 py-9">
           <div
-            class="mb-1.5 font-mono text-[10px] uppercase tracking-[0.04em] text-mute"
+            class="mb-2 flex items-center gap-1.5 font-sans text-[12px] text-mute"
           >
-            Get started
+            <span>Documentation</span>
+            <span class="text-line-light">›</span>
+            <span>Introduction</span>
           </div>
-          <h2
-            class="font-sans text-[28px] font-semibold leading-[34px] tracking-[-0.02em] text-ink"
+          <h1
+            class="font-sans text-[32px] font-semibold leading-[38px] tracking-[-0.02em] text-ink"
           >
-            Self-host your docs.
-          </h2>
-          <p class="mt-4 font-sans text-[14px] leading-[22px] text-line-dark">
+            Introduction
+          </h1>
+          <p class="mt-1.5 font-sans text-[15px] leading-[22px] text-mute">
+            What Tangly is
+          </p>
+          <p class="mt-5 font-sans text-[14px] leading-[22px] text-line-dark">
             Tangly turns Markdown into a fast, themed, deployable docs site.
           </p>
 
