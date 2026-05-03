@@ -33,7 +33,7 @@ export const filenames: Record<string, string> = {
   "docs.json": "Book",
   "mint.json": "Book",
   "CHANGELOG.md": "History",
-  "CODEOWNERS": "Users",
+  CODEOWNERS: "Users",
 };
 
 /** File extension → Lucide icon name. Extensions checked left-to-right (dot included). */

@@ -10,11 +10,7 @@ import { toString } from "hast-util-to-string";
 import { type Child, h } from "hastscript";
 import { rehype } from "rehype";
 import { CONTINUE, SKIP, visit } from "unist-util-visit";
-import {
-  defaultFileIconSvg,
-  fileIconSvg,
-  folderIconSvg,
-} from "./file-tree-icons";
+import { defaultFileIconSvg, fileIconSvg, folderIconSvg } from "./file-tree-icons";
 
 declare module "vfile" {
   interface DataMap {
@@ -28,7 +24,7 @@ export interface ProcessOptions {
 
 export function processFileTree(
   html: string,
-  { directoryLabel = "Directory" }: ProcessOptions = {}
+  { directoryLabel = "Directory" }: ProcessOptions = {},
 ): string {
   const file = fileTreeProcessor.processSync({
     data: { directoryLabel },
@@ -49,9 +45,7 @@ const fileTreeProcessor = rehype()
         // Strip whitespace-only text nodes left over from MDX list rendering.
         node.children = node.children.filter(
           (child: ElementContent) =>
-            child.type === "comment" ||
-            child.type !== "text" ||
-            !/^\n+$/.test(child.value)
+            child.type === "comment" || child.type !== "text" || !/^\n+$/.test(child.value),
         );
 
         if (node.tagName !== "li") return CONTINUE;
@@ -72,8 +66,7 @@ const fileTreeProcessor = rehype()
 
         // Comments may continue past the first text node — capture every node up to the first nested <ul>.
         const subTreeIndex = otherChildren.findIndex(
-          (child: ElementContent) =>
-            child.type === "element" && child.tagName === "ul"
+          (child: ElementContent) => child.type === "element" && child.tagName === "ul",
         );
         const commentNodes =
           subTreeIndex > -1 ? otherChildren.slice(0, subTreeIndex) : [...otherChildren];
@@ -84,12 +77,9 @@ const fileTreeProcessor = rehype()
 
         const isDirectory =
           /\/\s*$/.test(firstChildText) ||
-          otherChildren.some(
-            (c: ElementContent) => c.type === "element" && c.tagName === "ul"
-          );
+          otherChildren.some((c: ElementContent) => c.type === "element" && c.tagName === "ul");
         const isPlaceholder = /^\s*(\.{3}|…)\s*$/.test(firstChildText);
-        const isHighlighted =
-          firstChild?.type === "element" && firstChild.tagName === "strong";
+        const isHighlighted = firstChild?.type === "element" && firstChild.tagName === "strong";
 
         // Build the icon span (placeholders get no icon).
         const iconSvg = isDirectory ? folderIconSvg() : fileIconSvg(firstChildText);
@@ -102,8 +92,7 @@ const fileTreeProcessor = rehype()
         const icon = h("span", { class: "tree-icon-wrap" }, ...iconSpanChildren);
 
         node.properties.class = isDirectory ? "directory" : "file";
-        if (isPlaceholder)
-          node.properties.class = `${node.properties.class} empty`;
+        if (isPlaceholder) node.properties.class = `${node.properties.class} empty`;
 
         const innerChildren: Child[] = [];
         if (!isPlaceholder) innerChildren.push(icon);
@@ -114,17 +103,10 @@ const fileTreeProcessor = rehype()
         ];
 
         if (comment.length > 0) {
-          treeEntryChildren.push(
-            makeText(" "),
-            h("span", { class: "comment" }, ...comment)
-          );
+          treeEntryChildren.push(makeText(" "), h("span", { class: "comment" }, ...comment));
         }
 
-        const treeEntry = h(
-          "span",
-          { class: "tree-entry" },
-          ...treeEntryChildren
-        );
+        const treeEntry = h("span", { class: "tree-entry" }, ...treeEntryChildren);
 
         if (isDirectory) {
           const hasContents = otherChildren.length > 0;
@@ -153,20 +135,18 @@ function validateFileTree(tree: Element): void {
 
   if (rootElements.length === 0) {
     throw new Error(
-      "<FileTree> expects its content to be a single unordered list, but found no child elements."
+      "<FileTree> expects its content to be a single unordered list, but found no child elements.",
     );
   }
   if (rootElements.length !== 1) {
     throw new Error(
       `<FileTree> expects a single unordered list, but found multiple children: ${rootElements
         .map((el: Element) => `<${el.tagName}>`)
-        .join(", ")}.`
+        .join(", ")}.`,
     );
   }
   if (!root || root.tagName !== "ul") {
-    throw new Error(
-      `<FileTree> expects a <ul>, but got <${root?.tagName ?? "unknown"}>.`
-    );
+    throw new Error(`<FileTree> expects a <ul>, but got <${root?.tagName ?? "unknown"}>.`);
   }
   let hasLi = false;
   visit(root, "element", (n: Element) => {

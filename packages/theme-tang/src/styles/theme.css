@@ -14,15 +14,15 @@
 
 :root {
   /* Tangly palette — see brand/palette.md for the full token spec. */
-  --tangly-color-primary: #ea580c;        /* tang-600 — mandarin */
-  --tangly-color-primary-light: #f97316;  /* tang-500 */
-  --tangly-color-primary-dark: #c2410c;   /* tang-700 — burnt */
+  --tangly-color-primary: #ea580c; /* tang-600 — mandarin */
+  --tangly-color-primary-light: #f97316; /* tang-500 */
+  --tangly-color-primary-dark: #c2410c; /* tang-700 — burnt */
 
-  --tangly-color-bg: #fafaf7;             /* paper — warm off-white */
-  --tangly-color-bg-elevated: #f4f2ec;    /* paper, slightly recessed */
-  --tangly-color-fg: #0b0b0f;             /* ink */
-  --tangly-color-muted: #6b6b70;          /* mute */
-  --tangly-color-border: #e6e4de;         /* line-light */
+  --tangly-color-bg: #fafaf7; /* paper — warm off-white */
+  --tangly-color-bg-elevated: #f4f2ec; /* paper, slightly recessed */
+  --tangly-color-fg: #0b0b0f; /* ink */
+  --tangly-color-muted: #6b6b70; /* mute */
+  --tangly-color-border: #e6e4de; /* line-light */
 
   --tangly-radius: 0.5rem;
   --tangly-radius-sm: 0.375rem;
@@ -49,14 +49,14 @@
 }
 
 .dark {
-  --tangly-color-primary-light: #fb923c;  /* lighter tang for dark surfaces */
+  --tangly-color-primary-light: #fb923c; /* lighter tang for dark surfaces */
   --tangly-color-primary-dark: #c2410c;
 
-  --tangly-color-bg: #0b0b0f;             /* ink */
-  --tangly-color-bg-elevated: #13131a;    /* ink, slightly elevated */
-  --tangly-color-fg: #fafaf7;             /* paper */
+  --tangly-color-bg: #0b0b0f; /* ink */
+  --tangly-color-bg-elevated: #13131a; /* ink, slightly elevated */
+  --tangly-color-fg: #fafaf7; /* paper */
   --tangly-color-muted: #8a8a90;
-  --tangly-color-border: #1f1f23;         /* line-dark */
+  --tangly-color-border: #1f1f23; /* line-dark */
 
   color-scheme: dark;
 }
