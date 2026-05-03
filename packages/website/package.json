@@ -8,7 +8,7 @@
     "dev": "astro dev --host --port ${PORT:-5173}",
     "build": "astro build",
     "preview": "astro preview --host --port ${PORT:-5173}",
-    "prebuild": "bun run scripts/sync-public-assets.ts",
+    "prebuild": "bun run --filter @tanglydocs/schema build && bun run scripts/sync-public-assets.ts",
     "astro": "astro",
     "typecheck": "astro check"
   },
