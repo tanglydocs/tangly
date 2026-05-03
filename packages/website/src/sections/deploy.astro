@@ -1,51 +1,60 @@
 ---
-import { ArrowUpRight } from "lucide-astro";
-
 const providers = [
   {
     name: "Vercel",
     cmd: "vercel deploy ./dist",
     href: "https://vercel.com",
-    svg: `<svg width="28" height="24" viewBox="0 0 76 65" fill="#0B0B0F"><path d="M37.5274 0L75.0548 65H0L37.5274 0Z"/></svg>`,
+    logo: "/brand/logos/vercel.svg",
+    width: 26,
   },
   {
     name: "Cloudflare Pages",
     cmd: "wrangler pages deploy ./dist",
     href: "https://pages.cloudflare.com",
-    svg: `<svg width="32" height="24" viewBox="0 0 256 96" fill="#F38020"><path d="M202.957 41.226L184.722 30.802 181.62 29.514 102.262 30 101.66 39.93 148.296 42.756 73.55 44.13 70.444 53.706 145.236 54.94 113.184 56.32 110.078 65.45 192.93 65.45 198.63 49.51 202.957 41.226Z"/><path d="M213.336 19.85C211.07 19.85 208.872 20.066 206.748 20.474C202.79 7.84 191.064-1.45 177.16-1.45C160.62-1.45 147.014 11.184 145.388 27.53L142.92 26.85L96.4 27.144C75.024 27.444 56.748 41.45 50.498 60.65L49.498 64.65L74.024 65.6L213.336 65.45L213.336 19.85Z" opacity=".5"/></svg>`,
+    logo: "/brand/logos/cloudflare.svg",
+    width: 44,
   },
   {
     name: "Netlify",
     cmd: "netlify deploy --prod --dir dist",
     href: "https://netlify.com",
-    svg: `<svg width="28" height="28" viewBox="0 0 256 256" fill="#00AD9F"><path d="M52.69 152.57h0.69l37.65-15.66.21-1.31-13.57-13.49-1.4-.06-23.58 9.83v20.69ZM41 117.62l40.83-1.86 1.27.36 11.79 11.7 1.83 0 16.86-16.91L114 110l-13.46-13.7-21.84-2.04-37.7 23.36ZM163.66 116.95l30.34 11.91 13-30.42-30.34-11.92-13 30.43Z"/></svg>`,
+    logo: "/brand/logos/netlify.svg",
+    width: 26,
   },
   {
     name: "GitHub Pages",
-    cmd: "gh workflow run pages.yml",
+    cmd: "actions/deploy-pages@v4",
     href: "https://pages.github.com",
-    svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#0B0B0F"><path d="M12 0a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.31 1.23a11.5 11.5 0 0 1 6.03 0c2.3-1.55 3.31-1.23 3.31-1.23.66 1.65.25 2.87.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 0z"/></svg>`,
+    logo: "/brand/logos/github.svg",
+    width: 26,
   },
 ];
 ---
 
 <section class="border-t border-line-light bg-paper">
   <div class="mx-auto max-w-[1200px] px-10 pb-24 pt-20">
-  <div class="flex max-w-[760px] flex-col gap-3">
-    <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
-      Deploy
+  <div class="flex items-end justify-between gap-8">
+    <div class="flex max-w-[760px] flex-col gap-3">
+      <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+        Deploy
+      </div>
+      <h2
+        class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
+      >
+        <span class="text-ink">Static output.</span>
+        <span class="text-tang-700">Ship anywhere.</span>
+      </h2>
+      <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
+        <code class="font-mono text-[14px] text-ink">tangly build</code> emits a
+        folder. Drop it on any host that serves files. No runtime, no Node
+        process.
+      </p>
     </div>
-    <h2
-      class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
+    <a
+      href="https://docs.tangly.dev/guides/deploying"
+      class="flex items-center gap-1.5 font-sans text-[13px] font-medium text-ink"
+      >Read the deploy guide <span class="text-tang-600">→</span></a
     >
-      <span class="text-ink">Static output.</span>
-      <span class="text-tang-700">Ship anywhere.</span>
-    </h2>
-    <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
-      <code class="font-mono text-[14px] text-ink">tangly build</code> emits a
-      folder. Drop it on any host that serves files. No runtime, no Node
-      process.
-    </p>
   </div>
 
   <div class="mt-10 flex flex-wrap items-center rounded-xl border border-line-light overflow-hidden">
@@ -59,7 +68,9 @@ const providers = [
           ]}
           style="min-width: 200px;"
         >
-          <div class="flex h-6 items-center"><Fragment set:html={p.svg} /></div>
+          <div class="flex h-6 items-center">
+            <img src={p.logo} alt={p.name} height="24" style={`height: 24px; width: auto; max-width: ${p.width + 18}px;`} loading="lazy" decoding="async" />
+          </div>
           <div class="flex flex-col gap-0.5">
             <div class="font-sans text-[14px] font-semibold text-ink">
               {p.name}
