@@ -17,7 +17,7 @@ export const prerender = true;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content={`0; url=/${target}`} />
+    <meta http-equiv="refresh" content={`0; url=${import.meta.env.BASE_URL}${target}`} />
     <title>{manifest.config.name}</title>
   </head>
   <body>
