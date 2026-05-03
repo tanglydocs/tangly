@@ -22,7 +22,7 @@
 - **Host anywhere** - Static builds you can host anywhere (Vercel, Cloudflare, Netflify, AWS)
 - **Built on Astro** - Builds an [astro](https://astro.builds) site you can eject 
 - **Drop-in Mintlify compat** - point Tangly at an existing `docs.json` + MDX project. No source edits.
-- **Six themes** - `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. One field swap, no component changes. [Live demos →](https://examples.tangly.dev)
+- **Six themes** - `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. See [Live demos →](https://examples.tangly.dev)
 - **34 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
 - **Built for AI agents** - every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
 - **OpenAPI 3.0 / 3.1** - point at a spec, get browseable endpoint pages with try-it.
