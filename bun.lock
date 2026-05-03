@@ -192,6 +192,7 @@
         "@astrojs/check": "^0.9.9",
         "@astrojs/mdx": "^5.0.4",
         "@tailwindcss/vite": "^4.2.4",
+        "@tanglydocs/schema": "workspace:*",
         "@tanglydocs/theme-ui": "workspace:*",
         "astro": "^6.1.10",
         "lucide-astro": "^0.556.0",
