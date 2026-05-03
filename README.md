@@ -33,15 +33,27 @@
 
 ## Install
 
+Linux / macOS
+
 ```bash
-# Linux / macOS
 curl -fsSL https://tangly.dev/install.sh | bash
+```
 
-# Windows (PowerShell)
+Windows (PowerShell)
+
+```bash
 iwr -useb https://tangly.dev/install.ps1 | iex
+```
 
-# or via your package manager
-bunx tangly init
+or install globally via npm 
+
+```bash
+npm i -g tangly
+```
+
+one-off run latest 
+
+```bash
 npx tangly init
 ```
 

@@ -60,15 +60,14 @@ Output is plain static HTML/CSS/JS. Drop `./dist` on Vercel, Cloudflare Pages, N
 
 ## Working with Claude Code or Cursor
 
-This repo includes two skills you can install into your agent:
+Tangly ships two skills you can install into your agent in one shot:
 
 ```bash
-npx skills add tanglify
-npx skills add tech-documentation
+npx skills add tanglydocs/tangly -g
 ```
 
-`tanglify` teaches the agent the Tangly CLI, schema, and conventions. `tech-documentation` teaches it how to write good docs (Diátaxis-grounded). Both make `tangly`-flavored work in an AI editor noticeably better.
+That installs both `tanglify` (Tangly CLI, schema, and conventions) and `tech-documentation` (Diátaxis-grounded writing principles) globally. Drop the `-g` to install into the current project instead. Both make `tangly`-flavored work in an AI editor noticeably better.
 
 <Note>
-  `npx skills add <name>` pulls from the `skills/` directory in the Tangly repo. See [the skills folder](https://github.com/tanglydocs/tangly/tree/main/skills) for the full list.
+  See [the skills folder](https://github.com/tanglydocs/tangly/tree/main/skills) for what each skill carries.
 </Note>

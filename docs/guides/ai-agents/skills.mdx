@@ -28,14 +28,13 @@ A general technical-writing skill. Diátaxis-grounded — picks the right docume
 
 ## Install them
 
-The skills follow the [agent-skills convention](https://github.com/anthropics/agent-skills). Install via:
+The skills follow the [agent-skills convention](https://github.com/anthropics/agent-skills). Install both globally with one command:
 
 ```bash
-npx skills add tanglydocs/tangly/skills/tanglify
-npx skills add tanglydocs/tangly/skills/tech-documentation
+npx skills add tanglydocs/tangly -g
 ```
 
-This drops the skill files into your local skills directory (`~/.claude/skills/` for Claude Code's CLI, or your project-local skills dir if you've configured one). Claude Code picks them up at session start.
+This drops the skill files into your global skills directory (`~/.claude/skills/` for Claude Code's CLI). Drop the `-g` to install into the current project's skills dir instead. Claude Code picks them up at session start.
 
 ## Version locking
 
@@ -45,14 +44,10 @@ The version reflects "what version of the Tangly CLI did this skill describe." W
 
 ## Updating
 
-```bash
-npx skills update tanglydocs/tangly/skills/tanglify
-```
-
-Or, if you'd rather pin to a specific version:
+Re-run the install command to pull the latest:
 
 ```bash
-npx skills add tanglydocs/tangly/skills/tanglify@0.0.7
+npx skills add tanglydocs/tangly -g
 ```
 
 The skill's `metadata.version` field shows which version is live.

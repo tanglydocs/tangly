@@ -103,18 +103,10 @@ Tangly ships two Claude Code skills you can install into any project that uses C
 - **`tanglify`** — drives the Tangly CLI, scaffolds `docs.json`, ports from Mintlify, picks deploy adapters.
 - **`tech-documentation`** — Diátaxis-grounded principles for writing the actual content.
 
-Install via the npm `skills` convention:
+Install both skills globally with one command:
 
 ```bash
-npx skills add tanglify
-npx skills add tech-documentation
-```
-
-Or point at the repo directly:
-
-```bash
-npx skills add github:tanglydocs/tangly/skills/tanglify
-npx skills add github:tanglydocs/tangly/skills/tech-documentation
+npx skills add tanglydocs/tangly -g
 ```
 
 The skills live under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) and are versioned alongside the framework — when CLI flags or schema fields change, the skill content moves with them.
