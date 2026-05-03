@@ -1,106 +1,180 @@
-# tangly
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tanglydocs/tangly/main/docs/images/tangly-logo-light.png">
+    <img src="https://raw.githubusercontent.com/tanglydocs/tangly/main/docs/images/tangly-logo.png" alt="Tangly" width="320">
+  </picture>
+</p>
 
-> **Markdown in. Beautiful docs out.**
->
-> Tangly is an open-source documentation framework that turns a folder of markdown into a fast, themed site you self-host.
+<p align="center">
+  <strong>Markdown in. Beautiful docs out.</strong><br>
+  Self-hosted, open-source documentation framework.
+</p>
 
-Tangly renders existing `docs.json` + MDX corpora **unmodified** — point it at a Mintlify-shaped project and it just works. Built on Astro 6, no proprietary backend, no vendor lock-in.
+<p align="center">
+  <a href="https://tangly.dev">website</a> ·
+  <a href="https://docs.tangly.dev">docs</a> ·
+  <a href="https://examples.tangly.dev">examples</a> ·
+  <a href="https://github.com/tanglydocs/tangly">GitHub</a>
+</p>
 
-## Quick start
+<p align="center">
+  <a href="https://www.npmjs.com/package/tangly"><img alt="npm" src="https://img.shields.io/npm/v/tangly?color=ea580c&label=tangly"></a>
+  <a href="https://github.com/tanglydocs/tangly/blob/main/LICENSE"><img alt="MIT" src="https://img.shields.io/npm/l/tangly?color=6b6b70"></a>
+  <a href="https://github.com/tanglydocs/tangly"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tanglydocs/tangly?color=ea580c&logo=github&label=star"></a>
+</p>
+
+---
+
+Tangly turns a folder of Markdown into a fast, themed, deployable docs site. It renders existing `docs.json` + MDX corpora **unmodified** — point it at a Mintlify-shaped project and it just works. Built on Astro 6, no proprietary backend, no vendor lock-in.
+
+## Features
+
+- **Host anywhere** — static builds you can drop on Vercel, Cloudflare Pages, Netlify, GitHub Pages, S3, nginx. No runtime, no Node process.
+- **Built on Astro** — produces a real Astro site you can `tangly eject` and own outright.
+- **Drop-in Mintlify compat** — point Tangly at an existing `docs.json` + MDX project. No source edits.
+- **Six themes** — `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. One field swap, no component changes. [Live demos →](https://examples.tangly.dev)
+- **34 MDX components** built in — Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
+- **Built for AI agents** — every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
+- **OpenAPI 3.0 / 3.1** — point at a spec, get browseable endpoint pages with a try-it panel.
+- **Pagefind search** — instant, ⌘K, no Algolia key.
+- **One-line migration** from Mintlify — `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
+
+## Install
+
+The fastest install — a curl-installer that picks the right package manager and writes a `tangly` wrapper to your `PATH`:
 
 ```bash
-# One-line installer (Linux/macOS): writes a `tangly` wrapper to ~/.local/bin
+# Linux / macOS
 curl -fsSL https://tangly.dev/install.sh | bash
 
-# Or invoke ad hoc — no install needed
-bunx tangly init   # bun
-npx tangly init    # node
+# Windows (PowerShell)
+iwr -useb https://tangly.dev/install.ps1 | iex
+```
 
-# Or add to your project as a dep
+Or use a package manager directly:
+
+```bash
+# Run latest, no install
+bunx tangly init
+npx tangly init
+
+# Install globally
+npm i -g tangly
+
+# Add as a project dep
 bun add tangly
 npm install tangly
 ```
 
+For a pinned version: `bunx tangly@0.1.0 init`. For the bleeding-edge build off `main`: `bun add tangly@dev`.
+
+> **Why no standalone binary?** Tangly drives Astro at build time, and Astro's plugin ecosystem (Vite, Tailwind native bindings, MDX, Shiki) requires real on-disk `node_modules`. A single executable can't ship a working plugin tree, so the installer wraps `bunx`/`npx` instead.
+
+## Quick start
+
 ```bash
-# Common commands
-tangly init                # scaffold a new project
-tangly migrate             # migrate from Mintlify (mint.json → docs.json)
-tangly dev                 # local dev server
+tangly init my-docs        # scaffold a new project
+cd my-docs
+tangly dev                 # local dev server on :4322
 tangly build               # static build → ./dist
 ```
 
-## Install
+That's it — `./dist/` is a static site you can host anywhere.
 
-### Curl installer (Linux / macOS)
+## CLI
+
+| Command          | What                                                              |
+|------------------|-------------------------------------------------------------------|
+| `tangly init`    | Scaffold a new project from a template (`--theme tang/pith/…`).   |
+| `tangly dev`     | Local dev server with hot reload (default port 4322).             |
+| `tangly build`   | Build to a static directory (`--out ./dist`, `--base /sub/`).     |
+| `tangly preview` | Serve a built `dist/` locally for QA.                             |
+| `tangly check`   | Validate `docs.json` + frontmatter (`--strict` for CI).           |
+| `tangly migrate` | Convert a Mintlify `mint.json` project to a Tangly `docs.json`.   |
+| `tangly add`     | Add a theme or component to an existing project.                  |
+| `tangly eject`   | Materialise the synthesised Astro project into your repo. One-way. |
+
+Full reference: [`docs.tangly.dev/reference/cli`](https://docs.tangly.dev/reference/cli).
+
+## Configuration
+
+Drop a `docs.json` at the project root:
+
+```json
+{
+  "$schema": "https://tangly.dev/schema/docs.json",
+  "name": "My Docs",
+  "theme": "tang",
+  "navigation": {
+    "tabs": [
+      { "tab": "Documentation", "groups": [
+        { "group": "Get Started", "pages": ["introduction", "quickstart"] }
+      ]}
+    ]
+  }
+}
+```
+
+Every Mintlify field is supported. Full schema: [`docs.tangly.dev/reference/schema/docs-json`](https://docs.tangly.dev/reference/schema/docs-json).
+
+## Migrating from Mintlify
 
 ```bash
-curl -fsSL https://tangly.dev/install.sh | bash
+tangly migrate             # reads mint.json, emits docs.json. MDX is untouched.
+tangly dev                 # render with Tangly
 ```
 
-Detects `bun` (preferred) or `npm`/`npx`, pins to the latest tangly,
-writes a wrapper to `~/.local/bin/tangly` that delegates to
-`bunx tangly@<version>` (or `npx`) on every invocation. First run per
-version downloads ~80MB of deps; subsequent runs hit the cache.
+If something doesn't render the way Mintlify did, file an issue — Tangly aims for parity. See the [Mintlify migration guide](https://docs.tangly.dev/guides/migration/from-mintlify) and [compatibility notes](https://docs.tangly.dev/guides/migration/compatibility).
 
-Override defaults:
+## Deploy
 
 ```bash
-# Pin a specific version
-curl -fsSL https://tangly.dev/install.sh | bash -s -- --version 0.0.5
+tangly build --out ./dist  # produce a static folder
 
-# Force npm instead of bun
-TANGLY_PM=npm curl -fsSL https://tangly.dev/install.sh | bash
-
-# Different bin directory
-TANGLY_BIN_DIR=/usr/local/bin curl -fsSL https://tangly.dev/install.sh | bash
+# then:
+vercel deploy ./dist
+wrangler pages deploy ./dist
+netlify deploy --prod --dir dist
 ```
 
-### PowerShell installer (Windows)
+GitHub Pages, S3, nginx, Cloudflare Workers Sites — anything that serves files works. Subpath hosting via `--base /docs/`. See the [deploy guide](https://docs.tangly.dev/guides/deploying).
 
-```powershell
-iwr -useb https://tangly.dev/install.ps1 | iex
-```
+## Agent skills
 
-Same model as the bash installer; wrapper goes to `$env:LOCALAPPDATA\tangly\bin\tangly.cmd`.
+Tangly ships two Claude-Code-compatible skills:
 
-### bunx / npx (zero install)
+- **`tanglify`** — use Tangly from an agent: init, validate, structure docs, port from Mintlify, deploy.
+- **`tech-documentation`** — write good technical docs (Diátaxis-grounded).
+
+Install both globally:
 
 ```bash
-bunx tangly init           # always uses latest
-bunx tangly@0.0.5 init     # pinned
-npx tangly init            # node equivalent
+npx skills add tanglydocs/tangly -g
 ```
 
-### Project dependency
+The skills are version-locked to the CLI — when a flag changes, the skill content moves with it. See [`docs.tangly.dev/guides/ai-agents/skills`](https://docs.tangly.dev/guides/ai-agents/skills).
 
-```bash
-bun add tangly             # or: npm install tangly
-bunx tangly init           # or: npx tangly init
-```
+## Examples
 
-For the bleeding-edge build off `main`:
+Six live demos, one per theme — each is a real Tangly project rendering its own `docs.json` + MDX:
 
-```bash
-bun add tangly@dev
-```
+- [`tang`](https://examples.tangly.dev/tang/) — Cipher (encryption SDK docs)
+- [`pith`](https://examples.tangly.dev/pith/) — On Craft (handbook)
+- [`pip`](https://examples.tangly.dev/pip/) — Sprig (tiny CLI docs)
+- [`readable`](https://examples.tangly.dev/readable/) — The Long Wait (short novel)
+- [`geist`](https://examples.tangly.dev/geist/) — Halo (edge platform docs)
+- [`starter`](https://examples.tangly.dev/starter/) — the default `tangly init` scaffold
 
-> **Why no standalone binary?** Tangly drives Astro at build time, and
-> Astro's plugin ecosystem (vite, tailwind oxide native bindings, mdx,
-> shiki) requires real on-disk `node_modules`. A single executable can't
-> ship a working plugin tree, so the installer wraps `bunx`/`npx` instead.
+Source under [`examples/`](https://github.com/tanglydocs/tangly/tree/main/examples) in the repo.
 
-## What you get
+## Links
 
-- **Mintlify compatibility** — every `docs.json` field, all 14+ MDX components (Card, Tabs, Steps, Accordion, ParamField, etc.), OpenAPI rendering.
-- **Theming** — drop-in themes via `@tanglydocs/theme-*` packages. Default `tang` (Mintlify-Mint inspired); alternatives `pith`, `pip`, `readable`, `geist`.
-- **No SaaS** — your docs build to static HTML, deploy anywhere (Vercel, Cloudflare, GitHub Pages, S3, your own box).
-- **CLI**: `init`, `dev`, `build`, `migrate`, `add`, `eject`, `preview`, `check`.
-
-## Documentation
-
-- Source: [github.com/tanglydocs/tangly](https://github.com/tanglydocs/tangly)
-- Issues: [github.com/tanglydocs/tangly/issues](https://github.com/tanglydocs/tangly/issues)
+- **Docs** — [docs.tangly.dev](https://docs.tangly.dev)
+- **Website** — [tangly.dev](https://tangly.dev)
+- **Source** — [github.com/tanglydocs/tangly](https://github.com/tanglydocs/tangly)
+- **Issues** — [github.com/tanglydocs/tangly/issues](https://github.com/tanglydocs/tangly/issues)
+- **Changelog** — [github.com/tanglydocs/tangly/releases](https://github.com/tanglydocs/tangly/releases)
 
 ## License
 
-MIT
+MIT © [tanglydocs](https://github.com/tanglydocs)
