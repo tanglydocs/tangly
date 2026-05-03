@@ -1,0 +1,58 @@
+---
+import "~/styles/globals.css";
+import Nav from "~/sections/nav.astro";
+import Footer from "~/sections/footer.astro";
+// @ts-expect-error — Vite ?raw import is text content, no type
+import license from "../../../../LICENSE?raw";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/brand/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+    <title>License — Tangly</title>
+    <meta name="description" content="Tangly is released under the MIT License." />
+  </head>
+  <body class="bg-paper text-ink">
+    <Nav />
+
+    <main class="mx-auto max-w-[760px] px-10 pb-24 pt-20">
+      <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">
+        License
+      </div>
+      <h1
+        class="mt-3 flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
+      >
+        <span class="text-ink">MIT.</span>
+        <span class="text-tang-700">Use it.</span>
+      </h1>
+      <p class="mt-4 max-w-[560px] font-sans text-[15px] leading-6 text-mute">
+        Tangly is released under the MIT License. Build commercial products
+        with it, fork it, ship it on customer infrastructure — no royalties,
+        no permission needed.
+      </p>
+
+      <pre
+        class="mt-10 overflow-x-auto whitespace-pre-wrap rounded-xl border border-line-light bg-paper p-7 font-mono text-[12.5px] leading-[20px] text-line-dark"
+      >{license}</pre>
+
+      <p class="mt-6 font-sans text-[13px] text-mute">
+        Source: <a
+          href="https://github.com/tanglydocs/tangly/blob/main/LICENSE"
+          class="text-ink underline decoration-line-light underline-offset-2 hover:decoration-tang-600"
+          >LICENSE in the repo</a
+        >.
+      </p>
+    </main>
+
+    <Footer />
+  </body>
+</html>

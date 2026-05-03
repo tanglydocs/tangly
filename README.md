@@ -117,4 +117,4 @@ bun run scripts/smoke-tarball.ts
 
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 Nik Cubrilovic

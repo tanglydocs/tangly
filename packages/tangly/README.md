@@ -177,4 +177,4 @@ Source under [`examples/`](https://github.com/tanglydocs/tangly/tree/main/exampl
 
 ## License
 
-MIT © [tanglydocs](https://github.com/tanglydocs)
+[MIT](https://github.com/tanglydocs/tangly/blob/main/LICENSE) © 2026 Nik Cubrilovic
