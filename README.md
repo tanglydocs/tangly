@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://tangly.dev">tangly.dev</a> ·
+  <a href="https://tangly.dev">website</a> ·
   <a href="https://docs.tangly.dev">docs</a> ·
   <a href="https://examples.tangly.dev">examples</a> ·
   <a href="https://www.npmjs.com/package/tangly">npm</a>
@@ -19,13 +19,16 @@
 
 ## Features
 
-- **Drop-in Mintlify compat** — point Tangly at an existing `docs.json` + MDX project. No source edits.
-- **Six themes** — `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. One field swap, no component changes. [Live demos →](https://examples.tangly.dev)
-- **34 MDX components** built in — Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
-- **Built for AI agents** — every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
-- **OpenAPI 3.0 / 3.1** — point at a spec, get browseable endpoint pages with try-it.
-- **Static output** — `tangly build` emits a folder. Drop it on Vercel, Cloudflare Pages, Netlify, GitHub Pages, S3, nginx. No runtime.
+- **Host anywhere** - Static builds you can host anywhere (Vercel, Cloudflare, Netflify, AWS)
+- **Built on Astro** - Builds an [astro](https://astro.builds) site you can eject 
+- **Drop-in Mintlify compat** - point Tangly at an existing `docs.json` + MDX project. No source edits.
+- **Six themes** - `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. One field swap, no component changes. [Live demos →](https://examples.tangly.dev)
+- **34 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
+- **Built for AI agents** - every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
+- **OpenAPI 3.0 / 3.1** - point at a spec, get browseable endpoint pages with try-it.
+- **Static output** - `tangly build` emits a folder. Drop it on Vercel, Cloudflare Pages, Netlify, GitHub Pages, S3, nginx. No runtime.
 - **Pagefind search** built in — instant, ⌘K, no Algolia key.
+- **Custom themes** - build custom themes using components from `@tanglydocs/theme-ui`
 - **One-line migration** from Mintlify — `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
 
 ## Install
@@ -55,21 +58,20 @@ Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#in
 ## Quick links
 
 - [Documentation](https://docs.tangly.dev) — guides, schema reference, CLI reference
-- [Marketing site](https://tangly.dev)
+- [Website](https://tangly.dev)
 - [Theme demos](https://examples.tangly.dev) — see every theme rendering a real project
 - [Mintlify migration guide](https://docs.tangly.dev/guides/migration/from-mintlify)
 - [Deploy guide](https://docs.tangly.dev/guides/deploying)
 
 ## Agent skills
 
-Tangly ships two Claude Code skills under [`skills/`](skills):
+Tangly ships two Agent skills under [`skills/`](skills):
 
 - [`tanglify`](skills/tanglify) — use Tangly: init, verify, structure docs, port from Mintlify, deploy.
 - [`tech-documentation`](skills/tech-documentation) — write good technical docs (Diátaxis-grounded).
 
 ```bash
-npx skills add tanglify
-npx skills add tech-documentation
+npx skills add tanglydocs/tangly -g
 ```
 
 ## Repo
@@ -100,8 +102,6 @@ Smoke-test the published tarball against a clean install:
 ```bash
 bun run scripts/smoke-tarball.ts
 ```
-
-See [`CLAUDE.md`](CLAUDE.md) for project conventions and [`plans/SPEC.md`](plans/SPEC.md) for the full brief.
 
 ## License
 
