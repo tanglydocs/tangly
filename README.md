@@ -47,6 +47,20 @@ npx skills add github:tanglydocs/tangly/skills/tanglify
 npx skills add github:tanglydocs/tangly/skills/tech-documentation
 ```
 
+## See it
+
+- [`tangly.dev`](https://tangly.dev) — the marketing site
+- [`docs.tangly.dev`](https://docs.tangly.dev) — the full documentation (rendered by Tangly itself)
+- [`examples.tangly.dev`](https://examples.tangly.dev) — live demos of every theme:
+  [tang](https://examples.tangly.dev/tang/) ·
+  [pith](https://examples.tangly.dev/pith/) ·
+  [pip](https://examples.tangly.dev/pip/) ·
+  [readable](https://examples.tangly.dev/readable/) ·
+  [geist](https://examples.tangly.dev/geist/) ·
+  [starter](https://examples.tangly.dev/starter/)
+
+Each demo is a different `docs.json` + MDX corpus; the only thing that varies between them is the `theme` field. Source lives under [`examples/`](./examples).
+
 ## Goal
 
 Render any existing Mintlify project (`docs.json` + `*.mdx`) without source edits. Build to a static site that drops onto Vercel or Cloudflare. Stay simple enough that one person can hold the whole codebase in their head.
