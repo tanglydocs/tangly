@@ -9,7 +9,7 @@ import { copyFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 const websiteRoot = resolve(import.meta.dir, "..");
-const mainRepo = resolve(websiteRoot, "..");
+const mainRepo = resolve(websiteRoot, "../..");
 
 const assets: Array<{ from: string; to: string }> = [
   {
