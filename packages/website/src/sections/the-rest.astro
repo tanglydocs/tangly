@@ -128,15 +128,14 @@ const rows = [
               </div>
             )}
             {row.demo === "custom" && (
-              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
-                <div class="text-mute"><span class="text-tang-300">// </span>components/PriceTable.tsx</div>
-                <div><span class="text-tang-700">export default</span> <span class="text-tang-300">function</span> <span class="text-paper">PriceTable</span>(<span class="text-paper">{`{ tiers }`}</span>) {`{`}</div>
-                <div>  <span class="text-tang-700">return</span> &lt;<span class="text-tang-300">table</span>&gt; ... &lt;/<span class="text-tang-300">table</span>&gt;</div>
-                <div>{`}`}</div>
-                <div class="h-2"></div>
-                <div class="text-mute"><span class="text-tang-300">// </span>pricing.mdx</div>
-                <div><span class="text-tang-300">&lt;PriceTable tiers={`{tiers}`} /&gt;</span></div>
-              </div>
+              <pre class="m-0 max-w-[520px] overflow-x-auto whitespace-pre rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px] text-paper"
+              ><span class="text-mute">// components/PriceTable.tsx</span>
+<span class="text-tang-700">export default</span> <span class="text-tang-300">function</span> PriceTable({`{ tiers }`}) {`{`}
+  <span class="text-tang-700">return</span> {`<`}<span class="text-tang-300">table</span>{`>`} ... {`</`}<span class="text-tang-300">table</span>{`>`}
+{`}`}
+
+<span class="text-mute">// pricing.mdx</span>
+<span class="text-tang-300">{`<PriceTable tiers={tiers} />`}</span></pre>
             )}
             {row.demo === "subpath" && (
               <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
