@@ -1,22 +1,12 @@
 ---
 name: tech-documentation
 description: |
-  Write effective technical documentation — READMEs, API references, developer
-  guides, tutorials, runbooks, release notes, and how-to articles. Applies the
-  Diátaxis framework to pick the right document type (tutorial / how-to /
-  reference / explanation), structures pages top-down, enforces plain active
-  voice, and grounds every claim in a runnable example. Distilled from
-  Diátaxis, the Google developer documentation style guide, the Microsoft
-  Writing Style Guide, Write the Docs, and GOV.UK content design.
-
-  Apply when: writing or editing technical documentation, README files, API
-  docs, developer guides, tutorials, runbooks, or release notes; reviewing a
-  documentation PR; auditing existing documentation for clarity or structure;
-  planning a documentation site's information architecture; deciding what
-  document type a page should be; or any task that involves documentation
-  writing, editing, or quality. Trigger keywords: documentation, docs, README,
-  technical writing, API reference, developer guide, tutorial, runbook,
-  release notes, diataxis, style guide, doc review.
+  Write effective technical documentation — READMEs, API references, guides,
+  tutorials, runbooks, release notes. Applies Diátaxis to pick the right doc
+  type (tutorial / how-to / reference / explanation), structures pages
+  top-down, enforces active voice, grounds claims in runnable examples.
+  Apply when writing or editing docs, reviewing a docs PR, or auditing for
+  clarity.
 license: MIT
 compatibility: Designed for Claude Code and other agent-skills clients.
 allowed-tools: Read, Write, Edit, Glob, Grep
