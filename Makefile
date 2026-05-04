@@ -29,8 +29,8 @@ link-skill:
 		src="$$(pwd)/skills/$$name"; \
 		for dir in $(AGENTS_DIR) $(CLAUDE_DIR); do \
 			target="$$dir/$$name"; \
-			if [ -L "$$target" ]; then \
-				rm "$$target"; \
+			if [ -L "$$target" ] || [ -e "$$target" ]; then \
+				rm -rf "$$target"; \
 			fi; \
 			ln -s "$$src" "$$target"; \
 			echo "Linked: $$name -> $$target"; \
