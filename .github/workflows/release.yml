@@ -229,6 +229,14 @@ jobs:
         if: ${{ env.DRY_RUN != 'true' }}
         run: bun run scripts/smoke-tarball.ts
 
+      # Same pack as above, but installs ONLY tangly as a direct dep (the
+      # realistic `npm i -g tangly` shape). Catches transitive-dep hoisting
+      # bugs the full-graph smoke flattens past. 0.0.8 → 0.0.10 each shipped
+      # broken because no pre-publish gate exercised this layout.
+      - name: Tarball flat-install smoke (gates publish)
+        if: ${{ env.DRY_RUN != 'true' }}
+        run: bun run scripts/smoke-tarball-flat.ts
+
       - name: Publish all packages (topological order)
         if: ${{ env.DRY_RUN != 'true' }}
         env:

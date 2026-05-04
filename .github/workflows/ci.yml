@@ -94,6 +94,29 @@ jobs:
       - name: tarball install + run
         run: bun run scripts/smoke-tarball.ts
 
+  # Same pack as pack-install-smoke, but installs ONLY tangly as a direct
+  # dep — the realistic `npm i -g tangly` shape. Catches transitive-dep
+  # hoisting bugs (e.g. piccolore, unist-util-visit-parents) that the
+  # full-graph pack-install-smoke flattens past. This is the gate that
+  # caught 0.0.8 → 0.0.10 shipping with broken installer-smoke.
+  tarball-flat-smoke:
+    name: tarball-flat-smoke (${{ matrix.os }})
+    needs: smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+      - run: bun run build
+      - name: tarball flat install + run
+        run: bun run scripts/smoke-tarball-flat.ts
+
   # Verify install.sh end-to-end: writes a wrapper that delegates to
   # bunx/npx, init+build through the wrapper succeeds. Tests the
   # production user flow (curl-pipe-bash → tangly init → tangly build)
