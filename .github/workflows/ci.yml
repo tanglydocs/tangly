@@ -79,7 +79,7 @@ jobs:
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: ${{ vars.COVERAGE_GIST_ID }}
-          filename: tangly-coverage.json
+          filename: coverage.json
           file: ${{ runner.temp }}/coverage-badge.json
           forceUpdate: true
 
