@@ -2,6 +2,12 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
 import { type FSWatcher, watch } from "chokidar";
 import type { Plugin, ViteDevServer } from "vite";
+import {
+  generateLlmsFullTxt,
+  generateLlmsTxt,
+  generateRobots,
+  generateSitemap,
+} from "../build-outputs/index.js";
 import { buildIgnoreMatcher } from "../build-outputs/ignore-matcher.js";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
@@ -312,6 +318,44 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
 
     configureServer(devServer) {
       server = devServer;
+
+      // Synthesize sitemap.xml / robots.txt / llms.txt / llms-full.txt in dev
+      // so authors can preview them without `tangly build`. Same generators
+      // and content as the build outputs; respects user overrides at the
+      // project root just like copy-assets does.
+      devServer.middlewares.use((req, res, next) => {
+        const path = (req.url ?? "").split("?")[0]!.split("#")[0];
+        const kind =
+          path === "/sitemap.xml"
+            ? "sitemap"
+            : path === "/robots.txt"
+              ? "robots"
+              : path === "/llms.txt"
+                ? "llms"
+                : path === "/llms-full.txt"
+                  ? "llms-full"
+                  : null;
+        if (!kind) return next();
+        if (!manifest) return next();
+        const userOverride = resolve(userRoot, path!.replace(/^\/+/, ""));
+        if (existsSync(userOverride)) return next();
+        const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
+        const genOpts: Parameters<typeof generateSitemap>[0] = { manifest, outDir: "" };
+        if (siteUrl) genOpts.siteUrl = siteUrl;
+        const body =
+          kind === "sitemap"
+            ? generateSitemap(genOpts)
+            : kind === "robots"
+              ? generateRobots(genOpts)
+              : kind === "llms"
+                ? generateLlmsTxt(genOpts)
+                : generateLlmsFullTxt(genOpts);
+        res.setHeader(
+          "Content-Type",
+          kind === "sitemap" ? "application/xml; charset=utf-8" : "text/plain; charset=utf-8",
+        );
+        res.end(body);
+      });
 
       // Markdown for agents — serve raw MDX source when the URL ends in `.md`
       // or the client sent `Accept: text/markdown`. Same wire format as the
