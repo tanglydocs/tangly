@@ -451,6 +451,55 @@ Literal dollar signs need escaping: `The price is \$10.` Without the backslash t
 
 KaTeX renders at build time, not in the browser. Output is plain HTML + a small CSS bundle (loaded only on pages that use math). No client-side JS needed.
 
+## Mermaid
+
+Tangly renders [Mermaid](https://mermaid.js.org) diagrams from fenced ```` ```mermaid ```` blocks. Supports flowcharts, sequence, class, state, ER, gantt, pie, journey, mindmap, timeline, and the rest of Mermaid's families.
+
+### Flowchart
+
+````md
+```mermaid
+flowchart LR
+  A[docs.json] --> B[buildManifest]
+  B --> C[Astro build]
+  C --> D[dist/]
+```
+````
+
+```mermaid
+flowchart LR
+  A[docs.json] --> B[buildManifest]
+  B --> C[Astro build]
+  D[content/*.mdx] --> B
+```
+
+### Sequence
+
+````md
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant CLI as tangly
+  participant Astro
+  U->>CLI: tangly build
+  CLI->>Astro: build()
+  Astro-->>CLI: dist/
+  CLI-->>U: ✓ done
+```
+````
+
+### Theming
+
+Mermaid uses the `base` theme with `themeVariables` driven by Tangly's brand tokens — diagrams pick up the primary tang accent and surface/ink colors from the active theme. Toggling light/dark re-renders every diagram on the page (`tangly:rerender-mermaid` event).
+
+### Performance
+
+The Mermaid library (~600 KB) is dynamically imported **only on pages that contain at least one `pre.mermaid` element**. Pages without diagrams pay nothing.
+
+### Security
+
+Mermaid runs in `securityLevel: "strict"` — HTML and `<script>` inside diagram source are sanitized.
+
 ## Embeds
 
 Three components handle external or cross-page content:

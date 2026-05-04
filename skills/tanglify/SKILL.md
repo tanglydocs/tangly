@@ -219,16 +219,26 @@ aiContext: short hint for AI consumers
 
 ## Components (built-in MDX, no import)
 
-Same names as Mintlify. All 14+ render unmodified:
+All 33 ship Mintlify-compatible names and render unmodified:
 
-- Layout: `Card`, `CardGroup`, `Frame`, `Columns`
 - Callouts: `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger`, `Update`
-- Interactive: `Tabs` + `Tab`, `Steps` + `Step`, `Accordion` + `AccordionGroup`, `Expandable`
-- Code: `CodeGroup` (tab labels via per-block `title`)
-- API: `ParamField`, `ResponseField`, `OpenApiEndpoint`
-- Trees: `FileTree` — nested Markdown list → directory tree. `**bold**` highlights, trailing text becomes a comment, `...` is a placeholder. Variants: `default` (icons + card, the standard look), `terminal` (dark bg + ASCII connectors, with `chrome` for window dots), `ascii` (plain ASCII connectors, no card). Use this instead of fenced ASCII trees.
-- Inline labels: `Badge` — short pill for status/version chips. Variants: `default`, `tip`, `warning`, `error`, `accent` (tang-orange). Sizes: `small`, `medium` (default), `large`. Starlight aliases accepted: `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`.
-- Other: `Snippet` (file=...), Lucide-mapped icons (Font Awesome fallback)
+- Cards: `Card`, `CardGroup`, `Columns`
+- Code: `CodeGroup` (tab labels via per-block `title`), `PackageManager` (npm/yarn/pnpm/bun), `Snippet`, `Kbd`
+- Trees: `FileTree` — nested Markdown list → directory tree. `**bold**` highlights, trailing text becomes a comment, `...` is a placeholder. Variants: `default` (icons + card), `terminal` (dark bg + ASCII connectors, with `chrome` for window dots), `ascii` (plain ASCII connectors, no card). Use this instead of fenced ASCII trees.
+- Tabs & Steps: `Tabs` + `Tab`, `Steps` + `Step`
+- Layout: `Frame`, `Accordion` + `AccordionGroup`, `Expandable`
+- API: `ParamField`, `ResponseField`, `RequestExample`, `ResponseExample`, `OpenApiEndpoint`, `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
+- Media: `Embed` (cross-page block reuse), `Video` (YouTube/Vimeo/mp4 with lazy iframe), `LightboxImage` (auto-wraps every inline `<img>`)
+- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`
+
+Full prop reference per family: `docs/reference/components/{callouts,cards,code,tabs-and-steps,layout,api,media,text}.mdx`.
+
+## Markdown extras (syntax, not components)
+
+Wired by default — no import:
+
+- **LaTeX / KaTeX math** — inline `$…$`, block `$$…$$`, plus the Mintlify `<latex>…</latex>` shim. Renders at build time, no client JS. Reference: `docs/reference/markdown/index.mdx#latex`.
+- **Mermaid diagrams** — fenced ```` ```mermaid ```` block. Flowchart/sequence/class/state/ER/gantt/etc. Mermaid lib is dynamically imported only on pages that contain a `pre.mermaid` element. Theme honors active light/dark + Tangly tang accent via `themeVariables`. Reference: `docs/reference/markdown/index.mdx#mermaid`.
 
 ## Themes
 
