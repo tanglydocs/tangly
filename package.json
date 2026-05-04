@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "katex": "^0.16.45",
+    "piccolore": "^0.1.3",
+    "unist-util-visit-parents": "^6.0.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
