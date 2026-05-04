@@ -1,6 +1,7 @@
 ---
 import type { DocsJson } from "@tanglydocs/schema";
 import type { PageEntry } from "tangly";
+import ContextualMenu from "./components/ContextualMenu.astro";
 import Icon from "./components/Icon.astro";
 
 export interface Props {
@@ -61,22 +62,27 @@ const containerClass = custom
 ) : (
   <div class={showToc ? "grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10" : containerClass}>
     <article class={`min-w-0 ${showToc ? "max-w-[var(--tangly-content-max-width)]" : ""}`}>
-      {breadcrumbs.length > 0 && (
-        <nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] mb-4 flex flex-wrap items-center gap-1.5">
-          {breadcrumbs.map((b, i) => (
-            <span class="inline-flex items-center gap-1.5">
-              {b.slug ? (
-                <a href={`${import.meta.env.BASE_URL}${b.slug}`} class="hover:text-[var(--tangly-color-fg)]">{b.title}</a>
-              ) : (
-                <span>{b.title}</span>
-              )}
-              {i < breadcrumbs.length - 1 && <Icon icon="ChevronRight" size={11} />}
-            </span>
-          ))}
-          {breadcrumbs.length > 0 && <Icon icon="ChevronRight" size={11} />}
-          <span class="text-[var(--tangly-color-fg)]">{title}</span>
-        </nav>
-      )}
+      <div class="flex items-start gap-4 mb-4">
+        <div class="flex-1 min-w-0">
+          {breadcrumbs.length > 0 && (
+            <nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] flex flex-wrap items-center gap-1.5">
+              {breadcrumbs.map((b, i) => (
+                <span class="inline-flex items-center gap-1.5">
+                  {b.slug ? (
+                    <a href={`${import.meta.env.BASE_URL}${b.slug}`} class="hover:text-[var(--tangly-color-fg)]">{b.title}</a>
+                  ) : (
+                    <span>{b.title}</span>
+                  )}
+                  {i < breadcrumbs.length - 1 && <Icon icon="ChevronRight" size={11} />}
+                </span>
+              ))}
+              {breadcrumbs.length > 0 && <Icon icon="ChevronRight" size={11} />}
+              <span class="text-[var(--tangly-color-fg)]">{title}</span>
+            </nav>
+          )}
+        </div>
+        <ContextualMenu page={page} config={config} />
+      </div>
 
       <header class="mb-8">
         <h1 class="text-3xl font-bold tracking-tight text-[var(--tangly-color-fg)] mb-3">

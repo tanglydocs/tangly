@@ -265,7 +265,19 @@ const ErrorsSchema = z
 
 const ContextualSchema = z
   .object({
-    options: z.array(z.enum(["copy", "view", "chatgpt", "claude"])).optional(),
+    /**
+     * Reader-initiated actions exposed in the per-page "Copy page" menu.
+     * - `copy`     copy the page's raw Markdown to the clipboard
+     * - `copy-url` copy the absolute URL of the Markdown twin
+     * - `view`     open the Markdown twin in a new tab
+     * - `chatgpt`  open ChatGPT prefilled with the Markdown URL
+     * - `claude`   open Claude prefilled with the Markdown URL
+     *
+     * Omit `contextual` entirely → all actions show. Empty array → menu hidden.
+     */
+    options: z
+      .array(z.enum(["copy", "copy-url", "view", "chatgpt", "claude"]))
+      .optional(),
   })
   .strict()
   .optional();

@@ -35,6 +35,33 @@ describe("DocsJsonSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  test("contextual.options accepts every documented action", () => {
+    const result = safeParseDocsJson({
+      name: "Test",
+      navigation: { pages: ["index"] },
+      contextual: { options: ["copy", "copy-url", "view", "chatgpt", "claude"] },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("contextual.options rejects unknown actions", () => {
+    const result = safeParseDocsJson({
+      name: "Test",
+      navigation: { pages: ["index"] },
+      contextual: { options: ["copy", "perplexity"] },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  test("contextual.options accepts an empty array (menu hidden)", () => {
+    const result = safeParseDocsJson({
+      name: "Test",
+      navigation: { pages: ["index"] },
+      contextual: { options: [] },
+    });
+    expect(result.success).toBe(true);
+  });
+
   test("parses recursive nav (tabs > groups > pages)", () => {
     const cfg = parseDocsJson({
       name: "Test",

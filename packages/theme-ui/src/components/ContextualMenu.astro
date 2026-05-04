@@ -1,0 +1,229 @@
+---
+import type { DocsJson } from "@tanglydocs/schema";
+import type { PageEntry } from "tangly";
+import { withBase } from "../with-base.ts";
+import Icon from "./Icon.astro";
+
+// Per-page "Copy page" menu. Reader-initiated actions tied to the page's
+// Markdown twin at /<slug>.md (already emitted by the build + dev middleware).
+//
+// Configured via docs.json `contextual.options`:
+//   - omitted        all five actions visible
+//   - empty array    menu hidden
+//   - subset         only the listed actions visible
+//
+// Hidden automatically on `noindex: true` pages — those don't get a `.md`
+// twin emitted (build-outputs/page-markdown.ts) or served (vite-plugin
+// middleware), so the actions would all 404.
+//
+// Placed at the top of the article (PageShell) so it's reachable on every
+// viewport, not just xl+ where the right TOC aside renders.
+
+export interface Props {
+  page: PageEntry;
+  config?: DocsJson;
+}
+
+type Action = "copy" | "copy-url" | "view" | "chatgpt" | "claude";
+
+const DEFAULT_OPTIONS: Action[] = ["copy", "copy-url", "view", "chatgpt", "claude"];
+const ACTION_META: Record<
+  Action,
+  { label: string; icon: string; sub: string; external: boolean }
+> = {
+  copy: { label: "Copy page", icon: "copy", sub: "Copy as Markdown", external: false },
+  "copy-url": { label: "Copy URL", icon: "link", sub: "Markdown URL", external: false },
+  view: {
+    label: "View as Markdown",
+    icon: "external-link",
+    sub: "Open .md in new tab",
+    external: true,
+  },
+  chatgpt: {
+    label: "Open in ChatGPT",
+    icon: "external-link",
+    sub: "Ask about this page",
+    external: true,
+  },
+  claude: {
+    label: "Open in Claude",
+    icon: "external-link",
+    sub: "Ask about this page",
+    external: true,
+  },
+};
+
+const { page, config } = Astro.props as Props;
+const requested = config?.contextual?.options;
+const actions: Action[] =
+  requested === undefined
+    ? DEFAULT_OPTIONS
+    : (requested as Action[]).filter((a): a is Action => a in ACTION_META);
+
+// Skip the menu when the page has no Markdown twin to point at.
+const noIndex = page.frontmatter.noindex === true;
+
+// Build a base-aware path to the Markdown twin. The script joins this with
+// `location.origin` for absolute URLs (copy-url / chatgpt / claude) and uses
+// it directly for fetch / window.open (works regardless of base).
+const mdPath = withBase(`/${page.slug}.md`) ?? `/${page.slug}.md`;
+---
+{actions.length > 0 && !noIndex && (
+  <div class="tangly-contextual relative inline-block" data-md-path={mdPath}>
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-xs font-medium border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)]"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-label="Copy page actions"
+      data-tangly-contextual-trigger
+    >
+      <Icon icon="copy" size={13} />
+      <span>Copy page</span>
+      <Icon icon="chevron-down" size={11} />
+    </button>
+    <div
+      class="tangly-contextual__menu absolute right-0 top-full mt-1 z-30 min-w-[15rem] rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] shadow-lg p-1"
+      role="menu"
+      hidden
+      data-tangly-contextual-menu
+    >
+      {actions.map((a) => (
+        <button
+          type="button"
+          role="menuitem"
+          class="w-full flex items-start gap-2.5 px-2.5 py-1.5 rounded text-left text-sm hover:bg-[var(--tangly-color-bg-elevated)]"
+          data-action={a}
+        >
+          <span class="mt-0.5 text-[var(--tangly-color-muted)]">
+            <Icon icon={ACTION_META[a].icon} size={14} />
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block font-medium text-[var(--tangly-color-fg)]">
+              {ACTION_META[a].label}
+            </span>
+            <span class="block text-xs text-[var(--tangly-color-muted)]">
+              {ACTION_META[a].sub}
+            </span>
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
+<style is:global>
+  .tangly-contextual button[data-copied="true"] {
+    color: var(--tangly-color-primary, #ea580c);
+  }
+</style>
+
+<script>
+  type Action = "copy" | "copy-url" | "view" | "chatgpt" | "claude";
+
+  function closeAll(except?: HTMLElement) {
+    document
+      .querySelectorAll<HTMLElement>(".tangly-contextual")
+      .forEach((root) => {
+        if (root === except) return;
+        const trigger = root.querySelector<HTMLButtonElement>(
+          "[data-tangly-contextual-trigger]",
+        );
+        const menu = root.querySelector<HTMLElement>("[data-tangly-contextual-menu]");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+        if (menu) menu.hidden = true;
+      });
+  }
+
+  function flash(button: HTMLElement) {
+    button.dataset.copied = "true";
+    setTimeout(() => {
+      delete button.dataset.copied;
+    }, 1200);
+  }
+
+  async function runAction(action: Action, mdPath: string, button: HTMLElement) {
+    const absoluteUrl = new URL(mdPath, location.href).toString();
+    const prompt = `Read from ${absoluteUrl} so I can ask questions about it.`;
+    if (action === "copy") {
+      try {
+        const res = await fetch(mdPath);
+        if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
+        const text = await res.text();
+        await navigator.clipboard.writeText(text);
+        flash(button);
+      } catch {
+        // Surface a hint on the button label without disrupting the page.
+        button.dataset.copied = "fail";
+        setTimeout(() => {
+          delete button.dataset.copied;
+        }, 1500);
+      }
+      return;
+    }
+    if (action === "copy-url") {
+      await navigator.clipboard.writeText(absoluteUrl);
+      flash(button);
+      return;
+    }
+    if (action === "view") {
+      window.open(mdPath, "_blank", "noopener");
+      return;
+    }
+    if (action === "chatgpt") {
+      window.open(
+        `https://chat.openai.com/?q=${encodeURIComponent(prompt)}`,
+        "_blank",
+        "noopener",
+      );
+      return;
+    }
+    if (action === "claude") {
+      window.open(
+        `https://claude.ai/new?q=${encodeURIComponent(prompt)}`,
+        "_blank",
+        "noopener",
+      );
+      return;
+    }
+  }
+
+  document.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const trigger = target.closest<HTMLButtonElement>("[data-tangly-contextual-trigger]");
+    if (trigger) {
+      const root = trigger.closest<HTMLElement>(".tangly-contextual");
+      const menu = root?.querySelector<HTMLElement>("[data-tangly-contextual-menu]");
+      const isOpen = trigger.getAttribute("aria-expanded") === "true";
+      closeAll(root ?? undefined);
+      trigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+      if (menu) menu.hidden = isOpen;
+      return;
+    }
+
+    const item = target.closest<HTMLButtonElement>("[data-action]");
+    if (item) {
+      const root = item.closest<HTMLElement>(".tangly-contextual");
+      const mdPath = root?.dataset.mdPath ?? "";
+      const action = item.dataset.action as Action;
+      await runAction(action, mdPath, item);
+      // Hold the menu open briefly on copy actions so the success flash is
+      // visible; non-copy actions close immediately.
+      if (action === "copy" || action === "copy-url") {
+        setTimeout(() => closeAll(), 700);
+      } else {
+        closeAll();
+      }
+      return;
+    }
+
+    // Click outside any contextual menu — close everything.
+    if (!target.closest(".tangly-contextual")) closeAll();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAll();
+  });
+</script>
