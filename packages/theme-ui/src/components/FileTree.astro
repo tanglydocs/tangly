@@ -160,16 +160,19 @@ const html = processFileTree(slotHtml);
   font-weight: 600;
 }
 .tangly-filetree--terminal .file,
-.tangly-filetree--terminal .directory > details > summary {
+.tangly-filetree--terminal .directory > details > summary,
+.tangly-filetree--terminal .directory > .tree-entry {
   color: #c9e3a8;
 }
 .tangly-filetree--terminal .directory > details > summary::before,
+.tangly-filetree--terminal .directory > .tree-entry::before,
 .tangly-filetree--terminal .file::before {
   content: "├── ";
   color: #6b6b70;
   white-space: pre;
 }
 .tangly-filetree--terminal li:last-child > details > summary::before,
+.tangly-filetree--terminal li:last-child.directory > .tree-entry::before,
 .tangly-filetree--terminal li:last-child.file::before {
   content: "└── ";
 }
@@ -216,12 +219,14 @@ const html = processFileTree(slotHtml);
   color: #fb923c;
 }
 .tangly-filetree--ascii .directory > details > summary::before,
+.tangly-filetree--ascii .directory > .tree-entry::before,
 .tangly-filetree--ascii .file::before {
   content: "├── ";
   color: var(--tangly-color-muted, #6b6b70);
   white-space: pre;
 }
 .tangly-filetree--ascii li:last-child > details > summary::before,
+.tangly-filetree--ascii li:last-child.directory > .tree-entry::before,
 .tangly-filetree--ascii li:last-child.file::before {
   content: "└── ";
 }

@@ -110,13 +110,15 @@ const fileTreeProcessor = rehype()
 
         if (isDirectory) {
           const hasContents = otherChildren.length > 0;
-          const childList: Child[] = hasContents
-            ? (otherChildren as Child[])
-            : [h("ul", h("li", "…"))];
-          node.children = [
-            h("details", { open: hasContents }, h("summary", treeEntry), ...childList),
-          ];
-          return CONTINUE;
+          if (hasContents) {
+            node.children = [
+              h("details", { open: true }, h("summary", treeEntry), ...(otherChildren as Child[])),
+            ];
+            return CONTINUE;
+          }
+          // Empty directory: render as a leaf row, no <details>, no auto-injected "…" placeholder.
+          node.children = [treeEntry];
+          return SKIP;
         }
 
         node.children = [treeEntry, ...(otherChildren as ElementContent[])];
