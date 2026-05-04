@@ -14,12 +14,10 @@ unlink: unlink-bin unlink-skill
 ## link-bin: register the local tangly CLI on PATH via `bun link`
 link-bin:
 	@cd $(TANGLY_PKG) && bun link
-	@bun link tangly
 	@echo "Linked: tangly CLI -> $(TANGLY_PKG)/bin/tangly.js"
 
 ## unlink-bin: remove the local tangly CLI link
 unlink-bin:
-	@bun unlink tangly || true
 	@cd $(TANGLY_PKG) && bun unlink || true
 	@echo "Unlinked: tangly CLI"
 
