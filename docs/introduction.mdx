@@ -27,14 +27,17 @@ It's small. It's fast. It works the way coding agents already want to work.
 
 ## What you get
 
-- **A typed schema** for `docs.json` with JSON Schema autocomplete in any LSP-aware editor.
-- **Five themes** out of the box — tang, pith, pip, readable, geist. Switch with one config field.
-- **35+ MDX components** auto-injected. No imports, no setup.
-- **OpenAPI auto-routing** — drop a spec, get pages with try-it-out.
-- **Pagefind search** indexed at build time. Cmd-K modal included.
-- **Static-site fast** — cold dev under 2s, builds under 30s for a hundred pages.
-- **Adapters** for Vercel, Cloudflare Pages, Node, or plain static hosts.
-- **Skills for Claude Code** + JSON Schema for Cursor — the agent integrations you'd build yourself, already done.
+- **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
+- **Built on Astro.** Builds an [Astro](https://astro.build) site you can eject.
+- **Drop-in Mintlify compat.** Point Tangly at an existing `docs.json` + MDX project. No source edits.
+- **Six themes.** `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. See [live demos](https://examples.tangly.dev).
+- **34 MDX components built in.** Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
+- **Built for AI agents.** Every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
+- **OpenAPI 3.0 / 3.1.** Point at a spec, get browseable endpoint pages with try-it.
+- **Static output.** `tangly build` emits a folder. No runtime.
+- **Pagefind search built in.** Instant, ⌘K, no Algolia key.
+- **Custom themes.** Build them using components from `@tanglydocs/theme-ui`.
+- **One-line migration from Mintlify.** `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
 
 ## What you write
 
