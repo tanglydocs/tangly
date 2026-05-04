@@ -154,7 +154,7 @@ const bannerType = banner?.type ?? "info";
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
       <aside
         id="tangly-sidebar"
-        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 py-6"
+        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 py-6 self-start"
       >
         <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
       </aside>
@@ -166,8 +166,14 @@ const bannerType = banner?.type ?? "info";
         <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
         <slot />
       </main>
+      {/* Footer sits in the right column so the grid (sticky sidebar's
+          containing block) extends through it; without this the sidebar
+          gets pulled up out of view as soon as <main>'s bottom enters
+          the viewport. */}
+      <div class="lg:col-start-2">
+        <Footer config={config} />
+      </div>
     </div>
-    <Footer config={config} />
 
     <SearchModal config={config} />
 
