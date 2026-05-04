@@ -4,8 +4,6 @@ description: Ship your docs to Vercel, Cloudflare Pages, Netlify, Docker, or any
 icon: "rocket"
 ---
 
-# Deploying
-
 `tangly build` produces a static site at `dist/` that drops onto any CDN. The adapter is auto-detected from your project; override with `--adapter`.
 
 ## Adapter auto-detection
@@ -212,10 +210,13 @@ Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result
 <FileTree>
 - dist/
   - index.html redirects to first nav page
-  - introduction/index.html
+  - introduction/
+    - index.html
   - introduction.md raw source for AI agents
-  - `guides/<slug>/index.html`
-  - `guides/<slug>.md`
+  - guides/
+    - `<slug>/`
+      - index.html
+    - `<slug>.md` raw markdown twin
   - images/ copied verbatim from project root
   - logo/
   - public/

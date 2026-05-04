@@ -50,7 +50,6 @@
     { "source": "/guides/openapi", "destination": "/guides/authoring/openapi", "permanent": true },
     { "source": "/guides/static-assets", "destination": "/guides/deploying/static-assets", "permanent": true },
     { "source": "/guides/subpath-hosting", "destination": "/guides/deploying/subpath-hosting", "permanent": true },
-    { "source": "/guides/deploying", "destination": "/guides/deploying/index", "permanent": true },
 
     { "source": "/reference/components/note", "destination": "/reference/components/callouts#note", "permanent": true },
     { "source": "/reference/components/tip", "destination": "/reference/components/callouts#tip", "permanent": true },
@@ -179,7 +178,7 @@
           {
             "group": "Deploying",
             "pages": [
-              "guides/deploying/index",
+              "guides/deploying",
               "guides/deploying/subpath-hosting",
               "guides/deploying/static-assets"
             ]
