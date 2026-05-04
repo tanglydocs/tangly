@@ -101,6 +101,8 @@ The plugin's `transform()` hook rewrites Mintlify-only quirks before MDX parses 
 - `<latex>...</latex>` → `$$...$$` block math (so curly-brace LaTeX doesn't trigger MDX expression parsing).
 - Relative Markdown image refs (`![](../images/foo)`) → absolute paths (`/images/foo`) so Astro's asset pipeline doesn't mis-resolve them in nested routes.
 
+Both replacements run on raw MDX text but skip matches inside code spans and fenced code blocks (via `replace-outside-code.ts`), so docs describing these shims can quote the literal trigger patterns in backticks (this very paragraph does) without being silently rewritten.
+
 More compatibility shims land here as we hit them.
 
 ## Component shadowing

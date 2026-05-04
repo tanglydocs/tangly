@@ -9,6 +9,7 @@ import {
   generateSitemap,
 } from "../build-outputs/index.js";
 import { buildIgnoreMatcher } from "../build-outputs/ignore-matcher.js";
+import { replaceOutsideCode } from "./replace-outside-code.js";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
 import type { Manifest } from "../manifest/types.js";
@@ -238,12 +239,18 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
 
       // <latex>...</latex> contains raw LaTeX whose curly braces would
       // otherwise be parsed as JSX expressions, breaking the build.
+      // Skip code spans/fences so docs describing this shim can quote the
+      // literal pattern inside backticks without it getting rewritten.
       if (/<latex>/i.test(out)) {
-        out = out.replace(
+        const r = replaceOutsideCode(
+          out,
           /<latex>([\s\S]*?)<\/latex>/gi,
-          (_m, body) => `\n\n$$\n${(body as string).trim()}\n$$\n\n`,
+          (_m, body) => `\n\n$$\n${body.trim()}\n$$\n\n`,
         );
-        changed = true;
+        if (r.changed) {
+          out = r.value;
+          changed = true;
+        }
       }
 
       // Rewrite Markdown image references that point outside the file's
@@ -255,15 +262,21 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       // our static-asset middleware (dev) and copy-assets step (build).
       //
       // Match: ![alt](../something/foo.webp)  → ![alt](/something/foo.webp)
-      // Don't touch: absolute URLs (http*) or already-rooted paths (/foo).
-      const mdImageRe = /!\[([^\]]*)\]\(\s*((?:\.\.\/)+)([^)\s]+)\)/g;
-      if (mdImageRe.test(out)) {
-        out = out.replace(mdImageRe, (_m, alt, _dots, rest) => {
-          const path = String(rest);
-          const abs = path.startsWith("/") ? path : `/${path}`;
-          return `![${alt as string}](${abs})`;
-        });
-        changed = true;
+      // Don't touch: absolute URLs (http*) or already-rooted paths (/foo),
+      // or anything inside backticks (so docs can quote the pattern).
+      {
+        const r = replaceOutsideCode(
+          out,
+          /!\[([^\]]*)\]\(\s*((?:\.\.\/)+)([^)\s]+)\)/g,
+          (_m, alt, _dots, rest) => {
+            const abs = rest.startsWith("/") ? rest : `/${rest}`;
+            return `![${alt}](${abs})`;
+          },
+        );
+        if (r.changed) {
+          out = r.value;
+          changed = true;
+        }
       }
 
       if (changed) return { code: out, map: null };
