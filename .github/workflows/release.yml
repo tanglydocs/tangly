@@ -145,6 +145,9 @@ jobs:
             }
           '
 
+      - name: Sync skill versions to package version
+        run: bun run scripts/sync-skill-versions.ts
+
       - name: Dry run summary
         if: ${{ env.DRY_RUN == 'true' }}
         env:
@@ -167,7 +170,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/*/package.json
+          git add packages/*/package.json skills/*/SKILL.md
           git commit -m "chore(release): $TAG [skip ci]"
           # Annotated tag (lightweight tags are NOT pushed by --follow-tags).
           git tag -a "$TAG" -m "Release $TAG"
