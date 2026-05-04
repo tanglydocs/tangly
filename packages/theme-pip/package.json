@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-pip",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Minimal Tangly theme. Single-column, topbar-only chrome — for tiny docs sites (4–5 pages). UI shell comes from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
