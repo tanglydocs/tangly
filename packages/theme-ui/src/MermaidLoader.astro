@@ -14,13 +14,45 @@
   const mermaidNodes = document.querySelectorAll("pre.mermaid");
   if (mermaidNodes.length > 0) {
     const { default: mermaid } = await import("mermaid");
+    const cssVar = (name: string): string =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     const rerender = async () => {
       const isDark = document.documentElement.classList.contains("dark");
+      // Pull colors from the live Tangly tokens so the diagram tracks the
+      // active theme + brand. `base` theme + themeVariables = full control.
+      const primary = cssVar("--tangly-color-primary") || "#EA580C";
+      const surface = isDark ? "#0F1116" : "#FAFAF7";
+      const elevated = isDark ? "#16181F" : "#F1EFE9";
+      const ink = isDark ? "#E6E4DE" : "#0B0B0F";
+      const muted = isDark ? "#9A9AA0" : "#6B6B70";
+      const line = isDark ? "#2A2A30" : "#E6E4DE";
       mermaid.initialize({
         startOnLoad: false,
-        theme: isDark ? "dark" : "default",
+        theme: "base",
         securityLevel: "strict",
         fontFamily: "var(--tangly-font-body)",
+        themeVariables: {
+          primaryColor: elevated,
+          primaryTextColor: ink,
+          primaryBorderColor: line,
+          secondaryColor: elevated,
+          secondaryTextColor: ink,
+          secondaryBorderColor: line,
+          tertiaryColor: surface,
+          tertiaryTextColor: ink,
+          tertiaryBorderColor: line,
+          lineColor: muted,
+          textColor: ink,
+          mainBkg: elevated,
+          background: surface,
+          clusterBkg: "transparent",
+          clusterBorder: line,
+          edgeLabelBackground: surface,
+          nodeBorder: line,
+          // Accent only the highlighted/critical edges (defaults below
+          // would otherwise repaint the whole graph in tang).
+          activationBorderColor: primary,
+        },
       });
       // mermaid.run replaces a node's contents with rendered SVG, so on
       // re-render we restore the source text (cached on first render via
@@ -37,3 +69,37 @@
     document.addEventListener("tangly:rerender-mermaid", rerender);
   }
 </script>
+
+<style is:global>
+  /* Override the prose code-block dark bg so the rendered SVG sits on
+     a surface that matches the doc theme. Padded card centered on the
+     page; the SVG itself fills the width. */
+  pre.mermaid {
+    background: transparent !important;
+    color: inherit !important;
+    border: 1px solid var(--tangly-color-border, #e6e4de);
+    border-radius: 0.625rem;
+    padding: 1.25rem 1rem !important;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    font-family: var(--tangly-font-body, inherit) !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+  .dark pre.mermaid {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+  pre.mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+  /* Pre-render: hide the raw text source that mermaid hasn't processed yet
+     so it doesn't flash as a wall of code. */
+  pre.mermaid:not([data-processed="true"]) {
+    visibility: hidden;
+    min-height: 6rem;
+  }
+</style>
