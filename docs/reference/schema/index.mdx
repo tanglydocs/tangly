@@ -399,18 +399,23 @@ You can also override the 404 page entirely by dropping a `404.mdx` at your proj
 
 ## `contextual`
 
-Which contextual actions to expose on each page.
+Reader-initiated actions exposed in the per-page **Copy page** menu (top-right of every doc page). All actions reference the page's Markdown twin at `/<slug>.md`.
 
 ```json
-{ "contextual": { "options": ["copy", "view", "chatgpt", "claude"] } }
+{ "contextual": { "options": ["copy", "copy-url", "view", "chatgpt", "claude"] } }
 ```
 
 | Action | Effect |
 |---|---|
-| `copy` | "Copy page as Markdown" button |
-| `view` | "View source" link to the raw `.md` |
-| `chatgpt` | "Open in ChatGPT" deep link |
-| `claude` | "Open in Claude" deep link |
+| `copy` | Copy the page's raw Markdown to the clipboard |
+| `copy-url` | Copy the absolute URL of the Markdown twin |
+| `view` | Open the Markdown twin in a new tab |
+| `chatgpt` | Open ChatGPT prefilled with the Markdown URL |
+| `claude` | Open Claude prefilled with the Markdown URL |
+
+Omitting `contextual` shows all five actions. Set `options` to `[]` to hide the menu entirely. List a subset to show only those actions.
+
+See [Copy page menu](/guides/ai-agents/markdown-for-agents#copy-page-menu) for screenshots and the full UX.
 
 ## `search`
 

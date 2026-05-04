@@ -166,6 +166,38 @@ An agent typically fetches `/llms.txt` once to discover the IA, then pulls indiv
 
 See [llms.txt](/guides/ai-agents/llms-txt) for the index format.
 
+## Copy page menu
+
+Every doc page has a "Copy page" button in the top-right corner that fans out to a small menu. Five reader-initiated actions, all backed by the same `.md` twin:
+
+| Action | Behavior |
+|---|---|
+| **Copy page** | Fetches `/<slug>.md` and copies the raw Markdown to the clipboard. |
+| **Copy URL** | Copies the absolute Markdown URL (`https://docs.example.com/installation.md`). |
+| **View as Markdown** | Opens the `.md` twin in a new tab. |
+| **Open in ChatGPT** | Opens `chat.openai.com` prefilled with the Markdown URL so the model can fetch it. |
+| **Open in Claude** | Same, but for `claude.ai`. |
+
+All actions are reader-initiated. Tangly never makes outbound LLM calls during build or serve.
+
+### Configure which actions show
+
+Set `contextual.options` in `docs.json`:
+
+```json
+{
+  "contextual": {
+    "options": ["copy", "copy-url", "view", "chatgpt", "claude"]
+  }
+}
+```
+
+- Omit `contextual` entirely and all five actions show.
+- Set `options` to `[]` to hide the menu.
+- List a subset to expose only those actions (e.g. `["copy", "view"]` for a minimal copy + open-in-tab pair).
+
+See [`contextual`](/reference/schema#contextual) in the schema reference for the full field definition.
+
 ## Disabling
 
 There's no opt-out flag. The `.md` files are byte-cheap and harmless — the same content already in `/llms-full.txt` just split per page. If a specific page shouldn't ship, mark it `noindex: true` and it's excluded from all four (sitemap, llms.txt, llms-full.txt, `<slug>.md`).
