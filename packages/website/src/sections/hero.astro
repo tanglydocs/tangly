@@ -1,5 +1,5 @@
 ---
-import { Copy } from "lucide-astro";
+import { Check, Copy } from "lucide-astro";
 ---
 
 <section class="relative overflow-hidden bg-paper">
@@ -52,13 +52,15 @@ import { Copy } from "lucide-astro";
         style="box-shadow: 0 0 0 1px rgba(234,88,12,0.22), 0 6px 20px -8px rgba(234,88,12,0.30);"
       >
         <span class="text-tang-600">$</span>
-        <span>curl tangly.dev/install.sh | sh</span>
+        <span data-install-cmd>npm i -g tangly</span>
         <button
           type="button"
           aria-label="Copy command"
-          class="ml-3 flex h-5 w-5 items-center justify-center rounded text-mute hover:text-paper"
+          data-install-copy
+          class="group ml-3 flex h-5 w-5 items-center justify-center rounded text-mute transition-colors hover:text-paper data-[copied=true]:text-tang-300"
         >
-          <Copy size={11} />
+          <Copy size={11} class="group-data-[copied=true]:hidden" />
+          <Check size={11} class="hidden group-data-[copied=true]:inline" />
         </button>
       </div>
       <a
@@ -70,3 +72,24 @@ import { Copy } from "lucide-astro";
     </div>
   </div>
 </section>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>("[data-install-copy]");
+  const cmd = document.querySelector<HTMLElement>("[data-install-cmd]");
+  if (btn && cmd) {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(cmd.textContent?.trim() ?? "");
+      } catch {
+        return;
+      }
+      const prev = btn.getAttribute("aria-label");
+      btn.setAttribute("aria-label", "Copied");
+      btn.dataset.copied = "true";
+      setTimeout(() => {
+        btn.setAttribute("aria-label", prev ?? "Copy command");
+        delete btn.dataset.copied;
+      }, 1500);
+    });
+  }
+</script>

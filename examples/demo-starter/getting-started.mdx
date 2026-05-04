@@ -9,14 +9,17 @@ icon: "rocket"
 ## Install the CLI
 
 ```bash
-# bun (recommended)
-bun add -d tangly
-
-# or npm
-npm i -D tangly
+npm i -g tangly
 ```
 
-Or grab a standalone binary:
+Or pin into a single project:
+
+```bash
+bun add -D tangly      # bun
+npm i -D tangly        # npm
+```
+
+Or use the curl one-liner (alternative):
 
 ```bash
 curl -fsSL https://tangly.dev/install.sh | sh

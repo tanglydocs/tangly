@@ -11,15 +11,15 @@ Five minutes from empty directory to deployed static site.
 <Steps>
   <Step title="Install">
     ```bash
-    bun add -D tangly
+    npm i -g tangly
     ```
 
-    See [Installation](/installation) for pnpm/npm/yarn.
+    Or `bun add -D tangly` to pin into a single project. See [Installation](/installation) for the full matrix.
   </Step>
 
   <Step title="Scaffold">
     ```bash
-    bun x tangly init my-docs
+    tangly init my-docs
     cd my-docs
     ```
 
@@ -28,7 +28,7 @@ Five minutes from empty directory to deployed static site.
 
   <Step title="Run dev">
     ```bash
-    bun x tangly dev
+    tangly dev
     ```
 
     Opens at `http://localhost:4321`. Edits to `docs.json` or any `*.mdx` hot-reload in under 250ms. Drafts (`draft: true` frontmatter) are visible in dev and hidden in build.
@@ -74,7 +74,7 @@ Five minutes from empty directory to deployed static site.
 
   <Step title="Build">
     ```bash
-    bun x tangly build
+    tangly build
     ```
 
     Static output lands in `dist/`. The adapter is auto-detected from your repo:
@@ -91,7 +91,7 @@ Five minutes from empty directory to deployed static site.
 
   <Step title="Preview the build">
     ```bash
-    bun x tangly preview
+    tangly preview
     ```
 
     Serves `dist/` locally so you can sanity-check the production output before pushing.
@@ -103,7 +103,7 @@ Five minutes from empty directory to deployed static site.
 If you have an existing `mint.json` project, run:
 
 ```bash
-bun x tangly migrate
+tangly migrate
 ```
 
 This rewrites `mint.json` → `docs.json` and bumps `tangly` to the latest. Existing MDX files render unchanged. See [Migrate from Mintlify](/guides/migrate-from-mintlify).

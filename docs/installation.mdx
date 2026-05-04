@@ -12,7 +12,19 @@ icon: "package"
 - A package manager — `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
 - A directory you want to render. Tangly does not impose a folder structure beyond `docs.json` at the root.
 
-## Install
+## Install globally
+
+The fastest path — one command, `tangly` on your `PATH` everywhere:
+
+```bash
+npm i -g tangly
+```
+
+Then `tangly init`, `tangly dev`, `tangly build` work from any directory.
+
+## Install per project
+
+If you'd rather pin Tangly to a single project's `package.json`:
 
 <CodeGroup>
   ```bash bun
@@ -33,6 +45,20 @@ icon: "package"
 </CodeGroup>
 
 The `tangly` binary becomes available via `bun x tangly`, `pnpm exec tangly`, `npx tangly`, etc.
+
+## Curl one-liner (alternative)
+
+A POSIX/PowerShell installer that does the same thing as `npm i -g tangly` (uses npm under the hood, writes a `tangly` wrapper to your `PATH`):
+
+```bash
+# Linux / macOS
+curl -fsSL https://tangly.dev/install.sh | bash
+
+# Windows (PowerShell)
+iwr -useb https://tangly.dev/install.ps1 | iex
+```
+
+Useful when you don't want to add to your global npm scope, or want a version-pinned cache directory.
 
 ## Project layout
 

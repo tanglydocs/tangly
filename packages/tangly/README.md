@@ -41,7 +41,22 @@ Tangly turns a folder of Markdown into a fast, themed, deployable docs site. It 
 
 ## Install
 
-The fastest install — a curl-installer that picks the right package manager and writes a `tangly` wrapper to your `PATH`:
+```bash
+# Install globally
+npm i -g tangly
+
+# Or run once without installing
+bunx tangly init
+npx tangly init
+
+# Or add as a project dep
+bun add tangly
+npm install tangly
+```
+
+For a pinned version: `bunx tangly@0.1.0 init`. For the bleeding-edge build off `main`: `bun add tangly@dev`.
+
+### Curl one-liner (alternative)
 
 ```bash
 # Linux / macOS
@@ -51,22 +66,7 @@ curl -fsSL https://tangly.dev/install.sh | bash
 iwr -useb https://tangly.dev/install.ps1 | iex
 ```
 
-Or use a package manager directly:
-
-```bash
-# Run latest, no install
-bunx tangly init
-npx tangly init
-
-# Install globally
-npm i -g tangly
-
-# Add as a project dep
-bun add tangly
-npm install tangly
-```
-
-For a pinned version: `bunx tangly@0.1.0 init`. For the bleeding-edge build off `main`: `bun add tangly@dev`.
+The curl installer picks the right package manager and writes a `tangly` wrapper to your `PATH`. Same end-state as `npm i -g tangly`; useful if you don't want a global npm install.
 
 > **Why no standalone binary?** Tangly drives Astro at build time, and Astro's plugin ecosystem (Vite, Tailwind native bindings, MDX, Shiki) requires real on-disk `node_modules`. A single executable can't ship a working plugin tree, so the installer wraps `bunx`/`npx` instead.
 

@@ -33,28 +33,15 @@
 
 ## Install
 
-Linux / macOS
-
-```bash
-curl -fsSL https://tangly.dev/install.sh | bash
-```
-
-Windows (PowerShell)
-
-```bash
-iwr -useb https://tangly.dev/install.ps1 | iex
-```
-
-or install globally via npm 
-
 ```bash
 npm i -g tangly
 ```
 
-one-off run latest 
+Or run once without installing:
 
 ```bash
 npx tangly init
+bunx tangly init
 ```
 
 Then:
@@ -63,6 +50,16 @@ Then:
 tangly init my-docs
 cd my-docs
 tangly dev
+```
+
+### Curl one-liner (alternative)
+
+```bash
+# Linux / macOS
+curl -fsSL https://tangly.dev/install.sh | bash
+
+# Windows (PowerShell)
+iwr -useb https://tangly.dev/install.ps1 | iex
 ```
 
 Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#install).

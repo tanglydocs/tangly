@@ -121,9 +121,9 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                   )}
                   {tag === "Tabs" && (
                     <Tabs name="install-demo">
-                      <Tab title="macOS"><pre class="!my-0 font-mono text-xs">brew install tangly</pre></Tab>
-                      <Tab title="Linux"><pre class="!my-0 font-mono text-xs">curl tangly.dev/install.sh | sh</pre></Tab>
-                      <Tab title="bun"><pre class="!my-0 font-mono text-xs">bunx tangly</pre></Tab>
+                      <Tab title="npm"><pre class="!my-0 font-mono text-xs">npm i -g tangly</pre></Tab>
+                      <Tab title="bun"><pre class="!my-0 font-mono text-xs">bun add -g tangly</pre></Tab>
+                      <Tab title="curl"><pre class="!my-0 font-mono text-xs">curl tangly.dev/install.sh | sh</pre></Tab>
                     </Tabs>
                   )}
                   {tag === "Tab" && (
@@ -133,7 +133,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                   )}
                   {tag === "Steps" && (
                     <Steps>
-                      <Step title="Install">curl tangly.dev/install.sh | sh</Step>
+                      <Step title="Install">npm i -g tangly</Step>
                       <Step title="Init">tangly init</Step>
                       <Step title="Build">tangly build</Step>
                     </Steps>
