@@ -1,5 +1,7 @@
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { cpSync, existsSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 import { buildBuildReport, writeBuildReport } from "../../build-outputs/build-report.js";
@@ -77,15 +79,63 @@ export const buildCommand = defineCommand({
 
     const runtimeDir = getRuntimeDir();
 
-    const { build } = (await import("astro")) as typeof import("astro");
-    await build({
-      root: runtimeDir,
-      outDir,
-      build: {
-        format: "directory",
-      },
-      base: args.base,
-    } as never);
+    // Astro emits prerender chunks (`<outDir>/.prerender/chunks/*.mjs` and
+    // `<root>/.astro/.prerender/chunks/*.mjs`) that import Astro's own runtime
+    // deps (e.g. `piccolore`) by package name. Node ESM's parent-walk from
+    // those chunk paths must find a `node_modules/<dep>` somewhere.
+    //
+    // When tangly is installed alongside the user's project (`bun add tangly`,
+    // `npm i -D tangly`), this works: the chunks live in `<project>/dist/...`
+    // and walk up to `<project>/node_modules/piccolore`.
+    //
+    // When tangly is installed elsewhere (`npm i -g tangly`, install.sh's
+    // per-version cache, `bunx`/`npx` scratch dirs), the chunks end up at
+    // `<user-cwd>/dist/.prerender/...` with no node_modules anywhere on the
+    // walk — Astro fails with `ERR_MODULE_NOT_FOUND`.
+    //
+    // Fix: build into a tmp staging dir with a `node_modules` symlink pointing
+    // at tangly's actual install location, then move the result into the
+    // user's outDir. Walks now resolve regardless of how tangly was installed.
+    const tanglyNodeModules = findTanglyNodeModules(runtimeDir);
+    const stagingDir = mkdtempSync(join(tmpdir(), "tangly-build-"));
+    const stagingOut = join(stagingDir, "dist");
+    if (tanglyNodeModules) {
+      symlinkSync(tanglyNodeModules, join(stagingDir, "node_modules"), "dir");
+    }
+
+    // Astro reads `process.cwd()` for some intermediate paths (`.astro/`
+    // cache, prerender chunk dir). Run the build from inside the staging
+    // dir so those land adjacent to the symlinked node_modules and resolve
+    // correctly. Restore cwd once done — the rest of build.ts (manifest,
+    // copyStaticAssets, pagefind) reads paths absolute, but other tools
+    // invoked later might assume the original cwd.
+    const originalCwd = process.cwd();
+    try {
+      process.chdir(stagingDir);
+      const { build } = (await import("astro")) as typeof import("astro");
+      await build({
+        root: runtimeDir,
+        outDir: stagingOut,
+        build: {
+          format: "directory",
+        },
+        base: args.base,
+      } as never);
+
+      process.chdir(originalCwd);
+
+      if (existsSync(outDir)) {
+        rmSync(outDir, { recursive: true, force: true });
+      }
+      cpSync(stagingOut, outDir, { recursive: true, dereference: true });
+    } finally {
+      try {
+        process.chdir(originalCwd);
+      } catch {
+        // best-effort
+      }
+      rmSync(stagingDir, { recursive: true, force: true });
+    }
 
     // Snapshot what Astro just emitted so copyStaticAssets can hard-protect
     // those paths (refusing user files that would clobber hashed assets).
@@ -147,6 +197,38 @@ export const buildCommand = defineCommand({
     }
   },
 });
+
+/**
+ * Find the `node_modules/` to expose to Astro's prerender chunks.
+ *
+ * Walks up the filesystem from the CLI's source dir, collecting every
+ * `node_modules/` that contains tangly's runtime deps (`piccolore` as
+ * the canary). Returns the *outermost* match — the deepest-up directory
+ * with piccolore.
+ *
+ * Why outermost: in a workspace with bun's isolated install, both
+ * `<pkg>/node_modules/` (per-package, narrow) and `<workspace>/node_modules/`
+ * (shared, full) contain piccolore, but only the workspace-root copy
+ * carries every transitive (hast-util-*, unist-*, theme-ui's deps, etc.).
+ * In a published install there's only one level so "outermost" still wins.
+ */
+function findTanglyNodeModules(runtimeDir: string): string | null {
+  const starts = [dirname(fileURLToPath(import.meta.url)), runtimeDir];
+  let last: string | null = null;
+  for (const start of starts) {
+    let dir = start;
+    for (let i = 0; i < 20; i++) {
+      const nm = join(dir, "node_modules");
+      if (existsSync(join(nm, "piccolore"))) {
+        last = nm;
+      }
+      const parent = dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  return last;
+}
 
 function autoDetectAdapter(root: string): string {
   if (existsSync(resolve(root, "vercel.json"))) return "vercel";
