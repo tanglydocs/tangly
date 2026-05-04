@@ -46,6 +46,43 @@ jobs:
       - run: bun run build
       - run: bun run test
 
+  coverage:
+    name: coverage
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup
+      - run: bun run build
+      - run: bun run test:coverage
+      - name: Build shield JSON
+        env:
+          BADGE_OUT: ${{ runner.temp }}/coverage-badge.json
+        run: bun run scripts/coverage-badge.ts "$BADGE_OUT"
+      # Surface secret presence as an env var so we can gate the publish step
+      # on it (secrets cannot be referenced directly in `if:`).
+      - name: Check gist config
+        id: gist_config
+        env:
+          GIST_SECRET: ${{ secrets.GIST_SECRET }}
+          COVERAGE_GIST_ID: ${{ vars.COVERAGE_GIST_ID }}
+        run: |
+          if [ -n "$GIST_SECRET" ] && [ -n "$COVERAGE_GIST_ID" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping coverage gist publish — GIST_SECRET and/or COVERAGE_GIST_ID not set."
+          fi
+      - name: Publish coverage to gist
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.gist_config.outputs.configured == 'true'
+        uses: schneegans/dynamic-badges-action@e9a478b16159b4d31420099ba146cdc50f134483 # v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          filename: tangly-coverage.json
+          file: ${{ runner.temp }}/coverage-badge.json
+          forceUpdate: true
+
   smoke:
     name: smoke (${{ matrix.os }})
     needs: test
