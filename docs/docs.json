@@ -278,13 +278,5 @@
         }
       ]
     }
-  },
-  "navbar": {
-    "links": [{ "label": "GitHub", "href": "https://github.com/tanglydocs/tangly" }],
-    "primary": {
-      "type": "button",
-      "label": "Star on GitHub",
-      "href": "https://github.com/tanglydocs/tangly"
-    }
   }
 }
