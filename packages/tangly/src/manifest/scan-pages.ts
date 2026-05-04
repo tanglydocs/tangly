@@ -92,7 +92,8 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
     const slug = relative(root, full)
       .replace(/\.(mdx|md)$/, "")
       .split(sep)
-      .join("/");
+      .join("/")
+      .replace(/\/index$/, "");
 
     const raw = readFileSync(full, "utf8");
     const parsed = matter(raw);

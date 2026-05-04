@@ -78,20 +78,24 @@ function buildSidebar(
   const out: SidebarItem[] = [];
   for (const node of nodes) {
     if (isString(node)) {
-      collectedSlugs.add(node);
-      if (ctx.inheritedTemplate && !ctx.navTemplates.has(node)) {
-        ctx.navTemplates.set(node, ctx.inheritedTemplate);
+      // `foo/index` and `foo` resolve to the same page. Astro's content
+      // collection emits `foo` as the entry id; normalize so docs.json
+      // can declare either form.
+      const slug = node.replace(/\/index$/, "");
+      collectedSlugs.add(slug);
+      if (ctx.inheritedTemplate && !ctx.navTemplates.has(slug)) {
+        ctx.navTemplates.set(slug, ctx.inheritedTemplate);
       }
       const item: SidebarItem = {
-        title: pageTitle(node, ctx.diskPages),
-        slug: node,
+        title: pageTitle(slug, ctx.diskPages),
+        slug,
         isGroup: false,
       };
-      const icon = pageIcon(node, ctx.diskPages);
-      const fm = ctx.diskPages.get(node)?.frontmatter;
+      const icon = pageIcon(slug, ctx.diskPages);
+      const fm = ctx.diskPages.get(slug)?.frontmatter;
       // Drafts get a "Draft" tag in the sidebar (only relevant when
       // includeDrafts is true; otherwise they're filtered out upstream).
-      const tag = fm?.draft ? "Draft" : pageTag(node, ctx.diskPages);
+      const tag = fm?.draft ? "Draft" : pageTag(slug, ctx.diskPages);
       if (icon !== undefined) item.icon = icon;
       if (tag !== undefined) item.tag = tag;
       out.push(item);
