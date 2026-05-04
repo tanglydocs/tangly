@@ -1,12 +1,12 @@
 ---
 title: Skills
-description: Tangly ships two Claude Code skills — `tanglify` for using Tangly, `tech-documentation` for writing the docs that go in it. Version-locked to the CLI.
+description: Tangly ships two agent skills — `tanglify` for using Tangly, `tech-documentation` for writing the docs that go in it. Works with Claude Code, Codex, and other skill-aware agents. Version-locked to the CLI.
 icon: "hammer"
 ---
 
 # Skills
 
-Tangly ships two skills under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) in the repo. They're [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown files with frontmatter that Claude Code loads on demand and uses to scope its behavior.
+Tangly ships two skills under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) in the repo. They follow the [agent-skills convention](https://github.com/anthropics/agent-skills) — Markdown files with frontmatter that any skill-aware agent (Claude Code, Codex, …) loads on demand and uses to scope its behavior.
 
 ## What you get
 
@@ -14,7 +14,7 @@ Tangly ships two skills under [`skills/`](https://github.com/tanglydocs/tangly/t
 
 > Build, customize, and ship documentation sites with Tangly — a self-hosted, open-source documentation framework that renders Mintlify projects unmodified. Covers initializing a documentation project, validating with `tangly check`, authoring docs.json + MDX content, porting an existing Mintlify docs site via `tangly migrate`, and deploying static output to Vercel, Cloudflare Pages, Netlify, or any CDN (including subpath hosting via --base).
 
-The skill activates whenever Claude Code sees a Tangly project (cwd has `tangly.toml`, `docs.json`, or you mention any of the trigger keywords). It carries:
+The skill activates whenever your agent sees a Tangly project (cwd has `tangly.toml`, `docs.json`, or you mention any of the trigger keywords). It carries:
 
 - Every CLI command's flags + when to use each.
 - The `docs.json` schema with field-by-field guidance.
@@ -34,7 +34,7 @@ The skills follow the [agent-skills convention](https://github.com/anthropics/ag
 npx skills add tanglydocs/tangly -g
 ```
 
-This drops the skill files into your global skills directory (`~/.claude/skills/` for Claude Code's CLI). Drop the `-g` to install into the current project's skills dir instead. Claude Code picks them up at session start.
+This drops the skill files into your global skills directory (`~/.claude/skills/` for Claude Code; the equivalent global path for Codex and other skill-aware agents). Drop the `-g` to install into the current project's skills dir instead. The agent picks them up at session start.
 
 ## Version locking
 
@@ -54,7 +54,7 @@ The skill's `metadata.version` field shows which version is live.
 
 ## Use them
 
-After installation, no further setup. Open a Tangly project in Claude Code. Ask it to:
+After installation, no further setup. Open a Tangly project in your skill-aware agent (Claude Code, Codex, …). Ask it to:
 
 - "Add a new guide page for `auth.mdx`."
 - "Migrate this `mint.json` to `docs.json`."
@@ -62,11 +62,11 @@ After installation, no further setup. Open a Tangly project in Claude Code. Ask 
 - "Build for Cloudflare Pages with the `/docs` subpath."
 - "What's in `tangly check`'s strict mode?"
 
-Claude Code reads the skill, picks the right CLI commands and config patterns, edits files, runs commands. The skill keeps it from inventing flags that don't exist.
+The agent reads the skill, picks the right CLI commands and config patterns, edits files, runs commands. The skill keeps it from inventing flags that don't exist.
 
 ## Authoring your own
 
-If you'd rather write a project-specific skill — your team has conventions Tangly's bundled skill doesn't know about — see [Conventions](/guides/ai-agents/conventions). The short version: drop a Markdown file in `.claude/skills/` with the same frontmatter format. Claude Code merges project skills with global ones.
+If you'd rather write a project-specific skill — your team has conventions Tangly's bundled skill doesn't know about — see [Conventions](/guides/ai-agents/conventions). The short version: drop a Markdown file in `.claude/skills/` (or the equivalent path for your agent) with the same frontmatter format. Skill-aware agents merge project skills with global ones.
 
 ## Source
 

@@ -141,7 +141,7 @@ GitHub Pages, S3, nginx, Cloudflare Workers Sites — anything that serves files
 
 ## Agent skills
 
-Tangly ships two Claude-Code-compatible skills:
+Tangly ships two agent skills (Claude Code, Codex, and other skill-aware agents):
 
 - **`tanglify`** — use Tangly from an agent: init, validate, structure docs, port from Mintlify, deploy.
 - **`tech-documentation`** — write good technical docs (Diátaxis-grounded).

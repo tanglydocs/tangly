@@ -1,6 +1,6 @@
 ---
 title: AI agents & coding assistants
-description: Tangly is built for the agent-assisted era. Skills for Claude Code, JSON Schema for Cursor, llms.txt for everything else.
+description: Tangly is built for the agent-assisted era. Agent skills (Claude Code, Codex, …), JSON Schema for Cursor, llms.txt for everything else.
 icon: "bot"
 ---
 
@@ -12,7 +12,7 @@ Most documentation gets written and edited inside an editor that has an AI assis
 
 <CardGroup cols={2}>
   <Card title="Skills" icon="hammer" href="/guides/ai-agents/skills">
-    Tangly ships two Claude Code skills: `tanglify` (for using Tangly itself) and `tech-documentation` (for writing the docs that go in it).
+    Tangly ships two agent skills: `tanglify` (for using Tangly itself) and `tech-documentation` (for writing the docs that go in it). Works with Claude Code, Codex, and other skill-aware agents.
   </Card>
   <Card title="Cursor & others" icon="cursor-arrow" href="/guides/ai-agents/cursor-and-others">
     JSON Schema for `docs.json` autocomplete in any LSP-aware editor — Cursor, VS Code, JetBrains, Zed, Windsurf.
@@ -36,7 +36,7 @@ Three properties make a docs site agent-friendly:
 
 1. **Predictable structure.** Frontmatter spelled the same way on every page. Conventions you can describe in one paragraph.
 2. **Machine-readable index.** Something an agent can fetch to know what pages exist and what they cover. That's `llms.txt`.
-3. **A way to teach the agent how to work with the project.** That's skills (Claude Code) or `AGENTS.md` (general).
+3. **A way to teach the agent how to work with the project.** That's agent skills or `AGENTS.md` conventions.
 
 Tangly's docs.json schema, default `llms.txt` generation, and bundled skills cover all three.
 
@@ -53,4 +53,4 @@ The skills are how Tangly's own maintainers stay productive. We documented them 
 
 ## Path forward
 
-Read [Skills](/guides/ai-agents/skills) first if you're using Claude Code. [Cursor & others](/guides/ai-agents/cursor-and-others) if you're not. [Conventions](/guides/ai-agents/conventions) once you're past the basics and want to teach the agent your project's specifics.
+Read [Skills](/guides/ai-agents/skills) first if you're using a skill-aware agent (Claude Code, Codex). [Cursor & others](/guides/ai-agents/cursor-and-others) if you're not. [Conventions](/guides/ai-agents/conventions) once you're past the basics and want to teach the agent your project's specifics.
