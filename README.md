@@ -20,8 +20,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/v/tangly?color=EA580C&label=npm" alt="npm version"></a>
   <a href="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml"><img src="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml/badge.svg?branch=main" alt="build status"></a>
-  <!-- TODO: replace <USER>/<GIST_ID> after gist + GIST_SECRET / COVERAGE_GIST_ID are set up -->
-  <a href="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/%3CUSER%3E/%3CGIST_ID%3E/raw/tangly-coverage.json" alt="coverage"></a>
+  <a href="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nc9/e57cc6d614485c741294a2e7b5073890/raw/tangly-coverage.json" alt="coverage"></a>
   <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/dm/tangly?color=EA580C&label=downloads" alt="downloads/month"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/tanglydocs/tangly?color=EA580C" alt="MIT license"></a>
 </p>
