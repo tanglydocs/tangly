@@ -23,16 +23,29 @@ function findCodeRegions(src) {
   const inFence = (idx) => regions.some(([s, e]) => idx >= s && idx < e);
   let i = 0;
   while (i < src.length) {
-    if (inFence(i)) { i++; continue; }
-    if (src.charCodeAt(i) !== 96) { i++; continue; }
+    if (inFence(i)) {
+      i++;
+      continue;
+    }
+    if (src.charCodeAt(i) !== 96) {
+      i++;
+      continue;
+    }
     let n = 1;
     while (src.charCodeAt(i + n) === 96) n++;
     let j = i + n;
     while (j < src.length) {
-      if (src.charCodeAt(j) !== 96) { j++; continue; }
+      if (src.charCodeAt(j) !== 96) {
+        j++;
+        continue;
+      }
       let m = 1;
       while (src.charCodeAt(j + m) === 96) m++;
-      if (m === n) { regions.push([i, j + m]); i = j + m; break; }
+      if (m === n) {
+        regions.push([i, j + m]);
+        i = j + m;
+        break;
+      }
       j += m;
     }
     if (j >= src.length) i += n;

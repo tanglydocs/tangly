@@ -4,11 +4,9 @@ import { replaceOutsideCode } from "./replace-outside-code.js";
 const latex = /<latex>([\s\S]*?)<\/latex>/gi;
 const wrap = (_m: string, body: string) => `[${body.trim()}]`;
 const imgRe = /!\[([^\]]*)\]\(\s*((?:\.\.\/)+)([^)\s]+)\)/g;
-const imgReplacer = (_m: string, alt: string, _dots: string, rest: string) =>
-  `![${alt}](/${rest})`;
+const imgReplacer = (_m: string, alt: string, _dots: string, rest: string) => `![${alt}](/${rest})`;
 
 describe("replaceOutsideCode", () => {
-
   test("rewrites outside backticks", () => {
     expect(replaceOutsideCode("hello <latex>x</latex> world", latex, wrap).value).toBe(
       "hello [x] world",

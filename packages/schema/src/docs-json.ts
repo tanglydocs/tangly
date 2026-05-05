@@ -275,9 +275,7 @@ const ContextualSchema = z
      *
      * Omit `contextual` entirely → all actions show. Empty array → menu hidden.
      */
-    options: z
-      .array(z.enum(["copy", "copy-url", "view", "chatgpt", "claude"]))
-      .optional(),
+    options: z.array(z.enum(["copy", "copy-url", "view", "chatgpt", "claude"])).optional(),
   })
   .strict()
   .optional();
