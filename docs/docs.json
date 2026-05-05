@@ -2,6 +2,7 @@
   "$schema": "../packages/schema/dist/docs.json",
   "name": "Tangly",
   "description": "Self-hosted, open-source documentation framework.",
+  "siteUrl": "https://docs.tangly.dev",
   "theme": "tang",
   "colors": {
     "primary": "#EA580C",
@@ -36,7 +37,6 @@
   "redirects": [
     { "source": "/guides/migrate-from-mintlify", "destination": "/guides/migration/from-mintlify", "permanent": true },
     { "source": "/guides/configuration", "destination": "/guides/customization/configuration", "permanent": true },
-    { "source": "/guides/themes", "destination": "/guides/themes/index", "permanent": true },
     { "source": "/guides/components", "destination": "/guides/customization/components", "permanent": true },
     { "source": "/guides/custom-components", "destination": "/guides/customization/custom-components", "permanent": true },
     { "source": "/guides/custom-templates", "destination": "/guides/customization/custom-templates", "permanent": true },
