@@ -4,13 +4,13 @@ description: Mount your Tangly docs under /docs (or any path) on an existing sit
 icon: "folder-tree"
 ---
 
-# Hosting docs at a subpath
+## Hosting docs at a subpath
 
 You probably already have a marketing site, an app, or both. Putting docs at `docs.example.com` works fine, but a lot of teams prefer `example.com/docs`. One domain, shared analytics, no extra DNS, and links from the homepage stay first-party. This page covers what Tangly does to make that work and the realistic ways to wire it up.
 
 The short version: build with `--base /docs`, then either drop the output into your site or point a rewrite at it.
 
-## What `--base` does
+### What `--base` does
 
 ```bash
 bun x tangly build --base /docs
@@ -22,7 +22,7 @@ If you set `siteUrl` in `docs.json`, Tangly composes absolute URLs as `${siteUrl
 
 The flag is borrowed from Astro's [`base` config option](https://docs.astro.build/en/reference/configuration-reference/#base), which Tangly threads through. Astro's docs cover the same idea for stand-alone Astro projects, which is useful background if you want to understand what the rendered HTML looks like under the hood.
 
-## Strategy 1: build into your site's public directory
+### Strategy 1: build into your site's public directory
 
 Easiest path if your existing site is built with anything that serves a `public/` (or `static/`, or `dist/`) directory verbatim. Next.js, Vite, Remix, TanStack Start, Astro, SvelteKit, plain HTML, all of them work. Run a Tangly build into that directory before the site build:
 
@@ -40,7 +40,7 @@ That writes a self-contained tree at `public/docs/` containing `index.html`, eve
 
 Trade-offs: one repo, one deploy, one thing that can break. The docs and the site ship together, so if your docs change daily and your site changes weekly, you'll deploy the site weekly anyway. The file count under `public/` also grows, which can slow CI uploads on some platforms.
 
-## Strategy 2: separate deploy + edge rewrite
+### Strategy 2: separate deploy + edge rewrite
 
 Deploy Tangly as its own project (its own Vercel/Cloudflare/Netlify site, its own bucket, anywhere) at `dg-docs.vercel.app/docs`. Then add one rewrite rule on your main site that proxies `/docs/*` to the docs origin. The browser only ever sees `example.com/docs/*`. The docs project URL stays invisible.
 
@@ -81,7 +81,7 @@ Trade-offs: two projects, two CI pipelines, two URLs. The upside is that docs an
 
 One thing to watch: when the docs project responds, its absolute URLs (canonical, OG image, sitemap entries) need to point at `example.com/docs/...`, not `dg-docs.vercel.app/docs/...`. Set `siteUrl: "https://example.com"` in your `docs.json` and Tangly composes URLs against that, not against the deploy URL. Verify by viewing source on a deployed page and checking the `<link rel="canonical">` tag.
 
-## Strategy 3: Cloudflare
+### Strategy 3: Cloudflare
 
 Cloudflare's behaviour depends on how you want to do it.
 
@@ -103,7 +103,7 @@ export default {
 };
 ```
 
-## Strategy 4: nginx (self-hosted)
+### Strategy 4: nginx (self-hosted)
 
 If you're behind nginx, two `location` blocks do the job. The trick is making sure the upstream serves the same prefix Tangly was built with, otherwise links break. Build with `--base /docs` and proxy `/docs/` to the upstream root, and the prefixes line up.
 
@@ -131,7 +131,7 @@ location /docs/ {
 
 `alias` maps the URL prefix to a filesystem path. Same idea as Strategy 1, but for hosts that aren't framework-shaped.
 
-## Strategy 5: GitHub Pages under a project repo
+### Strategy 5: GitHub Pages under a project repo
 
 GitHub Pages serves project repos at `https://USER.github.io/REPO/`, which is a subpath whether you wanted one or not. Build with `--base /REPO`:
 
@@ -144,7 +144,7 @@ GitHub Pages serves project repos at `https://USER.github.io/REPO/`, which is a 
 
 Same flag, different reason for using it. Astro's [GitHub Pages deploy guide](https://docs.astro.build/en/guides/deploy/github/) walks through the surrounding workflow. Tangly inherits the relevant pieces.
 
-## Sub-subpaths and what to set in docs.json
+### Sub-subpaths and what to set in docs.json
 
 The `--base` flag accepts any path: `/docs`, `/docs/v2`, `/product/docs/v2`. Tangly normalizes leading and trailing slashes, so `/docs`, `/docs/`, `docs`, and `docs/` all behave identically.
 
@@ -157,7 +157,7 @@ Two `docs.json` fields interact with subpath hosting:
 
 Don't put the path inside `siteUrl`. Tangly composes them itself, and setting both will double-prefix.
 
-## Verifying
+### Verifying
 
 After deploying, the smoke test is the same as for any deploy with extra eyes on the prefix:
 
@@ -176,7 +176,7 @@ grep '](/' dist/llms.txt | head
 
 The browser test matters more than the grep test. Click the sidebar, click a search result, click an embedded link in an MDX page, click the logo. Every one should stay under `/docs`.
 
-## When not to do this
+### When not to do this
 
 If your docs need authenticated access, dynamic per-user content, or shell elements (top nav, sidebar, account dropdown) shared with the parent app, a static subpath mount won't help. You need the docs to live inside the app's render tree, which is a bigger project than this guide covers.
 

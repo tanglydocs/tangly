@@ -4,11 +4,11 @@ description: The synthesized Astro app that ships inside tangly.
 icon: "cog"
 ---
 
-# Runtime
+## Runtime
 
 `packages/tangly/runtime/` is a real Astro project that ships inside the `tangly` npm package. The CLI invokes `astro dev` / `astro build` programmatically with `root` pointing at this directory.
 
-## Layout
+### Layout
 
 <FileTree>
 - runtime/
@@ -25,7 +25,7 @@ icon: "cog"
       - remark-mermaid.mjs
 </FileTree>
 
-## Page render pipeline
+### Page render pipeline
 
 ```mermaid
 flowchart TD
@@ -43,7 +43,7 @@ flowchart TD
   R11 --> R12[static HTML in dist/]
 ```
 
-## Catch-all in detail
+### Catch-all in detail
 
 `src/pages/[...slug].astro` is the heart of the runtime. For each request:
 
@@ -62,7 +62,7 @@ flowchart TD
   </Step>
 </Steps>
 
-## Content collection
+### Content collection
 
 ```ts
 const docs = defineCollection({
@@ -75,7 +75,7 @@ const docs = defineCollection({
 
 Astro's content layer handles MDX parsing, image processing, and per-file caching. We don't reinvent any of it.
 
-## Why a runtime, not a config preset
+### Why a runtime, not a config preset
 
 We could ship as `astro.config` snippets the user adds. Instead, the runtime is fully synthesized:
 
@@ -83,10 +83,10 @@ We could ship as `astro.config` snippets the user adds. Instead, the runtime is 
 - `tangly eject` materializes this directory into the user's repo and removes `tangly` from deps when you want to leave.
 - We can iterate runtime internals without breaking user code.
 
-## Discovery
+### Discovery
 
 `getRuntimeDir()` finds the runtime by walking up from the CLI's compiled JS until it finds a directory with `astro.config.mjs`. This handles npm install + workspace symlinks transparently.
 
-## Adapter selection
+### Adapter selection
 
 `astro.config.mjs` reads `TANGLY_ADAPTER` (set by the CLI from `--adapter` or auto-detect). Today only `vercel` applies a real adapter; `cloudflare` and `node` are recognized but stay static-only until SSR routes (e.g. AI chat) land. See [Deploying](/guides/deploying) for the matrix.

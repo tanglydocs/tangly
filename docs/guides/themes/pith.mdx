@@ -4,13 +4,13 @@ description: Editorial theme. Serif headings, cream background, all chrome in th
 icon: "book-open"
 ---
 
-# Pith
+## Pith
 
 Pith is editorial. Serif headings (Spectral). Cream paper. Single sidebar that holds everything: logo, search, tabs, nav, anchors, navbar links, the primary CTA, the theme toggle. No top bar.
 
 The result is a column of content with chrome out of the way. Reads like a handbook or a long-form essay platform.
 
-## When to use it
+### When to use it
 
 - Internal handbooks and knowledge bases.
 - Design-led docs sites where typography matters more than tooling familiarity.
@@ -18,17 +18,17 @@ The result is a column of content with chrome out of the way. Reads like a handb
 
 If you want a more conventional dev-tool look, [tang](/guides/themes/tang). If you need a book aesthetic with chapter nav, [readable](/guides/themes/readable).
 
-## Set it
+### Set it
 
 ```json
 { "theme": "pith" }
 ```
 
-## Token table
+### Token table
 
 From [`packages/theme-pith/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pith/src/styles/theme.css):
 
-### Colors: light
+#### Colors: light
 
 | Token | Value |
 |---|---|
@@ -41,11 +41,11 @@ From [`packages/theme-pith/src/styles/theme.css`](https://github.com/tanglydocs/
 | `--tangly-color-muted` | `#57534e` |
 | `--tangly-color-border` | `#e7e5e0` |
 
-### Colors: dark
+#### Colors: dark
 
 Inky background (`#0c0a09`) with the cream foreground swapped to `#f5f3ec`. Hairlines are `#292524`.
 
-### Typography
+#### Typography
 
 | Token | Value |
 |---|---|
@@ -53,7 +53,7 @@ Inky background (`#0c0a09`) with the cream foreground swapped to `#f5f3ec`. Hair
 | `--tangly-font-body` | `Inter` → system-ui → sans-serif |
 | `--tangly-font-mono` | `JetBrains Mono` |
 
-### Layout
+#### Layout
 
 | Token | Value | Notes |
 |---|---|---|
@@ -63,7 +63,7 @@ Inky background (`#0c0a09`) with the cream foreground swapped to `#f5f3ec`. Hair
 | `--tangly-topnav-height` | `0` | Top bar is hidden entirely. |
 | `--tangly-radius` | `0.25rem` | Tighter corners. |
 
-## What you don't get with pith
+### What you don't get with pith
 
 - No top bar. Logo and primary CTA both live in the sidebar.
 - No right-rail TOC. The sidebar handles all navigation.
@@ -71,7 +71,7 @@ Inky background (`#0c0a09`) with the cream foreground swapped to `#f5f3ec`. Hair
 
 If you need any of those, switch to tang.
 
-## Customizing
+### Customizing
 
 ```json
 {
@@ -96,6 +96,6 @@ For wider content columns (you'll know if you need it):
 }
 ```
 
-## Source
+### Source
 
 [`packages/theme-pith/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pith/src/styles/theme.css)

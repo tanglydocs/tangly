@@ -4,7 +4,7 @@ description: Cmd+K search powered by Pagefind. Zero infra, static index.
 icon: "search"
 ---
 
-# Search
+## Search
 
 Tangly ships Cmd+K search with no third-party service required. The index is built when you run `tangly build` and served as static assets next to the rest of your site.
 
@@ -12,7 +12,7 @@ Tangly ships Cmd+K search with no third-party service required. The index is bui
   Search runs only against built sites. In `tangly dev` the modal opens but reports "Search index unavailable"; the index doesn't exist until you build. Use `tangly build && tangly preview` to test search locally.
 </Note>
 
-## How it works
+### How it works
 
 <Steps>
   <Step title="Index at build">
@@ -26,7 +26,7 @@ Tangly ships Cmd+K search with no third-party service required. The index is bui
   </Step>
 </Steps>
 
-## Excluding pages
+### Excluding pages
 
 Both filters work the same way; the page never enters the search index.
 
@@ -50,7 +50,7 @@ noindex: true
 Pagefind: 47 pages indexed, 2 excluded
 ```
 
-## Configuration
+### Configuration
 
 ```json
 {
@@ -62,10 +62,10 @@ Pagefind: 47 pages indexed, 2 excluded
 
 The `prompt` becomes the placeholder text in the search input. More search options (fuzzy threshold, result limits) will land later.
 
-## Hosting
+### Hosting
 
 The `dist/pagefind/` directory must be served as static assets by your host. Vercel, Cloudflare Pages, Netlify, S3+CloudFront, and any plain static host work without additional config.
 
-## Customizing the modal
+### Customizing the modal
 
 The default modal is a single Astro file at `@tanglydocs/theme-tang/SearchModal.astro` (or `theme-pith/`). Drop an override at `./components/SearchModal.astro` in your project to replace it; component shadowing routes the import there.

@@ -4,11 +4,11 @@ description: Five layers of customization, from a single hex color to forking th
 icon: "settings-2"
 ---
 
-# Customizing themes
+## Customizing themes
 
 Five layers, increasing in scope. Most projects stop at layer two.
 
-## 1. Override colors
+### 1. Override colors
 
 Five hex tokens cover most rebrands.
 
@@ -24,9 +24,9 @@ Five hex tokens cover most rebrands.
 }
 ```
 
-See [Schema → Colors](/reference/schema/colors) for the full token table.
+See [Schema → Colors](/reference/schema) for the full token table.
 
-## 2. Override fonts
+### 2. Override fonts
 
 ```json
 {
@@ -51,9 +51,9 @@ Tangly fetches matching weights from Google Fonts. Self-hosted: set `source` to 
 }
 ```
 
-See [Schema → Fonts & styling](/reference/schema/fonts-styling).
+See [Schema → Fonts & styling](/reference/schema).
 
-## 3. Override CSS variables
+### 3. Override CSS variables
 
 For sidebar widths, content column, line heights, radii: drop a `theme/styles/theme.css` at your project root. The file is concatenated after the bundled theme so your declarations win.
 
@@ -72,7 +72,7 @@ For sidebar widths, content column, line heights, radii: drop a `theme/styles/th
 
 Every theme exposes the same token namespace (`--tangly-color-*`, `--tangly-font-*`, `--tangly-sidebar-*`, etc.). See each theme's reference page for its specific defaults.
 
-## 4. Shadow components
+### 4. Shadow components
 
 For component-level changes (restyling a Card, replacing the topbar layout, adding a custom callout variant) drop a matching `.astro` file under `theme/`.
 
@@ -87,7 +87,7 @@ For component-level changes (restyling a Card, replacing the topbar layout, addi
 
 The shadowed component receives the same props as the built-in. See [Custom components](/guides/customization/custom-components) for the full pattern.
 
-## 5. Eject
+### 5. Eject
 
 For full control (custom Vite plugins, custom Astro integrations, removing parts of the runtime) run:
 
@@ -99,9 +99,9 @@ This materializes the synthesized Astro project to `.tangly/`. Edit anything. Ta
 
 **One-way operation.** Commit before running.
 
-See [`tangly eject`](/reference/cli/eject) for what gets written and how to roll back if you regret it.
+See [`tangly eject`](/reference/cli) for what gets written and how to roll back if you regret it.
 
-## What lives where
+### What lives where
 
 | Want to change… | Layer |
 |---|---|
@@ -111,9 +111,9 @@ See [`tangly eject`](/reference/cli/eject) for what gets written and how to roll
 | Card layout | 4 |
 | Add a custom Astro middleware | 5 |
 | Add a Tailwind plugin | 5 |
-| Render a different OpenAPI viewer | [Schema → API](/reference/schema/api): no customization needed, just `api.viewer` |
+| Render a different OpenAPI viewer | [Schema → API](/reference/schema): no customization needed, just `api.viewer` |
 
-## Cross-theme patterns
+### Cross-theme patterns
 
 Token names are the same across all five built-in themes. Custom CSS overrides written for tang work on geist, pith, etc.; only the values differ.
 

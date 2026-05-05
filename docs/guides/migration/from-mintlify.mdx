@@ -4,7 +4,7 @@ description: Move an existing Mintlify project to Tangly without editing source 
 icon: "arrow-right-left"
 ---
 
-# Migrate from Mintlify
+## Migrate from Mintlify
 
 Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CLI and pointing `$schema` at Tangly's schema.
 
@@ -55,7 +55,7 @@ Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CL
   </Step>
 </Steps>
 
-## Side-by-side compare
+### Side-by-side compare
 
 If you want to confirm parity before committing:
 
@@ -69,7 +69,7 @@ tangly dev --port 4321
 
 Browse both at the same time.
 
-## What's compatible
+### What's compatible
 
 <Check>
   All `docs.json` top-level fields (theme, colors, logo, navigation, navbar, footer, redirects, seo, analytics, api, appearance, fonts, etc).
@@ -87,7 +87,7 @@ Browse both at the same time.
 <Check>Heading anchors.</Check>
 <Check>KaTeX block math via `<latex>` tags.</Check>
 
-## Flags
+### Flags
 
 <ParamField path="--root <dir>" type="string" default=".">
   Project root.

@@ -4,13 +4,13 @@ description: "Author terms once; auto-link them on every page."
 icon: "book-marked"
 ---
 
-# Glossary
+## Glossary
 
 Tangly auto-links glossary terms across your docs. Define a term once and every mention of it on every other page becomes a hover-tip with the definition and a click-through to the canonical entry.
 
 There are two authoring forms; pick the one that fits your scale.
 
-## Single-file form
+### Single-file form
 
 Drop a `glossary.mdx` at the project root. Every `## H2` is one term; the body until the next H2 is the definition. The slug is the heading's GitHub-flavored slug.
 
@@ -41,7 +41,7 @@ Aliases are picked up two ways:
 1. An explicit `**Aliases:** CF, load factor` line near the top of the body.
 2. A `(aka X, Y)` parenthetical in the first paragraph.
 
-## Per-term form
+### Per-term form
 
 For larger glossaries, use a `glossary/` directory with one file per term. Each file is one entry; the filename (sans extension) is the slug.
 
@@ -59,12 +59,12 @@ maximum output if it had run at full nameplate capacity for the same period.
 
 If both forms exist (`glossary.mdx` AND `glossary/`), the single-file form wins and Tangly logs a warning.
 
-## How auto-linking works
+### How auto-linking works
 
 A rehype plugin walks every page's HTML AST after Shiki has run (so code blocks are never touched). For each text node, it scans for term + alias matches and wraps the first occurrence per page in a `<GlossaryTerm>` component. Subsequent matches on the same page are left alone; the goal is a hint, not noise.
 
 Pages can opt out with `glossary: false` in frontmatter (typical for the glossary page itself, the changelog, and any auto-generated reference).
 
-## Tooltip excerpts
+### Tooltip excerpts
 
 The hover-tip uses the first paragraph of the definition, trimmed to 200 characters. Click-through goes to `/<glossary-slug>#<term-slug>` (or the per-term file's route if you used the directory form).

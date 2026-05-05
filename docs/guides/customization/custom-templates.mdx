@@ -4,7 +4,7 @@ description: Use a different layout for landing pages, API references, or any su
 icon: "layout-template"
 ---
 
-# Custom page templates
+## Custom page templates
 
 Set `template:` in frontmatter to render a page through a custom layout:
 
@@ -20,7 +20,7 @@ hero:
 
 Tangly resolves to `<userRoot>/templates/landing.astro` and renders the page through it. The MDX body (the `# Welcome` plus everything after frontmatter) becomes the template's `<slot>`.
 
-## Template props
+### Template props
 
 Templates receive the page context as props:
 
@@ -34,7 +34,7 @@ interface TemplateProps {
 
 Children (the rendered MDX) come in via `<slot />`.
 
-## Example
+### Example
 
 ```tsx
 ---
@@ -73,7 +73,7 @@ const { frontmatter, page } = Astro.props;
 </Layout>
 ```
 
-## Section-level inheritance
+### Section-level inheritance
 
 Set `template` on a `_section.mdx` to apply it to every page in that directory subtree:
 
@@ -86,17 +86,17 @@ template: guide
 
 Page-level frontmatter overrides section defaults; set `template: standard` on a specific page to opt out of the section template.
 
-## Resolution order
+### Resolution order
 
 1. `<userRoot>/templates/<name>.astro`: your project template.
 2. Built-in template registry (currently empty; reserved for future themes).
 3. Fallback to the default page shell with a warning logged.
 
-## Hot reload
+### Hot reload
 
 Editing a template hot-reloads any page that uses it. Adding or renaming a template invalidates the manifest and triggers a full reload.
 
-## Use cases
+### Use cases
 
 - **Landing pages**: hero + CTA + featured grid instead of sidebar + content.
 - **API overview**: custom endpoint catalog rendered from `manifest.pages`.

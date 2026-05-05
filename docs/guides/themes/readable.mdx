@@ -4,13 +4,13 @@ description: Long-form reading mode. Cream paper, serif body, book-style chapter
 icon: "book-marked"
 ---
 
-# Readable
+## Readable
 
 Readable is for long-form reading sessions. Warm sepia paper. Serif body (Crimson Pro). Narrow column targeting 60–66 character lines. Generous leading. Sidebar holds a chapter list. No top bar, no right-rail TOC.
 
 It mirrors what Kindle and the Financial Times do for long-form: get out of the way.
 
-## When to use it
+### When to use it
 
 - Books published as docs.
 - Multi-chapter essay collections.
@@ -19,17 +19,17 @@ It mirrors what Kindle and the Financial Times do for long-form: get out of the 
 
 For interactive product docs, you don't want this; switch to [tang](/guides/themes/tang) or [pith](/guides/themes/pith).
 
-## Set it
+### Set it
 
 ```json
 { "theme": "readable" }
 ```
 
-## Token table
+### Token table
 
 From [`packages/theme-readable/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-readable/src/styles/theme.css):
 
-### Colors: light (paper mode)
+#### Colors: light (paper mode)
 
 | Token | Value | Role |
 |---|---|---|
@@ -42,11 +42,11 @@ From [`packages/theme-readable/src/styles/theme.css`](https://github.com/tanglyd
 | `--tangly-color-muted` | `#6b5e4f` | |
 | `--tangly-color-border` | `#d8cebc` | |
 
-### Colors: dark (night mode)
+#### Colors: dark (night mode)
 
 Mirrors Kindle's night mode: low-contrast warm dark surface (`#1a1410`) with cream foreground (`#d8cebc`).
 
-### Typography
+#### Typography
 
 | Token | Value |
 |---|---|
@@ -54,7 +54,7 @@ Mirrors Kindle's night mode: low-contrast warm dark surface (`#1a1410`) with cre
 | `--tangly-font-body` | Same as heading; uniform serif treatment |
 | `--tangly-font-mono` | `JetBrains Mono` |
 
-### Layout
+#### Layout
 
 | Token | Value | Notes |
 |---|---|---|
@@ -64,11 +64,11 @@ Mirrors Kindle's night mode: low-contrast warm dark surface (`#1a1410`) with cre
 | `--tangly-topnav-row1-height` | `3rem` | Minimal topbar. |
 | `--tangly-radius` | `0.125rem` | Tight, almost-square corners. |
 
-## Chapter navigation
+### Chapter navigation
 
 The sidebar in `readable` is a chapter list. Headings render as chapter numbers when you author with `<Steps>` or numbered top-level groups in `navigation`. Page-bottom "Next chapter →" link is automatic from the navigation order.
 
-## Customizing
+### Customizing
 
 Reading-focused projects often want a darker accent or a different serif:
 
@@ -94,6 +94,6 @@ For column width tweaks:
 }
 ```
 
-## Source
+### Source
 
 [`packages/theme-readable/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-readable/src/styles/theme.css)

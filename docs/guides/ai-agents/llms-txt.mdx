@@ -4,7 +4,7 @@ description: Auto-generated `/llms.txt` and `/llms-full.txt`. The standard way t
 icon: "bot-message-square"
 ---
 
-# `llms.txt`
+## `llms.txt`
 
 [`llms.txt`](https://llmstxt.org) is a proposed convention: a Markdown file at the root of your site that lists every page agents can read, with brief descriptions. Think `sitemap.xml` for LLMs.
 
@@ -17,9 +17,9 @@ Both are generated at build time. No configuration. No opt-in.
 
 For per-page raw Markdown (fetched on demand by an agent reading one specific page) see [Markdown for agents](/guides/ai-agents/markdown-for-agents).
 
-## What's in them
+### What's in them
 
-### `/llms.txt`
+#### `/llms.txt`
 
 ```
 # My Docs
@@ -32,13 +32,13 @@ For per-page raw Markdown (fetched on demand by an agent reading one specific pa
 - [Quickstart](/quickstart): 60-second tour.
 
 ## Reference
-- [docs.json](/reference/schema/docs-json): Configuration reference.
+- [docs.json](/reference/schema): Configuration reference.
 - ...
 ```
 
 The structure mirrors `docs.json#navigation`. Tabs become `##` headings, groups become sub-sections, page entries link to the rendered page and carry the `description` from frontmatter.
 
-### `/llms-full.txt`
+#### `/llms-full.txt`
 
 ```
 # My Docs
@@ -64,13 +64,13 @@ Pages are separated by `---`. Each page's frontmatter is dropped; its body is th
 
 The full file can be several MB on large docs sites. Coding agents fetching it once and caching is the expected use.
 
-## What's excluded
+### What's excluded
 
 - Pages with `noindex: true` in frontmatter.
 - Drafts (`draft: true`) when not built with `--include-drafts`.
 - Pages whose slug is in `redirects[].source`.
 
-## How agents use it
+### How agents use it
 
 Coding agents fetch one of two URLs at the start of a session:
 
@@ -79,7 +79,7 @@ Coding agents fetch one of two URLs at the start of a session:
 
 Tangly's own [`tanglify` skill](/guides/ai-agents/skills) is what Claude Code uses for guidance. Other agents (Cursor's deep mode, Aider) often consume `llms-full.txt` directly.
 
-## Pointing agents at your llms.txt
+### Pointing agents at your llms.txt
 
 Tools that auto-discover (Cursor, Continue, several IDE plugins) fetch from `/llms.txt` automatically when given a base URL.
 
@@ -92,7 +92,7 @@ The llms.txt is at https://docs.example.com/llms.txt.
 
 Most coding agents pick this up on the first turn.
 
-## Excluding sensitive pages
+### Excluding sensitive pages
 
 Use the `noindex` frontmatter field:
 
@@ -107,7 +107,7 @@ Excludes from `/llms.txt`, `/llms-full.txt`, `sitemap.xml`, and the search index
 
 For server-rendered access controls (login required to view), Tangly isn't the right tool. Static-site limit: anyone who can view the page can read its source.
 
-## Customizing
+### Customizing
 
 The current implementation isn't user-configurable. Roadmap:
 
@@ -117,6 +117,6 @@ The current implementation isn't user-configurable. Roadmap:
 
 If any of those would unblock your team, [open an issue](https://github.com/tanglydocs/tangly/issues).
 
-## Source
+### Source
 
 The generator lives in `packages/tangly/src/build/llms-txt.ts`.

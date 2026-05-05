@@ -4,16 +4,16 @@ description: Swap the palette, change the font, tweak a component, ship it.
 icon: "palette"
 ---
 
-# Customize the theme
+## Customize the theme
 
 Most rebrands take five hex values and a font family. The longer your customizations live in `docs.json`, the easier they are to revisit. The further you push toward CSS overrides and component shadowing, the more you own. This tutorial walks the spectrum: start from one end, stop wherever you have what you need.
 
-## Before you start
+### Before you start
 
 - A working Tangly project.
 - A brand color or two in mind. Hex format. If you only have a Pantone or a vibe, pick something close from [Tailwind's palette](https://tailwindcss.com/docs/customizing-colors); you can refine later.
 
-## 1. Switch theme
+### 1. Switch theme
 
 If `tang` (the default) isn't right, try one of the others:
 
@@ -31,7 +31,7 @@ Walk a few pages. If something feels wrong (sidebar too narrow, headings too ser
 
 The five built-ins are documented in detail at [Themes](/guides/themes/index).
 
-## 2. Override the brand color
+### 2. Override the brand color
 
 Add a `colors` block to `docs.json`:
 
@@ -68,9 +68,9 @@ For the anchor link gradient:
 }
 ```
 
-See [Schema → Colors](/reference/schema/colors) for the full token list.
+See [Schema → Colors](/reference/schema) for the full token list.
 
-## 3. Change the font
+### 3. Change the font
 
 Heading and body fonts are independent.
 
@@ -99,7 +99,7 @@ Tangly fetches matching weights from Google Fonts. For self-hosted fonts, set `s
 
 Drop the woff2 file in `static/fonts/` so it ships with the build.
 
-## 4. Tweak layout dimensions
+### 4. Tweak layout dimensions
 
 For sidebar width, content column, or radii (values that aren't in `docs.json`) use a CSS override file. Create `theme/styles/theme.css` at your project root:
 
@@ -122,7 +122,7 @@ For dark-mode-specific overrides:
 }
 ```
 
-## 5. Replace a component
+### 5. Replace a component
 
 For changes that go beyond CSS, shadow the component. Drop a `theme/Card.astro` file at your project root:
 
@@ -148,7 +148,7 @@ Every `<Card>` in your MDX now renders through this file instead of the bundled 
 
 For more on shadowing, see [Custom components](/guides/customization/custom-components).
 
-## 6. Verify
+### 6. Verify
 
 ```bash
 bunx tangly check
@@ -163,10 +163,10 @@ Walk the rendered site:
 - Sidebar at `< 768px`: does the mobile menu pop in correctly?
 - Light → dark toggle: do all your overrides apply in both modes?
 
-## Where to go from here
+### Where to go from here
 
 - [Custom templates](/guides/customization/custom-templates): swap the page shell, not just components.
-- [`tangly eject`](/reference/cli/eject): full Astro project for total control.
+- [`tangly eject`](/reference/cli): full Astro project for total control.
 - [Geist style guide](/guides/themes/geist): when you want it to look like Vercel.
 
 If your final palette is meaningful enough to share, consider opening a PR with a new theme. Tangly's current five came from this exact path.

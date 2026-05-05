@@ -4,7 +4,7 @@ description: Tangly is an open-source documentation framework that turns a folde
 icon: "sparkles"
 ---
 
-# Tangly
+## Tangly
 
 Tangly turns a folder of Markdown into a self-hosted docs site. It's open source, runs on Astro, MDX, and Tailwind v4, and emits a static folder you drop on any host. No proprietary runtime, no monthly bill.
 
@@ -20,12 +20,12 @@ It's small, it's fast, and it works the way coding agents already want to work.
   <Card title="Components" icon="puzzle" href="/reference/components">
     38 MDX components: Card, Tabs, Steps, OpenAPI, callouts, and more.
   </Card>
-  <Card title="docs.json schema" icon="file-json" href="/reference/schema/docs-json">
+  <Card title="docs.json schema" icon="file-json" href="/reference/schema">
     Every configuration field, with editor-driven validation.
   </Card>
 </CardGroup>
 
-## What you get
+### What you get
 
 - **Fast dev server.** Astro 6 + Vite under the hood. HMR under 250ms, cold start under 2s on a hundred pages. `tangly dev` boots in the time `mintlify dev` spends loading.
 - **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
@@ -40,7 +40,7 @@ It's small, it's fast, and it works the way coding agents already want to work.
 - **Custom themes.** Build them using components from `@tanglydocs/theme-ui`.
 - **One-line migration from Mintlify.** `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
 
-## What you write
+### What you write
 
 Two things: a config file and pages.
 
@@ -56,7 +56,7 @@ Two things: a config file and pages.
 
 `docs.json` declares navigation and configures everything that isn't content. Each `.mdx` file becomes a page. Frontmatter handles per-page metadata (`title`, `description`, `icon`, `draft`, `noindex`). [Embedded blocks](/guides/authoring/embedded-blocks) let you reuse content across pages without copy-paste drift.
 
-## Built for agents
+### Built for agents
 
 Coding agents work better when the surface they're acting on is predictable. Claude Code, Cursor, Copilot, Aider all benefit. Tangly leans into that:
 
@@ -68,17 +68,17 @@ Coding agents work better when the surface they're acting on is predictable. Cla
 
 See [AI agents](/guides/ai-agents) for the full picture.
 
-## Mintlify-compatible
+### Mintlify-compatible
 
 Existing Mintlify projects render unchanged. Same components, same `docs.json` schema, same frontmatter. Run `tangly migrate` to clean up, then `tangly dev`. No source edits.
 
 For the full compatibility matrix, see [Migration → Compatibility](/guides/migration/compatibility).
 
-## What's next
+### What's next
 
 Two paths forward:
 
 - **First time?** [Quickstart](/quickstart) gets you to a running dev server in 60 seconds. [Tutorial](/tutorials/first-docs-site) takes you from empty directory to deployed site in ten minutes.
 - **Migrating from Mintlify?** [Migration guide](/guides/migration/from-mintlify) handles the swap.
 
-For everything else, the [Components](/reference/components) and [Schema](/reference/schema/docs-json) references cover what you'd want to look up.
+For everything else, the [Components](/reference/components) and [Schema](/reference/schema) references cover what you'd want to look up.

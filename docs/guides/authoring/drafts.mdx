@@ -4,7 +4,7 @@ description: Author pages that hide in production but render in dev.
 icon: "pencil-line"
 ---
 
-# Drafts
+## Drafts
 
 Mark a page as a draft via frontmatter:
 
@@ -17,7 +17,7 @@ draft: true
 
 Drafts are first-class. No separate dashboard, no CMS workflow. Authoring stays in your editor and git.
 
-## Behavior
+### Behavior
 
 | Mode | Drafts |
 | ---- | ------ |
@@ -25,7 +25,7 @@ Drafts are first-class. No separate dashboard, no CMS workflow. Authoring stays 
 | `tangly build` | Omitted entirely. No HTML, no sitemap entry, no `llms.txt`/`llms-full.txt` entry, no Pagefind index entry. |
 | `tangly check --strict` | Warnings for nav references that resolve to drafts. |
 
-## Override for staging
+### Override for staging
 
 Include drafts in a build:
 
@@ -40,7 +40,7 @@ Drafts ship with the build but still get the "Draft" badge so reviewers know wha
 echo 'TANGLY_INCLUDE_DRAFTS=1' >> .env.staging
 ```
 
-## Visibility rules
+### Visibility rules
 
 A page is a draft when **either**:
 
@@ -58,7 +58,7 @@ draft: true
 
 Every page under `guides/wip/` becomes a draft unless it sets `draft: false` explicitly.
 
-## Why drafts as frontmatter
+### Why drafts as frontmatter
 
 - **Single source**: the page's state lives next to its content.
 - **Git-trackable**: the diff between draft and published is just one frontmatter line.

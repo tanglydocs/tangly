@@ -4,11 +4,11 @@ description: How to structure tabs, groups, anchors, and dropdowns in docs.json.
 icon: "list-tree"
 ---
 
-# Navigation
+## Navigation
 
 The `navigation` field in `docs.json` is the source of truth for your sidebar and top-bar. Pages on disk that aren't referenced are routable but hidden from sidebars (matching Mintlify).
 
-## Pages, groups, tabs
+### Pages, groups, tabs
 
 A page is just a slug, a path without `.mdx`:
 
@@ -45,7 +45,7 @@ Tabs split the navigation into top-level sections:
 }
 ```
 
-## Anchors and dropdowns
+### Anchors and dropdowns
 
 Anchors are top-bar links, usually GitHub or external website:
 
@@ -61,7 +61,7 @@ Anchors are top-bar links, usually GitHub or external website:
 
 Dropdowns nest pages or external links under a single button.
 
-## Nested groups
+### Nested groups
 
 Groups can nest. Pages inside nested groups inherit the parent's behavior:
 
@@ -82,11 +82,11 @@ Groups can nest. Pages inside nested groups inherit the parent's behavior:
 }
 ```
 
-## Versions and languages
+### Versions and languages
 
 The schema accepts `versions` and `languages` arrays. Routing for them is on the roadmap and not wired today; declarations are preserved on the manifest for forward compatibility.
 
-## Pages on disk vs in nav
+### Pages on disk vs in nav
 
 A `.mdx` file at `<root>/<slug>.mdx` is always routable at `/<slug>`, even if it's not in nav. Use this for unlisted pages (e.g. landing pages linked from external campaigns).
 

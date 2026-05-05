@@ -4,11 +4,11 @@ description: How Tangly turns docs.json + MDX into a static site.
 icon: "blocks"
 ---
 
-# Architecture
+## Architecture
 
 Tangly is a thin layer over Astro 6. Your project is `docs.json` + `*.mdx`; Tangly synthesizes an Astro app, loads your content via virtual modules, and renders prerendered HTML through a single catch-all route.
 
-## High-level flow
+### High-level flow
 
 ```mermaid
 flowchart TD
@@ -46,7 +46,7 @@ flowchart TD
 
 The flow is one-directional: parse → manifest → expose → render → emit. Dev mode watches the user directory and re-emits virtual modules on change; build mode runs once.
 
-## Three packages
+### Three packages
 
 <CardGroup cols={3}>
   <Card title="@tanglydocs/schema" icon="shield">
@@ -60,7 +60,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
   </Card>
 </CardGroup>
 
-## Key design decisions
+### Key design decisions
 
 <Note>
   **User repos never see Astro.** Tangly runs Astro programmatically with `root` pointing at our shipped `runtime/`. Your project only contains `docs.json` + MDX. `tangly eject` materializes the runtime into your repo when you want to leave.
@@ -78,7 +78,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
   **Component shadowing** resolves bottom-up: project `theme/<Name>.astro` → active theme → built-in default. The Astro integration sets up Vite aliases so `@tanglydocs/theme-ui/Card.astro` transparently resolves to whatever the user has overridden.
 </Note>
 
-## Performance targets
+### Performance targets
 
 - Cold dev start: under 2s for 100 pages.
 - HMR: under 250ms.
@@ -86,7 +86,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
 
 These are acceptance criteria, not aspirations. Profile before merging if anything regresses.
 
-## Read more
+### Read more
 
 <CardGroup cols={2}>
   <Card title="Manifest builder" icon="git-branch" href="/architecture/manifest">

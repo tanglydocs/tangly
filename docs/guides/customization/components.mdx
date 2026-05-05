@@ -4,15 +4,15 @@ description: MDX components shipped with Tangly. Overview and per-page reference
 icon: "puzzle"
 ---
 
-# Components
+## Components
 
 Every built-in component is auto-injected into MDX. No imports required. Prop signatures match Mintlify exactly, so existing content renders unchanged.
 
 For full prop reference per component, see the [Components reference](/reference/components/callouts).
 
-## Quick tour
+### Quick tour
 
-### Callouts
+#### Callouts
 
 <Note>This is a Note.</Note>
 <Tip>This is a Tip.</Tip>
@@ -27,7 +27,7 @@ For full prop reference per component, see the [Components reference](/reference
 <Warning>Watch out.</Warning>
 ```
 
-### Cards
+#### Cards
 
 <CardGroup cols={2}>
   <Card title="With href" icon="arrow-right" href="/quickstart">
@@ -38,7 +38,7 @@ For full prop reference per component, see the [Components reference](/reference
   </Card>
 </CardGroup>
 
-### Tabs
+#### Tabs
 
 <Tabs>
   <Tab title="bun">
@@ -53,7 +53,7 @@ For full prop reference per component, see the [Components reference](/reference
   </Tab>
 </Tabs>
 
-### Steps
+#### Steps
 
 <Steps>
   <Step title="One">First step.</Step>
@@ -61,14 +61,14 @@ For full prop reference per component, see the [Components reference](/reference
   <Step title="Three">Third step.</Step>
 </Steps>
 
-### Accordion
+#### Accordion
 
 <AccordionGroup>
   <Accordion title="Question one">Answer one.</Accordion>
   <Accordion title="Question two">Answer two.</Accordion>
 </AccordionGroup>
 
-### API rows
+#### API rows
 
 <ParamField path="user_id" type="string" required>
   The user's UUID.
@@ -78,7 +78,7 @@ For full prop reference per component, see the [Components reference](/reference
   The user's email address.
 </ResponseField>
 
-## All components
+### All components
 
 | Component | Reference page |
 | --------- | -------------- |
@@ -91,7 +91,7 @@ For full prop reference per component, see the [Components reference](/reference
 | `Embed`, `Video`, `LightboxImage` | [Media](/reference/components/media) |
 | `Badge`, `Icon`, `Tooltip`, `GlossaryTerm` | [Text](/reference/components/text) |
 
-## Markdown extras
+### Markdown extras
 
 Some MDX features are syntax, not components. They're wired by default and need no imports.
 
@@ -100,9 +100,9 @@ Some MDX features are syntax, not components. They're wired by default and need 
 | LaTeX / KaTeX math (`$…$`, `$$…$$`, `<latex>`) | [Markdown · LaTeX](/reference/markdown#latex) |
 | Mermaid diagrams (`mermaid` fenced block) | [Markdown · Mermaid](/reference/markdown#mermaid) |
 
-## Customizing
+### Customizing
 
-Override any component by [shadowing](/guides/custom-components): drop a file at `<userRoot>/components/<Name>.{astro,tsx}` and Vite resolves your version everywhere it's used.
+Override any component by [shadowing](/guides/customization/custom-components): drop a file at `<userRoot>/components/<Name>.{astro,tsx}` and Vite resolves your version everywhere it's used.
 
 For new components that aren't in the built-in set, import them explicitly in your MDX:
 

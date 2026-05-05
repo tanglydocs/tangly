@@ -4,7 +4,7 @@ description: Per-page MDX frontmatter fields.
 icon: "list-ordered"
 ---
 
-# Frontmatter
+## Frontmatter
 
 Every `.mdx` file may declare frontmatter at the top:
 
@@ -22,7 +22,7 @@ renders as the page H1.
 
 Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema`'s `FrontmatterSchema`. Validation is non-fatal: invalid fields surface as warnings, the page still renders.
 
-## Recognized fields
+### Recognized fields
 
 <ParamField path="title" type="string">
   Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title. Don't repeat the title as `# Heading` or `<h1>` in the body; `tangly dev` warns when it finds one.
@@ -37,7 +37,7 @@ Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema
 </ParamField>
 
 <ParamField path="icon" type="string">
-  Lucide or Font Awesome icon name. Shown in the sidebar entry and any cards that link to this page. See [Icons](/reference/schema/icons) for the alias map.
+  Lucide or Font Awesome icon name. Shown in the sidebar entry and any cards that link to this page. See [Icons](/reference/schema) for the alias map.
 </ParamField>
 
 <ParamField path="tag" type="string">
@@ -121,7 +121,7 @@ glossary: false
   - `ogImage: string`: custom Open Graph image URL.
 </ParamField>
 
-## Custom fields
+### Custom fields
 
 `FrontmatterSchema` uses `passthrough()`. Unknown fields are preserved and forwarded to the active template via `frontmatter`. This is how custom landing-page templates consume `hero`, `cta`, `headline`, etc.
 
@@ -140,7 +140,7 @@ cta:
 
 The `landing` template reads `frontmatter.hero` and `frontmatter.cta` directly.
 
-## Strict parsing
+### Strict parsing
 
 ```ts
 import { parseFrontmatter, safeParseFrontmatter } from "@tanglydocs/schema";

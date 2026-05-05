@@ -4,11 +4,11 @@ description: Minimal theme for tiny sites. Single column, topbar-only chrome, no
 icon: "sprout"
 ---
 
-# Pip
+## Pip
 
 Pip is the smallest theme. No sidebar. One topbar row holding logo + flat nav links + theme toggle. Single content column. Built for sites with 4–5 pages where a sidebar is overhead.
 
-## When to use it
+### When to use it
 
 - A small project's docs that's barely more than a README.
 - A landing page + a few deep-link pages (changelog, license, contributing).
@@ -16,17 +16,17 @@ Pip is the smallest theme. No sidebar. One topbar row holding logo + flat nav li
 
 If your docs grew past ~6 pages, pip starts feeling sparse; switch to [tang](/guides/themes/tang).
 
-## Set it
+### Set it
 
 ```json
 { "theme": "pip" }
 ```
 
-## Token table
+### Token table
 
 From [`packages/theme-pip/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pip/src/styles/theme.css):
 
-### Colors: light
+#### Colors: light
 
 | Token | Value |
 |---|---|
@@ -39,11 +39,11 @@ From [`packages/theme-pip/src/styles/theme.css`](https://github.com/tanglydocs/t
 | `--tangly-color-muted` | `#71717a` |
 | `--tangly-color-border` | `#e4e4e7` |
 
-### Colors: dark
+#### Colors: dark
 
 Near-black (`#09090b`), brighter green primary (`#22c55e`), zinc-tone hairlines.
 
-### Typography
+#### Typography
 
 | Token | Value |
 |---|---|
@@ -51,7 +51,7 @@ Near-black (`#09090b`), brighter green primary (`#22c55e`), zinc-tone hairlines.
 | `--tangly-font-body` | `Inter` |
 | `--tangly-font-mono` | `JetBrains Mono` |
 
-### Layout
+#### Layout
 
 | Token | Value | Notes |
 |---|---|---|
@@ -61,7 +61,7 @@ Near-black (`#09090b`), brighter green primary (`#22c55e`), zinc-tone hairlines.
 | `--tangly-topnav-row1-height` | `3.5rem` | Single row: logo, links, toggle. |
 | `--tangly-topnav-row2-height` | `0` | No tabs row. |
 
-## Navigation in pip
+### Navigation in pip
 
 Because there's no sidebar, your `navigation.tabs` and `navigation.groups` collapse into the topbar:
 
@@ -79,7 +79,7 @@ Because there's no sidebar, your `navigation.tabs` and `navigation.groups` colla
 
 Tabs render inline. Within a tab, groups become a flyout menu.
 
-## Customizing
+### Customizing
 
 Same pattern as the other themes: `colors`, `fonts`, then `theme/styles/theme.css` for layout overrides.
 
@@ -89,6 +89,6 @@ Same pattern as the other themes: `colors`, `fonts`, then `theme/styles/theme.cs
 }
 ```
 
-## Source
+### Source
 
 [`packages/theme-pip/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-pip/src/styles/theme.css)

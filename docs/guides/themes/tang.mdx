@@ -4,11 +4,11 @@ description: The default theme. Mintlify-Mint inspired. Sans-serif, warm off-whi
 icon: "flame"
 ---
 
-# Tang
+## Tang
 
 Tang is what `tangly init` ships. Sans-serif everywhere, warm off-white background, mandarin orange accent. Sidebar to the left, two-row top bar (logo + tabs), right-rail TOC. Familiar to anyone coming from Mintlify Mint.
 
-## When to use it
+### When to use it
 
 - General-purpose OSS docs.
 - Dev-tool product sites.
@@ -17,7 +17,7 @@ Tang is what `tangly init` ships. Sans-serif everywhere, warm off-white backgrou
 
 If your docs are a long-form manuscript, [readable](/guides/themes/readable) reads better. If they fit on one page, [pip](/guides/themes/pip) is leaner.
 
-## Set it
+### Set it
 
 ```json
 { "theme": "tang" }
@@ -25,11 +25,11 @@ If your docs are a long-form manuscript, [readable](/guides/themes/readable) rea
 
 This is the default. You can omit the field entirely; same result.
 
-## Token table
+### Token table
 
 From [`packages/theme-tang/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-tang/src/styles/theme.css):
 
-### Colors: light
+#### Colors: light
 
 | Token | Value | Role |
 |---|---|---|
@@ -42,11 +42,11 @@ From [`packages/theme-tang/src/styles/theme.css`](https://github.com/tanglydocs/
 | `--tangly-color-muted` | `#6b6b70` | Mute, secondary text. |
 | `--tangly-color-border` | `#e6e4de` | Hairlines. |
 
-### Colors: dark
+#### Colors: dark
 
 The dark mode variant uses the same accents on a near-black surface (`#0b0b0f`) with darker hairlines (`#1f1f23`).
 
-### Typography
+#### Typography
 
 | Token | Value |
 |---|---|
@@ -54,7 +54,7 @@ The dark mode variant uses the same accents on a near-black surface (`#0b0b0f`) 
 | `--tangly-font-body` | `Inter` |
 | `--tangly-font-mono` | `JetBrains Mono` → ui-monospace |
 
-### Layout
+#### Layout
 
 | Token | Value | Notes |
 |---|---|---|
@@ -64,7 +64,7 @@ The dark mode variant uses the same accents on a near-black surface (`#0b0b0f`) 
 | `--tangly-topnav-row1-height` | `3.75rem` | Logo row. |
 | `--tangly-topnav-row2-height` | `2.5rem` | Tabs row. |
 
-### Radii
+#### Radii
 
 | Token | Value |
 |---|---|
@@ -72,7 +72,7 @@ The dark mode variant uses the same accents on a near-black surface (`#0b0b0f`) 
 | `--tangly-radius-sm` | `0.375rem` |
 | `--tangly-radius-lg` | `0.75rem` |
 
-## Customizing
+### Customizing
 
 Three layered options:
 
@@ -100,6 +100,6 @@ For deeper changes (sidebar width, line heights, radii), drop a `theme/styles/th
 }
 ```
 
-## Source
+### Source
 
 [`packages/theme-tang/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-tang/src/styles/theme.css)

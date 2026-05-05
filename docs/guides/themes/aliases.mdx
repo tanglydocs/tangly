@@ -4,7 +4,7 @@ description: Mintlify projects often set theme to mint or similar. Tangly resolv
 icon: "arrow-right-left"
 ---
 
-# Mintlify theme aliases
+## Mintlify theme aliases
 
 Existing Mintlify `docs.json` files often have one of these in the `theme` field:
 
@@ -12,13 +12,13 @@ Existing Mintlify `docs.json` files often have one of these in the `theme` field
 
 Tangly resolves all of them to `tang` at render time. No migration step required; your existing `docs.json` runs unmodified.
 
-## Why one alias
+### Why one alias
 
 Mintlify's themes mostly differ in palette and button shape. The component shells are nearly identical. Tangly bundles all that variation into one theme + token overrides; picking `tang` and overriding `colors` / `fonts` reproduces any of the Mintlify variants in 30 seconds.
 
 If you want a meaningfully different aesthetic, [pith](/guides/themes/pith), [pip](/guides/themes/pip), [readable](/guides/themes/readable), and [geist](/guides/themes/geist) are your other options.
 
-## Resolution rule
+### Resolution rule
 
 ```ts
 import { resolveTheme } from "@tanglydocs/schema";
@@ -30,7 +30,7 @@ resolveTheme(undefined);   // "tang"
 
 The Zod schema accepts any string for `theme` so projects mid-migration don't fail validation. Unknown values fall through to `tang` via `resolveTheme()`.
 
-## Should you rename `mint` → `tang`?
+### Should you rename `mint` → `tang`?
 
 It's optional. The two paths:
 
@@ -39,7 +39,7 @@ It's optional. The two paths:
 
 If you'd rather Tangly auto-rewrite, run `tangly check` to see the notice, then update by hand or with `sed`.
 
-## Reproducing a Mintlify variant
+### Reproducing a Mintlify variant
 
 If you liked `palm`'s blue palette, set:
 
@@ -56,6 +56,6 @@ If you liked `palm`'s blue palette, set:
 
 Pick the hex from your old Mintlify deployment, drop it in. Done.
 
-## Source
+### Source
 
 [`packages/schema/src/themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts): `TANGLY_THEMES`, `resolveTheme()`

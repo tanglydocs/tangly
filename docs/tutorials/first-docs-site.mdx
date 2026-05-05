@@ -4,13 +4,13 @@ description: Empty directory to deployed site in about ten minutes. No prior Ast
 icon: "rocket"
 ---
 
-# Build your first docs site
+## Build your first docs site
 
 The first time you set up a docs site for a new project, you're usually short on patience. So this tutorial doesn't dwell. We'll get pages on screen first, deal with polish later.
 
 What you'll have at the end: a five-page docs site running locally with hot reload, a deployed preview URL, and enough orientation to keep adding pages without consulting docs.
 
-## Before you start
+### Before you start
 
 You need:
 
@@ -19,7 +19,7 @@ You need:
 
 That's it. You don't need a GitHub account yet. You don't need a domain. Don't need to install Astro, MDX, Tailwind, or anything else; Tangly bundles them.
 
-## 1. Scaffold the project
+### 1. Scaffold the project
 
 ```bash
 mkdir my-docs && cd my-docs
@@ -48,7 +48,7 @@ If you want to skip the prompts, pass flags:
 bunx tangly init --name "My Docs" --template starter
 ```
 
-## 2. Run the dev server
+### 2. Run the dev server
 
 ```bash
 bunx tangly dev
@@ -64,7 +64,7 @@ Cold start under two seconds. Browser opens to `http://localhost:4321`. You shou
 
 Edit any `.mdx` file, save, and the browser updates without reloading.
 
-## 3. Add a page
+### 3. Add a page
 
 Two options. The slow way: create `guides/installing.mdx` with frontmatter and add it to `docs.json` by hand. The fast way:
 
@@ -87,7 +87,7 @@ Run `npm install ...`.
 
 Replace the stub with whatever you'd actually want there. Save. The browser updates.
 
-## 4. Configure the basics
+### 4. Configure the basics
 
 Open `docs.json`. Set `name` to whatever your project's actually called. Update `colors.primary` to your brand hex. Set `logo` to a real image (drop it in `images/` first).
 
@@ -109,7 +109,7 @@ Open `docs.json`. Set `name` to whatever your project's actually called. Update 
 
 The dev server picks up `docs.json` changes the same way it picks up MDX edits. No restart.
 
-## 5. Validate
+### 5. Validate
 
 Before you push:
 
@@ -128,7 +128,7 @@ A clean run looks like:
 OK — no issues found
 ```
 
-## 6. Build
+### 6. Build
 
 ```bash
 bunx tangly build
@@ -142,7 +142,7 @@ bunx tangly preview
 
 Serves `dist/` locally so you can sanity-check the production output before deploying.
 
-## 7. Deploy
+### 7. Deploy
 
 The shortest path is Vercel:
 
@@ -153,7 +153,7 @@ vercel deploy
 
 For Cloudflare Pages, use `--adapter cloudflare` and follow the [deploying guide](/guides/deploying). For "any static host," `--adapter static` writes plain HTML; drop `dist/` on S3, Netlify, or your own server.
 
-## Where to go from here
+### Where to go from here
 
 - [Authoring → Pages](/guides/authoring/pages): what frontmatter fields exist and when to use them.
 - [Components reference](/reference/components): the auto-injected MDX components.

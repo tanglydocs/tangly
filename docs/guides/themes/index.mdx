@@ -4,11 +4,11 @@ description: Tangly ships five themes. One token swap, no component changes. Pic
 icon: "palette"
 ---
 
-# Themes
+## Themes
 
 Tangly ships five themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`). What differs is colors, typography, layout dimensions, and chrome.
 
-## The five built-ins
+### The five built-ins
 
 <CardGroup cols={2}>
   <Card title="Tang" icon="flame" href="/guides/themes/tang">
@@ -28,7 +28,7 @@ Tangly ships five themes out of the box. They share the same component shell (`@
   </Card>
 </CardGroup>
 
-## Live demos
+### Live demos
 
 Every theme renders a real Tangly project at [examples.tangly.dev](https://examples.tangly.dev). Each is a different `docs.json` + MDX corpus; the only thing that changes between them is the `theme` field.
 
@@ -43,7 +43,7 @@ Every theme renders a real Tangly project at [examples.tangly.dev](https://examp
 
 The source for each demo lives in [`examples/demo-<theme>/`](https://github.com/tanglydocs/tangly/tree/main/examples) in the Tangly repo. Clone, edit, `tangly dev` to play.
 
-## Switch themes
+### Switch themes
 
 One field in `docs.json`:
 
@@ -53,7 +53,7 @@ One field in `docs.json`:
 
 Reload the dev server (`tangly dev`) to see it. No other changes required. Components are theme-agnostic.
 
-## Picking one
+### Picking one
 
 | If your docs are | Pick |
 |---|---|
@@ -63,7 +63,7 @@ Reload the dev server (`tangly dev`) to see it. No other changes required. Compo
 | A book, essay collection, or long manuscript | **Readable** |
 | A dev-tool with grayscale + restraint | **Geist** |
 
-## How themes work
+### How themes work
 
 Each theme is a separate package: `@tanglydocs/theme-tang`, `@tanglydocs/theme-pith`, `@tanglydocs/theme-pip`, `@tanglydocs/theme-readable`, `@tanglydocs/theme-geist`.
 
@@ -81,22 +81,22 @@ resolveTheme()
 
 This means **switching themes is risk-free**. Authoring stays the same. No content edits. Just swap the field, rebuild.
 
-## Customization paths
+### Customization paths
 
 Three knobs, in order of effort:
 
-1. **Override colors via `colors` in `docs.json`.** Five tokens. See [Colors](/reference/schema/colors).
-2. **Override fonts via `fonts` in `docs.json`.** Heading and body. See [Fonts & styling](/reference/schema/fonts-styling).
+1. **Override colors via `colors` in `docs.json`.** Five tokens. See [Colors](/reference/schema).
+2. **Override fonts via `fonts` in `docs.json`.** Heading and body. See [Fonts & styling](/reference/schema).
 3. **Override CSS variables in `theme/styles/theme.css`.** Drop the file at your project root; Tangly concatenates after the active theme. Full control.
 
-For deep custom layouts, [shadow](/guides/customization/custom-components) the components or [eject](/reference/cli/eject).
+For deep custom layouts, [shadow](/guides/customization/custom-components) the components or [eject](/reference/cli).
 
 See [Customizing themes](/guides/themes/customizing) for the full picture.
 
-## Mintlify aliases
+### Mintlify aliases
 
 Existing Mintlify projects often have `theme: "mint"` or one of: `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia`. All resolve to `tang`. See [Aliases](/guides/themes/aliases) for why.
 
-## Schema reference
+### Schema reference
 
-For the full `theme:` field definition, see [Schema → Themes](/reference/schema/themes).
+For the full `theme:` field definition, see [Schema → Themes](/reference/schema).

@@ -4,11 +4,11 @@ description: Reuse content across pages with <Embed page="x" block="y" />.
 icon: "blocks"
 ---
 
-# Embedded blocks
+## Embedded blocks
 
 Use `<Embed>` to render a labeled block from another page inline, without copy-pasting. The source page stays the canonical home; embeds re-render with whatever changes upstream.
 
-## Quick example
+### Quick example
 
 Suppose `guides/billing.mdx` has:
 
@@ -26,7 +26,7 @@ You can embed that section anywhere:
 
 The block renders inline and links back to the source.
 
-## How block IDs are picked
+### How block IDs are picked
 
 <Steps>
   <Step title="Auto from headings">
@@ -45,7 +45,7 @@ The block renders inline and links back to the source.
   </Step>
 </Steps>
 
-## What gets embedded
+### What gets embedded
 
 A heading-anchored block extends from the heading through the next sibling or parent heading. So `## Rate limits` (h2) closes at the next h2 or h1.
 
@@ -53,7 +53,7 @@ A `{#paragraph-id}` marker captures only that paragraph (until the next blank li
 
 Embeds render Markdown only; no MDX components inside the embedded block. If you need component-rich content shared across pages, use a snippet (`snippets/foo.mdx`) and import it as a component instead.
 
-## Cycle detection
+### Cycle detection
 
 If page A embeds a block that itself embeds something on A, the build fails with a clear trail:
 
@@ -63,7 +63,7 @@ If page A embeds a block that itself embeds something on A, the build fails with
 
 Break the cycle by inlining one block or removing one embed.
 
-## Live example
+### Live example
 
 Below is an `<Embed>` pulling the "Status" block from the Introduction page:
 
@@ -71,7 +71,7 @@ Below is an `<Embed>` pulling the "Status" block from the Introduction page:
 
 That's the same content you'd see at [/introduction#status](/introduction#status).
 
-## Implementation
+### Implementation
 
 `<Embed>` resolves at build time. The manifest extracts every block from every page during `build-manifest.ts`; `<Embed>` looks up the block, sanitizes the Markdown via `rehype-sanitize` with a strict allow-list, and renders the HTML inline.
 
@@ -81,7 +81,7 @@ This means:
 - **No client JS.** Embeds work without scripts loaded.
 - **Sanitized.** Block sources can't smuggle `<script>` or event-handler attributes into the embedding page.
 
-## When NOT to embed
+### When NOT to embed
 
 - **Snippet content** (callouts, sample code). Use `snippets/` instead. Snippets allow MDX/components.
 - **Versioned changes.** Embeds resolve at build time against the current source; they're not historical.

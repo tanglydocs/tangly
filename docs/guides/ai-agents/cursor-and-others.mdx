@@ -4,11 +4,11 @@ description: "JSON Schema autocomplete for docs.json works in any LSP-aware edit
 icon: "cursor-arrow"
 ---
 
-# Cursor & other editors
+## Cursor & other editors
 
 Tangly's primary agent integration is [agent skills](/guides/ai-agents/skills), supported by Claude Code, Codex, and other skill-aware agents. For editors without a skill-aware agent, the next-best surface is JSON Schema autocomplete. Every modern editor has it, and Tangly publishes a schema for `docs.json`.
 
-## JSON Schema autocomplete
+### JSON Schema autocomplete
 
 Add `$schema` to the top of your `docs.json`:
 
@@ -44,7 +44,7 @@ If you'd rather pin to a local copy of the schema (no network):
 
 `tangly migrate` rewrites the URL to whichever form you ran the command from.
 
-## Cursor rules
+### Cursor rules
 
 Cursor supports `.cursorrules` (legacy) and `.cursor/rules/` (current). Tangly doesn't ship one by default, but adding one is straightforward:
 
@@ -71,11 +71,11 @@ See `docs/guides/authoring/pages.mdx` for the full conventions.
 
 The rules file scopes its guidance to `docs/` so it doesn't pollute non-docs work.
 
-## Windsurf
+### Windsurf
 
 Windsurf's "rules" feature is the same shape as Cursor's. Same file works.
 
-## Aider
+### Aider
 
 Aider reads `CONVENTIONS.md` from the repo root by default. Same pattern:
 
@@ -89,14 +89,14 @@ The docs site under `docs/` uses Tangly.
 
 For project-wide instructions (not just docs), see [Conventions → AGENTS.md](/guides/ai-agents/conventions#agentsmd).
 
-## Codex CLI
+### Codex CLI
 
 Codex respects `AGENTS.md` (and `CLAUDE.md`). Same conventions file works for both. See [Conventions](/guides/ai-agents/conventions).
 
-## What if my editor doesn't support JSON Schema?
+### What if my editor doesn't support JSON Schema?
 
 A surprising number of small / niche editors do: `helix`, `kakoune`, `micro` via plugins. Worst case, the file is just JSON. You lose autocomplete; nothing else breaks.
 
-## llms.txt as a fallback
+### llms.txt as a fallback
 
 For editors with no AI integration at all, the [llms.txt](/guides/ai-agents/llms-txt) Tangly emits is the universal fallback. Any agent that can fetch a URL can read it.

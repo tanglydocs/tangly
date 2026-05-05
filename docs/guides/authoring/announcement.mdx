@@ -4,11 +4,11 @@ description: "Top-of-page strip for launches, deprecations, and notices."
 icon: "megaphone"
 ---
 
-# Announcement banner
+## Announcement banner
 
 The banner is a single horizontal strip rendered above the navbar on every page. Use it for product launches, deprecation warnings, planned-maintenance notices: anything that should be unmissable but dismissible.
 
-## Configuration
+### Configuration
 
 Set `banner` in `docs.json`:
 
@@ -25,7 +25,7 @@ Set `banner` in `docs.json`:
 
 `content` is HTML (a single anchor is the common pattern). `dismissible: true` adds a close button.
 
-## Stable IDs
+### Stable IDs
 
 `id` is the localStorage dismissal key. When a reader dismisses the banner, the id is written to `localStorage` and the banner stays hidden on subsequent visits.
 
@@ -33,7 +33,7 @@ When you ship a new announcement, change the `id`. Old dismissals keyed on the o
 
 If `id` is omitted, dismissal is session-scoped.
 
-## Tone
+### Tone
 
 `type` controls color. Pick the one that matches the message:
 
@@ -43,6 +43,6 @@ If `id` is omitted, dismissal is session-scoped.
 | `warning` | Deprecations, breaking changes, outages.  |
 | `success` | Resolved incidents, milestone hits.       |
 
-## Dismissed-then-re-shown
+### Dismissed-then-re-shown
 
 To force re-show without changing the id, ask the reader to clear the localStorage entry, or change the id. There's no admin-side "expire"; the banner stays up until you remove it from `docs.json` or the reader dismisses it.

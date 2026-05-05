@@ -4,7 +4,7 @@ description: Frontmatter, body, and the conventions Tangly expects on every page
 icon: "file-text"
 ---
 
-# Page anatomy
+## Page anatomy
 
 A Tangly page is an `.mdx` file with YAML frontmatter at the top and MDX body underneath. That's the whole structure.
 
@@ -22,11 +22,11 @@ The page body. Markdown. MDX components. JSX expressions if you need them.
 Headings auto-generate ids; link to them as `/page#sections`.
 ```
 
-## Frontmatter
+### Frontmatter
 
 The YAML block at the top. Parsed by `gray-matter`, validated against the [frontmatter schema](/reference/schema/frontmatter).
 
-### Minimum
+#### Minimum
 
 Most pages only need two fields:
 
@@ -37,7 +37,7 @@ description: 60-second tour.
 ---
 ```
 
-### Common
+#### Common
 
 | Field | When to use |
 |---|---|
@@ -52,11 +52,11 @@ description: 60-second tour.
 
 For the full list, see [Frontmatter](/reference/schema/frontmatter).
 
-## The body
+### The body
 
 Standard CommonMark + GFM extensions + JSX components. See [Markdown & MDX](/reference/markdown) for the full reference.
 
-### Don't write your own H1
+#### Don't write your own H1
 
 The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line (or `<h1>`) at the top of the body; you'll get two H1s.
 
@@ -70,11 +70,11 @@ This is the first paragraph. No `# Quickstart` line above it.
 
 `tangly dev` warns in the terminal when it finds an H1 in content so you can catch this while authoring.
 
-### Use H2 for sections
+#### Use H2 for sections
 
 Top-level sections under the page H1 should be `## H2`. The right-rail TOC indexes H2 and H3 only. Skip levels and you'll confuse the TOC.
 
-### Component conventions
+#### Component conventions
 
 Built-in MDX components are auto-injected. No imports.
 
@@ -84,13 +84,13 @@ Built-in MDX components are auto-injected. No imports.
 
 For custom components, drop them in `theme/` at your project root and reference them by name. See [Custom components](/guides/customization/custom-components).
 
-## Linking
+### Linking
 
 Internal links use absolute slugs without `.mdx`:
 
 ```md
 See [Quickstart](/quickstart) for the 60-second tour.
-See [API auth](/reference/schema/api#auth-methods) for headers.
+See [API auth](/reference/schema#auth-methods) for headers.
 ```
 
 `tangly check` validates internal links at build time.
@@ -101,7 +101,7 @@ External links open in new tabs automatically:
 [Astro](https://astro.build)
 ```
 
-## Images
+### Images
 
 Drop them in `images/` (or `static/`, `public/`, `assets/`). Reference by absolute path:
 
@@ -109,9 +109,9 @@ Drop them in `images/` (or `static/`, `public/`, `assets/`). Reference by absolu
 ![Architecture](/images/architecture.png)
 ```
 
-Every image gets a lightbox on click. To opt out, see [`<LightboxImage>`](/reference/components/lightbox-image).
+Every image gets a lightbox on click. To opt out, see [`<LightboxImage>`](/reference/components/media).
 
-## Section headings + anchors
+### Section headings + anchors
 
 Every heading auto-generates a slug-style id:
 
@@ -126,7 +126,7 @@ For stable ids that survive heading renames, pin them:
 ## Rate limits {#rate-limits}
 ```
 
-## Where pages live
+### Where pages live
 
 The slug is the path from the project root, no `.mdx`:
 
@@ -136,9 +136,9 @@ The slug is the path from the project root, no `.mdx`:
 | `guides/getting-started.mdx` | `guides/getting-started` | `/guides/getting-started` |
 | `reference/cli/dev.mdx` | `reference/cli/dev` | `/reference/cli/dev` |
 
-The slug is what you reference in [`docs.json#navigation`](/reference/schema/navigation) and what you link from other pages.
+The slug is what you reference in [`docs.json#navigation`](/reference/schema) and what you link from other pages.
 
-## Validation
+### Validation
 
 `tangly check` runs frontmatter validation against the schema, walks every internal link, and confirms every navigation entry resolves to a real file. Run it before committing:
 
@@ -152,7 +152,7 @@ For strict mode (warnings become errors):
 bunx tangly check --strict
 ```
 
-## What goes where
+### What goes where
 
 Coming from Mintlify, the conventions here will feel familiar; Tangly mostly inherits them. The exceptions:
 

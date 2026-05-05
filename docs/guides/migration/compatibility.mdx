@@ -4,13 +4,13 @@ description: Every Mintlify component, every docs.json field, every behavioral d
 icon: "list-checks"
 ---
 
-# Mintlify compatibility
+## Mintlify compatibility
 
 Tangly renders Mintlify projects unmodified. This page is the matrix of *what* and *how*: every component, field, and behavior, with notes on where Tangly and Mintlify differ.
 
 If you're starting from a working Mintlify project, the [migration guide](/guides/migration/from-mintlify) walks the swap. This page is the reference you'd want when something looks off.
 
-## docs.json fields
+### docs.json fields
 
 Every Mintlify-shipped top-level field is supported.
 
@@ -45,11 +45,11 @@ Every Mintlify-shipped top-level field is supported.
 
 Unknown fields don't fail validation. Zod's `passthrough()` preserves them. Mintlify-extension fields you've added survive `tangly migrate`.
 
-## MDX components
+### MDX components
 
 Every component Mintlify ships, plus extras Tangly adds.
 
-### Cards & layout
+#### Cards & layout
 
 | Component | Tangly | Notes |
 |---|---|---|
@@ -57,7 +57,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<CardGroup>` | ✅ | `cols` 1–4. |
 | `<Columns>` | ✅ | `cols` 1–12. |
 
-### Callouts
+#### Callouts
 
 | Component | Tangly | Notes |
 |---|---|---|
@@ -69,7 +69,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<Danger>` | ✅ | Identical. |
 | `<Update>` | ✅ | `label`, `description`, `tags`. Identical. |
 
-### Tabs & steps
+#### Tabs & steps
 
 | Component | Tangly | Notes |
 |---|---|---|
@@ -78,22 +78,22 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<Steps>` | ✅ | Identical. |
 | `<Step>` | ✅ | `title`, `icon`, `titleSize`, `stepNumber`. |
 
-### Accordion
+#### Accordion
 
 | Component | Tangly | Notes |
 |---|---|---|
 | `<Accordion>` | ✅ | `title`, `defaultOpen`, `icon`, `description`. |
 | `<AccordionGroup>` | ✅ | Identical. |
 
-### Code
+#### Code
 
 | Component | Tangly | Notes |
 |---|---|---|
 | `<CodeGroup>` | ✅ | `name` for cross-page sync. |
-| `<Snippet>` | ⚠️ | Placeholder. Disk resolution on v0.3 roadmap. Use [`<Embed>`](/reference/components/embed) today. |
+| `<Snippet>` | ⚠️ | Placeholder. Disk resolution on v0.3 roadmap. Use [`<Embed>`](/reference/components/media) today. |
 | `<PackageManager>` | ✅ | Tangly extra. Pre-built tabs for npm/yarn/pnpm/bun. |
 
-### API
+#### API
 
 | Component | Tangly | Notes |
 |---|---|---|
@@ -106,7 +106,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<OpenApiScalar>` | ✅ | Tangly extra. |
 | `<OpenApiStoplight>` | ✅ | Tangly extra. |
 
-### Media
+#### Media
 
 | Component | Tangly | Notes |
 |---|---|---|
@@ -116,18 +116,18 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<Embed>` | ✅ | Tangly extra. Labeled-block embedding. |
 | `<FileTree>` | ✅ | Tangly extra. |
 
-### Text helpers
+#### Text helpers
 
 | Component | Tangly | Notes |
 |---|---|---|
-| `<Icon>` | ✅ | Lucide. FA aliases for ~96 common Mintlify names. See [Icons](/reference/schema/icons). |
+| `<Icon>` | ✅ | Lucide. FA aliases for ~96 common Mintlify names. See [Icons](/reference/schema). |
 | `<Tooltip>` | ✅ | Identical. |
 | `<Badge>` | ✅ | Tangly extra. |
 | `<Kbd>` | ✅ | Tangly extra. Auto Cmd→Ctrl on non-mac. |
 | `<Expandable>` | ✅ | Identical. |
 | `<GlossaryTerm>` | ✅ | Tangly extra. Pairs with [glossary auto-linking](/guides/authoring/glossary). |
 
-## Frontmatter
+### Frontmatter
 
 Every Mintlify-shipped frontmatter field is supported.
 
@@ -148,39 +148,39 @@ Every Mintlify-shipped frontmatter field is supported.
 
 Tangly adds: `draft`, `template`, `aiContext`, `lastUpdated`, `readingTime`, `editUrl`, `glossary`. See [Frontmatter](/reference/schema/frontmatter).
 
-## Behavioral differences
+### Behavioral differences
 
-### Image optimization is off
+#### Image optimization is off
 
-Mintlify ships some image processing. Tangly disables `@astrojs/mdx` `optimize` and `image.service: noop`. Reason: Mintlify projects often reference absolute external URLs that bypass image pipelines anyway. If you need optimization, [eject](/reference/cli/eject) and turn it back on.
+Mintlify ships some image processing. Tangly disables `@astrojs/mdx` `optimize` and `image.service: noop`. Reason: Mintlify projects often reference absolute external URLs that bypass image pipelines anyway. If you need optimization, [eject](/reference/cli) and turn it back on.
 
-### Relative image paths get rewritten
+#### Relative image paths get rewritten
 
 Mintlify resolves `![](../images/foo.png)` at runtime. Tangly's MDX preprocessor rewrites these to absolute (`/images/foo.png`) before Astro's pipeline sees them. Reason: avoids cache misses on every relative path during HMR.
 
 If you ship a Tangly-native project, use absolute paths from day one.
 
-### `<latex>` rewrite
+#### `<latex>` rewrite
 
 Mintlify uses `<latex>…</latex>`. Tangly accepts both the `latex` tag (rewritten to `$$…$$`) and `$$…$$` directly. KaTeX renders both identically.
 
-### Theme aliases collapse to tang
+#### Theme aliases collapse to tang
 
 `mint`, `maple`, `palm`, `willow`, `linden`, `almond`, `aspen`, `luma`, `sequoia` all resolve to `tang`. Reproduce a specific Mintlify variant by setting `theme: "tang"` and overriding `colors`. See [Aliases](/guides/themes/aliases).
 
-### `tangly migrate` doesn't auto-rewrite themes
+#### `tangly migrate` doesn't auto-rewrite themes
 
 Migration validates `docs.json` and updates `$schema`. It does **not** auto-pick a Tangly theme. Run it, see the notice, decide for yourself. If you want it auto-picked, that's a one-line `sed`.
 
-### Search engine: Pagefind, not Mintlify's
+#### Search engine: Pagefind, not Mintlify's
 
 Tangly bundles [Pagefind](https://pagefind.app). Mintlify uses a different indexer. Behavior is similar (Cmd-K modal, fuzzy match) but the index file format and tuning knobs differ. Practical impact: zero for readers; for advanced search customization (boost rules, exact-match weighting), you'd configure Pagefind directly via custom build hooks.
 
-### No "API playground proxy"
+#### No "API playground proxy"
 
-Mintlify's `api.playground.proxy: true` proxies try-it-out through their edge to bypass CORS. Tangly accepts the field but the proxy is a no-op; you need to fix CORS at your API. If your API can't be CORS-permissive, the try-it-out form won't work; use [`api.playground.mode: "hide"`](/reference/schema/api) to remove it.
+Mintlify's `api.playground.proxy: true` proxies try-it-out through their edge to bypass CORS. Tangly accepts the field but the proxy is a no-op; you need to fix CORS at your API. If your API can't be CORS-permissive, the try-it-out form won't work; use [`api.playground.mode: "hide"`](/reference/schema) to remove it.
 
-## What's not in Tangly yet
+### What's not in Tangly yet
 
 These are on the v0.3 roadmap:
 
@@ -190,7 +190,7 @@ These are on the v0.3 roadmap:
 
 For workarounds today, see [FAQ](/troubleshooting/faq).
 
-## Where to file gaps
+### Where to file gaps
 
 If something doesn't render the same as Mintlify and isn't on the list above, [open an issue](https://github.com/tanglydocs/tangly/issues) with:
 

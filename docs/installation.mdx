@@ -4,15 +4,15 @@ description: Install Tangly into a new or existing project.
 icon: "package"
 ---
 
-# Installation
+## Installation
 
-## Requirements
+### Requirements
 
 - **Node 20+** (or Bun 1.2+).
 - A package manager: `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
 - A directory you want to render. Tangly does not impose a folder structure beyond `docs.json` at the root.
 
-## Install globally
+### Install globally
 
 The fastest path. One command, `tangly` on your `PATH` everywhere:
 
@@ -22,7 +22,7 @@ npm i -g tangly
 
 Then `tangly init`, `tangly dev`, `tangly build` work from any directory.
 
-## Install per project
+### Install per project
 
 If you'd rather pin Tangly to a single project's `package.json`:
 
@@ -46,7 +46,7 @@ If you'd rather pin Tangly to a single project's `package.json`:
 
 The `tangly` binary becomes available via `bun x tangly`, `pnpm exec tangly`, `npx tangly`, etc.
 
-## Curl one-liner (alternative)
+### Curl one-liner (alternative)
 
 A POSIX/PowerShell installer that does the same thing as `npm i -g tangly` (uses npm under the hood, writes a `tangly` wrapper to your `PATH`):
 
@@ -60,7 +60,7 @@ iwr -useb https://tangly.dev/install.ps1 | iex
 
 Useful when you don't want to add to your global npm scope, or want a version-pinned cache directory.
 
-## Project layout
+### Project layout
 
 A minimal Tangly project is two files:
 
@@ -94,7 +94,7 @@ A typical project grows like this:
 
 Tangly does not require `src/`, `pages/`, or any framework files. The MDX files at any depth are the source of truth; `docs.json` decides which ones appear in navigation. Files prefixed with `_` (e.g. `_section.mdx`) and the `snippets/` folder are skipped.
 
-## Editor support
+### Editor support
 
 Add this to the top of `docs.json` for autocomplete + inline validation:
 
@@ -107,7 +107,7 @@ Add this to the top of `docs.json` for autocomplete + inline validation:
 
 VS Code, Cursor, JetBrains, and any editor with a JSON-Schema language server pick this up automatically. You'll get IntelliSense for every nav field, color token, and analytics provider.
 
-## Optional: scripts
+### Optional: scripts
 
 Wire dev/build into your `package.json`:
 
@@ -122,7 +122,7 @@ Wire dev/build into your `package.json`:
 }
 ```
 
-## Agent skills
+### Agent skills
 
 Tangly ships two agent skills you can install into any project that uses a skill-aware agent (Claude Code, Codex, …):
 
@@ -137,13 +137,13 @@ npx skills add tanglydocs/tangly -g
 
 The skills live under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) and are versioned alongside the framework. When CLI flags or schema fields change, the skill content moves with them.
 
-## What's next
+### What's next
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="zap" href="/quickstart">
     Scaffold + run dev in under a minute.
   </Card>
-  <Card title="Configuration" icon="settings" href="/guides/configuration">
+  <Card title="Configuration" icon="settings" href="/guides/customization/configuration">
     Every `docs.json` field with examples.
   </Card>
 </CardGroup>

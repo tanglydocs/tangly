@@ -4,7 +4,7 @@ description: Override built-in components or add your own.
 icon: "puzzle"
 ---
 
-# Custom components
+## Custom components
 
 Drop a file at `./components/<Name>.{astro,tsx,jsx,ts,js}` in your project to override the built-in `<Name>` component everywhere it's used in your MDX. No imports, no registration. Just the file.
 
@@ -16,7 +16,7 @@ Drop a file at `./components/<Name>.{astro,tsx,jsx,ts,js}` in your project to ov
     - **Note.astro** overrides `@tanglydocs/theme-ui/Note`
 </FileTree>
 
-## Resolution order
+### Resolution order
 
 When MDX uses `<Note>`, Vite resolves the import top-down:
 
@@ -26,13 +26,13 @@ When MDX uses `<Note>`, Vite resolves the import top-down:
 
 The component-shadow plugin does this with Vite resolve aliases set up at integration time. There's zero runtime overhead; the override is baked into the bundle.
 
-## Overridable components
+### Overridable components
 
 All 29 built-in components can be shadowed:
 
 `Accordion`, `AccordionGroup`, `Badge`, `Card`, `CardGroup`, `Check`, `CodeGroup`, `Columns`, `Danger`, `Embed`, `Expandable`, `Frame`, `Icon`, `Info`, `Note`, `OpenApiEndpoint`, `ParamField`, `RequestExample`, `ResponseExample`, `ResponseField`, `Snippet`, `Step`, `Steps`, `Tab`, `Tabs`, `Tip`, `Tooltip`, `Update`, `Warning`.
 
-## Contract
+### Contract
 
 Your override must accept the same props as the original. Tangly passes them through verbatim; type signatures live in each built-in's source. For most components, just slot-in your own visual treatment:
 
@@ -72,7 +72,7 @@ const { title, icon, href, horizontal, img, color } = Astro.props as Props;
 </a>
 ```
 
-## Adding components that aren't built-in
+### Adding components that aren't built-in
 
 Tangly's auto-injected component map covers the 28 components listed above. To use a component that isn't in that set (e.g. a custom `<Tldr>`), import it explicitly in your MDX:
 
@@ -84,10 +84,10 @@ import Tldr from "../components/Tldr.astro";
 
 Auto-registration of arbitrary components via `tangly.config.ts` is on the roadmap but not yet wired.
 
-## Testing locally
+### Testing locally
 
 `tangly dev` hot-reloads component shadows. Edit `./components/Note.astro` and the browser updates without a server restart.
 
-## Per-theme overrides via theme.css
+### Per-theme overrides via theme.css
 
-For visual-only changes (colors, spacing, typography), you don't need to shadow the component. Drop a `theme/styles/theme.css` and override CSS variables. See [Themes](/reference/schema/themes#project-level-theme-override).
+For visual-only changes (colors, spacing, typography), you don't need to shadow the component. Drop a `theme/styles/theme.css` and override CSS variables. See [Themes](/reference/schema#themes).

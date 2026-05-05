@@ -4,11 +4,11 @@ description: Configure your project via docs.json.
 icon: "settings"
 ---
 
-# Configuration
+## Configuration
 
-Tangly reads a single `docs.json` at your project root. The full reference is at [`docs.json`](/reference/schema/docs-json); this guide covers the shape and the fields you'll touch most.
+Tangly reads a single `docs.json` at your project root. The full reference is at [`docs.json`](/reference/schema); this guide covers the shape and the fields you'll touch most.
 
-## Minimal example
+### Minimal example
 
 ```json
 {
@@ -24,7 +24,7 @@ Tangly reads a single `docs.json` at your project root. The full reference is at
 
 That's enough to render. Add fields as you need them.
 
-## Common fields
+### Common fields
 
 <ParamField path="name" type="string" required>
   Display name. Shown in the title bar, sitemap, and `llms.txt`.
@@ -35,11 +35,11 @@ That's enough to render. Add fields as you need them.
 </ParamField>
 
 <ParamField path="theme" type="string" default="tang">
-  `tang`, `pith`, `pip`, or any Mintlify theme alias. See [Themes](/reference/schema/themes).
+  `tang`, `pith`, `pip`, or any Mintlify theme alias. See [Themes](/reference/schema).
 </ParamField>
 
 <ParamField path="colors" type="object">
-  `{ primary, light, dark, background, anchors }`. Hex format only. See [Colors](/reference/schema/colors).
+  `{ primary, light, dark, background, anchors }`. Hex format only. See [Colors](/reference/schema).
 </ParamField>
 
 <ParamField path="logo" type="string | object">
@@ -51,23 +51,23 @@ That's enough to render. Add fields as you need them.
 </ParamField>
 
 <ParamField path="navigation" type="object" required>
-  Tabs, groups, anchors, dropdowns. See [Navigation](/guides/navigation).
+  Tabs, groups, anchors, dropdowns. See [Navigation](/guides/authoring/navigation).
 </ParamField>
 
 <ParamField path="navbar" type="object">
-  Top-bar links and primary CTA. See [`docs.json` reference](/reference/schema/docs-json#navbar).
+  Top-bar links and primary CTA. See [`docs.json` reference](/reference/schema#navbar).
 </ParamField>
 
 <ParamField path="footer" type="object">
-  Footer socials and link groups. See [`docs.json` reference](/reference/schema/docs-json#footer).
+  Footer socials and link groups. See [`docs.json` reference](/reference/schema#footer).
 </ParamField>
 
 <ParamField path="api" type="object">
-  OpenAPI configuration. See [OpenAPI](/guides/openapi).
+  OpenAPI configuration. See [OpenAPI](/guides/authoring/openapi).
 </ParamField>
 
 <ParamField path="search" type="object">
-  Search modal customization. `prompt` is the placeholder text. See [Search](/guides/search).
+  Search modal customization. `prompt` is the placeholder text. See [Search](/guides/customization/search).
 </ParamField>
 
 <ParamField path="redirects" type="array">
@@ -82,9 +82,9 @@ That's enough to render. Add fields as you need them.
   PostHog, Plausible, Fathom, GA4, GTM, Amplitude, Hotjar, Mixpanel, Segment, Pirsch, LogRocket, Heap. Configure as many as you want.
 </ParamField>
 
-For the complete field-by-field reference (every nested object, every enum value), see [`docs.json` reference](/reference/schema/docs-json).
+For the complete field-by-field reference (every nested object, every enum value), see [`docs.json` reference](/reference/schema).
 
-## Code blocks
+### Code blocks
 
 `code` controls Shiki theming and the per-block copy button. See [Code](/reference/components/code) for the rendering surface.
 
@@ -99,7 +99,7 @@ For the complete field-by-field reference (every nested object, every enum value
 
 `copyButton: false` hides the button globally (per-block opt-out: add `noCopy` to the fence meta). `theme` accepts a string (same theme for both modes) or an object split.
 
-## Appearance
+### Appearance
 
 `appearance` toggles page chrome: color-scheme default plus the new reading-time stamp and reading-progress bar.
 
@@ -115,7 +115,7 @@ For the complete field-by-field reference (every nested object, every enum value
 
 `readingTime: true` shows estimated minutes in the page header (computed from word count). `readingProgress: true` paints a 2px progress bar across the top of every page as the reader scrolls.
 
-## Footer
+### Footer
 
 Beyond the existing `socials` and `links`, the footer now drives last-updated stamps and edit-on-source links.
 
@@ -131,7 +131,7 @@ Beyond the existing `socials` and `links`, the footer now drives last-updated st
 
 `lastUpdated: true` reads each page's last commit date from git and shows it in the footer. `editUrl` is a template; `{path}` is replaced with the page's path relative to the project root. If `editUrl` is omitted but `repo` is set, Tangly derives `editUrl` from the repo URL. If neither is set, the link is hidden.
 
-## Banner
+### Banner
 
 Top-of-page announcement strip. Add `id` to make dismissals stick across reloads (the id is the localStorage key; change it to re-show the banner). `type` controls tone.
 
@@ -146,9 +146,9 @@ Top-of-page announcement strip. Add `id` to make dismissals stick across reloads
 }
 ```
 
-`type` is one of `info`, `warning`, `success`. See [Announcement banner](/guides/announcement) for the full guide.
+`type` is one of `info`, `warning`, `success`. See [Announcement banner](/guides/authoring/announcement) for the full guide.
 
-## Section defaults
+### Section defaults
 
 Cascade frontmatter through a directory subtree by dropping `_section.mdx` (or `_meta.json`) at the directory root:
 
@@ -163,7 +163,7 @@ icon: pencil-line
 
 Every page under `guides/wip/` inherits these fields unless it overrides them in its own frontmatter. Section defaults bubble outward; closer overrides further.
 
-## Validation
+### Validation
 
 Run `tangly check` to validate `docs.json` against the schema and resolve every page reference:
 
@@ -171,9 +171,9 @@ Run `tangly check` to validate `docs.json` against the schema and resolve every 
 bun x tangly check --strict
 ```
 
-`--strict` exits non-zero on any warning (use this in CI). See [`tangly check`](/reference/cli/check) for the full surface.
+`--strict` exits non-zero on any warning (use this in CI). See [`tangly check`](/reference/cli) for the full surface.
 
-## Editor support
+### Editor support
 
 Add `$schema` for autocomplete + inline validation in VS Code, Cursor, JetBrains:
 

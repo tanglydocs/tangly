@@ -4,13 +4,13 @@ description: aiContext frontmatter, AGENTS.md / CLAUDE.md, project-scoped rules.
 icon: "file-text"
 ---
 
-# Project conventions for agents
+## Project conventions for agents
 
 The bundled [skills](/guides/ai-agents/skills) cover Tangly itself. They don't know your project: your conventions, your team's rules, the historical reasons one folder is structured weirdly. That's what these conventions files are for.
 
-## `aiContext` frontmatter
+### `aiContext` frontmatter
 
-Per-page hint. The string lands in the page's machine-readable index when an agent fetches `llms.txt` and gets passed as additional context when the page is read by AI surfaces (the [`contextual`](/reference/schema/contextual) buttons, future chat integration).
+Per-page hint. The string lands in the page's machine-readable index when an agent fetches `llms.txt` and gets passed as additional context when the page is read by AI surfaces (the [`contextual`](/reference/schema) buttons, future chat integration).
 
 ```yaml
 ---
@@ -29,9 +29,9 @@ The aiContext is **not** rendered to the page; it's metadata-only. Reach for it 
 - The page documents something the canonical name suggests something different.
 - You've watched agents make the same mistake on this page repeatedly.
 
-If the context belongs in the page itself (a [`<Note>`](/reference/components/note) the reader should see), don't smuggle it into `aiContext`.
+If the context belongs in the page itself (a [`<Note>`](/reference/components/callouts) the reader should see), don't smuggle it into `aiContext`.
 
-## `AGENTS.md`
+### `AGENTS.md`
 
 The emerging standard for "instructions every agent should read on first contact." Drop one at the repo root:
 
@@ -67,7 +67,7 @@ See `docs/reference/cli/` for full flags.
 
 [Aider](https://aider.chat), [Codex CLI](https://github.com/openai/codex), [Continue](https://continue.dev), and [Claude Code](https://claude.com/claude-code) all read `AGENTS.md` automatically.
 
-## `CLAUDE.md`
+### `CLAUDE.md`
 
 Claude Code's variant. It reads `CLAUDE.md` if present, otherwise `AGENTS.md`. If you have both, Claude Code reads `CLAUDE.md`; everything else reads `AGENTS.md`.
 
@@ -79,7 +79,7 @@ ln -s AGENTS.md CLAUDE.md
 
 Or vice versa. Both files describing the same conventions is fine; just keep them in sync.
 
-## What to put in conventions files
+### What to put in conventions files
 
 Three categories:
 
@@ -93,7 +93,7 @@ What NOT to put in:
 - Open product roadmap. Goes stale faster than agents respect it.
 - Praise / tone hints ("be helpful"). The agent already has its own posture.
 
-## Per-folder rules (Cursor, Continue)
+### Per-folder rules (Cursor, Continue)
 
 For different conventions in different parts of the repo, both Cursor (`.cursor/rules/<name>.md`) and Continue (`.continueignore` + per-folder context) support glob-scoped rules.
 
@@ -107,7 +107,7 @@ Tangly's own repo uses this for its docs vs. its source code:
 
 The `docs.md` rule pulls in the Tangly skill knowledge; the `src.md` rule talks about TypeScript / Bun / oxlint / oxfmt.
 
-## llms.txt isn't a substitute
+### llms.txt isn't a substitute
 
 [llms.txt](/guides/ai-agents/llms-txt) is what's *in* your docs. AGENTS.md is *how to work with* the repo. They overlap (your conventions probably belong in docs too) but answer different questions.
 

@@ -4,13 +4,13 @@ description: "Highlight, diff, focus, titles, sync, twoslash"
 icon: "code-2"
 ---
 
-# Code blocks
+## Code blocks
 
 Tangly's code surface goes well beyond plain syntax highlighting. Every fenced block ships with a header (filename + language label + copy button), and Shiki notations let you highlight ranges, mark diffs, and dim everything outside a focus block, all from inside the fence info string.
 
 This guide walks through the surface end-to-end. For the API-style reference, see [Code components](/reference/components/code).
 
-## The header
+### The header
 
 By default, every fence renders with a `Copy` button. Add a title and the header gains a filename and a file-type icon. Two equivalent forms:
 
@@ -26,7 +26,7 @@ The bare-path form (Mintlify-compatible) is detected by looking for any whitespa
 
 To suppress the copy button on a single block, add `noCopy` to the meta. To suppress globally, set `code.copyButton: false` in `docs.json`.
 
-## Line highlight
+### Line highlight
 
 A brace-delimited line spec right after the language highlights specific lines:
 
@@ -39,7 +39,7 @@ const greet = (name: string) => {
 };
 ```
 
-## Diff
+### Diff
 
 Add `// [!code ++]` or `// [!code --]` line comments. Shiki strips the marker and renders the line with diff styling.
 
@@ -52,7 +52,7 @@ function login(user: string, pass: string) {
 }
 ```
 
-## Focus
+### Focus
 
 `// [!code focus]` fades all unfocused lines:
 
@@ -67,7 +67,7 @@ function process(input: Input) {
 
 Stack notations on the same block. Diff inside a focus is a clean way to show "this is the line that changed, in context".
 
-## Annotations
+### Annotations
 
 Add `annotate` to the fence meta and Tangly turns trailing `(1)`, `(2)` markers into numbered pills, then pairs the very next ordered list as a footer panel. No component to import, just Markdown.
 
@@ -89,7 +89,7 @@ The marker pattern is the trailing `(N)` on a line, optionally inside a `//`, `#
 
 `(1)` outside `annotate` renders verbatim; the feature is fully opt-in.
 
-## Titles + diff + focus
+### Titles + diff + focus
 
 All notations compose. Migration guides typically combine all three:
 
@@ -110,7 +110,7 @@ export async function getUser(id: string) {
 }
 ```
 
-## Synced tabs
+### Synced tabs
 
 `<CodeGroup name="key">` syncs the active tab across every group with the same `name` on the page (and across pages via `localStorage`). Pick once, the choice sticks.
 
@@ -135,7 +135,7 @@ Want your own sync key? Drop a `<CodeGroup>` with your tabs of choice:
 </CodeGroup>
 ````
 
-## Theme override
+### Theme override
 
 Default themes are `github-light` / `github-dark`, switching automatically with the user's color preference. Override per-project:
 
@@ -149,12 +149,12 @@ Default themes are `github-light` / `github-dark`, switching automatically with 
 
 Any theme bundled with Shiki works. Pass a string instead of an object to use the same theme for both modes.
 
-## Twoslash
+### Twoslash
 
-Twoslash (rich TypeScript hovers in code blocks) is on the roadmap; not wired in v0.2. Track [Phase 6](/guides/components) for status.
+Twoslash (rich TypeScript hovers in code blocks) is on the roadmap; not wired in v0.2. Track [Phase 6](/guides/customization/components) for status.
 
-## What's next
+### What's next
 
 - [Code component reference](/reference/components/code): every prop and notation.
 - [`<PackageManager>`](/reference/components/code#packagemanager): the multi-runtime install primitive.
-- [Configuration → Code](/guides/configuration#code-blocks): the `docs.json` knobs.
+- [Configuration → Code](/guides/customization/configuration#code-blocks): the `docs.json` knobs.

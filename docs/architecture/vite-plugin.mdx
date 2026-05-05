@@ -4,11 +4,11 @@ description: Virtual modules, HMR, MDX preprocessing, and static-asset middlewar
 icon: "zap"
 ---
 
-# Vite plugin
+## Vite plugin
 
 `packages/tangly/src/plugin/vite-plugin.ts` is the bridge between user state (the manifest, theme, config) and the synthesized Astro runtime.
 
-## Module graph
+### Module graph
 
 ```mermaid
 flowchart LR
@@ -53,7 +53,7 @@ flowchart LR
   V4 --> A2
 ```
 
-## Virtual modules
+### Virtual modules
 
 Four virtual imports are exposed to the runtime:
 
@@ -66,7 +66,7 @@ Four virtual imports are exposed to the runtime:
 
 Any `.astro` file in the runtime can `import { manifest } from "virtual:tangly/manifest"` and get a typed snapshot.
 
-## Hot reload
+### Hot reload
 
 A chokidar watcher listens for changes in:
 
@@ -78,7 +78,7 @@ A chokidar watcher listens for changes in:
 
 On change, the manifest is invalidated, virtual modules are re-evaluated, and Vite is told to do a full reload via `server.ws.send({ type: 'full-reload' })`. Astro's MDX HMR handles per-page MDX changes natively for sub-page edits.
 
-## Static-asset middleware
+### Static-asset middleware
 
 Mintlify projects use absolute paths for images: `<img src="/images/foo.png">`. Tangly's middleware resolves these against the user root's matching directory:
 
@@ -90,11 +90,11 @@ GET /favicon.ico     →  <userRoot>/<config.favicon>
 
 Supported prefixes: `images`, `logo`, `public`, `static`, `assets`. Path traversal is blocked. Requests like `/images/../../etc/passwd` are rejected before any I/O.
 
-## Build-time variant
+### Build-time variant
 
 In production, `packages/tangly/src/build-outputs/copy-assets.ts` walks the same set of directories and copies them into `dist/` so deployed pages see the same paths the dev server served.
 
-## MDX preprocess
+### MDX preprocess
 
 The plugin's `transform()` hook rewrites Mintlify-only quirks before MDX parses JSX:
 
@@ -105,7 +105,7 @@ Both replacements run on raw MDX text but skip matches inside code spans and fen
 
 More compatibility shims land here as we hit them.
 
-## Component shadowing
+### Component shadowing
 
 `packages/tangly/src/plugin/component-shadow.ts` rewrites Vite resolution for `@tanglydocs/theme-ui/<Name>.astro`:
 

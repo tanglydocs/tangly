@@ -4,7 +4,7 @@ description: "Every page available as raw Markdown via `.md` URL suffix or `Acce
 icon: "file-text"
 ---
 
-# Markdown for agents
+## Markdown for agents
 
 When a coding assistant fetches a docs page, it doesn't want HTML. It wants the source: the same Markdown the page was written in, without the chrome, navigation, or rendered components getting in the way.
 
@@ -15,15 +15,15 @@ Tangly serves it. Two ways, both wired up by default:
 
 The `.md` files are emitted at build time alongside the HTML, so deploys to Vercel, Cloudflare Pages, Netlify, S3, or GitHub Pages get this for free.
 
-## Why it matters
+### Why it matters
 
 A typical docs page renders to ~16k tokens of HTML (nav, sidebar, footer, embedded JS). The same page as raw Markdown is ~3k tokens, an 80% reduction. Bun reported a 10× drop in their own measurements.
 
 Coding assistants like Claude Code, OpenCode, Cursor, and Aider already send `Accept: text/markdown` on docs requests. Tangly responds in kind.
 
-## How to use it
+### How to use it
 
-### From a coding assistant
+#### From a coding assistant
 
 ```
 Read https://docs.example.com/installation.md
@@ -37,7 +37,7 @@ curl -H "Accept: text/markdown" https://docs.example.com/installation
 
 Both return the raw `.mdx` source with frontmatter intact and a `URL:` preamble identifying the page.
 
-### Discovery
+#### Discovery
 
 Every HTML page advertises its Markdown twin in the `<head>`:
 
@@ -55,7 +55,7 @@ X-Llms-Txt: /llms.txt
 
 Same wire format as Mintlify and Cloudflare's "Markdown for Agents."
 
-## What gets emitted
+### What gets emitted
 
 For each page, Tangly writes `<slug>.md` to `dist/`:
 
@@ -88,7 +88,7 @@ description: Install Tangly into a new or existing project.
 
 Frontmatter is preserved (agents use `title` and `description` as context). MDX components stay in their JSX form. Agents handle that fine, and keeping the file byte-identical to source means no surprises.
 
-## What's excluded
+### What's excluded
 
 Same rules as `llms.txt` and `sitemap.xml`:
 
@@ -97,11 +97,11 @@ Same rules as `llms.txt` and `sitemap.xml`:
 
 The `.md` variant also gets `X-Robots-Tag: noindex` on dev responses so it never competes with the HTML page in search results.
 
-## Production content negotiation
+### Production content negotiation
 
 The static `.md` files work everywhere. If you also want `Accept: text/markdown` on the same URL (so agents don't have to know about the `.md` suffix), add a one-line rewrite at the CDN.
 
-### Cloudflare Pages
+#### Cloudflare Pages
 
 Add to `_headers`:
 
@@ -118,7 +118,7 @@ And in `_redirects`:
 /:path  /:path.md  200  Accept=*text/markdown*
 ```
 
-### Vercel
+#### Vercel
 
 In `vercel.json`:
 
@@ -146,7 +146,7 @@ In `vercel.json`:
 }
 ```
 
-### Netlify
+#### Netlify
 
 In `_redirects`:
 
@@ -154,7 +154,7 @@ In `_redirects`:
 /*  /:splat.md  200!  Accept=*text/markdown*
 ```
 
-## Relation to llms.txt
+### Relation to llms.txt
 
 The two work together:
 
@@ -166,7 +166,7 @@ An agent typically fetches `/llms.txt` once to discover the IA, then pulls indiv
 
 See [llms.txt](/guides/ai-agents/llms-txt) for the index format.
 
-## Copy page menu
+### Copy page menu
 
 Every doc page has a "Copy page" button in the top-right corner that fans out to a small menu. Five reader-initiated actions, all backed by the same `.md` twin:
 
@@ -180,7 +180,7 @@ Every doc page has a "Copy page" button in the top-right corner that fans out to
 
 All actions are reader-initiated. Tangly never makes outbound LLM calls during build or serve.
 
-### Configure which actions show
+#### Configure which actions show
 
 Set `contextual.options` in `docs.json`:
 
@@ -198,6 +198,6 @@ Set `contextual.options` in `docs.json`:
 
 See [`contextual`](/reference/schema#contextual) in the schema reference for the full field definition.
 
-## Disabling
+### Disabling
 
 There's no opt-out flag. The `.md` files are byte-cheap and harmless: the same content already in `/llms-full.txt` just split per page. If a specific page shouldn't ship, mark it `noindex: true` and it's excluded from all four (sitemap, llms.txt, llms-full.txt, `<slug>.md`).
