@@ -89,6 +89,25 @@ const showReadingProgress = config.appearance?.readingProgress === true;
 const ogTitle = pageTitle;
 const ogDesc = pageDescription ?? config.description ?? "";
 
+// Canonical + OG/Twitter URL/image. Requires siteUrl in docs.json to emit
+// absolute URLs. Falls back to logo as og:image. Canonical matches the
+// served URL (no trailing slash) to avoid redirect chains. Routes paths
+// through withBase() so subpath hosting (e.g. `tangly build --base /docs`)
+// emits URLs in the deployed namespace.
+const siteUrl = (config as { siteUrl?: string }).siteUrl?.replace(/\/+$/, "") ?? "";
+const slug = page.slug.replace(/\/+$/, "");
+const pagePathRaw = slug ? `/${slug}` : "/";
+const pagePath = withBase(pagePathRaw).replace(/\/+$/, "") || "/";
+const canonicalUrl = siteUrl ? `${siteUrl}${pagePath}` : "";
+const ogImage = (() => {
+  if (siteUrl && logoLight) {
+    if (logoLight.startsWith("http")) return logoLight;
+    const logoPath = withBase(logoLight);
+    return `${siteUrl}${logoPath}`;
+  }
+  return "";
+})();
+
 // Optional dark-mode background override.
 const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
 
@@ -107,11 +126,18 @@ const bannerType = banner?.type ?? "info";
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={withBase(favicon)} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <link rel="alternate" type="text/markdown" href={withBase(`/${page.slug}.md`)} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDesc} />
     <meta property="og:type" content="article" />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {config.name && <meta property="og:site_name" content={config.name} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDesc} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <meta name="color-scheme" content="light dark" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
