@@ -6,7 +6,7 @@ icon: "settings"
 
 # Configuration
 
-Tangly reads a single `docs.json` at your project root. The full reference is at [`docs.json`](/reference/schema/docs-json) — this guide covers the shape and the fields you'll touch most.
+Tangly reads a single `docs.json` at your project root. The full reference is at [`docs.json`](/reference/schema/docs-json); this guide covers the shape and the fields you'll touch most.
 
 ## Minimal example
 
@@ -101,7 +101,7 @@ For the complete field-by-field reference (every nested object, every enum value
 
 ## Appearance
 
-`appearance` toggles page chrome — color-scheme default plus the new reading-time stamp and reading-progress bar.
+`appearance` toggles page chrome: color-scheme default plus the new reading-time stamp and reading-progress bar.
 
 ```json
 {
@@ -129,11 +129,11 @@ Beyond the existing `socials` and `links`, the footer now drives last-updated st
 }
 ```
 
-`lastUpdated: true` reads each page's last commit date from git and shows it in the footer. `editUrl` is a template — `{path}` is replaced with the page's path relative to the project root. If `editUrl` is omitted but `repo` is set, Tangly derives `editUrl` from the repo URL. If neither is set, the link is hidden.
+`lastUpdated: true` reads each page's last commit date from git and shows it in the footer. `editUrl` is a template; `{path}` is replaced with the page's path relative to the project root. If `editUrl` is omitted but `repo` is set, Tangly derives `editUrl` from the repo URL. If neither is set, the link is hidden.
 
 ## Banner
 
-Top-of-page announcement strip. Add `id` to make dismissals stick across reloads (the id is the localStorage key — change it to re-show the banner). `type` controls tone.
+Top-of-page announcement strip. Add `id` to make dismissals stick across reloads (the id is the localStorage key; change it to re-show the banner). `type` controls tone.
 
 ```json
 {
@@ -161,7 +161,7 @@ icon: pencil-line
 ---
 ```
 
-Every page under `guides/wip/` inherits these fields unless it overrides them in its own frontmatter. Section defaults bubble outward — closer overrides further.
+Every page under `guides/wip/` inherits these fields unless it overrides them in its own frontmatter. Section defaults bubble outward; closer overrides further.
 
 ## Validation
 

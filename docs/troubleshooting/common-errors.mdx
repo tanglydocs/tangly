@@ -21,7 +21,7 @@ A nav entry is malformed. The path tells you exactly where. Common causes:
 - A typo on `"group"` (e.g. `"groups"` for a single entry).
 - A boolean where a slug is expected (someone wrote `true` instead of a path).
 
-`tangly check` is the fastest path here — it points at the line.
+`tangly check` is the fastest path here. It points at the line.
 
 ## "Cannot find page X referenced in navigation"
 
@@ -36,7 +36,7 @@ The navigation has a slug for a file that doesn't exist. Either:
 - Update the slug to point at an existing file.
 - Run `bunx tangly add page guides/setup` to scaffold one.
 
-The "did you mean" suggestion uses fuzzy matching — usually accurate.
+The "did you mean" suggestion uses fuzzy matching, usually accurate.
 
 ## "Broken link from X to Y"
 
@@ -64,7 +64,7 @@ Static assets (images, PDFs, video) have to live in one of the recognized roots:
 - Move the file into `images/` (or one of the others).
 - Use absolute paths (`/images/foo.png`), not relative (`../images/foo.png`).
 
-For the relative-path edge case: Tangly auto-rewrites `![](../images/...)` to absolute. It only works if the rewriter can resolve "the canonical asset roots" — which means non-standard locations break the rewrite. See [Static assets](/guides/deploying/static-assets).
+For the relative-path edge case: Tangly auto-rewrites `![](../images/...)` to absolute. It only works if the rewriter can resolve "the canonical asset roots", which means non-standard locations break the rewrite. See [Static assets](/guides/deploying/static-assets).
 
 ## Frontmatter validation warning
 
@@ -72,7 +72,7 @@ For the relative-path edge case: Tangly auto-rewrites `![](../images/...)` to ab
 warning: guides/foo.mdx — frontmatter field "draft" should be boolean, got string "true"
 ```
 
-Frontmatter is non-fatal — your page renders, but the warning's a sign of a bug. Fix the YAML:
+Frontmatter is non-fatal. Your page renders, but the warning's a sign of a bug. Fix the YAML:
 
 ```yaml
 draft: true   # ✓ boolean
@@ -104,14 +104,14 @@ For built-in components: spelling counts (case-sensitive). For custom ones: drop
 openapi.json — cannot resolve "#/components/schemas/User"
 ```
 
-Spec references a component that isn't in the spec. Either fix the reference or add the component. Tangly's parser is the same `oas-tools` parser that production tooling uses — if it fails here, it'll fail in production validators too.
+Spec references a component that isn't in the spec. Either fix the reference or add the component. Tangly's parser is the same `oas-tools` parser that production tooling uses; if it fails here, it'll fail in production validators too.
 
 ## Build is slow
 
 Two common causes:
 
 - **Many large images.** Tangly doesn't optimize them. Pre-process with `sharp` or `squoosh-cli` before committing.
-- **Huge OpenAPI spec.** Splitting one giant spec into per-tag files speeds builds linearly.
+- **Huge OpenAPI spec.** Splitting one large spec into per-tag files speeds builds linearly.
 
 Otherwise builds should take under thirty seconds for a hundred pages. If you're seeing minutes, [open an issue](https://github.com/tanglydocs/tangly/issues) with the build's `--debug` output.
 
@@ -119,7 +119,7 @@ Otherwise builds should take under thirty seconds for a hundred pages. If you're
 
 The toggle in the topbar is in `theme/`. If you've shadowed the topbar, you may have dropped the toggle.
 
-- Check `appearance.strict: false` in `docs.json` (default — strict mode disables the toggle on purpose).
+- Check `appearance.strict: false` in `docs.json` (default; strict mode disables the toggle on purpose).
 - Verify the topbar override carries the original toggle markup.
 - If you've overridden CSS variables, make sure `.dark` selectors are present alongside the `:root` selectors.
 
@@ -134,7 +134,7 @@ Excluded pages (`noindex: true`, drafts) are excluded from the search index by d
 
 ## "TANGLY_USER_ROOT not set"
 
-You're running the runtime directly without going through the CLI. Use `tangly dev` / `tangly build`. The runtime is internal — direct invocation is unsupported.
+You're running the runtime directly without going through the CLI. Use `tangly dev` / `tangly build`. The runtime is internal; direct invocation is unsupported.
 
 ## More
 

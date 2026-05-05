@@ -15,14 +15,14 @@ draft: true
 ---
 ```
 
-Drafts are first-class — no separate dashboard, no CMS workflow. Authoring stays in your editor and git.
+Drafts are first-class. No separate dashboard, no CMS workflow. Authoring stays in your editor and git.
 
 ## Behavior
 
 | Mode | Drafts |
 | ---- | ------ |
 | `tangly dev` | Render normally with a "Draft" badge in the sidebar. |
-| `tangly build` | Omitted entirely — no HTML, no sitemap entry, no `llms.txt`/`llms-full.txt` entry, no Pagefind index entry. |
+| `tangly build` | Omitted entirely. No HTML, no sitemap entry, no `llms.txt`/`llms-full.txt` entry, no Pagefind index entry. |
 | `tangly check --strict` | Warnings for nav references that resolve to drafts. |
 
 ## Override for staging

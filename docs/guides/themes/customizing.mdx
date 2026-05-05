@@ -55,7 +55,7 @@ See [Schema → Fonts & styling](/reference/schema/fonts-styling).
 
 ## 3. Override CSS variables
 
-For sidebar widths, content column, line heights, radii — drop a `theme/styles/theme.css` at your project root. The file is concatenated after the bundled theme so your declarations win.
+For sidebar widths, content column, line heights, radii: drop a `theme/styles/theme.css` at your project root. The file is concatenated after the bundled theme so your declarations win.
 
 ```css
 /* theme/styles/theme.css */
@@ -74,7 +74,7 @@ Every theme exposes the same token namespace (`--tangly-color-*`, `--tangly-font
 
 ## 4. Shadow components
 
-For component-level changes — restyling a Card, replacing the topbar layout, adding a custom callout variant — drop a matching `.astro` file under `theme/`.
+For component-level changes (restyling a Card, replacing the topbar layout, adding a custom callout variant) drop a matching `.astro` file under `theme/`.
 
 <FileTree>
 - my-docs/
@@ -89,7 +89,7 @@ The shadowed component receives the same props as the built-in. See [Custom comp
 
 ## 5. Eject
 
-For full control — custom Vite plugins, custom Astro integrations, removing parts of the runtime — run:
+For full control (custom Vite plugins, custom Astro integrations, removing parts of the runtime) run:
 
 ```bash
 tangly eject
@@ -111,11 +111,11 @@ See [`tangly eject`](/reference/cli/eject) for what gets written and how to roll
 | Card layout | 4 |
 | Add a custom Astro middleware | 5 |
 | Add a Tailwind plugin | 5 |
-| Render a different OpenAPI viewer | [Schema → API](/reference/schema/api) — no customization needed, just `api.viewer` |
+| Render a different OpenAPI viewer | [Schema → API](/reference/schema/api): no customization needed, just `api.viewer` |
 
 ## Cross-theme patterns
 
-Token names are the same across all five built-in themes. Custom CSS overrides written for tang work on geist, pith, etc. — only the values differ.
+Token names are the same across all five built-in themes. Custom CSS overrides written for tang work on geist, pith, etc.; only the values differ.
 
 ```css
 /* This works under any theme. */

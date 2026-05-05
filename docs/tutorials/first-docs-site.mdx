@@ -6,7 +6,7 @@ icon: "rocket"
 
 # Build your first docs site
 
-The first time you set up a docs site for a new project, you're usually short on patience. So this tutorial doesn't dwell — we'll get pages on screen first, deal with polish later.
+The first time you set up a docs site for a new project, you're usually short on patience. So this tutorial doesn't dwell. We'll get pages on screen first, deal with polish later.
 
 What you'll have at the end: a five-page docs site running locally with hot reload, a deployed preview URL, and enough orientation to keep adding pages without consulting docs.
 
@@ -17,7 +17,7 @@ You need:
 - **Bun ≥ 1.1** (or Node 18+ if you'd rather; the rest of the tutorial assumes Bun).
 - A directory you can write to. Anywhere works.
 
-That's it. You don't need a GitHub account yet. You don't need a domain. Don't need to install Astro, MDX, Tailwind, or anything else — Tangly bundles them.
+That's it. You don't need a GitHub account yet. You don't need a domain. Don't need to install Astro, MDX, Tailwind, or anything else; Tangly bundles them.
 
 ## 1. Scaffold the project
 
@@ -40,7 +40,7 @@ bunx tangly init
   - package.json
 </FileTree>
 
-Five pages, a logo, a config file. The `package.json` carries `tangly` as a dependency — `bun install` runs automatically.
+Five pages, a logo, a config file. The `package.json` carries `tangly` as a dependency; `bun install` runs automatically.
 
 If you want to skip the prompts, pass flags:
 
@@ -72,7 +72,7 @@ Two options. The slow way: create `guides/installing.mdx` with frontmatter and a
 bunx tangly add page guides/installing
 ```
 
-`tangly add` writes the file and inserts the slug into `docs.json` under the right group. Open `guides/installing.mdx` in your editor — it's a short stub:
+`tangly add` writes the file and inserts the slug into `docs.json` under the right group. Open `guides/installing.mdx` in your editor; it's a short stub:
 
 ```mdx
 ---
@@ -107,7 +107,7 @@ Open `docs.json`. Set `name` to whatever your project's actually called. Update 
 }
 ```
 
-The dev server picks up `docs.json` changes the same way it picks up MDX edits — no restart.
+The dev server picks up `docs.json` changes the same way it picks up MDX edits. No restart.
 
 ## 5. Validate
 
@@ -151,13 +151,13 @@ bunx tangly build --adapter vercel
 vercel deploy
 ```
 
-For Cloudflare Pages, use `--adapter cloudflare` and follow the [deploying guide](/guides/deploying). For "any static host," `--adapter static` writes plain HTML — drop `dist/` on S3, Netlify, or your own server.
+For Cloudflare Pages, use `--adapter cloudflare` and follow the [deploying guide](/guides/deploying). For "any static host," `--adapter static` writes plain HTML; drop `dist/` on S3, Netlify, or your own server.
 
 ## Where to go from here
 
-- [Authoring → Pages](/guides/authoring/pages) — what frontmatter fields exist and when to use them.
-- [Components reference](/reference/components) — the auto-injected MDX components.
-- [Themes](/guides/themes/index) — switch palette / typography in one config field.
-- [AI agents](/guides/ai-agents/index) — the Tangly skill for Claude Code; how Cursor consumes `docs.json`.
+- [Authoring → Pages](/guides/authoring/pages): what frontmatter fields exist and when to use them.
+- [Components reference](/reference/components): the auto-injected MDX components.
+- [Themes](/guides/themes/index): switch palette / typography in one config field.
+- [AI agents](/guides/ai-agents/index): the Tangly skill for Claude Code; how Cursor consumes `docs.json`.
 
 If you got stuck, [Troubleshooting](/troubleshooting/common-errors) covers the most common build / dev errors.

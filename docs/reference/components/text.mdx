@@ -1,6 +1,6 @@
 ---
 title: Text
-description: Badge, Icon, Tooltip, GlossaryTerm — small inline pieces for tags, icons, hover hints.
+description: Badge, Icon, Tooltip, GlossaryTerm. Small inline pieces for tags, icons, hover hints.
 icon: "type"
 ---
 
@@ -41,17 +41,17 @@ Status / version / category chip.
 ### As a tag
 
 ```mdx
-Tangly v0.3 — <Badge variant="accent" size="small">new</Badge> AI agent skills.
+Tangly v0.3, <Badge variant="accent" size="small">new</Badge> AI agent skills.
 ```
 
-Tangly v0.3 — <Badge variant="accent" size="small">new</Badge> AI agent skills.
+Tangly v0.3, <Badge variant="accent" size="small">new</Badge> AI agent skills.
 
 ## Icon
 
 Renders an icon by name. Resolution order:
 
 1. Inline brand glyph (GitHub, Twitter/X, LinkedIn, YouTube, Slack, Discord)
-2. Lucide registry — direct match (`Rocket`, `Code`, …)
+2. Lucide registry, direct match (`Rocket`, `Code`, …)
 3. Font Awesome / Mintlify alias map (`circle-check` → `CircleCheck`, `cog` → `Settings`, `search` → `Search`, …)
 4. PascalCase fallback (`my-icon` → `MyIcon`)
 5. Fallback to `CircleHelp` (with a console warning)
@@ -111,13 +111,13 @@ The build runs through <Tooltip tip="Just-in-time esbuild + Vite, no bundling st
 
 ## GlossaryTerm
 
-Inline link to a glossary entry with a hover-revealed definition. Most authors don't write `<GlossaryTerm>` by hand — Tangly's `rehype-glossary` plugin auto-wraps the first occurrence of each glossary entry on every page. This component is the manual opt-in form.
+Inline link to a glossary entry with a hover-revealed definition. Most authors don't write `<GlossaryTerm>` by hand. Tangly's `rehype-glossary` plugin auto-wraps the first occurrence of each glossary entry on every page. This component is the manual opt-in form.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `slug` | `string` | — | Glossary entry slug — anchors to `/glossary#<slug>` |
+| `slug` | `string` | — | Glossary entry slug; anchors to `/glossary#<slug>` |
 | `term` | `string` | — | Term name (used as `data-term`) |
-| `definition` | `string` | `""` | Definition body — appears in the hover tooltip |
+| `definition` | `string` | `""` | Definition body; appears in the hover tooltip |
 | `href` | `string` | `/glossary#<slug>` | Override the link target |
 
 ```mdx

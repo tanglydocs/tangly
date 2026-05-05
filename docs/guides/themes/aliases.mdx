@@ -10,11 +10,11 @@ Existing Mintlify `docs.json` files often have one of these in the `theme` field
 
 `mint` · `maple` · `palm` · `willow` · `linden` · `almond` · `aspen` · `luma` · `sequoia`
 
-Tangly resolves all of them to `tang` at render time. No migration step required — your existing `docs.json` runs unmodified.
+Tangly resolves all of them to `tang` at render time. No migration step required; your existing `docs.json` runs unmodified.
 
 ## Why one alias
 
-Mintlify's themes mostly differ in palette and button shape. The component shells are nearly identical. Tangly bundles all that variation into one theme + token overrides — picking `tang` and overriding `colors` / `fonts` reproduces any of the Mintlify variants in 30 seconds.
+Mintlify's themes mostly differ in palette and button shape. The component shells are nearly identical. Tangly bundles all that variation into one theme + token overrides; picking `tang` and overriding `colors` / `fonts` reproduces any of the Mintlify variants in 30 seconds.
 
 If you want a meaningfully different aesthetic, [pith](/guides/themes/pith), [pip](/guides/themes/pip), [readable](/guides/themes/readable), and [geist](/guides/themes/geist) are your other options.
 
@@ -35,7 +35,7 @@ The Zod schema accepts any string for `theme` so projects mid-migration don't fa
 It's optional. The two paths:
 
 - **Leave `theme: "mint"` as-is.** Renders as tang. Works forever.
-- **Rename to `theme: "tang"`** when you're cleaning up `docs.json`. `tangly migrate` doesn't auto-rewrite — it surfaces a notice. The rationale: forcing a rename pretends the projects had compatible-but-different themes. Better to make the conscious choice.
+- **Rename to `theme: "tang"`** when you're cleaning up `docs.json`. `tangly migrate` doesn't auto-rewrite; it surfaces a notice. The rationale: forcing a rename pretends the projects had compatible-but-different themes. Better to make the conscious choice.
 
 If you'd rather Tangly auto-rewrite, run `tangly check` to see the notice, then update by hand or with `sed`.
 
@@ -58,4 +58,4 @@ Pick the hex from your old Mintlify deployment, drop it in. Done.
 
 ## Source
 
-[`packages/schema/src/themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts) — `TANGLY_THEMES`, `resolveTheme()`
+[`packages/schema/src/themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts): `TANGLY_THEMES`, `resolveTheme()`

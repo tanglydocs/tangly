@@ -1,6 +1,6 @@
 ---
 title: API
-description: ParamField, ResponseField, RequestExample, ResponseExample, OpenApi viewers — for hand-rolled and generated API docs.
+description: ParamField, ResponseField, RequestExample, ResponseExample, OpenApi viewers, for hand-rolled and generated API docs.
 icon: "plug"
 ---
 
@@ -16,11 +16,11 @@ icon: "plug"
 | [`<OpenApiScalar>`](#openapiscalar) | Embed Scalar for one operation |
 | [`<OpenApiStoplight>`](#openapistoplight) | Embed Stoplight Elements for one operation |
 
-If you have an OpenAPI spec, point at it from `docs.json` (`api.openapi`) and Tangly auto-generates pages — these components are for **manual reference pages** or for embedding a single operation in prose.
+If you have an OpenAPI spec, point at it from `docs.json` (`api.openapi`) and Tangly auto-generates pages. These components are for **manual reference pages** or for embedding a single operation in prose.
 
 ## ParamField
 
-Documents one request parameter. The location flag (path/query/body/header) is mutually exclusive — set exactly one.
+Documents one request parameter. The location flag (path/query/body/header) is mutually exclusive. Set exactly one.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -61,7 +61,7 @@ Documents one request parameter. The location flag (path/query/body/header) is m
 
 ## ResponseField
 
-Documents one response field. Same shape as `<ParamField>` minus the location flags. Pass `name` (or any of the location aliases — they all act as the field name).
+Documents one response field. Same shape as `<ParamField>` minus the location flags. Pass `name` (or any of the location aliases, they all act as the field name).
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -77,7 +77,7 @@ Documents one response field. Same shape as `<ParamField>` minus the location fl
 </ResponseField>
 
 <ResponseField name="meta" type="object">
-  Implementation hint — see [Meta](#meta) for the inner shape.
+  Implementation hint. See [Meta](#meta) for the inner shape.
 </ResponseField>
 ```
 
@@ -86,7 +86,7 @@ Documents one response field. Same shape as `<ParamField>` minus the location fl
 </ResponseField>
 
 <ResponseField name="meta" type="object">
-  Implementation hint — see [Meta](#meta) for the inner shape.
+  Implementation hint. See [Meta](#meta) for the inner shape.
 </ResponseField>
 
 For nested fields, wrap a child set in [`<Expandable>`](/reference/components/layout#expandable).
@@ -142,7 +142,7 @@ Native Tangly OpenAPI viewer. Renders one operation with summary, parameters, re
 | `spec` | `string` | — | URL or project-relative path to the OpenAPI document |
 | `method` | `string` | — | HTTP method (`get`/`post`/…) |
 | `path` | `string` | — | OpenAPI path template, e.g. `/users/{id}` |
-| `baseUrl` | `string` | (first server) | Override the base URL — falls back to the first `servers[0].url` in the spec |
+| `baseUrl` | `string` | (first server) | Override the base URL. Falls back to the first `servers[0].url` in the spec |
 | `authMethod` | `"bearer" \| "basic" \| "key" \| "none"` | (from `docs.json`) | Auth scheme for the try-it form |
 | `authName` | `string` | — | Header name when `authMethod="key"` |
 
@@ -154,7 +154,7 @@ Native Tangly OpenAPI viewer. Renders one operation with summary, parameters, re
 />
 ```
 
-The `Try it` panel sends a real cross-origin `fetch`. CORS rules apply — if your server doesn't allow the docs origin, you'll see a CORS error in the response panel.
+The `Try it` panel sends a real cross-origin `fetch`. CORS rules apply. If your server doesn't allow the docs origin, you'll see a CORS error in the response panel.
 
 ## OpenApiRedoc
 
@@ -192,7 +192,7 @@ Same prop shape as `<OpenApiRedoc>`.
 
 ### Picking a viewer
 
-The four OpenAPI components are interchangeable in usage — pick the one that matches your aesthetic. Or skip them entirely and let `docs.json` `api.viewer` pick the global default; Tangly will then auto-generate full pages from the spec.
+The four OpenAPI components are interchangeable in usage. Pick the one that matches your aesthetic. Or skip them entirely and let `docs.json` `api.viewer` pick the global default; Tangly will then auto-generate full pages from the spec.
 
 | Viewer | Bundle | Try-it |
 |---|---|---|

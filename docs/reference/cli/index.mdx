@@ -1,6 +1,6 @@
 ---
 title: CLI
-description: Every Tangly command — init, dev, build, check, migrate, eject, add, preview — with flags, defaults, and examples.
+description: Every Tangly command (init, dev, build, check, migrate, eject, add, preview) with flags, defaults, and examples.
 icon: "terminal"
 ---
 
@@ -43,7 +43,7 @@ tangly init [dir] [--from <dir>] [--template <name>] [--name <name>]
 | Arg / flag | Type | Default | Description |
 |---|---|---|---|
 | `dir` | positional | `.` | Target directory |
-| `--from` | string | — | Path to existing markdown folder. Walks the tree (folders → groups), synthesizes `docs.json`. Idempotent — re-runs merge new files into existing nav. |
+| `--from` | string | — | Path to existing markdown folder. Walks the tree (folders → groups), synthesizes `docs.json`. Idempotent: re-runs merge new files into existing nav. |
 | `--template` | string | `starter` | Template name. Skip the interactive prompt. |
 | `--name` | string | — | Project name. Skip the interactive prompt. |
 
@@ -73,7 +73,7 @@ tangly dev [--port 4321] [--host] [--no-open] [--debug] [--tunnel]
 | `--debug` | boolean | `false` | Verbose Vite/Astro logging |
 | `--tunnel` | boolean | `false` | Expose via a `cloudflared` quick tunnel. Requires `cloudflared` on `PATH`. |
 
-The dev server pre-validates your `docs.json` manifest before launching Astro — schema errors surface immediately, not buried in a stack trace.
+The dev server pre-validates your `docs.json` manifest before launching Astro. Schema errors surface immediately, not buried in a stack trace.
 
 ```bash
 tangly dev --port 8080 --host --no-open
@@ -172,7 +172,7 @@ tangly migrate --yes
 tangly migrate --keep-source
 ```
 
-If your `theme:` value isn't a Tangly theme, `migrate` warns but does not change it — you pick the replacement explicitly.
+If your `theme:` value isn't a Tangly theme, `migrate` warns but does not change it. You pick the replacement explicitly.
 
 ## eject
 
@@ -190,7 +190,7 @@ tangly eject [--out ./.tangly] [--yes]
 After eject:
 
 - `./.tangly/` contains a real Astro project (`astro.config.mjs`, `src/`, etc.)
-- `package.json` adds raw Astro deps (`astro`, `@astrojs/mdx`, `tailwindcss`, …) and rewrites `dev`/`build`/`preview` scripts to call `astro` directly. The `tangly` package is **kept** as a dep — the materialized `astro.config` still imports `tangly/plugin` for the docs runtime, and theme components still import from `@tanglydocs/theme-ui`.
+- `package.json` adds raw Astro deps (`astro`, `@astrojs/mdx`, `tailwindcss`, …) and rewrites `dev`/`build`/`preview` scripts to call `astro` directly. The `tangly` package is **kept** as a dep. The materialized `astro.config` still imports `tangly/plugin` for the docs runtime, and theme components still import from `@tanglydocs/theme-ui`.
 
 You manage `astro.config.mjs` and integrations from then on.
 

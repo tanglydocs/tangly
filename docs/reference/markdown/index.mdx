@@ -1,11 +1,11 @@
 ---
 title: Markdown & MDX
-description: Every Markdown / MDX feature Tangly understands — text, headings, lists, tables, code, links, images, MDX, LaTeX, embeds.
+description: Every Markdown / MDX feature Tangly understands. Text, headings, lists, tables, code, links, images, MDX, LaTeX, embeds.
 icon: "text"
 ---
 
 
-Tangly pages are MDX — Markdown with embedded JSX. The Markdown half is GitHub-flavored CommonMark + a few additions. The JSX half lets you drop a [component](/reference/components) anywhere a paragraph would go.
+Tangly pages are MDX: Markdown with embedded JSX. The Markdown half is GitHub-flavored CommonMark plus a few additions. The JSX half lets you drop a [component](/reference/components) anywhere a paragraph would go.
 
 This page covers every Markdown / MDX feature Tangly understands. For per-page metadata see [Frontmatter](/reference/schema/frontmatter); for the JSX components themselves see [Components](/reference/components).
 
@@ -13,7 +13,7 @@ This page covers every Markdown / MDX feature Tangly understands. For per-page m
 
 ### Headings
 
-Use ATX-style headings (`#`, `##`, `###`, …). Setext headings (`=====` underlines) work but aren't recommended — they don't survive automated edits well.
+Use ATX-style headings (`#`, `##`, `###`, …). Setext headings (`=====` underlines) work but aren't recommended. They don't survive automated edits well.
 
 ```md
 ## H2 — section
@@ -21,7 +21,7 @@ Use ATX-style headings (`#`, `##`, `###`, …). Setext headings (`=====` underli
 #### H4 — sub-subsection
 ```
 
-The page H1 is rendered automatically from the `title` frontmatter field. **Don't write your own `# Title`** at the top — you'll get two H1s.
+The page H1 is rendered automatically from the `title` frontmatter field. **Don't write your own `# Title`** at the top, or you'll get two H1s.
 
 ### Auto-generated heading IDs
 
@@ -106,7 +106,7 @@ Use `-`, `*`, or `+`. Pick one and stick to it.
 3. Third
 ```
 
-The numbers don't have to match the order — `1. 1. 1.` renders as `1. 2. 3.`.
+The numbers don't have to match the order. `1. 1. 1.` renders as `1. 2. 3.`.
 
 ### Task lists
 
@@ -210,7 +210,7 @@ Single backticks: `` `tangly check` ``. Use for function names, file paths, env 
 
 ### Multi-language tabs
 
-For the same code in multiple languages, wrap in [`<CodeGroup>`](/reference/components/code#codegroup) — auto-syncs across pages on known label families (npm/yarn/pnpm/bun, macOS/Linux/Windows, etc.).
+For the same code in multiple languages, wrap in [`<CodeGroup>`](/reference/components/code#codegroup). It auto-syncs across pages on known label families (npm/yarn/pnpm/bun, macOS/Linux/Windows, etc.).
 
 ### Theme & copy button
 
@@ -273,7 +273,7 @@ Heading slugs are auto-generated. `## Rate limits` → `#rate-limits`. For stabl
 ![Alt text](/images/diagram.png)
 ```
 
-Every inline image is wrapped in [`<LightboxImage>`](/reference/components/media#lightboximage) automatically — click to expand fullscreen.
+Every inline image is wrapped in [`<LightboxImage>`](/reference/components/media#lightboximage) automatically. Click to expand fullscreen.
 
 ### Image paths
 
@@ -283,7 +283,7 @@ Tangly serves the project root. `/images/foo.png` resolves to `<project>/images/
 
 Mintlify projects often write `![](../images/foo.png)` from inside a nested guide. Tangly's MDX preprocessor rewrites these to absolute paths (`/images/foo.png`) before the Astro asset pipeline sees them. Without the rewrite, Astro cache-misses on every relative path during HMR.
 
-If you ship a Tangly-native project, use absolute paths from day one — faster, less surprising.
+If you ship a Tangly-native project, use absolute paths from day one. Faster, less surprising.
 
 ### Image optimization
 
@@ -309,7 +309,7 @@ To opt out of the lightbox:
 
 ### Image formats
 
-Whatever your browser supports — png, jpg, webp, avif, gif (animated), svg. Tangly doesn't transcode.
+Whatever your browser supports: png, jpg, webp, avif, gif (animated), svg. Tangly doesn't transcode.
 
 For SVGs as inline icons, use [`<Icon>`](/reference/components/text#icon) with a Lucide name.
 
@@ -336,7 +336,7 @@ Curly braces interpolate JavaScript:
 The current year is {new Date().getFullYear()}.
 ```
 
-Expressions run at build time. They don't have access to your data layer — there's no SSR.
+Expressions run at build time. They don't have access to your data layer; there's no SSR.
 
 ### Importing components
 
@@ -393,9 +393,9 @@ Without the blank line, the renderer treats the children as a single inline expr
 
 ### Limitations
 
-- No client-side React/Vue/Svelte. Tangly outputs static HTML — JSX is server-only.
+- No client-side React/Vue/Svelte. Tangly outputs static HTML; JSX is server-only.
 - No `import` from npm packages outside what Tangly bundles. For custom logic, drop the file in `theme/` and shadow.
-- HTML inside MDX is allowed but discouraged — most things have a component (`<Frame>` over `<figure>`, `<Kbd>` over `<kbd>`).
+- HTML inside MDX is allowed but discouraged. Most things have a component (`<Frame>` over `<figure>`, `<Kbd>` over `<kbd>`).
 
 ## LaTeX
 
@@ -421,7 +421,7 @@ $$
 
 ### Mintlify `<latex>` shim
 
-Mintlify projects use a wrapper element. Tangly's preprocessor rewrites it to `$$…$$` before MDX parsing — either form works.
+Mintlify projects use a wrapper element. Tangly's preprocessor rewrites it to `$$…$$` before MDX parsing. Either form works.
 
 ```md
 <latex>E = mc^2</latex>
@@ -490,7 +490,7 @@ sequenceDiagram
 
 ### Theming
 
-Mermaid uses the `base` theme with `themeVariables` driven by Tangly's brand tokens — diagrams pick up the primary tang accent and surface/ink colors from the active theme. Toggling light/dark re-renders every diagram on the page (`tangly:rerender-mermaid` event).
+Mermaid uses the `base` theme with `themeVariables` driven by Tangly's brand tokens. Diagrams pick up the primary tang accent and surface/ink colors from the active theme. Toggling light/dark re-renders every diagram on the page (`tangly:rerender-mermaid` event).
 
 ### Performance
 
@@ -498,7 +498,7 @@ The Mermaid library (~600 KB) is dynamically imported **only on pages that conta
 
 ### Security
 
-Mermaid runs in `securityLevel: "strict"` — HTML and `<script>` inside diagram source are sanitized.
+Mermaid runs in `securityLevel: "strict"`. HTML and `<script>` inside diagram source are sanitized.
 
 ## Embeds
 
@@ -512,7 +512,7 @@ Three components handle external or cross-page content:
 
 ### YouTube / Vimeo / self-hosted video
 
-`<Video>` detects the provider from `src` and rewrites to the privacy-mode embed where applicable. Lazy-loaded — no third-party traffic until the player scrolls into view.
+`<Video>` detects the provider from `src` and rewrites to the privacy-mode embed where applicable. Lazy-loaded, with no third-party traffic until the player scrolls into view.
 
 ```mdx
 <Video src="https://www.youtube.com/watch?v=jNQXAC9IVRw" />

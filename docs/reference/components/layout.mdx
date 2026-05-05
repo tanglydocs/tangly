@@ -1,6 +1,6 @@
 ---
 title: Layout
-description: Frame, Accordion, AccordionGroup, Expandable — for framing media and folding content.
+description: Frame, Accordion, AccordionGroup, Expandable. For framing media and folding content.
 icon: "layers"
 ---
 
@@ -10,7 +10,7 @@ icon: "layers"
 | [`<Frame>`](#frame) | Frame around an image or media block, optional caption |
 | [`<Accordion>`](#accordion) | Collapsible section with title + description |
 | [`<AccordionGroup>`](#accordiongroup) | Stack accordions into a single bordered card |
-| [`<Expandable>`](#expandable) | Lightweight inline disclosure — for nested-field reveals |
+| [`<Expandable>`](#expandable) | Lightweight inline disclosure for nested-field reveals |
 
 ## Frame
 
@@ -44,7 +44,7 @@ Wraps a slot in a soft framed surface with rounded corners and an optional capti
 
 ## Accordion
 
-Collapsible block — a title and an optional description sit on the always-visible row, the rest is revealed when expanded.
+Collapsible block. A title and an optional description sit on the always-visible row, the rest is revealed when expanded.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -56,14 +56,14 @@ Collapsible block — a title and an optional description sit on the always-visi
 ```mdx
 <Accordion title="What's the difference between Tangly and Mintlify?" icon="message-circle-question">
   Mintlify is a SaaS docs platform. Tangly is an OSS framework that renders
-  Mintlify projects unmodified — but you self-host, you ship to any static host,
+  Mintlify projects unmodified, but you self-host, you ship to any static host,
   and you can eject to plain Astro at any point.
 </Accordion>
 ```
 
 <Accordion title="What's the difference between Tangly and Mintlify?" icon="message-circle-question">
   Mintlify is a SaaS docs platform. Tangly is an OSS framework that renders
-  Mintlify projects unmodified — but you self-host, you ship to any static host,
+  Mintlify projects unmodified, but you self-host, you ship to any static host,
   and you can eject to plain Astro at any point.
 </Accordion>
 
@@ -94,7 +94,7 @@ Wraps multiple `<Accordion>` children into one bordered card with dividers.
 ```mdx
 <AccordionGroup>
   <Accordion title="Can I deploy to Cloudflare Pages?">
-    Yes — `tangly build --adapter cloudflare`.
+    Yes. `tangly build --adapter cloudflare`.
   </Accordion>
   <Accordion title="Does search work offline?">
     Yes. Pagefind builds a static index that runs entirely in the browser.
@@ -107,7 +107,7 @@ Wraps multiple `<Accordion>` children into one bordered card with dividers.
 
 <AccordionGroup>
   <Accordion title="Can I deploy to Cloudflare Pages?">
-    Yes — `tangly build --adapter cloudflare`.
+    Yes. `tangly build --adapter cloudflare`.
   </Accordion>
   <Accordion title="Does search work offline?">
     Yes. Pagefind builds a static index that runs entirely in the browser.
@@ -119,7 +119,7 @@ Wraps multiple `<Accordion>` children into one bordered card with dividers.
 
 ## Expandable
 
-A lighter-weight disclosure than `<Accordion>` — a dashed border, no description, no icon. Designed for nested field reveals inside `<ParamField>` and `<ResponseField>`.
+A lighter-weight disclosure than `<Accordion>`. Dashed border, no description, no icon. Designed for nested field reveals inside `<ParamField>` and `<ResponseField>`.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

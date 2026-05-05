@@ -6,18 +6,18 @@ icon: "globe"
 
 # Add an API reference
 
-If your product has an API, the docs need a reference. The choice is usually between hand-writing every endpoint (slow, drifts) and pasting in an OpenAPI spec and letting the docs framework render it. Tangly does the second — drop the spec, get pages.
+If your product has an API, the docs need a reference. The choice is usually between hand-writing every endpoint (slow, drifts) and pasting in an OpenAPI spec and letting the docs framework render it. Tangly does the second. Drop the spec, get pages.
 
 This tutorial walks through that. Five minutes if you already have a spec, fifteen if you're writing one as you go.
 
 ## Before you start
 
 - A working Tangly project ([tutorial 1](/tutorials/first-docs-site) if you're not there yet).
-- An OpenAPI 3 spec — JSON or YAML. If you don't have one, the [Petstore spec](https://petstore3.swagger.io/api/v3/openapi.json) works for following along.
+- An OpenAPI 3 spec, JSON or YAML. If you don't have one, the [Petstore spec](https://petstore3.swagger.io/api/v3/openapi.json) works for following along.
 
 ## 1. Drop the spec into your project
 
-Save the spec at `openapi.json` in your project root. Or anywhere else — the path you pick goes into `docs.json` next.
+Save the spec at `openapi.json` in your project root. Or anywhere else; the path you pick goes into `docs.json` next.
 
 ```bash
 curl -o openapi.json https://petstore3.swagger.io/api/v3/openapi.json
@@ -35,13 +35,13 @@ curl -o openapi.json https://petstore3.swagger.io/api/v3/openapi.json
 }
 ```
 
-`api.openapi` accepts a single spec path or an array if you have several. `baseUrl` overrides the spec's `servers[0].url` for try-it-out — set it to your real API. `auth.method` controls the auth UI. `bearer` is the most common; see [Schema → API](/reference/schema/api) for the full menu.
+`api.openapi` accepts a single spec path or an array if you have several. `baseUrl` overrides the spec's `servers[0].url` for try-it-out; set it to your real API. `auth.method` controls the auth UI. `bearer` is the most common; see [Schema → API](/reference/schema/api) for the full menu.
 
 ## 3. Choose where the endpoints live
 
 You have two options.
 
-**Option A — auto-generated pages.** Add a tab in `docs.json` and point its `openapi` field at the spec:
+**Option A: auto-generated pages.** Add a tab in `docs.json` and point its `openapi` field at the spec:
 
 ```json
 {
@@ -56,9 +56,9 @@ You have two options.
 }
 ```
 
-Tangly walks the spec and generates one page per operation, grouped by tag. The dev server already shows them — switch to the API tab and start clicking.
+Tangly walks the spec and generates one page per operation, grouped by tag. The dev server already shows them. Switch to the API tab and start clicking.
 
-**Option B — hand-curated pages.** Create `.mdx` files where you want them and reference operations from frontmatter:
+**Option B: hand-curated pages.** Create `.mdx` files where you want them and reference operations from frontmatter:
 
 ```mdx
 ---
@@ -67,10 +67,10 @@ description: Get every pet on the books.
 openapi: GET /pet/findByStatus
 ---
 
-The list endpoint returns all pets. Pagination is via the `limit` query parameter — see below.
+The list endpoint returns all pets. Pagination is via the `limit` query parameter; see below.
 ```
 
-The `openapi:` frontmatter field is `METHOD path` — the same value you'd pass to [`<OpenApiEndpoint>`](/reference/components/openapi-endpoint). The body of the page becomes prose around the auto-generated endpoint render.
+The `openapi:` frontmatter field is `METHOD path`, the same value you'd pass to [`<OpenApiEndpoint>`](/reference/components/openapi-endpoint). The body of the page becomes prose around the auto-generated endpoint render.
 
 For most API references, A is what you want. B is for cases where you need narrative context per endpoint.
 
@@ -106,7 +106,7 @@ The try-it-out form needs to know how to authenticate.
 { "api": { "auth": { "method": "basic" } } }
 ```
 
-The reader fills the form once per session. Tokens stay in `localStorage` — never sent to your docs site itself, only to the API.
+The reader fills the form once per session. Tokens stay in `localStorage`; never sent to your docs site itself, only to the API.
 
 ## 6. Multi-environment
 
@@ -134,9 +134,9 @@ bunx tangly check
 
 Spec parse errors surface here. Common issues:
 
-- A `$ref` pointing to a missing component — the validator names both files.
-- An operation with no `summary` — Tangly uses `summary` for the sidebar entry, falls back to `operationId`, and finally to `METHOD path`. None present means a generic label.
-- A spec with circular references — Tangly resolves these but flags them.
+- A `$ref` pointing to a missing component. The validator names both files.
+- An operation with no `summary`. Tangly uses `summary` for the sidebar entry, falls back to `operationId`, and finally to `METHOD path`. None present means a generic label.
+- A spec with circular references. Tangly resolves these but flags them.
 
 ## 8. Test the rendered page
 
@@ -144,11 +144,11 @@ Walk through 2–3 endpoints in the browser. Verify:
 
 - The endpoint description renders (Markdown in the spec is preserved).
 - Parameters show correct types and required markers.
-- Try-it-out actually returns a response. CORS issues here mean the API server doesn't allow your docs origin — fix at the API, not in Tangly.
+- Try-it-out actually returns a response. CORS issues here mean the API server doesn't allow your docs origin; fix at the API, not in Tangly.
 - Response examples match what the API returns.
 
 ## Where to go from here
 
-- [Schema → API](/reference/schema/api) — every config option in detail.
-- [`<OpenApiEndpoint>`](/reference/components/openapi-endpoint) — when to author the tag manually.
-- [Authoring → OpenAPI](/guides/authoring/openapi) — guide-level patterns (mixing prose with auto-generated content, splitting one spec across pages).
+- [Schema → API](/reference/schema/api): every config option in detail.
+- [`<OpenApiEndpoint>`](/reference/components/openapi-endpoint): when to author the tag manually.
+- [Authoring → OpenAPI](/guides/authoring/openapi): guide-level patterns (mixing prose with auto-generated content, splitting one spec across pages).

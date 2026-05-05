@@ -1,6 +1,6 @@
 ---
 title: Cards
-description: Card, CardGroup, Columns — for grids, choosers, and at-a-glance landing pages.
+description: Card, CardGroup, Columns. For grids, choosers, and at-a-glance landing pages.
 icon: "square-stack"
 ---
 
@@ -21,12 +21,12 @@ Three components for grids and at-a-glance lists. `<Card>` is the unit; `<CardGr
 | `icon` | `string` | — | Lucide icon name (or any [supported library](/reference/schema#icons)) |
 | `href` | `string` | — | If set, the card becomes an anchor and gets hover styling |
 | `horizontal` | `boolean` | `false` | Lay out icon/image to the left of the body instead of stacked |
-| `img` | `string` | — | Image URL — rendered above the body (or to the left when `horizontal`) |
+| `img` | `string` | — | Image URL, rendered above the body (or to the left when `horizontal`) |
 | `image` | `string` | — | Mintlify-compatible alias for `img` |
 | `imageAspect` | `string` | `"16/9"` | CSS aspect ratio for the image area |
 | `color` | `string` | — | CSS color used for the icon tint and `--card-accent` variable |
 
-Children render as the description body — you can put any MDX inside.
+Children render as the description body. You can put any MDX inside.
 
 ### Default
 
@@ -80,12 +80,12 @@ Children render as the description body — you can put any MDX inside.
 
 ```mdx
 <Card title="Live now" icon="zap" color="#EA580C" href="/quickstart">
-  Tang accent — useful for marketing tiles.
+  Tang accent. Useful for marketing tiles.
 </Card>
 ```
 
 <Card title="Live now" icon="zap" color="#EA580C" href="/quickstart">
-  Tang accent — useful for marketing tiles.
+  Tang accent. Useful for marketing tiles.
 </Card>
 
 ## CardGroup
@@ -128,7 +128,7 @@ Grid wrapper for `<Card>` children.
 
 ## Columns
 
-Generic grid wrapper that accepts arbitrary children — not just cards.
+Generic grid wrapper that accepts arbitrary children, not just cards.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

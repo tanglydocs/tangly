@@ -9,12 +9,12 @@ icon: "package"
 ## Requirements
 
 - **Node 20+** (or Bun 1.2+).
-- A package manager — `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
+- A package manager: `bun` (recommended), `pnpm`, `npm`, or `yarn` all work.
 - A directory you want to render. Tangly does not impose a folder structure beyond `docs.json` at the root.
 
 ## Install globally
 
-The fastest path — one command, `tangly` on your `PATH` everywhere:
+The fastest path. One command, `tangly` on your `PATH` everywhere:
 
 ```bash
 npm i -g tangly
@@ -126,8 +126,8 @@ Wire dev/build into your `package.json`:
 
 Tangly ships two agent skills you can install into any project that uses a skill-aware agent (Claude Code, Codex, …):
 
-- **`tanglify`** — drives the Tangly CLI, scaffolds `docs.json`, ports from Mintlify, picks deploy adapters.
-- **`tech-documentation`** — Diátaxis-grounded principles for writing the actual content.
+- **`tanglify`** drives the Tangly CLI, scaffolds `docs.json`, ports from Mintlify, picks deploy adapters.
+- **`tech-documentation`** carries Diátaxis-grounded principles for writing the actual content.
 
 Install both skills globally with one command:
 
@@ -135,7 +135,7 @@ Install both skills globally with one command:
 npx skills add tanglydocs/tangly -g
 ```
 
-The skills live under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) and are versioned alongside the framework — when CLI flags or schema fields change, the skill content moves with them.
+The skills live under [`skills/`](https://github.com/tanglydocs/tangly/tree/main/skills) and are versioned alongside the framework. When CLI flags or schema fields change, the skill content moves with them.
 
 ## What's next
 

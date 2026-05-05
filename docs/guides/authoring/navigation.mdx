@@ -10,7 +10,7 @@ The `navigation` field in `docs.json` is the source of truth for your sidebar an
 
 ## Pages, groups, tabs
 
-A page is just a slug — a path without `.mdx`:
+A page is just a slug, a path without `.mdx`:
 
 ```json
 { "navigation": { "pages": ["introduction", "guides/setup"] } }
@@ -47,7 +47,7 @@ Tabs split the navigation into top-level sections:
 
 ## Anchors and dropdowns
 
-Anchors are top-bar links — usually GitHub or external website:
+Anchors are top-bar links, usually GitHub or external website:
 
 ```json
 {
@@ -84,11 +84,11 @@ Groups can nest. Pages inside nested groups inherit the parent's behavior:
 
 ## Versions and languages
 
-The schema accepts `versions` and `languages` arrays. Routing for them is on the roadmap and not wired today — declarations are preserved on the manifest for forward compatibility.
+The schema accepts `versions` and `languages` arrays. Routing for them is on the roadmap and not wired today; declarations are preserved on the manifest for forward compatibility.
 
 ## Pages on disk vs in nav
 
-A `.mdx` file at `<root>/<slug>.mdx` is always routable at `/<slug>` — even if it's not in nav. Use this for unlisted pages (e.g. landing pages linked from external campaigns).
+A `.mdx` file at `<root>/<slug>.mdx` is always routable at `/<slug>`, even if it's not in nav. Use this for unlisted pages (e.g. landing pages linked from external campaigns).
 
 To find orphans:
 

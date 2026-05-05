@@ -6,12 +6,12 @@ icon: "palette"
 
 # Customize the theme
 
-Most rebrands take five hex values and a font family. The longer your customizations live in `docs.json`, the easier they are to revisit. The further you push toward CSS overrides and component shadowing, the more you own. This tutorial walks the spectrum — start from the easy end, stop wherever you have what you need.
+Most rebrands take five hex values and a font family. The longer your customizations live in `docs.json`, the easier they are to revisit. The further you push toward CSS overrides and component shadowing, the more you own. This tutorial walks the spectrum: start from one end, stop wherever you have what you need.
 
 ## Before you start
 
 - A working Tangly project.
-- A brand color or two in mind. Hex format. If you only have a Pantone or a vibe, pick something close from [Tailwind's palette](https://tailwindcss.com/docs/customizing-colors) — you can refine later.
+- A brand color or two in mind. Hex format. If you only have a Pantone or a vibe, pick something close from [Tailwind's palette](https://tailwindcss.com/docs/customizing-colors); you can refine later.
 
 ## 1. Switch theme
 
@@ -21,7 +21,7 @@ If `tang` (the default) isn't right, try one of the others:
 { "theme": "geist" }
 ```
 
-Reload `tangly dev`. The whole site flips to the new theme — same content, different chrome.
+Reload `tangly dev`. The whole site flips to the new theme: same content, different chrome.
 
 ```bash
 bunx tangly dev
@@ -101,7 +101,7 @@ Drop the woff2 file in `static/fonts/` so it ships with the build.
 
 ## 4. Tweak layout dimensions
 
-For sidebar width, content column, or radii — values that aren't in `docs.json` — use a CSS override file. Create `theme/styles/theme.css` at your project root:
+For sidebar width, content column, or radii (values that aren't in `docs.json`) use a CSS override file. Create `theme/styles/theme.css` at your project root:
 
 ```css
 :root {
@@ -144,7 +144,7 @@ const { title, href, icon } = Astro.props as Props;
 </a>
 ```
 
-Every `<Card>` in your MDX now renders through this file instead of the bundled one. Same Props interface — read the original at [`packages/theme-ui/src/components/Card.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Card.astro) and start from there.
+Every `<Card>` in your MDX now renders through this file instead of the bundled one. Same Props interface. Read the original at [`packages/theme-ui/src/components/Card.astro`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/Card.astro) and start from there.
 
 For more on shadowing, see [Custom components](/guides/customization/custom-components).
 
@@ -155,18 +155,18 @@ bunx tangly check
 bunx tangly build
 ```
 
-The build catches type errors in shadowed components. Nothing else should break — colors and font swaps are CSS-only, no compile-time consequences.
+The build catches type errors in shadowed components. Nothing else should break. Colors and font swaps are CSS-only, no compile-time consequences.
 
 Walk the rendered site:
 
-- Cmd-K search modal — does the placeholder match your theme?
-- Sidebar at `< 768px` — does the mobile menu pop in correctly?
-- Light → dark toggle — do all your overrides apply in both modes?
+- Cmd-K search modal: does the placeholder match your theme?
+- Sidebar at `< 768px`: does the mobile menu pop in correctly?
+- Light → dark toggle: do all your overrides apply in both modes?
 
 ## Where to go from here
 
-- [Custom templates](/guides/customization/custom-templates) — swap the page shell, not just components.
-- [`tangly eject`](/reference/cli/eject) — full Astro project for total control.
-- [Geist style guide](/guides/themes/geist) — when you want it to look like Vercel.
+- [Custom templates](/guides/customization/custom-templates): swap the page shell, not just components.
+- [`tangly eject`](/reference/cli/eject): full Astro project for total control.
+- [Geist style guide](/guides/themes/geist): when you want it to look like Vercel.
 
 If your final palette is meaningful enough to share, consider opening a PR with a new theme. Tangly's current five came from this exact path.

@@ -56,7 +56,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
     CLI commands, manifest builder, Vite plugin, and the synthesized Astro app shipped under `runtime/`.
   </Card>
   <Card title="@tanglydocs/theme-ui" icon="palette">
-    Layout, Sidebar, TopNav, Footer, PageShell, plus 28 MDX components. Two consumer themes (`tang`, `pith`) wire it up with their own CSS.
+    Layout, Sidebar, TopNav, Footer, PageShell, plus the MDX component set. Two consumer themes (`tang`, `pith`) wire it up with their own CSS.
   </Card>
 </CardGroup>
 
@@ -67,7 +67,7 @@ The flow is one-directional: parse → manifest → expose → render → emit. 
 </Note>
 
 <Note>
-  **Content collections + glob loader** point at your project root via `TANGLY_USER_ROOT`. Astro handles MDX parsing, HMR, asset processing, and static generation natively — Tangly does not reinvent any of it.
+  **Content collections + glob loader** point at your project root via `TANGLY_USER_ROOT`. Astro handles MDX parsing, HMR, asset processing, and static generation natively. Tangly does not reinvent any of it.
 </Note>
 
 <Note>

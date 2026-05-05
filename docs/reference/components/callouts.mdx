@@ -1,23 +1,23 @@
 ---
 title: Callouts
-description: Inline asides — Note, Tip, Warning, Info, Check, Danger — plus the Update release block.
+description: Inline asides (Note, Tip, Warning, Info, Check, Danger) plus the Update release block.
 icon: "message-square-warning"
 ---
 
 
-Seven block-level components for inline asides and changelog entries. All but `<Update>` share a single `_Callout.astro` shell — so to restyle every callout in one go, [shadow](/guides/customization/custom-components) `theme/_Callout.astro`.
+Seven block-level components for inline asides and changelog entries. All but `<Update>` share a single `_Callout.astro` shell, so to restyle every callout in one go, [shadow](/guides/customization/custom-components) `theme/_Callout.astro`.
 
 | Component | Use for |
 |---|---|
 | [`<Note>`](#note) | Heads-up context the reader should notice but doesn't need to act on |
 | [`<Tip>`](#tip) | Optional advice that improves their outcome |
-| [`<Warning>`](#warning) | "Be careful — this can break things" |
+| [`<Warning>`](#warning) | "Be careful, this can break things" |
 | [`<Info>`](#info) | Neutral aside, slightly cooler than Note |
 | [`<Check>`](#check) | Confirmation that a step worked |
-| [`<Danger>`](#danger) | Active danger — destructive ops, irreversible state |
+| [`<Danger>`](#danger) | Active danger: destructive ops, irreversible state |
 | [`<Update>`](#update) | Dated release block for changelogs |
 
-None of the callouts take props — they accept MDX children. `<Update>` is the exception.
+None of the callouts take props. They accept MDX children. `<Update>` is the exception.
 
 ## Note
 
@@ -29,7 +29,7 @@ Most common callout. Caveats, environment requirements, references to related do
 
 <Note>This page assumes Bun ≥ 1.1.</Note>
 
-If you're writing "be careful — this can break things," reach for [`<Warning>`](#warning). If it's actively dangerous, use [`<Danger>`](#danger).
+If you're writing "be careful, this can break things," reach for [`<Warning>`](#warning). If it's actively dangerous, use [`<Danger>`](#danger).
 
 ## Tip
 
@@ -43,7 +43,7 @@ Optional advice that improves the reader's outcome.
 
 ## Warning
 
-Reach for `<Warning>` when the reader could lose work, get stuck, or break something — but the action is still recoverable.
+Reach for `<Warning>` when the reader could lose work, get stuck, or break something, but the action is still recoverable.
 
 ```mdx
 <Warning>
@@ -57,7 +57,7 @@ Reach for `<Warning>` when the reader could lose work, get stuck, or break somet
 
 ## Info
 
-Neutral aside — slightly cooler in tone than `<Note>`. Use for "by the way" context that doesn't fit the prose flow.
+Neutral aside, slightly cooler in tone than `<Note>`. Use for "by the way" context that doesn't fit the prose flow.
 
 ```mdx
 <Info>
@@ -75,12 +75,12 @@ Confirmation. Use after a step in a tutorial to mark "you should see X now."
 
 ```mdx
 <Check>
-  Visit `http://localhost:4321` — you should see the default starter page.
+  Visit `http://localhost:4321`. You should see the default starter page.
 </Check>
 ```
 
 <Check>
-  Visit `http://localhost:4321` — you should see the default starter page.
+  Visit `http://localhost:4321`. You should see the default starter page.
 </Check>
 
 ## Danger

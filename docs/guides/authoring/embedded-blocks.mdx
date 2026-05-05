@@ -51,7 +51,7 @@ A heading-anchored block extends from the heading through the next sibling or pa
 
 A `{#paragraph-id}` marker captures only that paragraph (until the next blank line or heading).
 
-Embeds render Markdown only — no MDX components inside the embedded block. If you need component-rich content shared across pages, use a snippet (`snippets/foo.mdx`) and import it as a component instead.
+Embeds render Markdown only; no MDX components inside the embedded block. If you need component-rich content shared across pages, use a snippet (`snippets/foo.mdx`) and import it as a component instead.
 
 ## Cycle detection
 
@@ -77,12 +77,12 @@ That's the same content you'd see at [/introduction#status](/introduction#status
 
 This means:
 
-- **Zero runtime cost** — the embed is baked into the prerendered HTML.
-- **No client JS** — embeds work without scripts loaded.
-- **Sanitized** — block sources can't smuggle `<script>` or event-handler attributes into the embedding page.
+- **Zero runtime cost.** The embed is baked into the prerendered HTML.
+- **No client JS.** Embeds work without scripts loaded.
+- **Sanitized.** Block sources can't smuggle `<script>` or event-handler attributes into the embedding page.
 
 ## When NOT to embed
 
-- **Snippet content** (callouts, sample code) — use `snippets/` instead. Snippets allow MDX/components.
-- **Versioned changes** — embeds resolve at build time against the current source; they're not historical.
-- **Cross-version content** — when versioning lands, each version will get its own block index.
+- **Snippet content** (callouts, sample code). Use `snippets/` instead. Snippets allow MDX/components.
+- **Versioned changes.** Embeds resolve at build time against the current source; they're not historical.
+- **Cross-version content.** When versioning lands, each version will get its own block index.

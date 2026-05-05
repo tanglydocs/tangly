@@ -1,6 +1,6 @@
 ---
 title: Code
-description: CodeGroup, PackageManager, Snippet, FileTree, Kbd — the components for code, files, and keys.
+description: CodeGroup, PackageManager, Snippet, FileTree, Kbd. Components for code, files, and keys.
 icon: "code-2"
 ---
 
@@ -51,7 +51,7 @@ Wraps two or more code blocks and renders them as tabs. Each child's `data-filen
 
 ### Synced across blocks
 
-Pick TypeScript on the first block — the second block flips to TypeScript too.
+Pick TypeScript on the first block, the second block flips to TypeScript too.
 
 ````mdx
 <CodeGroup name="lang">
@@ -75,7 +75,7 @@ Pick TypeScript on the first block — the second block flips to TypeScript too.
 
 ### Auto-sync (no `name`)
 
-When labels match a known family, sync happens automatically — pick `bun` once, every install block on the page flips. Works across pages too.
+When labels match a known family, sync happens automatically. Pick `bun` once, every install block on the page flips. Works across pages too.
 
 ````mdx
 <CodeGroup>
@@ -149,7 +149,7 @@ To break sync for a specific block, give it a unique `syncName`:
 
 ## Snippet
 
-Reusable inline content. Phase-1 placeholder — accepts inline children for now; the file-resolved form (`file="snippets/x.mdx"`) lands in Phase 2.
+Reusable inline content. Phase-1 placeholder, accepts inline children for now; the file-resolved form (`file="snippets/x.mdx"`) lands in Phase 2.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -169,8 +169,8 @@ Turns a nested Markdown list into a styled directory tree. Indentation drives ne
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `variant` | `"default" \| "terminal" \| "ascii"` | `"default"` | Visual style — see below |
-| `chrome` | `boolean` | `false` | Only on `terminal` — draws three macOS-style window dots |
+| `variant` | `"default" \| "terminal" \| "ascii"` | `"default"` | Visual style. See below |
+| `chrome` | `boolean` | `false` | Only on `terminal`; draws three macOS-style window dots |
 
 ### Default
 
@@ -204,7 +204,7 @@ Turns a nested Markdown list into a styled directory tree. Indentation drives ne
 
 ### Terminal variant
 
-Drops the icons, swaps in literal `├──`/`└──` connectors, ships a dark background that ignores theme — like running `tree` in a shell. Add `chrome` for the macOS window header.
+Drops the icons, swaps in literal `├──`/`└──` connectors, ships a dark background that ignores theme. Like running `tree` in a shell. Add `chrome` for the macOS window header.
 
 <FileTree variant="terminal" chrome>
 - my-docs/
@@ -229,7 +229,7 @@ Drops the icons, swaps in literal `├──`/`└──` connectors, ships a da
 
 ### ASCII variant
 
-Minimal — no card, no background, no icons. Use when a tree sits inside another component (Card, Step, Accordion) and the boxed look would be too heavy.
+Minimal: no card, no background, no icons. Use when a tree sits inside another component (Card, Step, Accordion) and the boxed look would be too heavy.
 
 <FileTree variant="ascii">
 - packages/
@@ -254,11 +254,11 @@ Minimal — no card, no background, no icons. Use when a tree sits inside anothe
 
 Five things to know:
 
-1. **Directories** — A line ending in `/` is a directory; so is any line with nested children. Directories are collapsible (`<details open>`) — readers can fold them shut.
-2. **Highlighting** — Wrap a row in `**bold**` to highlight it.
-3. **Comments** — Anything after the filename becomes a muted comment. Inline Markdown works.
-4. **Placeholders** — A row containing only `...` (or `…`) draws a dimmed placeholder row.
-5. **Custom icons** — Prefix a row with `<Icon icon="..." />` to override the auto-detected file icon.
+1. **Directories.** A line ending in `/` is a directory; so is any line with nested children. Directories are collapsible (`<details open>`); readers can fold them shut.
+2. **Highlighting.** Wrap a row in `**bold**` to highlight it.
+3. **Comments.** Anything after the filename becomes a muted comment. Inline Markdown works.
+4. **Placeholders.** A row containing only `...` (or `…`) draws a dimmed placeholder row.
+5. **Custom icons.** Prefix a row with `<Icon icon="..." />` to override the auto-detected file icon.
 
 ```mdx
 <FileTree>
@@ -269,7 +269,7 @@ Five things to know:
 
 ## Kbd
 
-Renders styled keycap(s). Either pass children for a single key, or `keys="..."` for a chord — `+` and whitespace separate keys, and `Cmd` / `⌘` swap to `Ctrl` on non-Mac platforms.
+Renders styled keycap(s). Either pass children for a single key, or `keys="..."` for a chord. `+` and whitespace separate keys, and `Cmd` / `⌘` swap to `Ctrl` on non-Mac platforms.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

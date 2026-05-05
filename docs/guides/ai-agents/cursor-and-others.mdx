@@ -1,12 +1,12 @@
 ---
 title: Cursor & other editors
-description: JSON Schema autocomplete for docs.json works in any LSP-aware editor — Cursor, VS Code, JetBrains, Zed, Windsurf. No Tangly-specific extension required.
+description: "JSON Schema autocomplete for docs.json works in any LSP-aware editor: Cursor, VS Code, JetBrains, Zed, Windsurf. No Tangly-specific extension required."
 icon: "cursor-arrow"
 ---
 
 # Cursor & other editors
 
-Tangly's primary agent integration is [agent skills](/guides/ai-agents/skills) — supported by Claude Code, Codex, and other skill-aware agents. For editors without a skill-aware agent, the next-best surface is JSON Schema autocomplete — every modern editor has it, and Tangly publishes a schema for `docs.json`.
+Tangly's primary agent integration is [agent skills](/guides/ai-agents/skills), supported by Claude Code, Codex, and other skill-aware agents. For editors without a skill-aware agent, the next-best surface is JSON Schema autocomplete. Every modern editor has it, and Tangly publishes a schema for `docs.json`.
 
 ## JSON Schema autocomplete
 
@@ -27,12 +27,12 @@ Any LSP-aware editor will:
 
 This works in:
 
-- **Cursor** — out of the box. The built-in JSON LSP picks up `$schema`.
-- **VS Code** — out of the box.
-- **Zed** — out of the box.
-- **JetBrains IDEs** (IntelliJ, WebStorm, PyCharm) — out of the box.
-- **Neovim** with `jsonls` — out of the box.
-- **Windsurf** — out of the box (Windsurf is a fork of VS Code).
+- **Cursor.** Out of the box. The built-in JSON LSP picks up `$schema`.
+- **VS Code.** Out of the box.
+- **Zed.** Out of the box.
+- **JetBrains IDEs** (IntelliJ, WebStorm, PyCharm). Out of the box.
+- **Neovim** with `jsonls`. Out of the box.
+- **Windsurf.** Out of the box (Windsurf is a fork of VS Code).
 
 If you'd rather pin to a local copy of the schema (no network):
 
@@ -46,7 +46,7 @@ If you'd rather pin to a local copy of the schema (no network):
 
 ## Cursor rules
 
-Cursor supports `.cursorrules` (legacy) and `.cursor/rules/` (current). Tangly doesn't ship one by default — but adding one is straightforward:
+Cursor supports `.cursorrules` (legacy) and `.cursor/rules/` (current). Tangly doesn't ship one by default, but adding one is straightforward:
 
 ```
 .cursor/rules/
@@ -95,7 +95,7 @@ Codex respects `AGENTS.md` (and `CLAUDE.md`). Same conventions file works for bo
 
 ## What if my editor doesn't support JSON Schema?
 
-A surprising number of small / niche editors do — `helix`, `kakoune`, `micro` via plugins. Worst case, the file is just JSON. You lose autocomplete; nothing else breaks.
+A surprising number of small / niche editors do: `helix`, `kakoune`, `micro` via plugins. Worst case, the file is just JSON. You lose autocomplete; nothing else breaks.
 
 ## llms.txt as a fallback
 

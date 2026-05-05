@@ -27,17 +27,17 @@
 
 ## Features
 
-- **Host anywhere** - Static builds you can host anywhere (Vercel, Cloudflare, Netflify, AWS)
-- **Built on Astro** - Builds an [astro](https://astro.builds) site you can eject 
-- **Drop-in Mintlify compat** - point Tangly at an existing `docs.json` + MDX project. No source edits.
-- **Six themes** - `tang`, `pith`, `pip`, `readable`, `geist`, `starter`. See [Live demos →](https://examples.tangly.dev)
-- **34 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
-- **Built for AI agents** - every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). ~10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
-- **OpenAPI 3.0 / 3.1** - point at a spec, get browseable endpoint pages with try-it.
-- **Static output** - `tangly build` emits a folder. Drop it on Vercel, Cloudflare Pages, Netlify, GitHub Pages, S3, nginx. No runtime.
-- **Pagefind search** built in — instant, ⌘K, no Algolia key.
-- **Custom themes** - build custom themes using components from `@tanglydocs/theme-ui`
-- **One-line migration** from Mintlify — `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
+- **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
+- **Built on Astro.** Builds an [Astro](https://astro.build) site you can eject.
+- **Drop-in Mintlify compat.** Point Tangly at an existing `docs.json` + MDX project. No source edits.
+- **Five themes.** `tang`, `pith`, `pip`, `readable`, `geist`. See [live demos](https://examples.tangly.dev).
+- **38 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
+- **Built for AI agents.** Every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). About 10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
+- **OpenAPI 3.0 / 3.1.** Point at a spec, get browseable endpoint pages with try-it.
+- **Static output.** `tangly build` emits a folder. No runtime.
+- **Pagefind search built in.** Instant, ⌘K, no Algolia key.
+- **Custom themes.** Build them using components from `@tanglydocs/theme-ui`.
+- **One-line migration from Mintlify.** `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
 
 ## Install
 
@@ -74,9 +74,9 @@ Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#in
 
 ## Quick links
 
-- [Documentation](https://docs.tangly.dev) — guides, schema reference, CLI reference
+- [Documentation](https://docs.tangly.dev): guides, schema reference, CLI reference
 - [Website](https://tangly.dev)
-- [Theme demos](https://examples.tangly.dev) — see every theme rendering a real project
+- [Theme demos](https://examples.tangly.dev): every theme rendering a real project
 - [Mintlify migration guide](https://docs.tangly.dev/guides/migration/from-mintlify)
 - [Deploy guide](https://docs.tangly.dev/guides/deploying)
 
@@ -84,8 +84,8 @@ Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#in
 
 Tangly ships two Agent skills under [`skills/`](skills):
 
-- [`tanglify`](skills/tanglify) — use Tangly: init, verify, structure docs, port from Mintlify, deploy.
-- [`tech-documentation`](skills/tech-documentation) — write good technical docs (Diátaxis-grounded).
+- [`tanglify`](skills/tanglify): use Tangly: init, verify, structure docs, port from Mintlify, deploy.
+- [`tech-documentation`](skills/tech-documentation): write good technical docs (Diátaxis-grounded).
 
 ```bash
 npx skills add tanglydocs/tangly -g
@@ -96,9 +96,9 @@ npx skills add tanglydocs/tangly -g
 | Path                       | What                                              |
 |----------------------------|---------------------------------------------------|
 | `packages/tangly`          | the `tangly` CLI + manifest + Vite plugin         |
-| `packages/schema`          | `@tanglydocs/schema` — Zod + JSON Schema          |
+| `packages/schema`          | `@tanglydocs/schema`: Zod + JSON Schema           |
 | `packages/theme-ui`        | shared MDX components                             |
-| `packages/theme-{tang,pith,pip,readable,geist}` | the six themes                |
+| `packages/theme-{tang,pith,pip,readable,geist}` | the five themes               |
 | `packages/template-*`      | `tangly init` templates                           |
 | `packages/website`         | source for [`tangly.dev`](https://tangly.dev)     |
 | `docs/`                    | source for [`docs.tangly.dev`](https://docs.tangly.dev) (rendered by Tangly itself) |

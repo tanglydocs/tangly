@@ -8,8 +8,8 @@ icon: "image"
 | Component | Use for |
 |---|---|
 | [`<Embed>`](#embed) | Reuse a labeled block from another page (cross-page transclusion) |
-| [`<Video>`](#video) | YouTube / Vimeo / mp4 — auto-detects provider, lazy-loads |
-| [`<LightboxImage>`](#lightboximage) | Click-to-zoom image — used by default for inline `<img>` |
+| [`<Video>`](#video) | YouTube / Vimeo / mp4. Auto-detects provider, lazy-loads |
+| [`<LightboxImage>`](#lightboximage) | Click-to-zoom image. Used by default for inline `<img>` |
 
 ## Embed
 
@@ -24,9 +24,9 @@ Cross-page block reuse. Tangly's manifest extracts blocks during build (anything
 <Embed page="reference/billing" block="rate-limits" />
 ```
 
-Embedded blocks render as **Markdown only** — no MDX/JSX. This keeps the cycle invariant honest: there's no way for an embed to load another embed at render time. Build fails with a trail (`a#one → b#two → a#one`) when a cycle is detected.
+Embedded blocks render as **Markdown only**, no MDX/JSX. This keeps the cycle invariant honest: there's no way for an embed to load another embed at render time. Build fails with a trail (`a#one → b#two → a#one`) when a cycle is detected.
 
-For full authoring guidance — when to embed vs duplicate vs link — see [Embedded blocks](/guides/authoring/embedded-blocks).
+For full authoring guidance (when to embed vs duplicate vs link) see [Embedded blocks](/guides/authoring/embedded-blocks).
 
 ## Video
 
@@ -37,13 +37,13 @@ Universal video block. Detects the provider from `src`:
 - Direct file (`.mp4`, `.webm`, `.mov`, `.m4v`) → native `<video>` with controls
 - Anything else → generic iframe
 
-Iframes load **lazily** via `IntersectionObserver` — no embed traffic until the player enters the viewport.
+Iframes load **lazily** via `IntersectionObserver`. No embed traffic until the player enters the viewport.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `src` | `string` | — | Video URL or path |
 | `poster` | `string` | — | Image shown until the iframe loads |
-| `transcript` | `string` | — | Path to a transcript file — rendered as a link below the player |
+| `transcript` | `string` | — | Path to a transcript file, rendered as a link below the player |
 | `title` | `string` | `"Embedded video"` | Accessible title |
 
 ### YouTube
@@ -71,7 +71,7 @@ Iframes load **lazily** via `IntersectionObserver` — no embed traffic until th
 
 ## LightboxImage
 
-Click-to-zoom wrapper around a regular `<img>`. Tangly's MDX renderer wraps every inline image in `<LightboxImage>` by default — so `![alt](path)` already gives you a lightbox.
+Click-to-zoom wrapper around a regular `<img>`. Tangly's MDX renderer wraps every inline image in `<LightboxImage>` by default, so `![alt](path)` already gives you a lightbox.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -79,7 +79,7 @@ Click-to-zoom wrapper around a regular `<img>`. Tangly's MDX renderer wraps ever
 | `alt` | `string` | `""` | Accessible alt text |
 | `width` | `number \| string` | — | Native `width` attribute |
 | `height` | `number \| string` | — | Native `height` attribute |
-| `lightbox` | `boolean` | `true` | Set `false` to opt out — renders a plain `<img>` instead |
+| `lightbox` | `boolean` | `true` | Set `false` to opt out, renders a plain `<img>` instead |
 
 ### Default (lightbox on)
 
@@ -91,7 +91,7 @@ Inline images in MDX get the lightbox treatment automatically:
 
 ![Tangly logo](/images/tangly-logo.png)
 
-Click the image — it opens fullscreen. Esc or outside-click closes.
+Click the image and it opens fullscreen. Esc or outside-click closes.
 
 ### Plain image (no lightbox)
 
@@ -99,7 +99,7 @@ Click the image — it opens fullscreen. Esc or outside-click closes.
 <LightboxImage src="/images/tangly-icon.png" alt="Tangly icon" lightbox={false} />
 ```
 
-For inline `<img>` written in plain Markdown, opt out by wrapping in a `<Frame>` (the frame variant reads `lightbox={false}` from its props). The `<LightboxImage>` component itself isn't auto-injected as a JSX tag — author images as Markdown and they get the lightbox via the default `img` mapper.
+For inline `<img>` written in plain Markdown, opt out by wrapping in a `<Frame>` (the frame variant reads `lightbox={false}` from its props). The `<LightboxImage>` component itself isn't auto-injected as a JSX tag. Author images as Markdown and they get the lightbox via the default `img` mapper.
 
 ## Source
 

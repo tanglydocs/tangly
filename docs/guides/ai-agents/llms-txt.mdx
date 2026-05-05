@@ -10,12 +10,12 @@ icon: "bot-message-square"
 
 Tangly emits two variants automatically:
 
-- **`/llms.txt`** — index. Page titles and descriptions, one per line, grouped by navigation section.
-- **`/llms-full.txt`** — index + the full Markdown content of every public page.
+- **`/llms.txt`**: index. Page titles and descriptions, one per line, grouped by navigation section.
+- **`/llms-full.txt`**: index + the full Markdown content of every public page.
 
 Both are generated at build time. No configuration. No opt-in.
 
-For per-page raw Markdown — fetched on demand by an agent reading one specific page — see [Markdown for agents](/guides/ai-agents/markdown-for-agents).
+For per-page raw Markdown (fetched on demand by an agent reading one specific page) see [Markdown for agents](/guides/ai-agents/markdown-for-agents).
 
 ## What's in them
 
@@ -74,7 +74,7 @@ The full file can be several MB on large docs sites. Coding agents fetching it o
 
 Coding agents fetch one of two URLs at the start of a session:
 
-- For an overview: `/llms.txt`. Cheap, small, lets the agent know what pages exist.
+- For an overview: `/llms.txt`. Small, lets the agent know what pages exist.
 - For full context: `/llms-full.txt`. Heavier, but eliminates the back-and-forth of fetching individual pages.
 
 Tangly's own [`tanglify` skill](/guides/ai-agents/skills) is what Claude Code uses for guidance. Other agents (Cursor's deep mode, Aider) often consume `llms-full.txt` directly.
@@ -103,7 +103,7 @@ noindex: true
 ---
 ```
 
-Excludes from `/llms.txt`, `/llms-full.txt`, `sitemap.xml`, and the search index. Page is still routable — just not discoverable.
+Excludes from `/llms.txt`, `/llms-full.txt`, `sitemap.xml`, and the search index. Page is still routable, just not discoverable.
 
 For server-rendered access controls (login required to view), Tangly isn't the right tool. Static-site limit: anyone who can view the page can read its source.
 

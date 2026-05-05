@@ -10,7 +10,7 @@ icon: "circle-help"
 
 ### "Does Tangly render every Mintlify component?"
 
-The 14 most common ones, yes — `<Card>`, `<CardGroup>`, `<Note>`, `<Tip>`, `<Warning>`, `<Info>`, `<Check>`, `<Danger>`, `<Update>`, `<Tabs>`, `<Tab>`, `<Steps>`, `<Step>`, `<Accordion>`, `<AccordionGroup>`, `<Frame>`, `<CodeGroup>`, `<ParamField>`, `<ResponseField>`, `<Snippet>` placeholder, `<OpenApiEndpoint>`. Plus extras Mintlify doesn't have (`<Embed>`, `<Video>`, `<PackageManager>`, `<Kbd>`, `<FileTree>`, ...).
+The 14 most common ones, yes: `<Card>`, `<CardGroup>`, `<Note>`, `<Tip>`, `<Warning>`, `<Info>`, `<Check>`, `<Danger>`, `<Update>`, `<Tabs>`, `<Tab>`, `<Steps>`, `<Step>`, `<Accordion>`, `<AccordionGroup>`, `<Frame>`, `<CodeGroup>`, `<ParamField>`, `<ResponseField>`, `<Snippet>` placeholder, `<OpenApiEndpoint>`. Plus extras Mintlify doesn't have (`<Embed>`, `<Video>`, `<PackageManager>`, `<Kbd>`, `<FileTree>`, ...).
 
 For the full matrix, see [Migration → Compatibility](/guides/migration/compatibility).
 
@@ -32,15 +32,15 @@ Yes. [Pagefind](https://pagefind.app) is wired in. Cmd-K modal, indexed at build
 
 ### "Does Tangly support analytics?"
 
-Twelve providers — PostHog, Plausible, Fathom, GA4, GTM, Amplitude, Hotjar, Mixpanel, Segment, Pirsch, LogRocket, Heap. See [Schema → Analytics](/reference/schema/analytics).
+Twelve providers: PostHog, Plausible, Fathom, GA4, GTM, Amplitude, Hotjar, Mixpanel, Segment, Pirsch, LogRocket, Heap. See [Schema → Analytics](/reference/schema/analytics).
 
 ### "Does Tangly support custom domains / subpath hosting?"
 
-Yes. `tangly build --base /docs` for subpath. Custom domains are a deployment concern, not a Tangly concern — see your host's docs.
+Yes. `tangly build --base /docs` for subpath. Custom domains are a deployment concern, not a Tangly concern. See your host's docs.
 
 ## Workflow
 
-### "Why two formats — `mint.json` and `docs.json`?"
+### "Why two formats, `mint.json` and `docs.json`?"
 
 Backward compatibility. Tangly accepts `mint.json` so existing Mintlify projects render unmodified. New projects should use `docs.json`. `tangly migrate` converts the legacy format. See [Migration](/guides/migration/from-mintlify).
 
@@ -50,11 +50,11 @@ No. It's the build output. `.gitignore` it. Most CI pipelines build fresh on eve
 
 ### "Should I check `node_modules/` into git?"
 
-Same answer — no. `.gitignore` it. Dependencies install via `bun install` / `npm install`.
+Same answer, no. `.gitignore` it. Dependencies install via `bun install` / `npm install`.
 
 ### "What's the difference between `tangly dev` and `tangly preview`?"
 
-`tangly dev` runs a live-reload server with HMR — used during authoring. `tangly preview` serves the production `dist/` output — used to sanity-check builds before deploy. They look the same to a reader; the difference is `dev` recompiles on edit, `preview` doesn't.
+`tangly dev` runs a live-reload server with HMR, used during authoring. `tangly preview` serves the production `dist/` output, used to sanity-check builds before deploy. They look the same to a reader; the difference is `dev` recompiles on edit, `preview` doesn't.
 
 ### "When should I `tangly eject`?"
 
@@ -64,27 +64,27 @@ When you've outgrown Tangly's customization layers and need full Astro project c
 
 ### "How big should my docs site be before I worry?"
 
-Tangly handles a thousand pages. Builds scale roughly linearly — a hundred pages take ~30s, a thousand take ~5min on a modern Mac. If you're seeing worse, open an issue.
+Tangly handles a thousand pages. Builds scale roughly linearly: a hundred pages take ~30s, a thousand take ~5min on a recent Mac. If you're seeing worse, open an issue.
 
 ### "Why is the build slow / fast?"
 
 Builds are dominated by:
 
 1. MDX compilation (per-page, parallelizable but limited by Node).
-2. Image processing — disabled by default, so this is usually 0.
-3. Pagefind indexing — runs at the end, scales with content size.
+2. Image processing, disabled by default, so this is usually 0.
+3. Pagefind indexing, runs at the end, scales with content size.
 
 The biggest variable is your content's MDX complexity. Pages with lots of components (especially OpenAPI viewers) compile slower than plain Markdown.
 
 ### "Will Tangly do incremental builds?"
 
-Astro 6 has incremental builds; Tangly inherits them. So yes, between full rebuilds, dev-server edits are sub-second. For CI builds, "incremental" depends on your CI provider's caching — most pipelines cache `node_modules` but not `.astro/`. Caching `.astro/` between CI runs gives a 5–10× speedup.
+Astro 6 has incremental builds; Tangly inherits them. So yes, between full rebuilds, dev-server edits are sub-second. For CI builds, "incremental" depends on your CI provider's caching. Most pipelines cache `node_modules` but not `.astro/`. Caching `.astro/` between CI runs gives a 5–10× speedup.
 
 ## Authoring
 
 ### "Can I write Markdown without MDX?"
 
-Yes. `.md` files render through the same pipeline. You lose JSX expressions and components — Markdown only. Most projects mix `.md` (simple pages) and `.mdx` (component-heavy pages).
+Yes. `.md` files render through the same pipeline. You lose JSX expressions and components: Markdown only. Most projects mix `.md` (simple pages) and `.mdx` (component-heavy pages).
 
 ### "Where do I put my OpenAPI spec?"
 
@@ -92,15 +92,15 @@ Anywhere reachable. Common: `openapi.json` at project root. Reference it via `ap
 
 ### "Can I write the docs in a separate repo?"
 
-Yes. Tangly is a CLI — point it at the directory containing `docs.json`. The repo containing `docs/` and the repo containing the product are independent.
+Yes. Tangly is a CLI; point it at the directory containing `docs.json`. The repo containing `docs/` and the repo containing the product are independent.
 
 ### "How do I share content across pages?"
 
 Three options, increasing in scope:
 
-1. **Repeated MDX inline** — copy-paste. For one-line snippets.
-2. **`<Embed>`** — author a labeled block once on one page, reference it from others. See [Embed](/reference/components/embed).
-3. **Custom component** — `theme/Foo.astro` for genuinely structured shared content.
+1. **Repeated MDX inline.** Copy-paste. For one-line snippets.
+2. **`<Embed>`.** Author a labeled block once on one page, reference it from others. See [Embed](/reference/components/embed).
+3. **Custom component.** `theme/Foo.astro` for genuinely structured shared content.
 
 ### "How do I write a 'not yet documented' page?"
 
@@ -119,9 +119,9 @@ Visible in dev with a "Draft" badge. Excluded from production builds and search.
 
 ### "Can I write my own theme?"
 
-Not as a separate npm package — yet. The supported path: pick a built-in theme, override at the project level via `theme/styles/theme.css` and shadowed components. See [Customizing themes](/guides/themes/customizing).
+Not as a separate npm package, yet. The supported path: pick a built-in theme, override at the project level via `theme/styles/theme.css` and shadowed components. See [Customizing themes](/guides/themes/customizing).
 
-If your customizations end up looking like a coherent new theme, [open a PR](https://github.com/tanglydocs/tangly) — that's how the current five built-ins came to be.
+If your customizations end up looking like a coherent new theme, [open a PR](https://github.com/tanglydocs/tangly). That's how the current five built-ins came to be.
 
 ### "Why doesn't my color override apply?"
 
@@ -133,7 +133,7 @@ If you're targeting a CSS variable directly, make sure the override's specificit
 
 ### "Does Tangly require an AI agent?"
 
-No. The agent integrations are conveniences. Tangly works as a plain docs framework — no API keys, no LLM calls.
+No. The agent integrations are conveniences. Tangly works as a plain docs framework. No API keys, no LLM calls.
 
 ### "Where do I get the Tangly skill?"
 
@@ -145,7 +145,7 @@ See [AI agents → Skills](/guides/ai-agents/skills).
 
 ### "Will Tangly send my docs to an LLM?"
 
-No. Tangly's static-only. The [`contextual`](/reference/schema/contextual) buttons (copy, view, chatgpt, claude) are reader-initiated — they only run when the reader clicks. Nothing in the build process talks to an LLM.
+No. Tangly's static-only. The [`contextual`](/reference/schema/contextual) buttons (copy, view, chatgpt, claude) are reader-initiated; they only run when the reader clicks. Nothing in the build process talks to an LLM.
 
 ## Still stuck
 

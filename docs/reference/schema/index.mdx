@@ -1,11 +1,11 @@
 ---
 title: Schema
-description: Every top-level field in docs.json — colors, navigation, logo, navbar, footer, redirects, SEO, analytics, API, themes, fonts, and more.
+description: Every top-level field in docs.json. Colors, navigation, logo, navbar, footer, redirects, SEO, analytics, API, themes, fonts, and more.
 icon: "braces"
 ---
 
 
-`docs.json` is the source of truth for everything that isn't page content — branding, navigation, integrations, behavior. The full schema is defined in [`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/docs-json.ts).
+`docs.json` is the source of truth for everything that isn't page content: branding, navigation, integrations, behavior. The full schema is defined in [`packages/schema/src/docs-json.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/docs-json.ts).
 
 For per-page metadata, see [Frontmatter](/reference/schema/frontmatter).
 
@@ -47,7 +47,7 @@ Type: `string`. Site-wide description. Used as the default OpenGraph description
 
 Type: `"tang" | "pith" | "pip" | "readable" | "geist" | string`. Default: `"tang"`.
 
-Pick a built-in theme. Unknown values fall back to `tang` — kept tolerant so projects mid-migration don't fail validation. Legacy aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) all resolve to `tang`.
+Pick a built-in theme. Unknown values fall back to `tang`. Tangly stays tolerant so projects mid-migration don't fail validation. Legacy aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) all resolve to `tang`.
 
 ```json
 { "theme": "pith" }
@@ -61,7 +61,7 @@ Override the theme palette. Five tokens.
 
 | Field | Type | Description |
 |---|---|---|
-| `primary` | hex | Primary brand color — buttons, links, accents |
+| `primary` | hex | Primary brand color: buttons, links, accents |
 | `light` | hex | Lighter shade for highlights |
 | `dark` | hex | Darker shade for hovers / active states |
 | `background` | hex \| `{ light, dark }` | Page background. Object form splits light/dark mode. |
@@ -109,11 +109,11 @@ Type: `string | { light, dark }`. Path under your project root.
 { "favicon": "/favicon.ico" }
 ```
 
-Light/dark form is rare — most browsers ignore it.
+Light/dark form is rare. Most browsers ignore it.
 
 ## `navigation`
 
-The nav tree. Three forms — pick one or combine. Schema in [`packages/schema/src/navigation.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/navigation.ts).
+The nav tree. Three forms; pick one or combine. Schema in [`packages/schema/src/navigation.ts`](https://github.com/tanglydocs/docs/blob/main/packages/schema/src/navigation.ts).
 
 ```json
 {
@@ -148,13 +148,13 @@ Each node type:
 
 | Node | Required keys | Description |
 |---|---|---|
-| Page | (string) | Page slug — relative path without `.mdx` |
+| Page | (string) | Page slug: relative path without `.mdx` |
 | Group | `group`, `pages` | Sidebar group |
 | Tab | `tab` | Top-level nav tab. Children: `pages` \| `groups` \| `anchors` |
 | Anchor | `anchor`, `href` | External link in nav |
 | Dropdown | `dropdown` | Group of sub-links shown via dropdown |
-| Version | `version` | Version selector — children scoped to that version |
-| Language | `language` | Language selector — children scoped to that locale |
+| Version | `version` | Version selector. Children scoped to that version |
+| Language | `language` | Language selector. Children scoped to that locale |
 
 `global` lists anchors/dropdowns/tabs that should appear on every variant (every version, every language).
 
@@ -165,7 +165,7 @@ Top navigation bar.
 | Field | Type | Description |
 |---|---|---|
 | `links` | `{ label, href, icon? }[]` | Inline links in the navbar |
-| `primary` | `{ type: "button" \| "github", label?, href }` | Primary CTA — either a labeled button or a GitHub-icon button |
+| `primary` | `{ type: "button" \| "github", label?, href }` | Primary CTA: either a labeled button or a GitHub-icon button |
 
 ```json
 {
@@ -192,7 +192,7 @@ Top navigation bar.
 | `links` | `{ header?, items: NavbarLink[] }[]` | Grouped link columns |
 | `lastUpdated` | `boolean` | Show last-updated timestamp on every page footer |
 | `editUrl` | `string` | Edit-this-page URL template. `{path}` substitutes the page file's path. |
-| `repo` | `string` | Repository URL — derives `editUrl` if not set explicitly. Falls back to `git remote get-url origin`. |
+| `repo` | `string` | Repository URL. Derives `editUrl` if not set explicitly. Falls back to `git remote get-url origin`. |
 
 ```json
 {
@@ -265,7 +265,7 @@ Wire up an analytics provider. Tangly ships providers for posthog, plausible, fa
 { "analytics": { "ga4": { "measurementId": "G-XXXXXX" } } }
 ```
 
-You can configure multiple providers at once — they all fire.
+You can configure multiple providers at once; they all fire.
 
 ## `api`
 
@@ -278,7 +278,7 @@ OpenAPI / AsyncAPI integration.
 | `auth.name` | `string` | Header name when `method="key"` |
 | `playground.mode` | `"interactive" \| "simple" \| "hide"` | Try-it form behavior |
 | `playground.proxy` | `boolean` | Send through a server-side CORS proxy |
-| `openapi` | `string \| string[]` | Path(s) to OpenAPI spec(s) — auto-generates pages |
+| `openapi` | `string \| string[]` | Path(s) to OpenAPI spec(s); auto-generates pages |
 | `viewer` | `"tangly" \| "scalar" \| "redoc" \| "stoplight"` | Default viewer for OpenAPI pages |
 | `asyncapi` | `string \| string[]` | Path(s) to AsyncAPI spec(s) |
 | `mdx.server` | `string \| string[]` | MCP-style server URL(s) for AI agents |
@@ -383,7 +383,7 @@ Subtle layout flags.
 
 ## `integrations`
 
-Free-form bag for third-party integrations not listed above. Schema is `Record<string, unknown>` — Tangly itself reads only what it knows about.
+Free-form bag for third-party integrations not listed above. Schema is `Record<string, unknown>`. Tangly itself reads only what it knows about.
 
 ## `errors`
 
@@ -445,7 +445,7 @@ A site-wide announcement bar above the topnav.
 |---|---|---|
 | `content` | `string` | MDX-flavored body |
 | `dismissible` | `boolean` | User can close it |
-| `id` | `string` | Stable ID — used as the `localStorage` dismissal key. Change the id to re-show after a previous dismiss. |
+| `id` | `string` | Stable ID, used as the `localStorage` dismissal key. Change the id to re-show after a previous dismiss. |
 | `type` | `"info" \| "warning" \| "success"` | Color tone |
 
 ```json
@@ -473,7 +473,7 @@ Pick the icon library for `<Icon icon="..." />` and Mintlify-aliased prop string
 
 ## Source
 
-- [`docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts) — top-level schema
-- [`navigation.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/navigation.ts) — nav tree
-- [`colors.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/colors.ts) — color palette
-- [`themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts) — theme enum + resolver
+- [`docs-json.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/docs-json.ts): top-level schema
+- [`navigation.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/navigation.ts): nav tree
+- [`colors.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/colors.ts): color palette
+- [`themes.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/schema/src/themes.ts): theme enum + resolver

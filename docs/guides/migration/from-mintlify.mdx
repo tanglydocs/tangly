@@ -9,7 +9,7 @@ icon: "arrow-right-left"
 Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CLI and pointing `$schema` at Tangly's schema.
 
 <Note>
-  Mintlify moved from `mint.json` to `docs.json` mid-2025. `tangly migrate` handles both — it detects which one your project has and does the right thing.
+  Mintlify moved from `mint.json` to `docs.json` mid-2025. `tangly migrate` handles both. It detects which one your project has and does the right thing.
 </Note>
 
 <Steps>
@@ -26,7 +26,7 @@ Tangly renders Mintlify projects unmodified. Migration is mostly swapping the CL
 
     What it does:
 
-    - **If you have `docs.json`** (Mintlify modern): validates against Tangly's schema, updates `$schema` to Tangly's URL, surfaces a notice if `theme` isn't a Tangly theme. The `theme` field itself is **not** auto-rewritten — pick one yourself before running `tangly dev`.
+    - **If you have `docs.json`** (Mintlify modern): validates against Tangly's schema, updates `$schema` to Tangly's URL, surfaces a notice if `theme` isn't a Tangly theme. The `theme` field itself is **not** auto-rewritten. Pick one yourself before running `tangly dev`.
     - **If you have `mint.json`** (Mintlify legacy): full conversion to `docs.json`. Source is renamed to `mint.json.bak`. Use `--keep-source` to keep the original.
     - **If you have both**: prefers `docs.json` and leaves `mint.json` alone.
 
@@ -76,11 +76,11 @@ Browse both at the same time.
 </Check>
 <Check>Recursive nav: tabs, groups, anchors, dropdowns, versions, languages.</Check>
 <Check>
-  18+ MDX components (Card, CardGroup, Note, Tip, Warning, Info, Check, Danger, Update, Tabs, Steps, Accordion, Frame, CodeGroup, ParamField, ResponseField, Snippet, Columns, Tooltip, Icon, Badge, Expandable).
+  22 MDX components (Card, CardGroup, Note, Tip, Warning, Info, Check, Danger, Update, Tabs, Steps, Accordion, Frame, CodeGroup, ParamField, ResponseField, Snippet, Columns, Tooltip, Icon, Badge, Expandable).
 </Check>
-<Check>Per-page `openapi: METHOD path` frontmatter — auto-rendered endpoint with try-it-out.</Check>
-<Check>Tab-level `openapi:` — auto-routes one page per endpoint when no manual nav exists.</Check>
-<Check>`api: METHOD path` companion-MDX — narrative content above the auto-rendered endpoint.</Check>
+<Check>Per-page `openapi: METHOD path` frontmatter, auto-rendered endpoint with try-it-out.</Check>
+<Check>Tab-level `openapi:` auto-routes one page per endpoint when no manual nav exists.</Check>
+<Check>`api: METHOD path` companion-MDX places narrative content above the auto-rendered endpoint.</Check>
 <Check>Lucide icons + Font Awesome name aliasing.</Check>
 <Check>Image absolute paths (`/images/foo.png`) and relative (`../images/foo.png`).</Check>
 <Check>Light/dark mode + theme toggle.</Check>

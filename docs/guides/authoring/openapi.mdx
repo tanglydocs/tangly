@@ -68,7 +68,7 @@ api: GET /v4/data/network/{network_code}
 
 # Background
 
-This endpoint returns time-series data sliced by network. Cache for at least 60s — backend regenerates the underlying view every minute.
+This endpoint returns time-series data sliced by network. Cache for at least 60s; backend regenerates the underlying view every minute.
 
 ## Common pitfalls
 
@@ -130,7 +130,7 @@ Local OpenAPI files are resolved relative to project root:
 { "api": { "openapi": "./openapi.json" } }
 ```
 
-The Vite static-asset middleware doesn't auto-serve OpenAPI files — they're loaded server-side at build time, not via HTTP.
+The Vite static-asset middleware doesn't auto-serve OpenAPI files; they're loaded server-side at build time, not via HTTP.
 
 ## Validation
 

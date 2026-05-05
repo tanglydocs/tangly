@@ -16,7 +16,7 @@ icon: book
 tag: Beta
 ---
 
-Body starts here. Don't repeat the title as a `# Heading` — `title` already
+Body starts here. Don't repeat the title as a `# Heading`; `title` already
 renders as the page H1.
 ```
 
@@ -25,7 +25,7 @@ Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema
 ## Recognized fields
 
 <ParamField path="title" type="string">
-  Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title. Don't repeat the title as `# Heading` or `<h1>` in the body — `tangly dev` warns when it finds one.
+  Page title. Falls back to a humanized slug if omitted (`guides/my-page` → "My Page"). Used in the H1, sidebar entry, browser tab, and OG title. Don't repeat the title as `# Heading` or `<h1>` in the body; `tangly dev` warns when it finds one.
 </ParamField>
 
 <ParamField path="sidebarTitle" type="string">
@@ -67,10 +67,10 @@ Frontmatter is parsed by `gray-matter` and validated against `@tanglydocs/schema
 <ParamField path="mode" type="enum" default="default">
   Page layout mode. One of:
 
-  - `default` — sidebar + content + right-rail TOC.
-  - `wide` — sidebar + content (no TOC).
-  - `center` — centered content (no sidebar, no TOC).
-  - `custom` — full-width content (no chrome).
+  - `default`: sidebar + content + right-rail TOC.
+  - `wide`: sidebar + content (no TOC).
+  - `center`: centered content (no sidebar, no TOC).
+  - `custom`: full-width content (no chrome).
 
   `wide`, `center`, and `custom` hide the right-rail TOC.
 </ParamField>
@@ -116,14 +116,14 @@ glossary: false
 <ParamField path="seo" type="object">
   Per-page SEO override.
 
-  - `title: string` — overrides the OG/meta title.
-  - `description: string` — overrides the meta description.
-  - `ogImage: string` — custom Open Graph image URL.
+  - `title: string`: overrides the OG/meta title.
+  - `description: string`: overrides the meta description.
+  - `ogImage: string`: custom Open Graph image URL.
 </ParamField>
 
 ## Custom fields
 
-`FrontmatterSchema` uses `passthrough()` — unknown fields are preserved and forwarded to the active template via `frontmatter`. This is how custom landing-page templates consume `hero`, `cta`, `headline`, etc.
+`FrontmatterSchema` uses `passthrough()`. Unknown fields are preserved and forwarded to the active template via `frontmatter`. This is how custom landing-page templates consume `hero`, `cta`, `headline`, etc.
 
 ```md
 ---

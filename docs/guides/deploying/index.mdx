@@ -16,12 +16,12 @@ icon: "rocket"
 | (none) | `static` |
 
 <Note>
-  Tangly outputs are fully static. All adapters currently produce the same `dist/` shape — Vercel's adapter only adds Vercel build metadata for free; `cloudflare` and `node` are recognized for forward-compat (they unlock when SSR routes land) but are no-ops today. Use `--adapter static` to opt out of any adapter.
+  Tangly outputs are fully static. All adapters currently produce the same `dist/` shape. Vercel's adapter only adds Vercel build metadata for free; `cloudflare` and `node` are recognized for forward-compat (they unlock when SSR routes land) but are no-ops today. Use `--adapter static` to opt out of any adapter.
 </Note>
 
 ## Vercel
 
-The simplest path. Add `vercel.json` (even empty `{}` is fine — its presence is the auto-detect signal) and:
+The simplest path. Add `vercel.json` (even empty `{}` is fine; its presence is the auto-detect signal) and:
 
 ```bash
 bun x tangly build
@@ -79,7 +79,7 @@ bucket = "./dist"
 
 ## Netlify
 
-No special adapter — Netlify serves any static directory. Add `netlify.toml`:
+No special adapter; Netlify serves any static directory. Add `netlify.toml`:
 
 ```
 [build]
@@ -203,7 +203,7 @@ Deploy under `/docs` instead of the host root:
 bun x tangly build --base /docs
 ```
 
-Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result is prefixed with the base. See [Hosting docs at a subpath](/guides/subpath-hosting) for the five common strategies — building into a parent site's `public/`, edge rewrites on Vercel/Netlify/Cloudflare, nginx reverse proxy, and GitHub Pages project repos.
+Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result is prefixed with the base. See [Hosting docs at a subpath](/guides/subpath-hosting) for the five common strategies: building into a parent site's `public/`, edge rewrites on Vercel/Netlify/Cloudflare, nginx reverse proxy, and GitHub Pages project repos.
 
 ## What gets built
 
@@ -231,9 +231,9 @@ Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are em
 
 ## Markdown for agents
 
-Tangly emits a raw-Markdown twin of every page (`<slug>.md` alongside `<slug>/index.html`) so coding assistants can fetch source instead of rendered HTML — ~10× token reduction. Works on any static host with no extra config: append `.md` to any URL and you get the source.
+Tangly emits a raw-Markdown twin of every page (`<slug>.md` alongside `<slug>/index.html`) so coding assistants can fetch source instead of rendered HTML; ~10× token reduction. Works on any static host with no extra config: append `.md` to any URL and you get the source.
 
-For same-URL content negotiation (`Accept: text/markdown` returns Markdown, browsers still get HTML), add a one-line CDN rewrite — see [Markdown for agents](/guides/ai-agents/markdown-for-agents) for Vercel, Cloudflare, and Netlify recipes.
+For same-URL content negotiation (`Accept: text/markdown` returns Markdown, browsers still get HTML), add a one-line CDN rewrite. See [Markdown for agents](/guides/ai-agents/markdown-for-agents) for Vercel, Cloudflare, and Netlify recipes.
 
 ## Pre-deploy checklist
 

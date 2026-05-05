@@ -6,7 +6,7 @@ icon: "folder"
 
 # Static assets
 
-Tangly **copies every file at your project root into `dist/`** — same convention as Docker, Vercel, and most modern build tools. Drop a `CNAME`, `_redirects`, `_headers`, `humans.txt`, custom `robots.txt`, `.well-known/security.txt`, or anything else, and it ships verbatim.
+Tangly **copies every file at your project root into `dist/`**. Same convention as Docker, Vercel, and most build tools. Drop a `CNAME`, `_redirects`, `_headers`, `humans.txt`, custom `robots.txt`, `.well-known/security.txt`, or anything else, and it ships verbatim.
 
 ```
 my-docs/
@@ -23,16 +23,16 @@ my-docs/
 
 ## What's excluded by default
 
-A baseline list ships with Tangly and is **always applied** — these never end up in `dist/`:
+A baseline list ships with Tangly and is **always applied**. These never end up in `dist/`:
 
-- `**/*.md`, `**/*.mdx` — these compile to pages, not raw downloads
-- `**/_*.md`, `**/_*.mdx` — snippets / partials
+- `**/*.md`, `**/*.mdx`: these compile to pages, not raw downloads
+- `**/_*.md`, `**/_*.mdx`: snippets / partials
 - `node_modules/`, `dist/`, `.git/`, `.astro/`, `.tangly/`, `.vercel/`, `.wrangler/`, `.next/`
 - Lockfiles + `package.json` + `tsconfig*.json`
 - `.env`, `.env.*`, `*.log`, `.DS_Store`
-- `docs.json`, `mint.json` — Tangly's own config
-- `.gitignore`, `.tanglyignore` — ignore control files (often reveal private paths)
-- `README.md` — convention
+- `docs.json`, `mint.json`: Tangly's own config
+- `.gitignore`, `.tanglyignore`: ignore control files (often reveal private paths)
+- `README.md`: convention
 
 ## Adding more exclusions
 
@@ -53,7 +53,7 @@ scripts/
 notes/
 ```
 
-`tangly init` scaffolds an empty `.tanglyignore` so the file is discoverable. Cascading sub-directory `.gitignore` files are not honored — keep your patterns at the project root.
+`tangly init` scaffolds an empty `.tanglyignore` so the file is discoverable. Cascading sub-directory `.gitignore` files are not honored; keep your patterns at the project root.
 
 ## Overriding generated files
 
@@ -69,11 +69,11 @@ Same for the other three. Useful for adding extra `Disallow:` lines, customizing
 
 ## Hard-protected paths
 
-The `_astro/` namespace is reserved for Astro's hashed asset bundles. Putting any file under `_astro/` — at the project root *or* in a theme's `public/` — is a hard error. The build refuses to copy it because silently merging into that namespace would corrupt the hashed bundles. If you need to ship custom JS/CSS, pick a different prefix.
+The `_astro/` namespace is reserved for Astro's hashed asset bundles. Putting any file under `_astro/` (at the project root *or* in a theme's `public/`) is a hard error. The build refuses to copy it because silently merging into that namespace would corrupt the hashed bundles. If you need to ship custom JS/CSS, pick a different prefix.
 
 ## Collisions with generated files
 
-If a user file lands at the same path as something Tangly or Astro generated (e.g. you have a `404.html` at root and a page rendered from `404.mdx`), the build emits a warning and your file wins. Placement at the project root is opt-in, so we trust your intent — but the warning is there to catch accidents.
+If a user file lands at the same path as something Tangly or Astro generated (e.g. you have a `404.html` at root and a page rendered from `404.mdx`), the build emits a warning and your file wins. Placement at the project root is opt-in, so we trust your intent, but the warning is there to catch accidents.
 
 ## Common recipes
 
@@ -88,7 +88,7 @@ If a user file lands at the same path as something Tangly or Astro generated (e.
     Drop `_headers` at your project root. Standard Cloudflare/Netlify syntax.
   </Card>
   <Card title="Custom robots.txt" icon="bot">
-    Drop `robots.txt` at your project root — Tangly's generator backs off and your file ships unchanged.
+    Drop `robots.txt` at your project root. Tangly's generator backs off and your file ships unchanged.
   </Card>
   <Card title="security.txt" icon="lock">
     Drop `.well-known/security.txt`. Anything under `.well-known/` ships verbatim.
@@ -100,8 +100,8 @@ If a user file lands at the same path as something Tangly or Astro generated (e.
 
 ## How this differs from `public/` in Astro
 
-If you've used Astro directly, you know about its `public/` directory. Tangly still supports `public/` (and `images/`, `static/`, `assets/`, `logo/`) — files inside any of these copy to `dist/` flattened, exactly like before. The new behavior is **additive**: anything at the project root that isn't ignored *also* copies. Existing projects keep working without changes.
+If you've used Astro directly, you know about its `public/` directory. Tangly still supports `public/` (and `images/`, `static/`, `assets/`, `logo/`); files inside any of these copy to `dist/` flattened, exactly like before. The new behavior is **additive**: anything at the project root that isn't ignored *also* copies. Existing projects keep working without changes.
 
 ## Performance
 
-The walk respects ignore rules early — Tangly never recurses into `node_modules/` or any other excluded directory. Doc projects with hundreds of files build in well under a second of asset-copy overhead.
+The walk respects ignore rules early; Tangly never recurses into `node_modules/` or any other excluded directory. Doc projects with hundreds of files build in well under a second of asset-copy overhead.

@@ -19,7 +19,7 @@ The page body. Markdown. MDX components. JSX expressions if you need them.
 
 ## Sections
 
-Headings auto-generate ids — link to them as `/page#sections`.
+Headings auto-generate ids; link to them as `/page#sections`.
 ```
 
 ## Frontmatter
@@ -58,7 +58,7 @@ Standard CommonMark + GFM extensions + JSX components. See [Markdown & MDX](/ref
 
 ### Don't write your own H1
 
-The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line (or `<h1>`) at the top of the body — you'll get two H1s.
+The page H1 renders automatically from the `title` frontmatter field. Don't add a `# Title` line (or `<h1>`) at the top of the body; you'll get two H1s.
 
 ```mdx
 ---
@@ -79,7 +79,7 @@ Top-level sections under the page H1 should be `## H2`. The right-rail TOC index
 Built-in MDX components are auto-injected. No imports.
 
 ```mdx
-<Note>This shows up everywhere — no import needed.</Note>
+<Note>This shows up everywhere. No import needed.</Note>
 ```
 
 For custom components, drop them in `theme/` at your project root and reference them by name. See [Custom components](/guides/customization/custom-components).
@@ -154,11 +154,11 @@ bunx tangly check --strict
 
 ## What goes where
 
-Coming from Mintlify, the conventions here will feel familiar — Tangly mostly inherits them. The exceptions:
+Coming from Mintlify, the conventions here will feel familiar; Tangly mostly inherits them. The exceptions:
 
 - Tangly auto-renders the H1 from `title`. Don't repeat it in the body.
 - Internal links are absolute slugs; no `.mdx` extension.
 - Images live under recognized roots (`images/`, `static/`, `public/`, `assets/`).
-- Frontmatter is non-fatal — invalid fields warn, don't fail.
+- Frontmatter is non-fatal; invalid fields warn, don't fail.
 
 For the full delta, see [Migration → Compatibility](/guides/migration/compatibility).

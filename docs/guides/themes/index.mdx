@@ -6,7 +6,7 @@ icon: "palette"
 
 # Themes
 
-Tangly ships five themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`) — what differs is colors, typography, layout dimensions, and chrome.
+Tangly ships five themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`). What differs is colors, typography, layout dimensions, and chrome.
 
 ## The five built-ins
 
@@ -18,13 +18,13 @@ Tangly ships five themes out of the box. They share the same component shell (`@
     Editorial. Serif headings, cream background, all chrome in the left sidebar.
   </Card>
   <Card title="Pip" icon="sprout" href="/guides/themes/pip">
-    Minimal. Single-column, topbar-only chrome. For tiny sites — 4–5 pages.
+    Minimal. Single-column, topbar-only chrome. For tiny sites of 4–5 pages.
   </Card>
   <Card title="Readable" icon="book-marked" href="/guides/themes/readable">
     Long-form. Cream paper, serif body, book-style chapter nav. For essays, books, manuscripts.
   </Card>
   <Card title="Geist" icon="square-asterisk" href="/guides/themes/geist">
-    Modern dev-tool aesthetic. Vercel / Linear / Stripe family. Hairline borders, near-black CTAs.
+    Dev-tool aesthetic. Vercel / Linear / Stripe family. Hairline borders, near-black CTAs.
   </Card>
 </CardGroup>
 
@@ -33,15 +33,15 @@ Tangly ships five themes out of the box. They share the same component shell (`@
 Every theme renders a real Tangly project at [examples.tangly.dev](https://examples.tangly.dev). Each is a different `docs.json` + MDX corpus; the only thing that changes between them is the `theme` field.
 
 <CardGroup cols={3}>
-  <Card title="Tang demo" icon="flame" href="https://examples.tangly.dev/tang/">Cipher — encryption SDK docs.</Card>
-  <Card title="Pith demo" icon="book-open" href="https://examples.tangly.dev/pith/">On Craft — handbook of small ideas.</Card>
-  <Card title="Pip demo" icon="sprout" href="https://examples.tangly.dev/pip/">Sprig — tiny CLI for shell history.</Card>
-  <Card title="Readable demo" icon="book-marked" href="https://examples.tangly.dev/readable/">The Long Wait — short novel.</Card>
-  <Card title="Geist demo" icon="square-asterisk" href="https://examples.tangly.dev/geist/">Halo — edge platform docs.</Card>
+  <Card title="Tang demo" icon="flame" href="https://examples.tangly.dev/tang/">Cipher: encryption SDK docs.</Card>
+  <Card title="Pith demo" icon="book-open" href="https://examples.tangly.dev/pith/">On Craft: handbook of small ideas.</Card>
+  <Card title="Pip demo" icon="sprout" href="https://examples.tangly.dev/pip/">Sprig: tiny CLI for shell history.</Card>
+  <Card title="Readable demo" icon="book-marked" href="https://examples.tangly.dev/readable/">The Long Wait: short novel.</Card>
+  <Card title="Geist demo" icon="square-asterisk" href="https://examples.tangly.dev/geist/">Halo: edge platform docs.</Card>
   <Card title="Starter demo" icon="seedling" href="https://examples.tangly.dev/starter/">The default `tangly init` scaffold.</Card>
 </CardGroup>
 
-The source for each demo lives in [`examples/demo-<theme>/`](https://github.com/tanglydocs/tangly/tree/main/examples) in the Tangly repo — clone, edit, `tangly dev` to play.
+The source for each demo lives in [`examples/demo-<theme>/`](https://github.com/tanglydocs/tangly/tree/main/examples) in the Tangly repo. Clone, edit, `tangly dev` to play.
 
 ## Switch themes
 
@@ -51,23 +51,23 @@ One field in `docs.json`:
 { "theme": "tang" }
 ```
 
-Reload the dev server (`tangly dev`) to see it. No other changes required — components are theme-agnostic.
+Reload the dev server (`tangly dev`) to see it. No other changes required. Components are theme-agnostic.
 
 ## Picking one
 
-| If your docs are… | Pick |
+| If your docs are | Pick |
 |---|---|
 | A general OSS / dev-tool site | **Tang** |
 | A handbook, knowledge base, or design-led docs | **Pith** |
 | A 4–5 page README replacement | **Pip** |
 | A book, essay collection, or long manuscript | **Readable** |
-| A modern dev-tool with grayscale + restraint | **Geist** |
+| A dev-tool with grayscale + restraint | **Geist** |
 
 ## How themes work
 
 Each theme is a separate package: `@tanglydocs/theme-tang`, `@tanglydocs/theme-pith`, `@tanglydocs/theme-pip`, `@tanglydocs/theme-readable`, `@tanglydocs/theme-geist`.
 
-Inside each package: a single `theme.css` file with the token table (colors, fonts, layout dimensions). Components are shared — they consume the tokens at render.
+Inside each package: a single `theme.css` file with the token table (colors, fonts, layout dimensions). Components are shared and consume the tokens at render.
 
 ```
 docs.json (theme: "pith")

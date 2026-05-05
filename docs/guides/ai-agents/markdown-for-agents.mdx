@@ -6,7 +6,7 @@ icon: "file-text"
 
 # Markdown for agents
 
-When a coding assistant fetches a docs page, it doesn't want HTML. It wants the source — the same Markdown the page was written in, without the chrome, navigation, or rendered components getting in the way.
+When a coding assistant fetches a docs page, it doesn't want HTML. It wants the source: the same Markdown the page was written in, without the chrome, navigation, or rendered components getting in the way.
 
 Tangly serves it. Two ways, both wired up by default:
 
@@ -17,7 +17,7 @@ The `.md` files are emitted at build time alongside the HTML, so deploys to Verc
 
 ## Why it matters
 
-A typical docs page renders to ~16k tokens of HTML (nav, sidebar, footer, embedded JS). The same page as raw Markdown is ~3k tokens — an 80% reduction. Bun reported a 10× drop in their own measurements.
+A typical docs page renders to ~16k tokens of HTML (nav, sidebar, footer, embedded JS). The same page as raw Markdown is ~3k tokens, an 80% reduction. Bun reported a 10× drop in their own measurements.
 
 Coding assistants like Claude Code, OpenCode, Cursor, and Aider already send `Accept: text/markdown` on docs requests. Tangly responds in kind.
 
@@ -29,7 +29,7 @@ Coding assistants like Claude Code, OpenCode, Cursor, and Aider already send `Ac
 Read https://docs.example.com/installation.md
 ```
 
-Or — for any agent that respects Accept headers:
+Or, for any agent that respects Accept headers:
 
 ```bash
 curl -H "Accept: text/markdown" https://docs.example.com/installation
@@ -86,7 +86,7 @@ description: Install Tangly into a new or existing project.
 ...
 ```
 
-Frontmatter is preserved (agents use `title` and `description` as context). MDX components stay in their JSX form — agents handle that fine, and keeping the file byte-identical to source means no surprises.
+Frontmatter is preserved (agents use `title` and `description` as context). MDX components stay in their JSX form. Agents handle that fine, and keeping the file byte-identical to source means no surprises.
 
 ## What's excluded
 
@@ -158,9 +158,9 @@ In `_redirects`:
 
 The two work together:
 
-- **`/llms.txt`** — index. "Here are all the pages."
-- **`/llms-full.txt`** — bulk. "Here is every page concatenated."
-- **`/<slug>.md`** — per-page. "Here is one specific page."
+- **`/llms.txt`**: index. "Here are all the pages."
+- **`/llms-full.txt`**: bulk. "Here is every page concatenated."
+- **`/<slug>.md`**: per-page. "Here is one specific page."
 
 An agent typically fetches `/llms.txt` once to discover the IA, then pulls individual `.md` files as the conversation needs them.
 
@@ -200,4 +200,4 @@ See [`contextual`](/reference/schema#contextual) in the schema reference for the
 
 ## Disabling
 
-There's no opt-out flag. The `.md` files are byte-cheap and harmless — the same content already in `/llms-full.txt` just split per page. If a specific page shouldn't ship, mark it `noindex: true` and it's excluded from all four (sitemap, llms.txt, llms-full.txt, `<slug>.md`).
+There's no opt-out flag. The `.md` files are byte-cheap and harmless: the same content already in `/llms-full.txt` just split per page. If a specific page shouldn't ship, mark it `noindex: true` and it's excluded from all four (sitemap, llms.txt, llms-full.txt, `<slug>.md`).

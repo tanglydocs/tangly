@@ -7,7 +7,7 @@ icon: "list-ordered"
 
 | Component | Use for |
 |---|---|
-| [`<Tabs>`](#tabs) + [`<Tab>`](#tab) | Switchable content panels — auto-syncs on known label families |
+| [`<Tabs>`](#tabs) + [`<Tab>`](#tab) | Switchable content panels; auto-syncs on known label families |
 | [`<Steps>`](#steps) + [`<Step>`](#step) | Numbered procedures with auto-incrementing badges |
 
 ## Tabs
@@ -88,7 +88,7 @@ A single panel inside `<Tabs>`.
 
 ## Steps
 
-Ordered procedure. Renders as a vertical list with auto-numbered badges and a connecting rail. No props — wrap as many `<Step>` children as you need.
+Ordered procedure. Renders as a vertical list with auto-numbered badges and a connecting rail. No props; wrap as many `<Step>` children as you need.
 
 ```mdx
 <Steps>
@@ -124,7 +124,7 @@ A single step inside `<Steps>`.
 |---|---|---|---|
 | `title` | `string` | — | Step heading (required) |
 | `icon` | `string` | — | Lucide icon shown in the badge instead of the auto-number |
-| `titleSize` | `"p" \| "h2" \| "h3"` | `"p"` | Element used for the title — `h2`/`h3` opt the step into the page outline |
+| `titleSize` | `"p" \| "h2" \| "h3"` | `"p"` | Element used for the title; `h2`/`h3` opt the step into the page outline |
 | `stepNumber` | `number` | (auto) | Manual override for the badge number |
 
 ### Custom icons

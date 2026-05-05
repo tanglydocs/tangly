@@ -62,7 +62,7 @@ Four virtual imports are exposed to the runtime:
 | `virtual:tangly/manifest` | The full `Manifest` (config, pages, navigation, orphans, warnings, collections)     |
 | `virtual:tangly/routes`   | `[{ slug, file }]` for each page (drafts excluded in build mode)                    |
 | `virtual:tangly/config`   | The parsed `DocsJson`                                                               |
-| `virtual:tangly/theme`    | `{ themeName, userRoot }` — used by Layout to pick the active theme's CSS           |
+| `virtual:tangly/theme`    | `{ themeName, userRoot }`, used by Layout to pick the active theme's CSS            |
 
 Any `.astro` file in the runtime can `import { manifest } from "virtual:tangly/manifest"` and get a typed snapshot.
 
@@ -88,7 +88,7 @@ GET /logo/dark.svg   →  <userRoot>/logo/dark.svg
 GET /favicon.ico     →  <userRoot>/<config.favicon>
 ```
 
-Supported prefixes: `images`, `logo`, `public`, `static`, `assets`. Path traversal is blocked — requests like `/images/../../etc/passwd` are rejected before any I/O.
+Supported prefixes: `images`, `logo`, `public`, `static`, `assets`. Path traversal is blocked. Requests like `/images/../../etc/passwd` are rejected before any I/O.
 
 ## Build-time variant
 
@@ -113,4 +113,4 @@ More compatibility shims land here as we hit them.
 2. `@tanglydocs/theme-<active>/components/<Name>.astro` (theme-level override)
 3. `@tanglydocs/theme-ui/components/<Name>.astro` (built-in default)
 
-The lookup runs at module-resolution time, not import time, so overrides have zero runtime cost — Vite produces the same code as if you'd written the import directly.
+The lookup runs at module-resolution time, not import time, so overrides have zero runtime cost. Vite produces the same code as if you'd written the import directly.
