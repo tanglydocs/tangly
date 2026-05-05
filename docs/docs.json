@@ -207,6 +207,10 @@
               "troubleshooting/common-errors",
               "troubleshooting/faq"
             ]
+          },
+          {
+            "group": "Resources",
+            "pages": ["changelog"]
           }
         ]
       },

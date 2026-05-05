@@ -1,0 +1,44 @@
+---
+title: Changelog
+description: Release notes for Tangly.
+---
+
+Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
+
+<Update label="v0.0.13" description="2026-05-05" tags={["docs","feat","fix"]}>
+  ## Highlights
+  {/* TODO: prose summary — what's new, why it matters */}
+
+  ## Changes
+
+  ### Features
+  - feat(theme-ui): per-page Copy/View Markdown menu ([`2717810`](https://github.com/tanglydocs/tangly/commit/27178104868cc7173b5972880cbe8a2f133b5a7c))
+  - feat(plugin): synthesize sitemap/robots/llms.txt in dev ([`5825be4`](https://github.com/tanglydocs/tangly/commit/5825be49caab380f6fb7f332eaca6daacdd0262b))
+
+  ### Fixes
+  - fix(plugin): MDX shims skip code spans + fences ([`78cadcf`](https://github.com/tanglydocs/tangly/commit/78cadcff9647bf122aa34fb78c3b2cc084e01460))
+  - fix(theme-ui): keep sticky sidebar pinned at page bottom ([`9220a6f`](https://github.com/tanglydocs/tangly/commit/9220a6f92c058350808dbfc51808549c5e42a16f))
+  - fix(theme-ui): style Mermaid with Tangly tokens, drop dark code-block bg ([`cb06d17`](https://github.com/tanglydocs/tangly/commit/cb06d17a808fe59ced168a1720fef9d81f43b2de))
+  - fix(manifest): strip /index suffix from page slugs ([`6954a65`](https://github.com/tanglydocs/tangly/commit/6954a65a673ba589d7a1b5565a7301a15e4fc075))
+  - fix(theme-ui): render empty FileTree directories as leaves ([`dca312a`](https://github.com/tanglydocs/tangly/commit/dca312a8f0e490918cf4a4db36c391b1c598a5a2))
+  - fix(ci): align coverage gist filename to coverage.json ([`010048d`](https://github.com/tanglydocs/tangly/commit/010048d099b6194ac02e7a8ae96e21acfbdd0cae))
+
+  ### Docs
+  - docs(template+demos): humanize starter scaffold + theme demos ([`4d35698`](https://github.com/tanglydocs/tangly/commit/4d3569841dbd2129a01de67d14daa133a8370161))
+  - docs: humanize prose, drop em dashes, sync drift ([`5e6fc74`](https://github.com/tanglydocs/tangly/commit/5e6fc749bb0d860a21e3c9583c2f5749d4de31f5))
+  - docs(contextual): document Copy page menu, enable on tangly.dev ([`7768c3e`](https://github.com/tanglydocs/tangly/commit/7768c3ef0431b5d4e02f32307fbb0ab95d090fa9))
+  - docs(components): document mermaid + complete components hub ([`34948a2`](https://github.com/tanglydocs/tangly/commit/34948a25e9c3a9beec6f016377bd8712ee6f0b20))
+  - docs(intro): sync 'What you get' with README features, no em dashes ([`c7d9ffa`](https://github.com/tanglydocs/tangly/commit/c7d9ffa3e3cc3c91f391a7f8c26240084eb99e72))
+  - docs(navbar): keep only the GitHub anchor (with icon), drop duplicates ([`066a50d`](https://github.com/tanglydocs/tangly/commit/066a50dae7401d10108e06d22e79c0e6e476683a))
+  - docs(deploying): nest FileTree, drop redundant H1 + self-loop redirect ([`2929f2a`](https://github.com/tanglydocs/tangly/commit/2929f2a64d28be4a461fe8506cfe1101c5d300da))
+  - docs(readme): wire coverage badge to gist nc9/e57cc6d6 ([`a496574`](https://github.com/tanglydocs/tangly/commit/a496574596cdcf5460446c514f23d21446c85079))
+  - docs(readme): add npm, build, coverage, downloads, license badges ([`c6a6c19`](https://github.com/tanglydocs/tangly/commit/c6a6c191604136c00b4f584b884ccd9c0c189295))
+
+  ### Build
+  - build(test): add @vitest/coverage-v8 + test:coverage script ([`c032b7c`](https://github.com/tanglydocs/tangly/commit/c032b7cdba3858298c8c0db43e632d1bbbf1b7de))
+
+  ### CI
+  - ci(coverage): emit coverage JSON and publish to gist on main ([`d9ca919`](https://github.com/tanglydocs/tangly/commit/d9ca919a000af1ee3578d8ab577a109ae6399b99))
+  - ci: re-run against tangly@0.0.12 (verify installer-smoke green) ([`768acb4`](https://github.com/tanglydocs/tangly/commit/768acb42e14b2e7c7385186a4f0611fcb708f514))
+
+</Update>

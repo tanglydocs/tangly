@@ -252,16 +252,38 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Extract release notes from docs/changelog.mdx
+        if: ${{ env.DRY_RUN != 'true' }}
+        id: notes
+        env:
+          NEW_VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          if bun run scripts/extract-release-notes.ts "$NEW_VERSION" > RELEASE_NOTES.md; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "Using docs/changelog.mdx body for v$NEW_VERSION"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            rm -f RELEASE_NOTES.md
+            echo "::warning::No <Update label=\"v$NEW_VERSION\"> in docs/changelog.mdx; falling back to --generate-notes"
+          fi
+
       - name: Create GitHub Release
         if: ${{ env.DRY_RUN != 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.ver.outputs.tag }}
+          FOUND: ${{ steps.notes.outputs.found }}
         run: |
           # --target $GITHUB_SHA: belt + suspenders in case the tag isn't
           # visible to gh CLI yet (it just got pushed in a prior step).
-          if [ "$BUMP" = "prerelease" ]; then
-            gh release create "$TAG" --generate-notes --prerelease --title "$TAG" --target "$GITHUB_SHA"
+          flags=()
+          if [ "$FOUND" = "true" ]; then
+            flags+=(--notes-file RELEASE_NOTES.md)
           else
-            gh release create "$TAG" --generate-notes --latest --title "$TAG" --target "$GITHUB_SHA"
+            flags+=(--generate-notes)
+          fi
+          if [ "$BUMP" = "prerelease" ]; then
+            gh release create "$TAG" --prerelease --title "$TAG" --target "$GITHUB_SHA" "${flags[@]}"
+          else
+            gh release create "$TAG" --latest --title "$TAG" --target "$GITHUB_SHA" "${flags[@]}"
           fi
