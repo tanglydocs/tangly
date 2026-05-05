@@ -317,6 +317,7 @@ export const DocsJsonSchema = z
     theme: ThemeSchema.optional(),
     name: z.string().min(1),
     description: z.string().optional(),
+    siteUrl: z.string().url().optional(),
     colors: ColorsSchema.optional(),
     logo: LogoSchema,
     favicon: z.union([z.string(), z.object({ light: z.string(), dark: z.string() })]).optional(),
