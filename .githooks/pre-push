@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Full CI mirror: check + tests. Skip with `git push --no-verify`.
+set -e
+exec bun run ci

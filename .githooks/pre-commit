@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Mirrors CI's `check` job. Skip with `git commit --no-verify` for WIP.
+set -e
+exec bun run check
