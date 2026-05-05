@@ -203,6 +203,9 @@
         "tailwindcss": "^4.2.4",
         "typescript": "^5.7.0",
       },
+      "devDependencies": {
+        "wrangler": "^4.0.0",
+      },
     },
   },
   "overrides": {

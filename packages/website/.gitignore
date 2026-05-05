@@ -21,3 +21,4 @@ public/install.sh
 public/install.ps1
 public/schema/
 public/preview/
+.vercel
