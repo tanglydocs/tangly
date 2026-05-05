@@ -38,16 +38,22 @@ const placeholder = config.search?.prompt ?? "Search docs…";
       </button>
     </div>
 
-    <ul
-      id="tangly-search-results"
+    <div
       class="max-h-[60vh] overflow-y-auto tangly-scroll p-2"
-      role="listbox"
-      aria-label="Results"
     >
-      <li class="text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center">
+      <p
+        id="tangly-search-empty"
+        class="text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center"
+      >
         Type to search…
-      </li>
-    </ul>
+      </p>
+      <ul
+        id="tangly-search-results"
+        class="hidden"
+        role="listbox"
+        aria-label="Results"
+      ></ul>
+    </div>
 
     <div class="px-4 py-2 border-t border-[var(--tangly-color-border)] flex items-center gap-3 text-xs text-[var(--tangly-color-muted)]">
       <span><kbd class="px-1.5 py-0.5 border border-[var(--tangly-color-border)] rounded">↑↓</kbd> navigate</span>
@@ -123,7 +129,24 @@ const placeholder = config.search?.prompt ?? "Search docs…";
   const dialog = document.getElementById("tangly-search-modal") as HTMLDialogElement | null;
   const input = document.getElementById("tangly-search-input") as HTMLInputElement | null;
   const results = document.getElementById("tangly-search-results");
+  const empty = document.getElementById("tangly-search-empty");
   const closeBtn = document.getElementById("tangly-search-close");
+
+  function showEmpty(message: string) {
+    if (empty) {
+      empty.textContent = message;
+      empty.classList.remove("hidden");
+    }
+    if (results) {
+      while (results.firstChild) results.removeChild(results.firstChild);
+      results.classList.add("hidden");
+    }
+  }
+
+  function showResults() {
+    if (empty) empty.classList.add("hidden");
+    if (results) results.classList.remove("hidden");
+  }
 
   function open() {
     if (!dialog) return;
@@ -133,12 +156,7 @@ const placeholder = config.search?.prompt ?? "Search docs…";
       input.value = "";
       input.focus();
     }
-    if (results) {
-      while (results.firstChild) results.removeChild(results.firstChild);
-      results.appendChild(
-        el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, ["Type to search…"]),
-      );
-    }
+    showEmpty("Type to search…");
     activeIndex = 0;
   }
 
@@ -173,34 +191,25 @@ const placeholder = config.search?.prompt ?? "Search docs…";
     while (results.firstChild) results.removeChild(results.firstChild);
 
     if (!q.trim()) {
-      results.appendChild(
-        el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, ["Type to search…"]),
-      );
+      showEmpty("Type to search…");
       return;
     }
 
     const lib = await ensurePagefind();
     if (myToken !== queryToken) return;
     if (!lib) {
-      results.appendChild(
-        el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, [
-          "Search index unavailable. Run `tangly build` first.",
-        ]),
-      );
+      showEmpty("Search index unavailable. Run `tangly build` first.");
       return;
     }
 
     const { results: hits } = await lib.search(q);
     if (myToken !== queryToken) return;
     if (hits.length === 0) {
-      results.appendChild(
-        el("li", { class: "text-sm text-[var(--tangly-color-muted)] px-3 py-6 text-center" }, [
-          `No matches for "${q}".`,
-        ]),
-      );
+      showEmpty(`No matches for "${q}".`);
       return;
     }
 
+    showResults();
     const top = hits.slice(0, 10);
     const datas = await Promise.all(top.map((h) => h.data()));
     if (myToken !== queryToken) return;
