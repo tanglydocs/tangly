@@ -3,6 +3,12 @@ import { Search } from "lucide-astro";
 
 const rows = [
   {
+    label: "Fast dev server",
+    title: "Astro 6 + Vite. HMR under 250ms.",
+    body: 'Cold start under 2s on a hundred pages. <code class="font-mono text-sm text-ink">tangly dev</code> boots in the time <code class="font-mono text-sm text-ink">mintlify dev</code> spends loading.',
+    demo: "fastdev",
+  },
+  {
     label: "Search",
     title: "Built-in, instant, ⌘K.",
     body: 'Static index built at <code class="font-mono text-sm text-ink">tangly build</code>. No Algolia key, no third-party request, no per-month cost.',
@@ -86,6 +92,16 @@ const rows = [
               class="max-w-[480px] font-sans text-[13.5px] leading-[20px] text-mute"
               set:html={row.body}
             />
+            {row.demo === "fastdev" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">tangly dev</span></div>
+                <div class="text-mute">↳ Tangly · 58 pages · theme: tang</div>
+                <div class="text-mute">↳ Local: <span class="text-tang-300">http://localhost:4321</span></div>
+                <div class="text-mute">↳ ready in <span class="text-tang-300">1.7s</span></div>
+                <div class="text-mute"># edit any .mdx</div>
+                <div class="text-mute">↳ HMR <span class="text-tang-300">187ms</span></div>
+              </div>
+            )}
             {row.demo === "search" && (
               <div class="flex max-w-[520px] flex-col overflow-hidden rounded-[10px] border border-line-light bg-paper">
                 <div class="flex items-center gap-2.5 border-b border-line-light px-4 py-3">
