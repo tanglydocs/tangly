@@ -27,6 +27,7 @@
 
 ## Features
 
+- **Fast dev server.** Astro 6 + Vite. HMR under 250ms. Cold start under 2s on a hundred pages. `tangly dev` boots in the time `mintlify dev` spends loading.
 - **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
 - **Built on Astro.** Builds an [Astro](https://astro.build) site you can eject.
 - **Drop-in Mintlify compat.** Point Tangly at an existing `docs.json` + MDX project. No source edits.
