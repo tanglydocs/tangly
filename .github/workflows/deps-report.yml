@@ -1,0 +1,72 @@
+name: deps-report
+
+on:
+  schedule:
+    # Mondays 14:00 UTC
+    - cron: "0 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  knip:
+    name: knip dep / dead-code scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup
+      - name: Run knip
+        id: knip
+        run: |
+          set +e
+          bun run lint:deps > knip-output.txt 2>&1
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          {
+            echo "report<<KNIP_EOF"
+            cat knip-output.txt
+            echo "KNIP_EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Upsert tracking issue
+        if: steps.knip.outputs.exit != '0'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          KNIP_REPORT: ${{ steps.knip.outputs.report }}
+        with:
+          script: |
+            const title = "deps: weekly knip report";
+            const body = [
+              "Auto-generated weekly knip scan. Findings:",
+              "",
+              "```",
+              process.env.KNIP_REPORT,
+              "```",
+              "",
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              "",
+              "Reproduce locally: `bun run lint:deps`",
+            ].join("\n");
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "deps-report",
+            });
+            const existing = issues.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["deps-report"],
+              });
+            }
