@@ -35,7 +35,7 @@ Use a `*` prefix:
 halo domains add "*.my-app.com"
 ```
 
-DNS-01 validation kicks in — Halo prints a `_acme-challenge` TXT record to set. Wildcard certs renew on a separate 60-day cadence.
+DNS-01 validation kicks in. Halo prints a `_acme-challenge` TXT record to set. Wildcard certs renew on a separate 60-day cadence.
 
 ## Apex + www
 
@@ -46,7 +46,7 @@ Most teams want both `my-app.com` and `www.my-app.com`:
     `halo domains add my-app.com` then `halo domains add www.my-app.com`.
   </Step>
   <Step title="Set the canonical">
-    `halo domains canonical my-app.com` — `www` becomes a 308 redirect.
+    `halo domains canonical my-app.com`; `www` becomes a 308 redirect.
   </Step>
 </Steps>
 

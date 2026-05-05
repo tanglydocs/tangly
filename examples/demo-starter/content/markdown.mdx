@@ -6,7 +6,7 @@ icon: "file-lines"
 
 # Markdown
 
-Pages are MDX — Markdown plus JSX. Frontmatter at the top, content below.
+Pages are MDX, Markdown plus JSX. Frontmatter at the top, content below.
 
 ## Frontmatter
 
@@ -35,7 +35,7 @@ Standard Markdown plus MDX components. Tangly understands:
 - GitHub-flavored Markdown (tables, task lists, strikethrough).
 - Math via `$inline$` and `$$block$$` (KaTeX). Example: $e^{i\pi} + 1 = 0$.
 - Mintlify-style latex blocks (rewritten to `$$` before parse).
-- Relative image paths (`![](../images/foo.png)`) — resolved against project root.
+- Relative image paths (`![](../images/foo.png)`): resolved against project root.
 - Code blocks with Shiki highlighting and `twoslash` for TypeScript.
 
 ## Code blocks
@@ -48,7 +48,7 @@ const greet = (name: string) => `hello, ${name}`
 ```
 ````
 
-Pair multiple variants with `<CodeGroup>` — see [Blocks](/content/blocks).
+Pair multiple variants with `<CodeGroup>`. See [Blocks](/content/blocks).
 
 <Tip>
   Run `tangly check` to catch broken links and missing frontmatter before you ship.

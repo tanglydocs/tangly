@@ -11,7 +11,7 @@ Rotation in Cipher is **non-destructive**. New encrypts use the new key; old env
 1. You (or the auto-rotator) issue a new key version.
 2. The SDK starts using the new version for `encrypt`.
 3. `decrypt` accepts envelopes sealed under any key version that hasn't expired.
-4. Old keys retire after the grace window — default 30 days.
+4. Old keys retire after the grace window; default 30 days.
 
 ## Trigger rotation
 

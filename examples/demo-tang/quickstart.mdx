@@ -29,7 +29,7 @@ const cipher = new Cipher({ apiKey: process.env.CIPHER_KEY });
 const sealed = await cipher.encrypt({ payload: "secret note" });
 ```
 
-`sealed` is a string-encoded envelope. Stash it anywhere — Postgres, S3, a cookie.
+`sealed` is a string-encoded envelope. Stash it anywhere: Postgres, S3, a cookie.
 
 ## 3. Decrypt
 

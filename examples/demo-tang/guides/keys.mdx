@@ -21,7 +21,7 @@ Production keys can be scoped to specific operations:
 cipher keys create --scope encrypt:* --scope decrypt:tenant-alpha
 ```
 
-Restrictive scopes ship with their own audit channel — useful for letting a CI runner encrypt without ever decrypting.
+Restrictive scopes ship with their own audit channel, useful for letting a CI runner encrypt without ever decrypting.
 
 <Warning>
 Don't commit keys to git. The SDK reads `CIPHER_KEY` from the environment by default; that's the path you want.

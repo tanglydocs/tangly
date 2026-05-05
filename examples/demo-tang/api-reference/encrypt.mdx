@@ -14,7 +14,7 @@ The data to encrypt. Up to 1 MB per call.
 </ParamField>
 
 <ParamField body="aad" type="object">
-Additional authenticated data — included in the integrity check, not encrypted.
+Additional authenticated data; included in the integrity check, not encrypted.
 </ParamField>
 
 ## Response
@@ -24,7 +24,7 @@ The opaque, base64-encoded ciphertext. Pass this back to `/decrypt` to recover t
 </ResponseField>
 
 <ResponseField name="key_version" type="string">
-The key version used. You don't need to track this — `/decrypt` figures it out.
+The key version used. You don't need to track this; `/decrypt` figures it out.
 </ResponseField>
 
 <RequestExample>
