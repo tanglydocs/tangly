@@ -40,6 +40,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
   { label: "Navigation", count: 6, tiles: ["Tabs", "Tab", "Steps", "Step", "Accordion", "AccordionGroup"] },
   { label: "Code & content", count: 6, tiles: ["CodeGroup", "FileTree", "Snippet", "Embed", "Video", "LightboxImage"] },
   { label: "API", count: 4, tiles: ["ParamField", "ResponseField", "RequestExample", "ResponseExample"] },
+  { label: "OpenAPI", count: 4, tiles: ["OpenApiEndpoint", "OpenApiRedoc", "OpenApiScalar", "OpenApiStoplight"] },
   { label: "Inline & misc", count: 7, tiles: ["Badge", "Icon", "Kbd", "Tooltip", "GlossaryTerm", "Expandable", "PackageManager"] },
 ];
 ---
@@ -53,7 +54,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
     <h2
       class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
     >
-      <span class="text-ink">34 components,</span>
+      <span class="text-ink">38 components,</span>
       <span class="text-tang-700">no imports.</span>
     </h2>
     <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
@@ -97,14 +98,14 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                     </Update>
                   )}
                   {tag === "Card" && (
-                    <Card title="Quickstart" icon="terminal" href="/start">
+                    <Card title="Quickstart" icon="terminal" href="https://docs.tangly.dev/quickstart">
                       Three commands.
                     </Card>
                   )}
                   {tag === "CardGroup" && (
                     <CardGroup cols={2}>
-                      <Card title="Get started" icon="rocket" href="/start" />
-                      <Card title="Themes" icon="paintbrush" href="/themes" />
+                      <Card title="Get started" icon="rocket" href="https://docs.tangly.dev/quickstart" />
+                      <Card title="Themes" icon="paintbrush" href="https://docs.tangly.dev/guides/themes/" />
                     </CardGroup>
                   )}
                   {tag === "Columns" && (
@@ -187,7 +188,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                     <Video src="/video.mp4" />
                   )}
                   {tag === "LightboxImage" && (
-                    <LightboxImage src="/brand/tangly-icon-512.png" alt="Tangly" />
+                    <LightboxImage src="/brand/tangly-icon-512.png" alt="Tangly Möbius mark" width={120} height={120} />
                   )}
                   {tag === "ParamField" && (
                     <ParamField path="q" type="string" required>
@@ -237,7 +238,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                   )}
                   {tag === "GlossaryTerm" && (
                     <p class="!my-0 font-sans text-sm leading-5 text-line-dark">
-                      An <GlossaryTerm slug="mdx" definition="Markdown plus JSX">MDX</GlossaryTerm> file is markdown plus JSX.
+                      An <GlossaryTerm slug="mdx" definition="Markdown plus JSX" href="https://docs.tangly.dev/reference/markdown/#mdx">MDX</GlossaryTerm> file is markdown plus JSX.
                     </p>
                   )}
                   {tag === "Expandable" && (
