@@ -1,0 +1,40 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.ts"],
+      "project": ["scripts/**/*.ts"]
+    },
+    "packages/tangly": {
+      "entry": [
+        "src/cli/index.ts",
+        "src/cli/**/*.ts",
+        "runtime/astro.config.mjs",
+        "runtime/src/**/*.{astro,mjs,ts}",
+        "scripts/*.ts"
+      ]
+    },
+    "packages/schema": {
+      "entry": ["fixtures/**"]
+    },
+    "packages/theme-tang": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/theme-pith": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/theme-pip": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/theme-readable": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/theme-geist": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/theme-ui": { "entry": ["src/**/*.{astro,ts,mjs,css}"] },
+    "packages/template-starter": {
+      "entry": ["template.json"],
+      "ignore": ["files/**"]
+    },
+    "packages/website": {
+      "entry": [
+        "astro.config.*",
+        "src/pages/**/*.{astro,mdx}",
+        "src/**/*.{astro,ts,mjs}",
+        "scripts/*.ts"
+      ]
+    }
+  },
+  "ignore": ["**/*.mdx"]
+}
