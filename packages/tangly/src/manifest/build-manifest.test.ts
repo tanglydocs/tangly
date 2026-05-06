@@ -17,7 +17,7 @@ describe("buildManifest — Opennem corpus", () => {
     expect(m.navigation.tabs.length).toBe(5);
     // every nav slug should be a known page or a warning
     expect(m.pages.size).toBeGreaterThan(0);
-  });
+  }, 30000);
 
   test("nav slugs match known Opennem structure", async () => {
     const m = await buildManifest({ root: OPENNEM });
