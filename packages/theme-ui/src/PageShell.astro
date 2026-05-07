@@ -20,6 +20,7 @@ const showToc = mode === "default";
 const wide = mode === "wide";
 const center = mode === "center";
 const custom = mode === "custom";
+const api = mode === "api";
 
 const breadcrumbs = page.breadcrumbs ?? [];
 
@@ -51,7 +52,7 @@ const lastUpdatedRel = lastUpdatedAbs ? relativeTime(lastUpdatedAbs) : "";
 // Layout widths
 const containerClass = custom
   ? ""
-  : wide
+  : wide || api
     ? "max-w-screen-xl mx-auto"
     : center
       ? "max-w-[var(--tangly-content-max-width)] mx-auto"

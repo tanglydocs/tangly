@@ -38,9 +38,18 @@ const isRoot = _depth === 0;
               {item.icon ? <Icon icon={item.icon} size={15} /> : null}
               <span class="flex-1 truncate">{item.title}</span>
               {item.tag && (
-                <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
-                  {item.tag}
-                </span>
+                item.methodColor ? (
+                  <span
+                    class="shrink-0 text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded-md leading-none"
+                    style={`color:${item.methodColor};background:${item.methodColor}1a`}
+                  >
+                    {item.tag}
+                  </span>
+                ) : (
+                  <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
+                    {item.tag}
+                  </span>
+                )
               )}
             </a>
           )}
@@ -70,9 +79,18 @@ const isRoot = _depth === 0;
             {item.icon ? <Icon icon={item.icon} size={15} /> : null}
             <span class="flex-1 truncate">{item.title}</span>
             {item.tag && (
-              <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
-                {item.tag}
-              </span>
+              item.methodColor ? (
+                <span
+                  class="shrink-0 text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded-md leading-none"
+                  style={`color:${item.methodColor};background:${item.methodColor}1a`}
+                >
+                  {item.tag}
+                </span>
+              ) : (
+                <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
+                  {item.tag}
+                </span>
+              )
             )}
           </a>
         )}

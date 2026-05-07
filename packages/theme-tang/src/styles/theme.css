@@ -34,7 +34,7 @@
     "Inter", "Inter Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --tangly-sidebar-width: 17rem;
+  --tangly-sidebar-width: 18rem;
   --tangly-content-max-width: 48rem;
   --tangly-toc-width: 15rem;
   /* Topnav has two rows by default. When tabs are absent, only row 1 renders;
