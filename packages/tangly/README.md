@@ -143,7 +143,7 @@ GitHub Pages, S3, nginx, Cloudflare Workers Sites — anything that serves files
 
 Tangly ships two agent skills (Claude Code, Codex, and other skill-aware agents):
 
-- **`tanglify`** — use Tangly from an agent: init, validate, structure docs, port from Mintlify, deploy.
+- **`tangly`** — use Tangly from an agent: init, validate, structure docs, port from Mintlify, deploy.
 - **`tech-documentation`** — write good technical docs (Diátaxis-grounded).
 
 Install both globally:

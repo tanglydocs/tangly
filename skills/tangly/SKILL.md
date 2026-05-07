@@ -1,5 +1,5 @@
 ---
-name: tanglify
+name: tangly
 description: |
   Build, customize, and ship documentation sites with Tangly — a self-hosted,
   open-source documentation framework that renders Mintlify projects unmodified.
@@ -12,7 +12,7 @@ description: |
   editing a docs site; running any `tangly` CLI command (init, dev, build,
   preview, check, migrate, add, eject); editing docs.json or MDX frontmatter;
   migrating documentation from Mintlify or mint.json; deploying a documentation
-  site to production. Trigger keywords: tangly, tanglify, docs.json, mintlify,
+  site to production. Trigger keywords: tangly, docs.json, mintlify,
   documentation site, docs framework, mdx docs, static docs.
 license: MIT
 compatibility: Designed for Claude Code and other agent-skills clients. Requires Node 20+ or Bun 1.2+.
@@ -26,7 +26,7 @@ metadata:
   repository: https://github.com/tanglydocs/tangly
 ---
 
-# tanglify
+# tangly
 
 Tangly is a self-hosted, OSS docs framework that renders Mintlify projects unmodified. One static `dist/` ships to any CDN. This skill is a fast reference for using it.
 

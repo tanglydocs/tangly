@@ -85,7 +85,7 @@ Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#in
 
 Tangly ships two Agent skills under [`skills/`](skills):
 
-- [`tanglify`](skills/tanglify): use Tangly: init, verify, structure docs, port from Mintlify, deploy.
+- [`tangly`](skills/tangly): use Tangly: init, verify, structure docs, port from Mintlify, deploy.
 - [`tech-documentation`](skills/tech-documentation): write good technical docs (Diátaxis-grounded).
 
 ```bash
