@@ -2,24 +2,50 @@ AGENTS_DIR := $(HOME)/.agents/skills
 CLAUDE_DIR := $(HOME)/.claude/skills
 SKILL_DIRS := $(shell find skills -maxdepth 2 -name 'SKILL.md' -exec dirname {} \;)
 TANGLY_PKG := packages/tangly
+# Workspace pkgs to register globally via `bun link`. `tangly` first so its bin
+# lands on PATH before the scoped packages.
+LINKABLE_PKGS := tangly schema theme-ui theme-tang theme-pith theme-readable theme-pip theme-geist
+# Scoped pkg specifiers consumers reference (everything but tangly is @tanglydocs/*).
+SCOPED_PKGS := @tanglydocs/schema @tanglydocs/theme-ui @tanglydocs/theme-tang @tanglydocs/theme-pith @tanglydocs/theme-readable @tanglydocs/theme-pip @tanglydocs/theme-geist
 
-.PHONY: link unlink link-bin unlink-bin link-skill unlink-skill list
+.PHONY: link unlink link-bin unlink-bin link-pkgs unlink-pkgs link-skill unlink-skill link-consumer unlink-consumer list
 
-## link: link both the tangly CLI bin and the skills
-link: link-bin link-skill
+## link: register all workspace packages globally and link skills
+link: link-pkgs link-skill
 
-## unlink: unlink both the tangly CLI bin and the skills
-unlink: unlink-bin unlink-skill
+## unlink: tear down all global links and skill symlinks
+unlink: unlink-pkgs unlink-skill
 
-## link-bin: register the local tangly CLI on PATH via `bun link`
-link-bin:
-	@cd $(TANGLY_PKG) && bun link
-	@echo "Linked: tangly CLI -> $(TANGLY_PKG)/bin/tangly.js"
+## link-bin: alias for link-pkgs (kept for back-compat)
+link-bin: link-pkgs
 
-## unlink-bin: remove the local tangly CLI link
-unlink-bin:
-	@cd $(TANGLY_PKG) && bun unlink || true
-	@echo "Unlinked: tangly CLI"
+## unlink-bin: alias for unlink-pkgs (kept for back-compat)
+unlink-bin: unlink-pkgs
+
+## link-pkgs: register every workspace package as a global `bun link` target
+link-pkgs:
+	@for pkg in $(LINKABLE_PKGS); do \
+		(cd packages/$$pkg && bun link >/dev/null) && echo "Linked: packages/$$pkg"; \
+	done
+
+## unlink-pkgs: remove every workspace package's global `bun link` registration
+unlink-pkgs:
+	@for pkg in $(LINKABLE_PKGS); do \
+		(cd packages/$$pkg && bun unlink >/dev/null 2>&1) || true; \
+		echo "Unlinked: packages/$$pkg"; \
+	done
+
+## link-consumer: wire all linked packages into a downstream project. `make link-consumer DIR=path/to/proj`
+link-consumer:
+	@if [ -z "$(DIR)" ]; then echo "usage: make link-consumer DIR=<path>"; exit 2; fi
+	@cd "$(DIR)" && bun link tangly $(SCOPED_PKGS)
+	@echo "Linked Tangly workspace into $(DIR)"
+
+## unlink-consumer: drop the local links from a downstream project (re-installs published versions on next `bun install`)
+unlink-consumer:
+	@if [ -z "$(DIR)" ]; then echo "usage: make unlink-consumer DIR=<path>"; exit 2; fi
+	@cd "$(DIR)" && bun install --force
+	@echo "Restored published deps in $(DIR)"
 
 ## link-skill: symlink skills/* into ~/.agents/skills and ~/.claude/skills
 link-skill:
