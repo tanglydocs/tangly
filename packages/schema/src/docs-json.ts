@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ColorsSchema } from "./colors.js";
 import { NavigationSchema } from "./navigation.js";
+import { normalizeDocsJson } from "./normalize.js";
 import { ThemeSchema } from "./themes.js";
 
 const LogoSchema = z
@@ -180,9 +181,49 @@ const ApiSchema = z
       .object({
         mode: z.enum(["interactive", "simple", "hide"]).optional(),
         proxy: z.boolean().optional(),
+        /** Forward cookies + Authorization on cross-origin try-it requests when proxy is false. */
+        credentials: z.boolean().optional(),
       })
       .strict()
       .optional(),
+    /**
+     * Code samples shown in the right-rail playground. Mintlify projects
+     * may use `api.examples.*`; aliases are normalized into this shape
+     * before parsing (see `normalize.ts`).
+     */
+    codeSamples: z
+      .object({
+        /** Tabs to render. Default: `["curl", "typescript", "python"]`. */
+        languages: z.array(z.string()).optional(),
+        /** Generate samples from the spec when no `<RequestExample>` overrides exist. Default: true. */
+        autogenerate: z.boolean().optional(),
+        /** Pull example values from the OpenAPI spec into the sample. Default: true. */
+        prefill: z.boolean().optional(),
+        /** Sample includes only `required` params or `all` of them. Default: required. */
+        defaults: z.enum(["required", "all"]).optional(),
+      })
+      .strict()
+      .optional(),
+    params: z
+      .object({
+        /** Default expansion state for the parameter list. */
+        expanded: z.enum(["all", "closed"]).optional(),
+        /** Extra OpenAPI fields to surface as pills next to the param name. */
+        post: z.array(z.string()).optional(),
+      })
+      .strict()
+      .optional(),
+    /** `"full"` shows the complete URL (base + path) in the endpoint header. */
+    url: z.literal("full").optional(),
+    /**
+     * JSON Pointer to a schema in the spec (e.g.
+     * `#/components/schemas/APIV4ResponseSchema`) used as the response
+     * shape when the actual operation response has an empty `schema: {}`.
+     * Mirrors Mintlify's behavior of falling back to the canonical
+     * envelope schema for FastAPI-style specs that don't declare each
+     * 200's body.
+     */
+    responseFallback: z.string().optional(),
     openapi: z.union([z.string(), z.array(z.string())]).optional(),
     /** Phase 3: viewer choice. Default: tangly's built-in compact endpoint render. */
     viewer: z.enum(["tangly", "scalar", "redoc", "stoplight"]).optional(),
@@ -363,9 +404,9 @@ export const DocsJsonSchema = z
 export type DocsJson = z.infer<typeof DocsJsonSchema>;
 
 export function parseDocsJson(input: unknown): DocsJson {
-  return DocsJsonSchema.parse(input);
+  return DocsJsonSchema.parse(normalizeDocsJson(input));
 }
 
 export function safeParseDocsJson(input: unknown) {
-  return DocsJsonSchema.safeParse(input);
+  return DocsJsonSchema.safeParse(normalizeDocsJson(input));
 }

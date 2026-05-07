@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PageModeSchema = z.enum(["default", "wide", "center", "custom"]);
+export const PageModeSchema = z.enum(["default", "wide", "center", "custom", "api"]);
 
 export const FrontmatterSchema = z
   .object({
@@ -15,6 +15,10 @@ export const FrontmatterSchema = z
     api: z.string().optional(),
     openapi: z.string().optional(),
     "openapi-schema": z.string().optional(),
+    /** Override the playground mode for this page (`api`/`openapi` pages). */
+    playground: z.enum(["interactive", "simple", "none"]).optional(),
+    /** Override the auth scheme for the playground (`api`/`openapi` pages). */
+    authMethod: z.enum(["bearer", "basic", "key", "none"]).optional(),
     keywords: z.array(z.string()).optional(),
     noindex: z.boolean().optional(),
     mode: PageModeSchema.optional(),

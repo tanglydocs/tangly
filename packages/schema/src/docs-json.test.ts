@@ -108,6 +108,51 @@ describe("convertMintToDocs", () => {
   });
 });
 
+describe("ApiSchema (codeSamples + Mintlify aliases)", () => {
+  test("accepts codeSamples + params + url + playground.credentials", () => {
+    const result = safeParseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: {
+        codeSamples: {
+          languages: ["curl", "typescript", "python"],
+          autogenerate: true,
+          prefill: true,
+          defaults: "required",
+        },
+        params: { expanded: "all", post: ["read-only"] },
+        url: "full",
+        playground: { mode: "interactive", proxy: false, credentials: true },
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("aliases api.examples → api.codeSamples", () => {
+    const cfg = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: { examples: { languages: ["curl", "go"], prefill: false } },
+    });
+    expect(cfg.api?.codeSamples?.languages).toEqual(["curl", "go"]);
+    expect(cfg.api?.codeSamples?.prefill).toBe(false);
+    // raw `examples` is stripped after normalization
+    expect((cfg.api as Record<string, unknown>).examples).toBeUndefined();
+  });
+
+  test("native codeSamples wins over examples on conflict", () => {
+    const cfg = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: {
+        examples: { languages: ["mint-only"] },
+        codeSamples: { languages: ["tang-wins"] },
+      },
+    });
+    expect(cfg.api?.codeSamples?.languages).toEqual(["tang-wins"]);
+  });
+});
+
 describe("ref-resolve", () => {
   test("isPathSafe rejects traversal", () => {
     expect(isPathSafe("../../etc/passwd", "/project")).toBe(false);

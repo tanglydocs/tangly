@@ -30,6 +30,7 @@ export {
   resolveJsonPointer,
   resolveRefPath,
 } from "./ref-resolve.js";
+export { normalizeDocsJson } from "./normalize.js";
 export {
   resolveTheme,
   TANGLY_THEMES,
