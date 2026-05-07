@@ -14,6 +14,12 @@
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete", "options", "head", "trace"] as const;
 type Method = (typeof HTTP_METHODS)[number];
 
+export interface CodeSample {
+  lang: string;
+  label?: string;
+  source: string;
+}
+
 export interface OpenApiOperation {
   method: Method;
   path: string;
@@ -21,6 +27,14 @@ export interface OpenApiOperation {
   description?: string;
   tags?: string[];
   operationId?: string;
+  /** `x-codeSamples` / `x-code-samples` from the spec. */
+  codeSamples?: CodeSample[];
+  /** `x-hidden`: page is built and routable but suppressed from sidebar. */
+  hidden?: boolean;
+  /** `x-excluded`: page is omitted entirely. Filtered before manifest insert. */
+  excluded?: boolean;
+  /** Names of `securitySchemes` that apply to this operation. */
+  security?: string[];
 }
 
 export interface ExpandedSpec {
@@ -41,6 +55,9 @@ export interface ExpandedSpec {
 interface RawSpec {
   info?: { title?: string; description?: string };
   paths?: Record<string, Record<string, RawOp>>;
+  components?: {
+    securitySchemes?: Record<string, unknown>;
+  };
 }
 
 interface RawOp {
@@ -48,6 +65,11 @@ interface RawOp {
   description?: string;
   tags?: string[];
   operationId?: string;
+  security?: Array<Record<string, unknown>>;
+  "x-codeSamples"?: unknown;
+  "x-code-samples"?: unknown;
+  "x-hidden"?: boolean;
+  "x-excluded"?: boolean;
 }
 
 export function isHttpMethod(s: string): s is Method {
@@ -63,6 +85,8 @@ export function expandOpenApiSpec(spec: RawSpec, opts: { prefix?: string } = {})
     for (const [methodLower, op] of Object.entries(ops)) {
       if (!isHttpMethod(methodLower)) continue;
       const method = methodLower as Method;
+      const codeSamples = parseCodeSamples(op["x-codeSamples"] ?? op["x-code-samples"]);
+      const security = parseSecurity(op.security);
       const operationData: OpenApiOperation = {
         method,
         path,
@@ -70,6 +94,10 @@ export function expandOpenApiSpec(spec: RawSpec, opts: { prefix?: string } = {})
         ...(op.description !== undefined && { description: op.description }),
         ...(op.tags !== undefined && { tags: op.tags }),
         ...(op.operationId !== undefined && { operationId: op.operationId }),
+        ...(codeSamples && codeSamples.length > 0 && { codeSamples }),
+        ...(op["x-hidden"] === true && { hidden: true }),
+        ...(op["x-excluded"] === true && { excluded: true }),
+        ...(security && security.length > 0 && { security }),
       };
       const slug = synthesizeSlug({ method, path, operationId: op.operationId, prefix });
       const title = op.summary ?? `${method.toUpperCase()} ${path}`;
@@ -83,6 +111,34 @@ export function expandOpenApiSpec(spec: RawSpec, opts: { prefix?: string } = {})
     }
   }
   return { operations, ...(spec.info && { info: spec.info }) };
+}
+
+function parseCodeSamples(raw: unknown): CodeSample[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const out: CodeSample[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const e = entry as Record<string, unknown>;
+    const lang = typeof e.lang === "string" ? e.lang : undefined;
+    const source = typeof e.source === "string" ? e.source : undefined;
+    if (!lang || !source) continue;
+    out.push({
+      lang,
+      source,
+      ...(typeof e.label === "string" && { label: e.label }),
+    });
+  }
+  return out;
+}
+
+function parseSecurity(raw: RawOp["security"]): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const names = new Set<string>();
+  for (const req of raw) {
+    if (!req || typeof req !== "object") continue;
+    for (const k of Object.keys(req)) names.add(k);
+  }
+  return names.size > 0 ? [...names] : undefined;
 }
 
 function synthesizeSlug(args: {

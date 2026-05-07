@@ -1,4 +1,5 @@
 import type { DocsJson, Frontmatter, NavGroup, NavNode, NavTab } from "@tanglydocs/schema";
+import { resolveMethodColor } from "../openapi/method-color.js";
 
 // NavTab type is referenced via tabFromNavTab below.
 import type {
@@ -50,6 +51,25 @@ function pageTag(
   return diskPages.get(slug)?.frontmatter?.tag;
 }
 
+/**
+ * Pull HTTP method off `openapi: METHOD path` / `api: METHOD path`
+ * frontmatter so the sidebar pill matches the synth path.
+ */
+function pageMethod(
+  slug: string,
+  diskPages: Map<string, { frontmatter: Frontmatter | null }>,
+): string | undefined {
+  const fm = diskPages.get(slug)?.frontmatter;
+  const raw = fm?.openapi ?? fm?.api;
+  if (typeof raw !== "string") return undefined;
+  const first = raw.trim().split(/\s+/)[0];
+  if (!first) return undefined;
+  const m = first.toLowerCase();
+  return ["get", "post", "put", "patch", "delete", "options", "head", "trace"].includes(m)
+    ? m
+    : undefined;
+}
+
 function humanize(s: string): string {
   return s.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -93,11 +113,15 @@ function buildSidebar(
       };
       const icon = pageIcon(slug, ctx.diskPages);
       const fm = ctx.diskPages.get(slug)?.frontmatter;
-      // Drafts get a "Draft" tag in the sidebar (only relevant when
-      // includeDrafts is true; otherwise they're filtered out upstream).
-      const tag = fm?.draft ? "Draft" : pageTag(slug, ctx.diskPages);
+      // Drafts get a "Draft" tag in the sidebar. OpenAPI pages get the
+      // HTTP method as a colored pill — same shape as synth-from-spec
+      // entries so the two paths look identical in the nav.
+      const method = pageMethod(slug, ctx.diskPages);
+      const explicit = pageTag(slug, ctx.diskPages);
+      const tag = fm?.draft ? "Draft" : (explicit ?? (method ? method.toUpperCase() : undefined));
       if (icon !== undefined) item.icon = icon;
       if (tag !== undefined) item.tag = tag;
+      if (!explicit && method) item.methodColor = resolveMethodColor(method);
       out.push(item);
     } else if (isGroup(node)) {
       const childCtx: SidebarBuildCtx = {

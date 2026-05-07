@@ -1,6 +1,7 @@
 import type { DocsJson } from "@tanglydocs/schema";
 import type { ManifestWarning, PageEntry, ResolvedTab, SidebarItem } from "../manifest/types.js";
 import { expandOpenApiSpec, loadOpenApiSpec, type ExpandedSpec } from "./expand-spec.js";
+import { resolveMethodColor } from "./method-color.js";
 
 export interface OpenApiBuildResult {
   /** Synthesized PageEntry records (one per endpoint). */
@@ -43,6 +44,8 @@ export async function buildOpenApiPages(opts: {
       continue;
     }
     const expanded = expandOpenApiSpec(spec, { prefix: tab.slug });
+    // x-excluded: drop the operation entirely (no page, no sidebar entry).
+    expanded.operations = expanded.operations.filter((o) => !o.op.excluded);
     if (expanded.operations.length === 0) {
       warnings.push({
         level: "warn",
@@ -51,7 +54,7 @@ export async function buildOpenApiPages(opts: {
       continue;
     }
 
-    const sidebarItems = synthesizeSidebar(expanded, tab.slug);
+    const sidebarItems = synthesizeSidebar(expanded);
     sidebarsByTab[tab.slug] = sidebarItems;
 
     for (const op of expanded.operations) {
@@ -69,6 +72,7 @@ export async function buildOpenApiPages(opts: {
         sidebar,
         tab: { slug: tab.slug, title: tab.title },
         draft: false,
+        ...(op.op.hidden && { hidden: true }),
       });
     }
   }
@@ -76,17 +80,20 @@ export async function buildOpenApiPages(opts: {
   return { pages, sidebarsByTab, warnings };
 }
 
-function synthesizeSidebar(expanded: ExpandedSpec, _tabSlug: string): SidebarItem[] {
+function synthesizeSidebar(expanded: ExpandedSpec): SidebarItem[] {
   // Group operations by their first tag. Operations without tags fall into
-  // an "API" group at the bottom.
+  // an "API" group at the bottom. x-hidden ops are skipped here but still
+  // get a PageEntry so direct URL navigation works.
   const groups = new Map<string, SidebarItem[]>();
   const orphan: SidebarItem[] = [];
   for (const op of expanded.operations) {
+    if (op.op.hidden) continue;
     const item: SidebarItem = {
       title: op.title,
       slug: op.slug,
       isGroup: false,
-      tag: methodBadge(op.op.method),
+      tag: op.op.method.toUpperCase(),
+      methodColor: resolveMethodColor(op.op.method),
     };
     if (op.group) {
       const arr = groups.get(op.group) ?? [];
@@ -117,8 +124,4 @@ function synthesizeSidebar(expanded: ExpandedSpec, _tabSlug: string): SidebarIte
     });
   }
   return sidebar;
-}
-
-function methodBadge(method: string): string {
-  return method.toUpperCase();
 }

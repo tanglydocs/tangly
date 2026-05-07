@@ -11,6 +11,8 @@ export interface SidebarItem {
   icon?: string;
   /** Optional tag (e.g. "Beta"). */
   tag?: string;
+  /** Hex color for the tag pill. Currently used by OpenAPI method badges. */
+  methodColor?: string;
   /** Whether the group is initially expanded. */
   expanded?: boolean;
   /** Children (for groups). */
@@ -36,6 +38,12 @@ export interface PageEntry {
   next?: { slug: string; title: string };
   /** Whether this page is a draft (hidden in build). */
   draft: boolean;
+  /**
+   * `x-hidden` on an OpenAPI operation: page is built and routable but
+   * does not appear in the sidebar. Manual MDX pages can opt in with
+   * `noindex: true` (different concept — that one omits from search).
+   */
+  hidden?: boolean;
   /** ISO timestamp of last git commit touching this file. */
   lastUpdated?: string;
   /** Auto-computed reading time in minutes. */
