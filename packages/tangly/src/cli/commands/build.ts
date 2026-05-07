@@ -96,12 +96,26 @@ export const buildCommand = defineCommand({
     // Fix: build into a tmp staging dir with a `node_modules` symlink pointing
     // at tangly's actual install location, then move the result into the
     // user's outDir. Walks now resolve regardless of how tangly was installed.
-    const tanglyNodeModules = findTanglyNodeModules(runtimeDir);
-    const stagingDir = mkdtempSync(join(tmpdir(), "tangly-build-"));
-    const stagingOut = join(stagingDir, "dist");
-    if (tanglyNodeModules) {
-      symlinkSync(tanglyNodeModules, join(stagingDir, "node_modules"), "dir");
+    // Walk-up chain of node_modules dirs that look like tangly's install.
+    // [0] = deepest (closest to source), [N-1] = topmost.
+    const nmChain = findTanglyNodeModulesChain(runtimeDir);
+    let stagingDir: string;
+    if (nmChain.length > 1) {
+      // Workspace mode: deps are split across packages/tangly/node_modules
+      // (direct, e.g. shiki) AND repo root node_modules (hoisted transitives,
+      // e.g. hast-util-from-html). A single symlink can't cover both. Place
+      // staging adjacent to the deepest node_modules so Node's natural ESM
+      // walk-up traverses every level.
+      stagingDir = mkdtempSync(join(dirname(nmChain[0]!), ".tangly-build-"));
+    } else {
+      // Single-node_modules install (global, bunx, flat npm): /tmp staging
+      // with one symlink is enough — that node_modules has everything.
+      stagingDir = mkdtempSync(join(tmpdir(), "tangly-build-"));
+      if (nmChain[0]) {
+        symlinkSync(nmChain[0], join(stagingDir, "node_modules"), "dir");
+      }
     }
+    const stagingOut = join(stagingDir, "dist");
 
     // Astro reads `process.cwd()` for some intermediate paths (`.astro/`
     // cache, prerender chunk dir). Run the build from inside the staging
@@ -212,22 +226,30 @@ export const buildCommand = defineCommand({
  * carries every transitive (hast-util-*, unist-*, theme-ui's deps, etc.).
  * In a published install there's only one level so "outermost" still wins.
  */
-function findTanglyNodeModules(runtimeDir: string): string | null {
+function findTanglyNodeModulesChain(runtimeDir: string): string[] {
+  // Collect every node_modules dir on the walk-up that holds tangly's
+  // marker dep (piccolore). Workspace bun installs split deps between
+  // packages/tangly/node_modules (direct, e.g. shiki) and the repo root
+  // node_modules (hoisted transitives). Returning the full chain lets the
+  // caller decide whether one symlink suffices or staging needs to live
+  // adjacent to the deepest level so all are walked naturally.
+  const seen = new Set<string>();
+  const chain: string[] = [];
   const starts = [dirname(fileURLToPath(import.meta.url)), runtimeDir];
-  let last: string | null = null;
   for (const start of starts) {
     let dir = start;
     for (let i = 0; i < 20; i++) {
       const nm = join(dir, "node_modules");
-      if (existsSync(join(nm, "piccolore"))) {
-        last = nm;
+      if (!seen.has(nm) && existsSync(join(nm, "piccolore"))) {
+        seen.add(nm);
+        chain.push(nm);
       }
       const parent = dirname(dir);
       if (parent === dir) break;
       dir = parent;
     }
   }
-  return last;
+  return chain;
 }
 
 function autoDetectAdapter(root: string): string {
