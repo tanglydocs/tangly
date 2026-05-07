@@ -48,13 +48,119 @@ openapi: get /v4/data/network/{network_code}
 ---
 ```
 
-The page renders:
+The page switches to the split layout (docs left, sticky playground panel right) and renders:
 
-- HTTP method badge + path
+- HTTP method badge + path (color-matched to the sidebar pill)
 - Summary + description from the operation
-- Parameters table (path / query / header / body)
-- Request and response schemas
-- Try-it-out form (when `playground.mode` is `interactive`)
+- **Path / Query / Header / Cookie parameter sections** (each row expandable)
+- Request body schema tree
+- **Tabbed responses** by status code, with the response schema per status
+- Right-rail panel with **language tabs** (cURL, TypeScript, Python by default), `Send →` button, and live response preview
+
+### Right-rail playground panel
+
+Every `openapi:` / `api:` page gets a sticky panel on the right at xl+ widths. Default tabs:
+
+| Tab | How it's built |
+| --- | --- |
+| `cURL` | Generated from the operation. Uses `--request`, embeds path/query example values, includes the configured auth header, and any `application/json` example body. |
+| `TypeScript` | `await fetch(...)` snippet. |
+| `Python` | `requests.<method>(...)` with explicit `headers=` / `params=`. |
+
+The set is configurable:
+
+```json
+{
+  "api": {
+    "codeSamples": {
+      "languages": ["curl", "typescript", "python", "go"],
+      "prefill": true,
+      "defaults": "required",
+      "autogenerate": true
+    }
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `languages` | Tab order. Built-in generators: `curl`/`bash`/`shell`, `typescript`/`ts`, `javascript`/`js`, `python`/`py`, `go`. Unknown names render an "author via `<RequestExample>`" placeholder. |
+| `prefill` | Pull `example` values from spec parameters into the snippet (default `true`). |
+| `defaults` | `required` (only required params, default) or `all`. |
+| `autogenerate` | When `false`, only `<RequestExample>` overrides and `x-codeSamples` show. |
+
+Mintlify-flavored `api.examples.*` is accepted as an alias for `api.codeSamples.*` and normalized at parse time, so unmodified Mintlify projects keep working.
+
+### Per-endpoint code samples (`<RequestExample>`)
+
+Override or add language samples by wrapping fenced code blocks in `<RequestExample>` inside the endpoint MDX:
+
+````mdx
+---
+openapi: get /v4/data/network/{network_code}
+---
+
+<RequestExample>
+```ts
+import { OpenElectricityClient } from "openelectricity";
+
+const client = new OpenElectricityClient();
+const { datatable } = await client.getNetworkData("NEM", ["energy"], {});
+```
+
+```python
+from openelectricity import OEClient
+
+client = OEClient()
+client.get_network_data("NEM", ["energy"], {})
+```
+</RequestExample>
+````
+
+Match rule: each fenced block's language token (`ts`, `python`, `go`, …) replaces the same-language panel tab. Languages not in `api.codeSamples.languages` are silently ignored. The inline `<RequestExample>` block hides itself once the panel picks up the override — no duplicate render.
+
+`<ResponseExample>` mirrors the pattern for response previews.
+
+### Spec-side samples (`x-codeSamples`)
+
+If your spec already carries `x-codeSamples` (or the legacy `x-code-samples`), Tangly picks them up automatically:
+
+```yaml
+paths:
+  /v4/data/network/{network_code}:
+    get:
+      x-codeSamples:
+        - lang: typescript
+          label: TypeScript SDK
+          source: |
+            import { OEClient } from "openelectricity";
+            const c = new OEClient();
+            await c.getNetworkData("NEM", ["energy"], {});
+```
+
+Precedence: `<RequestExample>` MDX overrides ▸ `x-codeSamples` ▸ autogen.
+
+### Hiding endpoints
+
+- `x-hidden: true` on an operation keeps the page reachable by URL but removes it from the sidebar.
+- `x-excluded: true` drops the page entirely.
+
+### Parameter pills
+
+Surface custom OpenAPI fields as pills next to the parameter name:
+
+```json
+{
+  "api": {
+    "params": {
+      "expanded": "all",
+      "post": ["readOnly", "deprecated"]
+    }
+  }
+}
+```
+
+`expanded: "all"` opens every parameter row by default; `post` lists field keys to render as small pills (any truthy value on the parameter or its schema is surfaced).
 
 ### Companion narrative
 

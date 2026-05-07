@@ -217,6 +217,29 @@ aiContext: short hint for AI consumers
 
 `title` is technically optional — falls back to humanized slug at render time. `check` warns on missing.
 
+## OpenAPI endpoint pages
+
+Pages with `openapi:` (or `api:` for companion-narrative) frontmatter switch to the **split layout** automatically: docs column on the left, sticky right-rail playground panel on the right (xl+). Single-column fallback below xl.
+
+What renders:
+
+- Method bubble + path (color-coded GET/POST/PUT/PATCH/DELETE — matches the sidebar pill)
+- Description
+- **Parameter sections**: `Path`, `Query`, `Header`, `Cookie` (each row expandable; `api.params.expanded: "all"` opens by default)
+- Request body schema tree (top-level fields)
+- **Tabbed responses by status code** (200 / 4xx / 5xx with status-color dots; schema tree per tab)
+- **Right-rail panel**: language tabs, `Send →` toggle, live response preview
+
+Default code-sample languages: `["curl", "typescript", "python"]`. Override via `api.codeSamples.languages`. Built-in generators: `curl`, `bash`, `shell`, `typescript`/`ts`, `javascript`/`js`, `python`/`py`, `go`. Mintlify-style `api.examples.*` is normalized to `api.codeSamples.*` at parse time.
+
+Per-endpoint custom samples: wrap fenced code blocks in `<RequestExample>` inside the endpoint MDX. The fence's language token (`ts`, `python`, `go`, …) replaces the same-language panel tab. Languages not in the configured list are silently ignored. Spec-side `x-codeSamples` (or `x-code-samples`) are also picked up automatically.
+
+Precedence: `<RequestExample>` ▸ `x-codeSamples` ▸ autogen.
+
+Hide endpoints from the sidebar with `x-hidden: true` (still URL-routable) or remove entirely with `x-excluded: true`.
+
+Full reference: `docs/guides/authoring/openapi.mdx`.
+
 ## Components (built-in MDX, no import)
 
 All 33 ship Mintlify-compatible names and render unmodified:
@@ -227,7 +250,7 @@ All 33 ship Mintlify-compatible names and render unmodified:
 - Trees: `FileTree` — nested Markdown list → directory tree. `**bold**` highlights, trailing text becomes a comment, `...` is a placeholder. Variants: `default` (icons + card), `terminal` (dark bg + ASCII connectors, with `chrome` for window dots), `ascii` (plain ASCII connectors, no card). Use this instead of fenced ASCII trees.
 - Tabs & Steps: `Tabs` + `Tab`, `Steps` + `Step`
 - Layout: `Frame`, `Accordion` + `AccordionGroup`, `Expandable`
-- API: `ParamField`, `ResponseField`, `RequestExample`, `ResponseExample`, `OpenApiEndpoint`, `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
+- API: `ParamField`, `ResponseField`, `RequestExample` (overrides panel tabs by language), `ResponseExample`, `OpenApiEndpoint` (split layout: docs left, sticky playground panel right at xl+), `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
 - Media: `Embed` (cross-page block reuse), `Video` (YouTube/Vimeo/mp4 with lazy iframe), `LightboxImage` (auto-wraps every inline `<img>`)
 - Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`
 
@@ -336,6 +359,9 @@ Five strategies (host the docs at `/docs` on an existing site): build-into-publi
 | Reusable snippet | `bun x tangly add snippet shared/disclaimer` |
 | Changelog entry | `bun x tangly add changelog 1.2.0` |
 | Wire OpenAPI to a page | Set `openapi:` in frontmatter (path or `file#/jsonpointer`) |
+| Override panel code samples | Wrap fenced blocks in `<RequestExample>` inside the endpoint MDX |
+| Configure code-sample languages | `api.codeSamples.languages: ["curl", "typescript", "python"]` in `docs.json` |
+| Hide an endpoint from sidebar | `x-hidden: true` on the operation (still routable). `x-excluded: true` removes entirely. |
 | Override a theme component | Drop replacement in `theme/` (see `docs/guides/custom-components.mdx`) |
 | Hide a page from prod | `draft: true` in frontmatter |
 | Show drafts in build | `TANGLY_INCLUDE_DRAFTS=1 bun x tangly build` |
