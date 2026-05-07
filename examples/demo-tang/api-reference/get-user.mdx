@@ -1,0 +1,19 @@
+---
+openapi: get /v1/users/{id}
+---
+
+<RequestExample>
+```ts
+import { Cipher } from "cipher";
+
+const cipher = new Cipher({ apiKey: process.env.CIPHER_API_KEY });
+const user = await cipher.users.get("8b2…");
+```
+
+```python
+from cipher import Cipher
+
+cipher = Cipher(api_key=os.environ["CIPHER_API_KEY"])
+user = cipher.users.get("8b2…")
+```
+</RequestExample>

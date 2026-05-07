@@ -25,10 +25,16 @@
       },
       {
         "tab": "API",
+        "openapi": "openapi.json",
         "groups": [
           {
             "group": "Reference",
-            "pages": ["api-reference/encrypt", "api-reference/decrypt"]
+            "pages": [
+              "api-reference/encrypt",
+              "api-reference/decrypt",
+              "api-reference/get-user",
+              "api-reference/create-user"
+            ]
           }
         ]
       }
@@ -37,6 +43,12 @@
   "appearance": {
     "readingTime": true,
     "readingProgress": true
+  },
+  "api": {
+    "openapi": "openapi.json",
+    "baseUrl": "https://api.example.com",
+    "auth": { "method": "bearer" },
+    "codeSamples": { "languages": ["curl", "typescript", "python"] }
   },
   "navbar": {
     "primary": { "type": "button", "label": "Sign up", "href": "https://example.com/signup" }

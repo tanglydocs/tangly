@@ -1,0 +1,94 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cipher API",
+    "version": "1.0.0",
+    "description": "Demo OpenAPI spec for Tangly's split endpoint layout."
+  },
+  "servers": [{ "url": "https://api.example.com" }],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": { "type": "http", "scheme": "bearer" }
+    }
+  },
+  "security": [{ "BearerAuth": [] }],
+  "paths": {
+    "/v1/users/{id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get user",
+        "description": "Fetch a single user by id.",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User id (UUID).",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of related resources to inline.",
+            "schema": { "type": "string", "example": "team" }
+          },
+          {
+            "name": "X-Trace-Id",
+            "in": "header",
+            "required": false,
+            "description": "Distributed trace id, opaque to the server.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "name"],
+                  "properties": {
+                    "id": { "type": "string", "description": "Stable id." },
+                    "name": { "type": "string", "description": "Display name." },
+                    "email": { "type": "string", "format": "email" },
+                    "teams": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "User not found." }
+        }
+      }
+    },
+    "/v1/users": {
+      "post": {
+        "operationId": "createUser",
+        "summary": "Create user",
+        "description": "Provision a new user.",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created." }
+        }
+      }
+    }
+  }
+}
