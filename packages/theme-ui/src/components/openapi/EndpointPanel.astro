@@ -1,0 +1,532 @@
+---
+import { Code } from "astro:components";
+import {
+  generateSample,
+  knownLanguage,
+  type Sample,
+  type SampleInputs,
+} from "../../lib/code-samples.ts";
+import { exampleFromSchema } from "./_example-from-schema.ts";
+import { languageIcon, shikiLang } from "./_lang-icon.ts";
+import type { ResolvedAuth } from "./_security.ts";
+import type { OpenApiOp } from "./_spec-loader.ts";
+
+export interface Props {
+  op: OpenApiOp;
+  method: string;
+  path: string;
+  baseUrl: string;
+  auth: ResolvedAuth;
+  /** Languages to render (in order). */
+  languages: string[];
+  /** Spec-level x-codeSamples (override autogen for the matching lang). */
+  specSamples?: Array<{ lang: string; label?: string; source: string }>;
+  /** "interactive" → Send button visible. "simple" → samples only. "hide" → no panel. */
+  playgroundMode?: "interactive" | "simple" | "hide";
+  /** include cookies + auth headers on cross-origin try-it requests when proxy=false. */
+  credentials?: boolean;
+  prefill?: boolean;
+  defaults?: "required" | "all";
+  /** Synthesized response example (already built from the response schema or fallback). */
+  responseExamplesByCode?: Record<string, unknown>;
+  /** Operation summary, shown as the request card title. */
+  title?: string;
+}
+
+const {
+  op,
+  method,
+  path,
+  baseUrl,
+  auth,
+  languages,
+  specSamples,
+  playgroundMode = "interactive",
+  credentials,
+  prefill,
+  defaults,
+  responseExamplesByCode,
+  title,
+} = Astro.props as Props;
+
+const sampleInputs: SampleInputs = {
+  method,
+  path,
+  baseUrl,
+  ...(op.parameters && { parameters: op.parameters }),
+  ...(op.requestBody && { requestBody: op.requestBody }),
+  ...(auth.method !== "none" && {
+    auth: { method: auth.method, ...(auth.name ? { name: auth.name } : {}) },
+  }),
+  ...(prefill !== undefined && { prefill }),
+  ...(defaults && { defaults }),
+};
+
+function buildSamples(): Sample[] {
+  const out: Sample[] = [];
+  const overridesByLang = new Map<string, Sample>();
+  for (const s of specSamples ?? []) {
+    overridesByLang.set(s.lang.toLowerCase(), {
+      lang: s.lang,
+      label: s.label ?? prettyLabel(s.lang),
+      source: s.source,
+    });
+  }
+  for (const lang of languages) {
+    const key = lang.toLowerCase();
+    const override = overridesByLang.get(key);
+    if (override) {
+      out.push(override);
+      continue;
+    }
+    if (knownLanguage(lang)) {
+      out.push(generateSample(lang, sampleInputs));
+    } else {
+      out.push({
+        lang,
+        label: prettyLabel(lang),
+        source: `# ${lang} sample not available — use <RequestExample>`,
+      });
+    }
+  }
+  return out;
+}
+
+function prettyLabel(lang: string): string {
+  switch (lang.toLowerCase()) {
+    case "curl":
+    case "bash":
+    case "shell":
+      return "cURL";
+    case "ts":
+    case "typescript":
+      return "TypeScript";
+    case "js":
+    case "javascript":
+      return "JavaScript";
+    case "py":
+    case "python":
+      return "Python";
+    case "go":
+      return "Go";
+    default:
+      return lang;
+  }
+}
+
+const samples = buildSamples();
+const formId = `tangly-tryit-${Math.random().toString(36).slice(2, 9)}`;
+const showTryIt = playgroundMode === "interactive";
+
+// Response cards: status code → example payload
+const responseCards = responseExamplesByCode
+  ? Object.entries(responseExamplesByCode).sort(([a], [b]) => a.localeCompare(b))
+  : [];
+
+function statusColor(code: string): string {
+  const n = parseInt(code, 10);
+  if (n >= 200 && n < 300) return "#10b981";
+  if (n >= 300 && n < 400) return "#0ea5e9";
+  if (n >= 400 && n < 500) return "#f59e0b";
+  if (n >= 500) return "#ef4444";
+  return "#71717a";
+}
+---
+
+{
+  playgroundMode !== "hide" ? (
+    <div
+      class="tangly-openapi-panel not-prose space-y-4"
+      data-tangly-api-panel
+      data-method={method.toLowerCase()}
+      data-path={path}
+      data-base-url={baseUrl}
+      data-auth-method={auth.method}
+      data-auth-name={auth.name ?? ""}
+      data-credentials={credentials ? "true" : "false"}
+    >
+      {/* ── Request card ──────────────────────────────────────────── */}
+      <section class="rounded-xl border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg-elevated,#fafafa)] dark:bg-zinc-900/40 overflow-hidden shadow-sm">
+        <header class="flex items-center gap-1 px-2 py-1.5 border-b border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)]">
+          <div role="tablist" class="flex items-center gap-0.5 min-w-0 overflow-x-auto">
+            {samples.map((s, i) => (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={i === 0 ? "true" : "false"}
+                data-tangly-sample-tab
+                data-lang={s.lang.toLowerCase()}
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-medium rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] aria-selected:bg-[var(--tangly-color-bg-elevated)] aria-selected:text-[var(--tangly-color-fg)] aria-selected:ring-1 aria-selected:ring-[var(--tangly-color-border)] shrink-0"
+                title={s.label}
+              >
+                <span class="opacity-80 inline-flex" aria-hidden="true" set:html={languageIcon(s.lang)} />
+                <span>{s.label}</span>
+              </button>
+            ))}
+          </div>
+          {showTryIt ? (
+            <button
+              type="button"
+              data-tangly-tryit-toggle
+              class="ml-auto inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md text-white shrink-0"
+              style="background: var(--tangly-color-primary, #ea580c)"
+              title="Send a request to this endpoint"
+            >
+              Send <span aria-hidden="true">→</span>
+            </button>
+          ) : null}
+        </header>
+        <div class="relative">
+          {samples.map((s, i) => (
+            <div
+              data-tangly-sample-pane
+              data-lang={s.lang.toLowerCase()}
+              aria-hidden={i === 0 ? "false" : "true"}
+              class="aria-hidden:hidden tangly-openapi-panel-code"
+            >
+              <Code
+                code={s.source}
+                lang={shikiLang(s.lang) as Parameters<typeof Code>[0]["lang"]}
+                wrap
+              />
+            </div>
+          ))}
+        </div>
+        {showTryIt ? (
+          <form
+            id={formId}
+            data-tangly-tryit
+            class="hidden border-t border-[var(--tangly-color-border)] p-3 space-y-3 text-sm bg-[var(--tangly-color-bg)]"
+          >
+            <label class="flex flex-col gap-1">
+              <span class="text-xs text-[var(--tangly-color-muted)]">Base URL</span>
+              <input
+                name="__baseUrl"
+                value={baseUrl}
+                class="px-2 py-1.5 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] font-mono text-xs text-[var(--tangly-color-fg)]"
+              />
+            </label>
+            {auth.method !== "none" ? (
+              <label class="flex flex-col gap-1">
+                <span class="text-xs text-[var(--tangly-color-muted)]">{auth.label}</span>
+                <input
+                  type="password"
+                  name="__auth"
+                  class="px-2 py-1.5 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] font-mono text-xs text-[var(--tangly-color-fg)]"
+                  placeholder="•••"
+                />
+                {auth.hint ? (
+                  <span class="text-[10px] text-[var(--tangly-color-muted)]">{auth.hint}</span>
+                ) : null}
+              </label>
+            ) : null}
+            {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
+              <fieldset class="border border-[var(--tangly-color-border)] rounded-md p-2 space-y-2">
+                <legend class="px-1 text-[10px] uppercase tracking-wider text-[var(--tangly-color-muted)]">
+                  Parameters
+                </legend>
+                {op.parameters.map((p) => (
+                  <label class="flex flex-col gap-0.5">
+                    <span class="text-xs text-[var(--tangly-color-fg)]">
+                      <code class="font-mono font-semibold">{p.name}</code>
+                      <span class="text-[var(--tangly-color-muted)]"> · {p.in ?? "query"}</span>
+                      {p.required ? <span class="text-rose-600 dark:text-rose-400"> required</span> : null}
+                    </span>
+                    <input
+                      name={p.name}
+                      data-in={p.in ?? "query"}
+                      class="px-2 py-1 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] font-mono text-xs text-[var(--tangly-color-fg)]"
+                    />
+                  </label>
+                ))}
+              </fieldset>
+            ) : null}
+            {op.requestBody ? (
+              <fieldset class="border border-[var(--tangly-color-border)] rounded-md p-2 space-y-2">
+                <legend class="px-1 text-[10px] uppercase tracking-wider text-[var(--tangly-color-muted)]">
+                  Request body
+                </legend>
+                <textarea
+                  name="__body"
+                  rows={5}
+                  class="w-full px-2 py-1 rounded-md border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] font-mono text-xs text-[var(--tangly-color-fg)]"
+                  placeholder='{ "key": "value" }'
+                />
+              </fieldset>
+            ) : null}
+            <button
+              type="submit"
+              class="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-white"
+              style="background: var(--tangly-color-primary, #ea580c)"
+            >
+              Send request
+            </button>
+          </form>
+        ) : null}
+        {/* Try-it response — replaces the sample on send */}
+        <pre
+          data-tangly-tryit-result
+          class="hidden m-0 max-h-96 overflow-auto p-3 text-xs border-t border-[var(--tangly-color-border)] bg-zinc-950 text-zinc-100"
+        />
+      </section>
+
+      {/* ── Response card ─────────────────────────────────────────── */}
+      {responseCards.length > 0 ? (
+        <section
+          data-tangly-response-card
+          class="rounded-xl border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg-elevated,#fafafa)] dark:bg-zinc-900/40 overflow-hidden shadow-sm"
+        >
+          <header class="flex items-center gap-1 px-2 py-1.5 border-b border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)]">
+            <div role="tablist" class="flex items-center gap-0.5 overflow-x-auto">
+              {responseCards.map(([code], i) => (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={i === 0 ? "true" : "false"}
+                  data-tangly-response-tab
+                  data-code={code}
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-mono font-semibold rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] aria-selected:text-[var(--tangly-color-fg)] aria-selected:bg-[var(--tangly-color-bg-elevated)] aria-selected:ring-1 aria-selected:ring-[var(--tangly-color-border)]"
+                >
+                  <span
+                    class="inline-block w-2 h-2 rounded-full"
+                    style={`background:${statusColor(code)}`}
+                  />
+                  {code}
+                </button>
+              ))}
+            </div>
+          </header>
+          <div class="relative">
+            {responseCards.map(([code, example], i) => (
+              <div
+                data-tangly-response-pane
+                data-code={code}
+                aria-hidden={i === 0 ? "false" : "true"}
+                class="aria-hidden:hidden tangly-openapi-panel-code"
+              >
+                <Code code={JSON.stringify(example, null, 2)} lang="json" wrap />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  ) : null
+}
+
+<style>
+  /*
+   * Astro's <Code> component renders <pre class="astro-code">. We only
+   * need to nudge spacing/scroll — Shiki provides the colors.
+   */
+  .tangly-openapi-panel .tangly-openapi-panel-code :global(.astro-code) {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-x: auto;
+    border-radius: 0;
+  }
+  .tangly-openapi-panel .tangly-openapi-panel-code :global(.astro-code code) {
+    font-family: var(--tangly-font-mono, ui-monospace, SFMono-Regular, monospace);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const ALIAS_MAP = {
+      ts: ["typescript", "ts"],
+      typescript: ["typescript", "ts"],
+      js: ["javascript", "js"],
+      javascript: ["javascript", "js"],
+      py: ["python", "py"],
+      python: ["python", "py"],
+      sh: ["curl", "bash", "shell", "sh"],
+      bash: ["curl", "bash", "shell", "sh"],
+      shell: ["curl", "bash", "shell", "sh"],
+      curl: ["curl", "bash", "shell", "sh"],
+      go: ["go"],
+      rb: ["ruby", "rb"],
+      ruby: ["ruby", "rb"],
+    };
+
+    document.querySelectorAll("[data-tangly-api-panel]").forEach((panel) => {
+      // ── Sample tab switching ─────────────────────────────────────
+      const sTabs = panel.querySelectorAll("[data-tangly-sample-tab]");
+      const sPanes = panel.querySelectorAll("[data-tangly-sample-pane]");
+      sTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const lang = tab.dataset.lang;
+          sTabs.forEach((t) => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+          sPanes.forEach((p) =>
+            p.setAttribute("aria-hidden", p.dataset.lang === lang ? "false" : "true"),
+          );
+        });
+      });
+
+      // ── Response tab switching ───────────────────────────────────
+      const rTabs = panel.querySelectorAll("[data-tangly-response-tab]");
+      const rPanes = panel.querySelectorAll("[data-tangly-response-pane]");
+      rTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const code = tab.dataset.code;
+          rTabs.forEach((t) => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+          rPanes.forEach((p) =>
+            p.setAttribute("aria-hidden", p.dataset.code === code ? "false" : "true"),
+          );
+        });
+      });
+
+      // ── Try-it form toggle ───────────────────────────────────────
+      const toggle = panel.querySelector("[data-tangly-tryit-toggle]");
+      const form = panel.querySelector("[data-tangly-tryit]");
+      if (toggle && form) {
+        toggle.addEventListener("click", () => form.classList.toggle("hidden"));
+      }
+
+      // ── <RequestExample> override hoist ──────────────────────────
+      // Replace pane text content (no innerHTML) when a hidden override
+      // div is present for a known lang.
+      document.querySelectorAll("[data-tangly-request-override]").forEach((tpl) => {
+        const lang = (tpl.dataset.lang || "").toLowerCase();
+        if (!lang) return;
+        const aliases = ALIAS_MAP[lang] || [lang];
+        for (const a of aliases) {
+          const pane = panel.querySelector(
+            '[data-tangly-sample-pane][data-lang="' + a + '"]',
+          );
+          if (pane) {
+            // Astro's <Code> renders <pre><code>...</code></pre>. Replace
+            // the code block's textContent so the user's override shows
+            // as plain text (no SSR highlight, but still readable).
+            const codeEl = pane.querySelector("pre code") || pane.querySelector("code");
+            if (codeEl) codeEl.textContent = tpl.textContent || "";
+            break;
+          }
+        }
+      });
+    });
+
+    // ── Try-it submit handler ───────────────────────────────────────
+    document.querySelectorAll("[data-tangly-tryit]").forEach((form) => {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const panel = form.closest("[data-tangly-api-panel]");
+        if (!panel) return;
+        const out = panel.querySelector("[data-tangly-tryit-result]");
+        const method = panel.dataset.method;
+        let path = panel.dataset.path;
+        const base = form.querySelector("input[name='__baseUrl']").value || "";
+        const authMethod = panel.dataset.authMethod;
+        const authName = panel.dataset.authName;
+        const credentialsOpt = panel.dataset.credentials === "true";
+        const authValue = form.querySelector("input[name='__auth']")?.value ?? "";
+
+        const headers = { Accept: "application/json" };
+        const queryParams = new URLSearchParams();
+
+        form.querySelectorAll("input[data-in]").forEach((input) => {
+          const where = input.dataset.in;
+          const name = input.name;
+          const value = input.value;
+          if (!value) return;
+          if (where === "path") {
+            path = path.replace("{" + name + "}", encodeURIComponent(value));
+          } else if (where === "query") {
+            queryParams.set(name, value);
+          } else if (where === "header") {
+            headers[name] = value;
+          }
+        });
+
+        if (authMethod === "bearer" && authValue) {
+          headers.Authorization = "Bearer " + authValue;
+        } else if (authMethod === "basic" && authValue) {
+          headers.Authorization = "Basic " + btoa(authValue);
+        } else if (authMethod === "key" && authValue) {
+          headers[authName || "X-API-Key"] = authValue;
+        }
+
+        const qs = queryParams.toString();
+        const url = base.replace(/\/+$/, "") + path + (qs ? "?" + qs : "");
+
+        const bodyTextarea = form.querySelector("textarea[name='__body']");
+        const upMethod = method.toUpperCase();
+        const allowsBody = !["GET", "HEAD"].includes(upMethod);
+        const fetchInit = { method: upMethod, headers, mode: "cors" };
+        if (credentialsOpt) fetchInit.credentials = "include";
+        if (bodyTextarea && allowsBody && bodyTextarea.value.trim()) {
+          try {
+            JSON.parse(bodyTextarea.value);
+            fetchInit.body = bodyTextarea.value;
+            headers["Content-Type"] = "application/json";
+          } catch (parseErr) {
+            out.classList.remove("hidden");
+            out.textContent = "✗ Body must be valid JSON: " + parseErr.message;
+            return;
+          }
+        }
+
+        out.classList.remove("hidden");
+        out.textContent = "→ " + upMethod + " " + url + "\n\nLoading…";
+        try {
+          const res = await fetch(url, fetchInit);
+          const text = await res.text();
+          renderResponse(out, res.status, res.statusText, text);
+        } catch (err) {
+          out.textContent =
+            "✗ " +
+            err.message +
+            "\n\n(CORS may block direct browser calls; configure a server-side proxy.)";
+        }
+      });
+    });
+
+    function renderResponse(host, status, statusText, raw) {
+      host.textContent = "";
+      host.appendChild(document.createTextNode("← " + status + " " + statusText + "\n\n"));
+      let body = raw;
+      let isJson = false;
+      try {
+        body = JSON.stringify(JSON.parse(raw), null, 2);
+        isJson = true;
+      } catch (_) {}
+      if (!isJson) {
+        host.appendChild(document.createTextNode(body));
+        return;
+      }
+      const tokenRe =
+        /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|([\{\}\[\],])/g;
+      let last = 0;
+      for (const m of body.matchAll(tokenRe)) {
+        if (m.index > last) host.appendChild(document.createTextNode(body.slice(last, m.index)));
+        const span = document.createElement("span");
+        if (m[1] !== undefined) {
+          span.className = m[2] !== undefined ? "tangly-json-key" : "tangly-json-string";
+          span.textContent = m[2] !== undefined ? m[1] + m[2] : m[1];
+        } else if (m[3] !== undefined) {
+          span.className = "tangly-json-bool";
+          span.textContent = m[3];
+        } else if (m[4] !== undefined) {
+          span.className = "tangly-json-num";
+          span.textContent = m[4];
+        } else {
+          span.className = "tangly-json-punc";
+          span.textContent = m[5];
+        }
+        host.appendChild(span);
+        last = m.index + m[0].length;
+      }
+      if (last < body.length) host.appendChild(document.createTextNode(body.slice(last)));
+    }
+  })();
+</script>
+
+<style>
+  .tangly-openapi-panel pre[data-tangly-tryit-result] { color: #e4e4e7; }
+  .tangly-openapi-panel .tangly-json-key { color: #93c5fd; }
+  .tangly-openapi-panel .tangly-json-string { color: #fdba74; }
+  .tangly-openapi-panel .tangly-json-num { color: #c4b5fd; }
+  .tangly-openapi-panel .tangly-json-bool { color: #f9a8d4; }
+  .tangly-openapi-panel .tangly-json-punc { color: #71717a; }
+</style>

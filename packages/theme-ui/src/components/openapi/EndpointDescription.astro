@@ -1,0 +1,11 @@
+---
+export interface Props {
+  description?: string;
+}
+
+const { description } = Astro.props as Props;
+---
+
+{description ? (
+  <p class="text-zinc-700 dark:text-zinc-300 mb-6 leading-relaxed">{description}</p>
+) : null}

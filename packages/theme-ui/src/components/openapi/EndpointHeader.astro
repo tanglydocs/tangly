@@ -1,0 +1,62 @@
+---
+import { resolveMethodColor } from "../_openapi.ts";
+
+export interface Props {
+  method: string;
+  path: string;
+  baseUrl?: string;
+  /** When true, render `${baseUrl}${path}`. Else just `${path}`. */
+  showFullUrl?: boolean;
+}
+
+const { method, path, baseUrl, showFullUrl } = Astro.props as Props;
+const color = resolveMethodColor(method);
+
+// Split a URL into segments so `{param}` placeholders can be styled as
+// chips. We use String.prototype.split with a capturing group so the
+// param names land in the resulting array between the literal slices.
+type Segment =
+  | { kind: "literal"; text: string }
+  | { kind: "param"; name: string };
+
+function splitPath(p: string): Segment[] {
+  const parts = p.split(/\{([^{}]+)\}/g);
+  const out: Segment[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    const text = parts[i] ?? "";
+    if (i % 2 === 0) {
+      if (text.length > 0) out.push({ kind: "literal", text });
+    } else {
+      out.push({ kind: "param", name: text });
+    }
+  }
+  return out;
+}
+
+const base = showFullUrl && baseUrl ? baseUrl.replace(/\/+$/, "") : "";
+const segments = splitPath(path);
+---
+
+<div class="tangly-openapi-header flex items-center gap-3 mb-4 not-prose flex-wrap">
+  <span
+    class="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase text-white"
+    style={`background:${color}`}
+  >
+    {method.toUpperCase()}
+  </span>
+  <code class="text-sm font-mono text-zinc-800 dark:text-zinc-200 break-all">
+    {base ? <span>{base}</span> : null}
+    {segments.map((seg) =>
+      seg.kind === "literal" ? (
+        <span>{seg.text}</span>
+      ) : (
+        <span
+          class="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-xs font-mono"
+          title={`Path parameter: ${seg.name}`}
+        >
+          {seg.name}
+        </span>
+      ),
+    )}
+  </code>
+</div>

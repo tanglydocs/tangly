@@ -1,0 +1,104 @@
+---
+import type { OpenApiOp } from "./_spec-loader.ts";
+import { describeSchema } from "./_schema-describe.ts";
+
+export interface Props {
+  parameters: NonNullable<OpenApiOp["parameters"]>;
+  /** Extra fields to surface as pills next to the param name. */
+  extraPills?: string[];
+}
+
+const { parameters, extraPills } = Astro.props as Props;
+
+type Param = NonNullable<OpenApiOp["parameters"]>[number];
+
+const SECTIONS: Array<{ key: "path" | "query" | "header" | "cookie"; title: string }> = [
+  { key: "path", title: "Path parameters" },
+  { key: "query", title: "Query parameters" },
+  { key: "header", title: "Header parameters" },
+  { key: "cookie", title: "Cookie parameters" },
+];
+
+function bucket(p: Param): "path" | "query" | "header" | "cookie" {
+  const v = (p.in ?? "query").toLowerCase();
+  if (v === "path" || v === "query" || v === "header" || v === "cookie") return v;
+  return "query";
+}
+
+const grouped = new Map<string, Param[]>();
+for (const p of parameters) {
+  const k = bucket(p);
+  const arr = grouped.get(k) ?? [];
+  arr.push(p);
+  grouped.set(k, arr);
+}
+
+function readPill(p: Param, key: string): string | undefined {
+  const v =
+    (p.schema as Record<string, unknown> | undefined)?.[key] ??
+    (p as unknown as Record<string, unknown>)[key];
+  if (v === undefined || v === false) return undefined;
+  return String(v);
+}
+---
+
+<div class="tangly-openapi-params space-y-8 not-prose">
+  {SECTIONS.map((section) => {
+    const items = grouped.get(section.key);
+    if (!items || items.length === 0) return null;
+    return (
+      <section>
+        <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-3">{section.title}</h3>
+        <div class="divide-y divide-zinc-100 dark:divide-zinc-800 border-y border-zinc-100 dark:border-zinc-800">
+          {items.map((p) => {
+            const info = describeSchema(p.schema);
+            // Param-level description wins for the headline; fall back to schema description.
+            const headline = p.description ?? info.description;
+            return (
+              <div class="py-3">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{p.name}</code>
+                  <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{info.typeLabel}</span>
+                  {p.required ? (
+                    <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+                  ) : null}
+                  {info.defaultValue !== undefined ? (
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{info.defaultValue}</code></span>
+                  ) : null}
+                  {extraPills?.map((key) => {
+                    const v = readPill(p, key);
+                    if (v === undefined) return null;
+                    return (
+                      <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                        {key}{v !== "true" ? `: ${v}` : ""}
+                      </span>
+                    );
+                  })}
+                </div>
+                {headline ? (
+                  <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">{headline}</p>
+                ) : null}
+                {/* Inner-schema description (e.g. enum doc on items.$ref.description),
+                    only when distinct from the headline so we don't duplicate. */}
+                {info.innerDescription && info.innerDescription !== headline ? (
+                  <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line mt-2">{info.innerDescription}</p>
+                ) : null}
+                {info.enumValues && info.enumValues.length > 0 ? (
+                  <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-2">
+                    <span class="font-medium">Available options:</span>{" "}
+                    <span class="font-mono">{info.enumValues.join(", ")}</span>
+                  </p>
+                ) : null}
+                {p.example !== undefined ? (
+                  <p class="text-xs text-zinc-500 mt-1">
+                    Example: <code class="font-mono text-zinc-700 dark:text-zinc-300">{String(p.example)}</code>
+                  </p>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  })}
+</div>

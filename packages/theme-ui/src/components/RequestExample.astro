@@ -1,7 +1,26 @@
 ---
-export interface Props {}
+/**
+ * Renders an inline "Request example" block on regular pages, AND emits a
+ * hidden `<template data-tangly-request-override>` per fenced code child
+ * so that on API/OpenAPI pages the right-rail panel can hoist the
+ * matching language tab. The template is removed (and the inline block
+ * hidden) only when the page actually has a panel — see
+ * `EndpointPanel.astro`'s hoist script.
+ */
+
+export interface Props {
+  /** Optional grouping name; reserved for future per-endpoint filtering. */
+  name?: string;
+}
+
+const { name } = Astro.props as Props;
 ---
-<div class="tangly-request-example my-4 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+
+<div
+  class="tangly-request-example my-4 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900"
+  data-tangly-request-example
+  data-name={name ?? ""}
+>
   <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
     Request example
   </div>
@@ -9,3 +28,86 @@ export interface Props {}
     <slot />
   </div>
 </div>
+
+{/*
+  Hoist signal: inline script harvests every `<pre><code class="language-X">`
+  inside the wrapper above and emits a hidden `<template>` per language,
+  carrying the raw text. EndpointPanel's hoist routine reads these.
+*/}
+<script is:inline>
+  (function () {
+    const ALIAS_MAP = {
+      ts: ["typescript", "ts"],
+      typescript: ["typescript", "ts"],
+      js: ["javascript", "js"],
+      javascript: ["javascript", "js"],
+      py: ["python", "py"],
+      python: ["python", "py"],
+      sh: ["curl", "bash", "shell", "sh"],
+      bash: ["curl", "bash", "shell", "sh"],
+      shell: ["curl", "bash", "shell", "sh"],
+      curl: ["curl", "bash", "shell", "sh"],
+      go: ["go"],
+      rb: ["ruby", "rb"],
+      ruby: ["ruby", "rb"],
+    };
+
+    function extractLang(figureOrCode) {
+      const figLang = figureOrCode.closest?.("[data-tangly-code]")?.querySelector(".tangly-code-lang");
+      if (figLang?.textContent) return figLang.textContent.trim().toLowerCase();
+      if (figureOrCode.classList) {
+        const cls = Array.from(figureOrCode.classList).find((c) => c.startsWith("language-"));
+        if (cls) return cls.slice("language-".length).toLowerCase();
+      }
+      return "";
+    }
+
+    function injectIntoPanels(lang, source) {
+      const aliases = ALIAS_MAP[lang] || [lang];
+      const panels = document.querySelectorAll("[data-tangly-api-panel]");
+      panels.forEach((panel) => {
+        for (const a of aliases) {
+          const pane = panel.querySelector('[data-tangly-sample-pane][data-lang="' + a + '"]');
+          if (pane) {
+            const codeEl = pane.querySelector("code") || pane.appendChild(document.createElement("code"));
+            codeEl.textContent = source;
+            return;
+          }
+        }
+      });
+    }
+
+    function hoistOnce() {
+      document
+        .querySelectorAll("[data-tangly-request-example]:not([data-tangly-hoisted])")
+        .forEach((host) => {
+          host.setAttribute("data-tangly-hoisted", "1");
+          const blocks = host.querySelectorAll("pre code, [data-tangly-code]");
+          const seen = new Set();
+          blocks.forEach((node) => {
+            const lang = extractLang(node);
+            if (!lang || seen.has(lang)) return;
+            seen.add(lang);
+            const code = node.tagName === "CODE" ? node : node.querySelector("pre code");
+            const source = code?.textContent || node.textContent || "";
+            // Stash for any panels that hydrate after this script runs.
+            const stash = document.createElement("div");
+            stash.setAttribute("data-tangly-request-override", "");
+            stash.setAttribute("data-lang", lang);
+            stash.style.display = "none";
+            stash.textContent = source;
+            host.parentNode?.insertBefore(stash, host);
+            // Also inject directly into any panel that already exists.
+            injectIntoPanels(lang, source);
+          });
+          host.classList.add("hidden");
+        });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", hoistOnce);
+    } else {
+      hoistOnce();
+    }
+  })();
+</script>

@@ -1,0 +1,154 @@
+---
+import type { OpenApiOp } from "./_spec-loader.ts";
+import { describeSchema } from "./_schema-describe.ts";
+import { exampleFromSchema } from "./_example-from-schema.ts";
+import { renderSchemaTree } from "./_schema-tree.ts";
+
+export interface Props {
+  responses: NonNullable<OpenApiOp["responses"]>;
+  /**
+   * Schema to fall back to when a response's schema is `{}`. Resolved
+   * by the dispatcher from `api.responseFallback` (a `#/components/...`
+   * pointer); already dereferenced.
+   */
+  fallbackSchema?: Record<string, unknown>;
+  /**
+   * When true, suppress the inline JSON example pre-block. The right
+   * rail panel renders its own response card; we don't want to
+   * duplicate the example.
+   */
+  hideExample?: boolean;
+}
+
+const { responses, fallbackSchema, hideExample } = Astro.props as Props;
+
+const codes = Object.keys(responses).sort();
+function statusColor(code: string): string {
+  const n = parseInt(code, 10);
+  if (n >= 200 && n < 300) return "#10b981";
+  if (n >= 300 && n < 400) return "#0ea5e9";
+  if (n >= 400 && n < 500) return "#f59e0b";
+  if (n >= 500) return "#ef4444";
+  return "#71717a";
+}
+
+const tabId = `tangly-responses-${Math.random().toString(36).slice(2, 9)}`;
+
+function effectiveSchema(code: string, raw: unknown): unknown {
+  // Empty `{}` → use fallbackSchema for 2xx codes only.
+  const isEmpty =
+    raw && typeof raw === "object" && Object.keys(raw as object).length === 0;
+  const is2xx = parseInt(code, 10) >= 200 && parseInt(code, 10) < 300;
+  if (isEmpty && is2xx && fallbackSchema) return fallbackSchema;
+  return raw;
+}
+
+interface Pane {
+  code: string;
+  description?: string;
+  tree: ReturnType<typeof renderSchemaTree>;
+  example: unknown;
+}
+
+const panes: Pane[] = codes.map((code) => {
+  const info = responses[code]!;
+  const json = info.content?.["application/json"];
+  const schema = effectiveSchema(code, json?.schema);
+  const tree = renderSchemaTree(schema);
+  const example = schema ? exampleFromSchema(schema) : null;
+  const out: Pane = {
+    code,
+    tree,
+    example,
+  };
+  if (info.description !== undefined) out.description = info.description;
+  return out;
+});
+---
+
+<section class="tangly-openapi-responses not-prose mt-10">
+  <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Responses</h3>
+  <div data-tangly-responses class="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
+    <div role="tablist" class="flex flex-wrap border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+      {panes.map((pane, i) => (
+        <button
+          type="button"
+          role="tab"
+          data-code={pane.code}
+          aria-selected={i === 0 ? "true" : "false"}
+          aria-controls={`${tabId}-${pane.code}`}
+          class="px-3 py-2 text-xs font-mono font-semibold border-r border-zinc-200 dark:border-zinc-800 last:border-r-0 hover:bg-zinc-100 dark:hover:bg-zinc-800 aria-selected:bg-white dark:aria-selected:bg-zinc-950 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 text-zinc-600 dark:text-zinc-400"
+          style={`--code-color:${statusColor(pane.code)}`}
+        >
+          <span class="inline-block w-2 h-2 rounded-full mr-2 align-middle" style={`background:${statusColor(pane.code)}`}></span>
+          {pane.code}
+        </button>
+      ))}
+    </div>
+    {panes.map((pane, i) => (
+      <div
+        role="tabpanel"
+        id={`${tabId}-${pane.code}`}
+        data-code={pane.code}
+        aria-hidden={i === 0 ? "false" : "true"}
+        class="p-4 aria-hidden:hidden"
+      >
+        {pane.description ? (
+          <p class="text-sm text-zinc-700 dark:text-zinc-300 mb-3 whitespace-pre-line">{pane.description}</p>
+        ) : null}
+
+        {pane.tree.length > 0 ? (
+          <div class="divide-y divide-zinc-100 dark:divide-zinc-800 border-y border-zinc-100 dark:border-zinc-800 mb-4">
+            {pane.tree.map((field) => {
+              const info = describeSchema(field.schema);
+              return (
+                <div class="py-3">
+                  <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{field.name}</code>
+                    <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{info.typeLabel}</span>
+                    {field.required ? (
+                      <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+                    ) : null}
+                    {info.defaultValue !== undefined ? (
+                      <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{info.defaultValue}</code></span>
+                    ) : null}
+                  </div>
+                  {info.description ? (
+                    <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">{info.description}</p>
+                  ) : null}
+                  {info.innerDescription && info.innerDescription !== info.description ? (
+                    <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line mt-2">{info.innerDescription}</p>
+                  ) : null}
+                  {info.enumValues && info.enumValues.length > 0 ? (
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-2">
+                      <span class="font-medium">Available options:</span>{" "}
+                      <span class="font-mono">{info.enumValues.join(", ")}</span>
+                    </p>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {!hideExample && pane.example !== null && pane.example !== undefined ? (
+          <pre class="m-0 max-h-96 overflow-auto p-3 rounded bg-zinc-950 text-zinc-100 text-xs"><code>{JSON.stringify(pane.example, null, 2)}</code></pre>
+        ) : null}
+      </div>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  document.querySelectorAll("[data-tangly-responses]").forEach((root) => {
+    const tabs = root.querySelectorAll("[role='tab']");
+    const panels = root.querySelectorAll("[role='tabpanel']");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const code = tab.dataset.code;
+        tabs.forEach((t) => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+        panels.forEach((p) => p.setAttribute("aria-hidden", p.dataset.code === code ? "false" : "true"));
+      });
+    });
+  });
+</script>

@@ -1,319 +1,173 @@
 ---
-import { resolveMethodColor } from "./_openapi.ts";
+import EndpointDescription from "./openapi/EndpointDescription.astro";
+import EndpointHeader from "./openapi/EndpointHeader.astro";
+import EndpointPanel from "./openapi/EndpointPanel.astro";
+import EndpointParameters from "./openapi/EndpointParameters.astro";
+import EndpointRequestBody from "./openapi/EndpointRequestBody.astro";
+import EndpointResponses from "./openapi/EndpointResponses.astro";
+import { exampleFromSchema } from "./openapi/_example-from-schema.ts";
+import { resolveAuth, type AuthMethod } from "./openapi/_security.ts";
+import { loadSpec } from "./openapi/_spec-loader.ts";
 
 /**
- * Renders a single OpenAPI endpoint with summary, parameters, responses,
- * and a try-it-out form.
+ * Renders one OpenAPI operation: docs column on the left, sticky
+ * playground panel on the right. The split layout activates when the
+ * page is in `mode: "api"`; on other pages it falls back to a
+ * single-column inline render.
  */
 export interface Props {
   spec: string;
   method: string;
   path: string;
   baseUrl?: string;
-  /** auth.method from docs.json `api.auth` */
-  authMethod?: "bearer" | "basic" | "key" | "none";
-  /** auth.name (header name when method=key) */
+  authMethod?: AuthMethod;
   authName?: string;
+  /** Languages to render in the right-rail panel. */
+  languages?: string[];
+  /** Spec-level x-codeSamples (passed through from manifest). */
+  specSamples?: Array<{ lang: string; label?: string; source: string }>;
+  /** Playground mode override (frontmatter `playground` or `api.playground.mode`). */
+  playgroundMode?: "interactive" | "simple" | "hide";
+  /** Forward credentials on cross-origin try-it requests. */
+  credentials?: boolean;
+  /** Default expansion state for parameter rows. */
+  paramsExpanded?: "all" | "closed";
+  /** OpenAPI fields to surface as pills. */
+  paramsPost?: string[];
+  /** Show full URL in header rather than just path. */
+  showFullUrl?: boolean;
+  /** Pull example values from spec into samples. Default true. */
+  prefill?: boolean;
+  /** Sample includes only required params or all of them. Default required. */
+  defaults?: "required" | "all";
+  /** Layout: inline (single column) or split (docs + panel grid). */
+  layout?: "inline" | "split";
+  /**
+   * Pre-resolved schema (already dereffed) used as the response shape
+   * when an operation's response has empty `schema: {}`. Threaded from
+   * `api.responseFallback` by the dispatcher.
+   */
+  fallbackResponseSchema?: Record<string, unknown>;
 }
 
-const { spec, method, path, baseUrl, authMethod, authName } = Astro.props as Props;
+const {
+  spec,
+  method,
+  path,
+  baseUrl,
+  authMethod,
+  authName,
+  languages = ["curl", "typescript", "python"],
+  specSamples,
+  playgroundMode = "interactive",
+  credentials,
+  paramsExpanded: _paramsExpanded,
+  paramsPost,
+  showFullUrl,
+  prefill,
+  defaults,
+  layout = "inline",
+  fallbackResponseSchema,
+} = Astro.props as Props;
+// `paramsExpanded` is no longer surfaced (rows always render expanded).
+void _paramsExpanded;
+
 const methodLower = method.toLowerCase();
-const methodColor = resolveMethodColor(methodLower);
+const { op, servers, securitySchemes, loadError } = await loadSpec(spec, methodLower, path);
 
-interface OpenApiOp {
-  summary?: string;
-  description?: string;
-  parameters?: Array<{
-    name: string;
-    in?: string;
-    description?: string;
-    required?: boolean;
-    schema?: { type?: string };
-  }>;
-  responses?: Record<string, { description?: string }>;
-  requestBody?: {
-    description?: string;
-    required?: boolean;
-    content?: Record<string, { schema?: unknown }>;
-  };
-}
+const effectiveBaseUrl = baseUrl ?? servers[0] ?? "";
+const auth = resolveAuth({
+  op,
+  schemes: securitySchemes,
+  ...(authMethod && { override: authMethod }),
+  ...(authName && { overrideName: authName }),
+});
 
-let op: OpenApiOp | null = null;
-let loadError: string | null = null;
-let resolvedServers: string[] = [];
+const isSplit = layout === "split" && playgroundMode !== "hide" && op !== null;
 
-try {
-  // Local-path-aware spec loading. Mirrors src/openapi/expand-spec.ts:
-  // http(s) → fetch; otherwise read from <userRoot>/<spec>.
-  let doc: {
-    paths?: Record<string, Record<string, OpenApiOp>>;
-    servers?: Array<{ url?: string }>;
-  } = {};
-  if (spec.startsWith("http://") || spec.startsWith("https://")) {
-    const res = await fetch(spec, { redirect: "follow" });
-    if (!res.ok) {
-      loadError = `${res.status} ${res.statusText}`;
-    } else {
-      doc = (await res.json()) as typeof doc;
+// Pre-compute response examples per code for the right-rail panel. The
+// fallbackResponseSchema substitutes for empty `{}` 2xx schemas.
+const responseExamplesByCode: Record<string, unknown> = {};
+if (op?.responses) {
+  for (const [code, info] of Object.entries(op.responses)) {
+    const json = info.content?.["application/json"];
+    let schema: unknown = json?.schema;
+    const isEmpty =
+      schema && typeof schema === "object" && Object.keys(schema as object).length === 0;
+    const is2xx = parseInt(code, 10) >= 200 && parseInt(code, 10) < 300;
+    if (isEmpty && is2xx && fallbackResponseSchema) schema = fallbackResponseSchema;
+    if (schema) {
+      const ex = exampleFromSchema(schema);
+      if (ex !== null && ex !== undefined) responseExamplesByCode[code] = ex;
     }
-  } else {
-    const userRoot = process.env.TANGLY_USER_ROOT ?? "";
-    const { readFile } = await import("node:fs/promises");
-    const { resolve } = await import("node:path");
-    const abs = resolve(userRoot, spec.replace(/^\/+/, ""));
-    const raw = await readFile(abs, "utf8");
-    doc = JSON.parse(raw) as typeof doc;
   }
-  op = doc.paths?.[path]?.[methodLower] ?? null;
-  if (!loadError && !op) {
-    loadError = `No operation found for ${methodLower.toUpperCase()} ${path}`;
-  }
-  resolvedServers = (doc.servers ?? [])
-    .map((s) => s.url ?? "")
-    .filter((u): u is string => u.length > 0);
-} catch (err) {
-  loadError = `Failed to load ${spec}: ${(err as Error).message}`;
 }
-
-// baseUrl prop wins; otherwise first server in the spec; otherwise empty.
-const effectiveBaseUrl = baseUrl ?? resolvedServers[0] ?? "";
-const formId = `tangly-openapi-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
-<div class="tangly-openapi-embed my-6">
-  <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-    <div class="px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-3">
-      <span
-        class="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase text-white"
-        style={`background:${methodColor}`}
-      >
-        {method.toUpperCase()}
-      </span>
-      <code class="text-sm font-mono text-zinc-800 dark:text-zinc-200">{path}</code>
+{loadError ? (
+  <p class="text-sm text-rose-500">{loadError}</p>
+) : op ? (
+  <div class={isSplit ? "tangly-openapi-split grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-api-panel-width,380px)] xl:gap-8" : ""}>
+    <div class="min-w-0">
+      <EndpointHeader
+        method={methodLower}
+        path={path}
+        baseUrl={effectiveBaseUrl}
+        showFullUrl={showFullUrl}
+      />
+      <EndpointDescription description={op.description} />
+      {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
+        <EndpointParameters parameters={op.parameters} extraPills={paramsPost} />
+      ) : null}
+      {op.requestBody ? (
+        <EndpointRequestBody requestBody={op.requestBody} />
+      ) : null}
+      {op.responses && Object.keys(op.responses).length > 0 ? (
+        <EndpointResponses
+          responses={op.responses}
+          {...(fallbackResponseSchema && { fallbackSchema: fallbackResponseSchema })}
+          {...(isSplit && { hideExample: true })}
+        />
+      ) : null}
     </div>
-
-    <div class="p-4 space-y-4">
-      {loadError ? (
-        <p class="text-sm text-rose-500">{loadError}</p>
-      ) : op ? (
-        <>
-          {op.summary ? <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{op.summary}</h3> : null}
-          {op.description ? <p class="text-sm text-zinc-700 dark:text-zinc-300">{op.description}</p> : null}
-
-          {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
-            <div>
-              <h4 class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-2">Parameters</h4>
-              <ul class="space-y-2 text-sm">
-                {op.parameters.map((p) => (
-                  <li class="flex flex-col gap-0.5">
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <code class="font-mono text-zinc-800 dark:text-zinc-200">{p.name}</code>
-                      {p.in ? <span class="text-xs text-zinc-500">({p.in})</span> : null}
-                      {p.required ? <span class="text-xs text-rose-500">required</span> : null}
-                      {p.schema?.type ? <span class="text-xs text-zinc-500">· {p.schema.type}</span> : null}
-                    </div>
-                    {p.description ? (
-                      <p class="text-zinc-600 dark:text-zinc-400 text-xs">{p.description}</p>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {op.responses && Object.keys(op.responses).length > 0 ? (
-            <div>
-              <h4 class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-2">Responses</h4>
-              <ul class="space-y-1 text-sm">
-                {Object.entries(op.responses).map(([code, info]) => (
-                  <li>
-                    <code class="font-mono mr-2">{code}</code>
-                    {info.description}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {/* Try-it-out */}
-          <details class="mt-2">
-            <summary class="cursor-pointer text-sm font-semibold text-[var(--tangly-color-primary)] select-none">
-              Try it
-            </summary>
-            <form
-              id={formId}
-              class="mt-3 space-y-3 text-sm"
-              data-tangly-tryit
-              data-method={methodLower}
-              data-path={path}
-              data-base-url={effectiveBaseUrl}
-              data-auth-method={authMethod ?? "none"}
-              data-auth-name={authName ?? ""}
-            >
-              <label class="flex flex-col gap-1">
-                <span class="text-xs text-zinc-500">Base URL</span>
-                <input
-                  name="__baseUrl"
-                  value={effectiveBaseUrl}
-                  class="px-2 py-1.5 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs"
-                  placeholder="https://api.example.com"
-                />
-              </label>
-
-              {authMethod && authMethod !== "none" ? (
-                <label class="flex flex-col gap-1">
-                  <span class="text-xs text-zinc-500">
-                    {authMethod === "bearer" ? "Bearer token" :
-                     authMethod === "basic" ? "Basic auth (user:pass)" :
-                     authMethod === "key" ? `API key (${authName ?? "X-API-Key"})` :
-                     "Auth value"}
-                  </span>
-                  <input
-                    type="password"
-                    name="__auth"
-                    class="px-2 py-1.5 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs"
-                    placeholder="•••"
-                  />
-                </label>
-              ) : null}
-
-              {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
-                <fieldset class="border border-zinc-200 dark:border-zinc-800 rounded p-2 space-y-2">
-                  <legend class="px-1 text-xs text-zinc-500">Parameters</legend>
-                  {op.parameters.map((p) => (
-                    <label class="flex flex-col gap-0.5">
-                      <span class="text-xs">
-                        <code class="font-mono">{p.name}</code>
-                        <span class="text-zinc-500"> · {p.in ?? "query"}</span>
-                        {p.required ? <span class="text-rose-500"> required</span> : null}
-                      </span>
-                      <input
-                        name={p.name}
-                        data-in={p.in ?? "query"}
-                        data-required={p.required ? "true" : "false"}
-                        class="px-2 py-1 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs"
-                      />
-                    </label>
-                  ))}
-                </fieldset>
-              ) : null}
-
-              {op.requestBody ? (
-                <fieldset class="border border-zinc-200 dark:border-zinc-800 rounded p-2 space-y-2">
-                  <legend class="px-1 text-xs text-zinc-500">
-                    Request body
-                    {op.requestBody.required ? <span class="text-rose-500"> · required</span> : null}
-                  </legend>
-                  {op.requestBody.description ? (
-                    <p class="text-xs text-zinc-600 dark:text-zinc-400">{op.requestBody.description}</p>
-                  ) : null}
-                  <textarea
-                    name="__body"
-                    rows={6}
-                    placeholder='{ "key": "value" }'
-                    class="w-full px-2 py-1 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 font-mono text-xs"
-                  ></textarea>
-                  <p class="text-xs text-zinc-500">
-                    JSON only. Sent as <code class="font-mono">application/json</code>.
-                  </p>
-                </fieldset>
-              ) : null}
-
-              <button
-                type="submit"
-                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-white"
-                style="background: var(--tangly-color-primary)"
-              >
-                Send
-              </button>
-
-              <pre
-                data-tangly-tryit-result
-                class="hidden mt-2 max-h-80 overflow-auto p-2 rounded bg-zinc-950 text-zinc-100 text-xs"
-              ></pre>
-            </form>
-          </details>
-        </>
-      ) : (
-        <p class="text-sm text-zinc-500">No data for this endpoint.</p>
-      )}
-    </div>
+    {isSplit ? (
+      <div class="xl:sticky xl:top-[calc(var(--tangly-topnav-height,56px)+1.5rem)] xl:self-start mt-6 xl:mt-0">
+        <EndpointPanel
+          op={op}
+          method={methodLower}
+          path={path}
+          baseUrl={effectiveBaseUrl}
+          auth={auth}
+          languages={languages}
+          {...(specSamples && { specSamples })}
+          playgroundMode={playgroundMode}
+          {...(credentials !== undefined && { credentials })}
+          {...(prefill !== undefined && { prefill })}
+          {...(defaults && { defaults })}
+          {...(op.summary && { title: op.summary })}
+          responseExamplesByCode={responseExamplesByCode}
+        />
+      </div>
+    ) : (
+      playgroundMode !== "hide" ? (
+        <div class="mt-6">
+          <EndpointPanel
+            op={op}
+            method={methodLower}
+            path={path}
+            baseUrl={effectiveBaseUrl}
+            auth={auth}
+            languages={languages}
+            {...(specSamples && { specSamples })}
+            playgroundMode={playgroundMode}
+            {...(credentials !== undefined && { credentials })}
+            {...(prefill !== undefined && { prefill })}
+            {...(defaults && { defaults })}
+          />
+        </div>
+      ) : null
+    )}
   </div>
-</div>
-
-<script is:inline>
-  document.querySelectorAll("[data-tangly-tryit]").forEach((form) => {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const f = e.currentTarget;
-      const out = f.querySelector("[data-tangly-tryit-result]");
-      const method = f.dataset.method;
-      let path = f.dataset.path;
-      const base = f.querySelector("input[name='__baseUrl']").value || "";
-      const authMethod = f.dataset.authMethod;
-      const authName = f.dataset.authName;
-      const authValue = f.querySelector("input[name='__auth']")?.value ?? "";
-
-      const headers = { Accept: "application/json" };
-      const queryParams = new URLSearchParams();
-
-      f.querySelectorAll("input[data-in]").forEach((input) => {
-        const where = input.dataset.in;
-        const name = input.name;
-        const value = input.value;
-        if (!value) return;
-        if (where === "path") {
-          path = path.replace(`{${name}}`, encodeURIComponent(value));
-        } else if (where === "query") {
-          queryParams.set(name, value);
-        } else if (where === "header") {
-          headers[name] = value;
-        }
-      });
-
-      if (authMethod === "bearer" && authValue) {
-        headers.Authorization = `Bearer ${authValue}`;
-      } else if (authMethod === "basic" && authValue) {
-        headers.Authorization = `Basic ${btoa(authValue)}`;
-      } else if (authMethod === "key" && authValue) {
-        headers[authName || "X-API-Key"] = authValue;
-      }
-
-      const qs = queryParams.toString();
-      const url = `${base.replace(/\/+$/, "")}${path}${qs ? "?" + qs : ""}`;
-
-      // Body editor: render only when op.requestBody exists; only send when
-      // the method allows a body. We assume application/json.
-      const bodyTextarea = f.querySelector("textarea[name='__body']");
-      const upMethod = method.toUpperCase();
-      const allowsBody = !["GET", "HEAD"].includes(upMethod);
-      const fetchInit = { method: upMethod, headers, mode: "cors" };
-      if (bodyTextarea && allowsBody && bodyTextarea.value.trim()) {
-        try {
-          // Validate JSON before sending so the user gets a clear error
-          // instead of a server-side 400.
-          JSON.parse(bodyTextarea.value);
-          fetchInit.body = bodyTextarea.value;
-          headers["Content-Type"] = "application/json";
-        } catch (parseErr) {
-          out.classList.remove("hidden");
-          out.textContent = `✗ Body must be valid JSON: ${parseErr.message}`;
-          return;
-        }
-      }
-
-      out.classList.remove("hidden");
-      out.textContent = `→ ${upMethod} ${url}\n\nLoading…`;
-
-      try {
-        const res = await fetch(url, fetchInit);
-        const text = await res.text();
-        let pretty = text;
-        try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch {}
-        out.textContent = `← ${res.status} ${res.statusText}\n\n${pretty}`;
-      } catch (err) {
-        out.textContent = `✗ ${err.message}\n\n(Note: CORS may block direct browser calls; configure server-side proxy for production.)`;
-      }
-    });
-  });
-</script>
+) : (
+  <p class="text-sm text-zinc-500">No data for this endpoint.</p>
+)}
