@@ -13,6 +13,7 @@
 <p align="center">
   <a href="https://tangly.dev">website</a> ·
   <a href="https://docs.tangly.dev">docs</a> ·
+  <a href="https://docs.tangly.dev/changelog">changelog</a> ·
   <a href="https://examples.tangly.dev">examples</a> ·
   <a href="https://www.npmjs.com/package/tangly">npm</a>
 </p>
