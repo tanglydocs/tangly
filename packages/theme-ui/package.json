@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-ui",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "description": "Shared UI library for Tangly themes. Holds Layout, PageShell, Sidebar, TopNav, Footer, prose styles, and all MDX components.",
   "keywords": [
     "docs",
