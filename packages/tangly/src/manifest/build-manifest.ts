@@ -4,6 +4,7 @@ import { parseDocsJson } from "@tanglydocs/schema";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
+import { applyOpenApiOverride } from "../openapi/resolve-source.js";
 import { resolveEditUrl } from "./git-meta.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
@@ -191,6 +192,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   // `openapi: METHOD path`; the runtime catch-all renders them via
   // OpenApiEndpoint just like a hand-authored page.
   try {
+    applyOpenApiOverride(config, navigation.tabs);
     const openapi = await buildOpenApiPages({
       config,
       tabs: navigation.tabs,

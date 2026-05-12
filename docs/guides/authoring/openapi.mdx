@@ -24,6 +24,28 @@ In `docs.json`:
 
 Tangly fetches the spec at build time. `openapi` accepts a URL, a local path (relative to project root), or an array of either.
 
+### Dev override
+
+Set `TANGLY_OPENAPI_URL` to point Tangly at a different spec without editing `docs.json`. Useful for rendering docs against a dev/staging API while keeping prod config untouched.
+
+```bash
+TANGLY_OPENAPI_URL=https://api.dev.example.com/openapi.json tangly dev
+```
+
+With taskmux, add it to the task env in `taskmux.toml`:
+
+```toml
+[tasks.docs]
+env = { TANGLY_OPENAPI_URL = "https://api.dev.example.com/openapi.json" }
+```
+
+Rules:
+
+- Unset → fallback to `api.openapi` in `docs.json`. Prod stays unchanged.
+- Global: replaces every OpenAPI source in the manifest (top-level + per-tab) with the override.
+- Mode-agnostic: applies to `dev`, `preview`, and `build` if the var is exported. Don't set it in prod CI unless you mean to.
+- Tangly logs `[tangly] OpenAPI source overridden via TANGLY_OPENAPI_URL=<url>` on startup so the override is never silent.
+
 ### Viewer choice
 
 `viewer` selects the rendering engine:
