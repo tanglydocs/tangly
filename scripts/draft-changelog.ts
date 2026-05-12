@@ -190,6 +190,13 @@ function inferTags(commits: Commit[], changesets: ChangesetEntry[]): string[] {
   return [...tags].toSorted();
 }
 
+// MDX treats `<` adjacent to non-space as the start of a JSX tag and `{` as an
+// expression. Commit subjects like `HMR <250ms` or `{ foo }` would break the
+// build. Escape conservatively; rendered output reads the same.
+function escapeMdx(s: string): string {
+  return s.replace(/</g, "&lt;").replace(/\{/g, "&#123;");
+}
+
 function linkifyCommit(c: Commit, repo: string): string {
   const baseUrl = `https://github.com/${repo}`;
   const refs: string[] = [];
@@ -199,7 +206,7 @@ function linkifyCommit(c: Commit, repo: string): string {
   }
   refs.push(`[\`${c.short}\`](${baseUrl}/commit/${c.full})`);
   const prefix = c.type ? (c.scope ? `${c.type}(${c.scope}): ` : `${c.type}: `) : "";
-  return `- ${prefix}${c.subject} (${refs.join(", ")})`;
+  return `- ${prefix}${escapeMdx(c.subject)} (${refs.join(", ")})`;
 }
 
 function groupCommits(commits: Commit[]): Map<string, Commit[]> {
