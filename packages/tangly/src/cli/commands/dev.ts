@@ -5,6 +5,7 @@ import pc from "picocolors";
 import { VERSION } from "../../index.js";
 import { buildManifest } from "../../manifest/index.js";
 import { printBanner } from "../banner.js";
+import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 import { findCloudflaredBin, startCloudflaredTunnel } from "../tunnel.js";
 
@@ -53,6 +54,8 @@ export const devCommand = defineCommand({
   async run({ args }) {
     const userRoot = resolve(args.root);
     const configPath = resolve(userRoot, args.config);
+
+    loadDotenv(userRoot);
 
     if (!existsSync(configPath)) {
       console.error(pc.red(`✗ Could not find ${args.config} at ${userRoot}`));

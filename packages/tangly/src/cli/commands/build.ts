@@ -9,6 +9,7 @@ import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
 import { buildManifest } from "../../manifest/index.js";
+import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 
 export const buildCommand = defineCommand({
@@ -50,6 +51,8 @@ export const buildCommand = defineCommand({
   async run({ args }) {
     const userRoot = resolve(args.root);
     const outDir = resolve(userRoot, args.out);
+
+    loadDotenv(userRoot);
 
     const adapter = args.adapter ?? autoDetectAdapter(userRoot);
     const validAdapters = ["vercel", "cloudflare", "node", "static"] as const;

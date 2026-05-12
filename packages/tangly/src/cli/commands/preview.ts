@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
+import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 
 export const previewCommand = defineCommand({
@@ -28,6 +29,8 @@ export const previewCommand = defineCommand({
     const userRoot = resolve(args.root);
     const outDir = resolve(userRoot, args.out);
     const port = Number(args.port);
+
+    loadDotenv(userRoot);
 
     process.env.TANGLY_USER_ROOT = userRoot;
     const runtimeDir = getRuntimeDir();

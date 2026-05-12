@@ -32,6 +32,13 @@ Set `TANGLY_OPENAPI_URL` to point Tangly at a different spec without editing `do
 TANGLY_OPENAPI_URL=https://api.dev.example.com/openapi.json tangly dev
 ```
 
+Or drop it in `.env.local` at the project root. `tangly dev`, `tangly build`, and `tangly preview` load `.env.local` then `.env` on startup and log the files they pick up. Shell-exported values still win over file values.
+
+```bash
+# .env.local (gitignored)
+TANGLY_OPENAPI_URL=https://api.dev.example.com/openapi.json
+```
+
 With taskmux, add it to the task env in `taskmux.toml`:
 
 ```toml
