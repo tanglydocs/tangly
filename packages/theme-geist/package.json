@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-geist",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Geist Tangly theme. Modern dev-tool aesthetic (Vercel/Linear/Stripe family). Hairline borders, mono UI labels, restrained grayscale, near-black/white CTAs. UI shell from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
