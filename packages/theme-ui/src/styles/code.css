@@ -35,6 +35,11 @@
   margin: 0;
   padding: 0.875rem 1rem;
   background: transparent !important;
+  /* The figure (or the CodeGroup container) owns the border + radius. Reset
+   * the border/radius prose.css gives every <pre> so the code body doesn't
+   * double up the border or round its top corners under the header/tabs. */
+  border: 0;
+  border-radius: 0;
   font-size: 0.875rem;
   line-height: 1.55;
   overflow-x: auto;
@@ -119,6 +124,30 @@
 
 .tangly-code-copy-done {
   color: var(--tangly-color-primary, #16a34a);
+}
+
+/* Copy button glyphs: clipboard for "Copy", check for "Copied". Masked with
+ * currentColor so the check picks up the primary "Copied" color for free. */
+.tangly-code-copy-idle,
+.tangly-code-copy-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.tangly-code-copy-idle::before,
+.tangly-code-copy-done::before {
+  content: "";
+  width: 0.9em;
+  height: 0.9em;
+  background: currentColor;
+  -webkit-mask: var(--tangly-copy-glyph) center / contain no-repeat;
+  mask: var(--tangly-copy-glyph) center / contain no-repeat;
+}
+.tangly-code-copy-idle::before {
+  --tangly-copy-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E");
+}
+.tangly-code-copy-done::before {
+  --tangly-copy-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
 }
 
 /* Show copy button without header (no title) — float top-right of pre. */

@@ -23,7 +23,7 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
   data-code-group={groupId}
   data-code-group-name={name || undefined}
 >
-  <div class="tangly-code-tabs flex items-center gap-1 px-2 pt-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div>
+  <div class="tangly-code-tabs flex items-center gap-1 px-2 border-b border-zinc-200 dark:border-zinc-800 overflow-x-auto" role="tablist"></div>
   <div class="tangly-code-panels"><slot /></div>
 </div>
 <script is:inline define:vars={{ groupId, name }}>
@@ -61,7 +61,7 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
       btn.textContent = label;
       btn.setAttribute("role", "tab");
       btn.className =
-        "px-3 py-1.5 text-xs font-medium rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors";
+        "px-3 py-2 text-[13px] font-medium border-b-2 border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors whitespace-nowrap";
       btn.dataset.idx = String(i);
       btn.addEventListener("click", () => {
         activate(i);
@@ -78,9 +78,11 @@ const groupId = `cg-${Math.random().toString(36).slice(2, 9)}`;
       Array.from(tabsBar.children).forEach((b, i) => {
         const btn = b;
         if (i === idx) {
-          btn.classList.add("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+          btn.classList.add("border-zinc-900", "dark:border-zinc-100", "text-zinc-900", "dark:text-zinc-100");
+          btn.classList.remove("border-transparent");
         } else {
-          btn.classList.remove("bg-white", "dark:bg-zinc-800", "text-zinc-900", "dark:text-zinc-100", "shadow-sm");
+          btn.classList.remove("border-zinc-900", "dark:border-zinc-100", "text-zinc-900", "dark:text-zinc-100");
+          btn.classList.add("border-transparent");
         }
       });
       blocks.forEach((b, i) => {
