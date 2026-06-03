@@ -184,6 +184,39 @@ const bannerType = banner?.type ?? "info";
       >
         <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
       </aside>
+      <script is:inline>
+        // Anchor the sidebar to the active page across MPA navigations. Each
+        // nav click is a full page load, so the sidebar's scrollTop resets to
+        // 0 and buries the current page. Restore the prior scroll position and
+        // keep the active link in view (with buffer). Placed right after the
+        // sidebar so it runs before paint — no visible top->position jump.
+        (() => {
+          const KEY = "tangly:sidebar-scroll";
+          const el = document.getElementById("tangly-sidebar");
+          if (!el) return;
+          let restored = false;
+          try {
+            const saved = sessionStorage.getItem(KEY);
+            if (saved !== null) { el.scrollTop = parseFloat(saved) || 0; restored = true; }
+          } catch {}
+          const active = el.querySelector('[data-active="true"]');
+          if (active) {
+            const buffer = 96;
+            const top = active.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop;
+            const bottom = top + active.offsetHeight;
+            const inView = top >= el.scrollTop + 8 && bottom <= el.scrollTop + el.clientHeight - 8;
+            if (!restored || !inView) el.scrollTop = Math.max(0, top - buffer);
+          }
+          let raf = 0;
+          el.addEventListener("scroll", () => {
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+              raf = 0;
+              try { sessionStorage.setItem(KEY, String(el.scrollTop)); } catch {}
+            });
+          }, { passive: true });
+        })();
+      </script>
       <main
         class="min-w-0 px-4 sm:px-6 lg:px-10 py-8"
         data-pagefind-body
@@ -219,7 +252,15 @@ const bannerType = banner?.type ?? "info";
       (() => {
         const drawer = document.getElementById("tangly-drawer");
         if (!drawer) return;
-        const open = () => { drawer.classList.remove("hidden"); drawer.dataset.state = "open"; };
+        const open = () => {
+          drawer.classList.remove("hidden");
+          drawer.dataset.state = "open";
+          // Bring the active link into view in the drawer too (it's display:none
+          // until now, so this can't run before paint).
+          const sc = drawer.querySelector(".tangly-scroll");
+          const a = sc && sc.querySelector('[data-active="true"]');
+          if (sc && a) sc.scrollTop = Math.max(0, a.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 96);
+        };
         const close = () => { drawer.classList.add("hidden"); drawer.dataset.state = "closed"; };
         document.addEventListener("tangly:toggle-sidebar", () => {
           drawer.dataset.state === "open" ? close() : open();
