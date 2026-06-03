@@ -180,7 +180,7 @@ const bannerType = banner?.type ?? "info";
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
       <aside
         id="tangly-sidebar"
-        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 py-6 self-start"
+        class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 pt-6 pb-20 self-start"
       >
         <Sidebar items={sidebarItems} currentSlug={page.slug} config={config} />
       </aside>
