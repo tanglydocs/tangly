@@ -77,6 +77,7 @@ Full install paths in [`packages/tangly/README.md`](packages/tangly/README.md#in
 ## Quick links
 
 - [Documentation](https://docs.tangly.dev): guides, schema reference, CLI reference
+- [Changelog](https://docs.tangly.dev/changelog): release notes, newest first
 - [Website](https://tangly.dev)
 - [Theme demos](https://examples.tangly.dev): every theme rendering a real project
 - [Mintlify migration guide](https://docs.tangly.dev/guides/migration/from-mintlify)
