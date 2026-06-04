@@ -1,7 +1,7 @@
 ---
 import type { OpenApiOp } from "./_spec-loader.ts";
 import { describeSchema } from "./_schema-describe.ts";
-import { renderSchemaTree } from "./_schema-tree.ts";
+import { renderSchemaTree, unwrapSchema } from "./_schema-tree.ts";
 
 export interface Props {
   requestBody: NonNullable<OpenApiOp["requestBody"]>;
@@ -10,52 +10,69 @@ export interface Props {
 const { requestBody } = Astro.props as Props;
 const content = requestBody.content ?? {};
 const json = content["application/json"];
-const tree = renderSchemaTree(json?.schema);
+const schema = json?.schema;
+// renderSchemaTree unwraps anyOf/oneOf/allOf, so `anyOf: [Model, null]`
+// bodies expand to Model's fields instead of falling back to a bare label.
+const tree = renderSchemaTree(schema);
+
+// Decide whether the body is worth a section at all. Empty `{}` or
+// null-only schemas with no description render nothing (no bare label).
+const empty = !schema || (typeof schema === "object" && Object.keys(schema as object).length === 0);
+const nullOnly = describeSchema(schema).typeLabel === "null";
+const scalar = tree.length === 0 && !empty && !nullOnly ? describeSchema(unwrapSchema(schema)) : null;
+const render = tree.length > 0 || !!requestBody.description || (scalar !== null && scalar.typeLabel !== "any");
 ---
 
-<section class="tangly-openapi-body not-prose mt-8">
-  <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
-    Request body
-    {requestBody.required ? (
-      <span class="ml-2 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium align-middle">required</span>
+{render ? (
+  <section class="tangly-openapi-body not-prose mt-8">
+    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+      Request body
+      {requestBody.required ? (
+        <span class="ml-2 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium align-middle">required</span>
+      ) : null}
+    </h3>
+    {requestBody.description ? (
+      <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-3 whitespace-pre-line">{requestBody.description}</p>
     ) : null}
-  </h3>
-  {requestBody.description ? (
-    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-3 whitespace-pre-line">{requestBody.description}</p>
-  ) : null}
-  {tree.length > 0 ? (
-    <div class="divide-y divide-zinc-100 dark:divide-zinc-800 border-y border-zinc-100 dark:border-zinc-800">
-      {tree.map((field) => {
-        const info = describeSchema(field.schema);
-        return (
-          <div class="py-3">
-            <div class="flex flex-wrap items-center gap-2 mb-1">
-              <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{field.name}</code>
-              <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{info.typeLabel}</span>
-              {field.required ? (
-                <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+    {tree.length > 0 ? (
+      <div class="divide-y divide-zinc-100 dark:divide-zinc-800 border-y border-zinc-100 dark:border-zinc-800">
+        {tree.map((field) => {
+          const info = describeSchema(field.schema);
+          return (
+            <div class="py-3">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{field.name}</code>
+                <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{info.typeLabel}</span>
+                {field.required ? (
+                  <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+                ) : null}
+                {info.defaultValue !== undefined ? (
+                  <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{info.defaultValue}</code></span>
+                ) : null}
+              </div>
+              {info.description ? (
+                <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">{info.description}</p>
               ) : null}
-              {info.defaultValue !== undefined ? (
-                <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{info.defaultValue}</code></span>
+              {info.innerDescription && info.innerDescription !== info.description ? (
+                <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line mt-2">{info.innerDescription}</p>
+              ) : null}
+              {info.enumValues && info.enumValues.length > 0 ? (
+                <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-2">
+                  <span class="font-medium">Available options:</span>{" "}
+                  <span class="font-mono">{info.enumValues.join(", ")}</span>
+                </p>
               ) : null}
             </div>
-            {info.description ? (
-              <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">{info.description}</p>
-            ) : null}
-            {info.innerDescription && info.innerDescription !== info.description ? (
-              <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line mt-2">{info.innerDescription}</p>
-            ) : null}
-            {info.enumValues && info.enumValues.length > 0 ? (
-              <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-2">
-                <span class="font-medium">Available options:</span>{" "}
-                <span class="font-mono">{info.enumValues.join(", ")}</span>
-              </p>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-  ) : (
-    <p class="text-xs text-zinc-500">JSON body. Sent as <code class="font-mono">application/json</code>.</p>
-  )}
-</section>
+          );
+        })}
+      </div>
+    ) : scalar ? (
+      <p class="text-sm text-zinc-700 dark:text-zinc-300">
+        <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{scalar.typeLabel}</span>
+        {scalar.description ? (
+          <span class="block mt-1 whitespace-pre-line">{scalar.description}</span>
+        ) : null}
+      </p>
+    ) : null}
+  </section>
+) : null}

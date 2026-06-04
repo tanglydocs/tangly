@@ -117,6 +117,11 @@ function prettyLabel(lang: string): string {
 const samples = buildSamples();
 const formId = `tangly-tryit-${Math.random().toString(36).slice(2, 9)}`;
 const showTryIt = playgroundMode === "interactive";
+// Mirror the docs column: GET/HEAD don't carry a body unless the spec
+// explicitly marks one required, so don't offer a body field for them.
+const showBody =
+  !!op.requestBody &&
+  !((method === "get" || method === "head") && !op.requestBody.required);
 
 // Response cards: status code → example payload
 const responseCards = responseExamplesByCode
@@ -241,7 +246,7 @@ function statusColor(code: string): string {
                 ))}
               </fieldset>
             ) : null}
-            {op.requestBody ? (
+            {showBody ? (
               <fieldset class="border border-[var(--tangly-color-border)] rounded-md p-2 space-y-2">
                 <legend class="px-1 text-[10px] uppercase tracking-wider text-[var(--tangly-color-muted)]">
                   Request body

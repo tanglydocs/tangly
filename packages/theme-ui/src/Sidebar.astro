@@ -35,22 +35,23 @@ const isRoot = _depth === 0;
               data-active={item.slug === currentSlug ? "true" : "false"}
               class="tangly-side-link flex items-center gap-2.5 px-2 py-2 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
             >
-              {item.icon ? <Icon icon={item.icon} size={15} /> : null}
-              <span class="flex-1 truncate">{item.title}</span>
-              {item.tag && (
+              {item.tag ? (
                 item.methodColor ? (
                   <span
-                    class="shrink-0 text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded-md leading-none"
+                    class="shrink-0 w-11 text-center text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded leading-none"
                     style={`color:${item.methodColor};background:${item.methodColor}1a`}
                   >
                     {item.tag}
                   </span>
                 ) : (
-                  <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
+                  <span class="shrink-0 w-11 text-center text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
                     {item.tag}
                   </span>
                 )
-              )}
+              ) : item.icon ? (
+                <Icon icon={item.icon} size={15} />
+              ) : null}
+              <span class="flex-1 truncate">{item.title}</span>
             </a>
           )}
         </li>
@@ -76,22 +77,23 @@ const isRoot = _depth === 0;
             data-active={item.slug === currentSlug ? "true" : "false"}
             class="tangly-side-link flex items-center gap-2.5 px-2 py-2 rounded-md text-[var(--tangly-color-muted)] hover:text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)] no-underline"
           >
-            {item.icon ? <Icon icon={item.icon} size={15} /> : null}
-            <span class="flex-1 truncate">{item.title}</span>
-            {item.tag && (
+            {item.tag ? (
               item.methodColor ? (
                 <span
-                  class="shrink-0 text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded-md leading-none"
+                  class="shrink-0 w-11 text-center text-[9px] font-mono font-bold uppercase tracking-wide px-1 py-0.5 rounded leading-none"
                   style={`color:${item.methodColor};background:${item.methodColor}1a`}
                 >
                   {item.tag}
                 </span>
               ) : (
-                <span class="text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
+                <span class="shrink-0 w-11 text-center text-[10px] font-medium uppercase tracking-wide text-[var(--tangly-color-muted)]">
                   {item.tag}
                 </span>
               )
-            )}
+            ) : item.icon ? (
+              <Icon icon={item.icon} size={15} />
+            ) : null}
+            <span class="flex-1 truncate">{item.title}</span>
           </a>
         )}
       </li>

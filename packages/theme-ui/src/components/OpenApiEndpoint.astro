@@ -1,4 +1,5 @@
 ---
+import EndpointAuthorizations from "./openapi/EndpointAuthorizations.astro";
 import EndpointDescription from "./openapi/EndpointDescription.astro";
 import EndpointHeader from "./openapi/EndpointHeader.astro";
 import EndpointPanel from "./openapi/EndpointPanel.astro";
@@ -114,12 +115,15 @@ if (op?.responses) {
         path={path}
         baseUrl={effectiveBaseUrl}
         showFullUrl={showFullUrl}
+        showTryIt={isSplit && playgroundMode === "interactive"}
       />
       <EndpointDescription description={op.description} />
+      <EndpointAuthorizations auth={auth} />
       {Array.isArray(op.parameters) && op.parameters.length > 0 ? (
         <EndpointParameters parameters={op.parameters} extraPills={paramsPost} />
       ) : null}
-      {op.requestBody ? (
+      {op.requestBody &&
+      !((methodLower === "get" || methodLower === "head") && !op.requestBody.required) ? (
         <EndpointRequestBody requestBody={op.requestBody} />
       ) : null}
       {op.responses && Object.keys(op.responses).length > 0 ? (

@@ -1,0 +1,74 @@
+---
+/**
+ * Documents the endpoint's auth requirement as a Mintlify-style
+ * "Authorizations" section. Driven by the already-resolved `ResolvedAuth`
+ * (which folds in the spec's `securitySchemes` plus any `api.auth`
+ * override), so a bearer/basic/key scheme surfaces here even when the
+ * operation carries no explicit `security` block.
+ */
+import type { ResolvedAuth } from "./_security.ts";
+
+export interface Props {
+  auth: ResolvedAuth;
+}
+
+const { auth } = Astro.props as Props;
+
+interface AuthField {
+  name: string;
+  type: string;
+  in: string;
+  description: string;
+}
+
+function fieldFor(a: ResolvedAuth): AuthField | null {
+  switch (a.method) {
+    case "bearer":
+      return {
+        name: "Authorization",
+        type: "string",
+        in: "header",
+        description:
+          "Bearer authentication header of the form Bearer <token>, where <token> is your auth token.",
+      };
+    case "basic":
+      return {
+        name: "Authorization",
+        type: "string",
+        in: "header",
+        description:
+          "Basic authentication header of the form Basic <credentials>, where <credentials> is the base64 encoding of username:password.",
+      };
+    case "key": {
+      const name = a.name ?? "X-API-Key";
+      return {
+        name,
+        type: "string",
+        in: "header",
+        description: `API key sent in the ${name} header.`,
+      };
+    }
+    default:
+      return null;
+  }
+}
+
+const field = fieldFor(auth);
+---
+
+{field ? (
+  <section class="tangly-openapi-auth not-prose mb-8">
+    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Authorizations</h3>
+    <div class="divide-y divide-zinc-100 dark:divide-zinc-800 border-y border-zinc-100 dark:border-zinc-800">
+      <div class="py-3">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{field.name}</code>
+          <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{field.type}</span>
+          <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">{field.in}</span>
+          <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium">required</span>
+        </div>
+        <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">{field.description}</p>
+      </div>
+    </div>
+  </section>
+) : null}

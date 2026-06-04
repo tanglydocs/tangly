@@ -5,58 +5,79 @@ export interface Props {
   method: string;
   path: string;
   baseUrl?: string;
-  /** When true, render `${baseUrl}${path}`. Else just `${path}`. */
+  /** When true, prefix the segments with the base URL. */
   showFullUrl?: boolean;
+  /** Render an inline "Try it" button that reveals the playground panel. */
+  showTryIt?: boolean;
 }
 
-const { method, path, baseUrl, showFullUrl } = Astro.props as Props;
+const { method, path, baseUrl, showFullUrl, showTryIt } = Astro.props as Props;
 const color = resolveMethodColor(method);
 
-// Split a URL into segments so `{param}` placeholders can be styled as
-// chips. We use String.prototype.split with a capturing group so the
-// param names land in the resulting array between the literal slices.
-type Segment =
-  | { kind: "literal"; text: string }
-  | { kind: "param"; name: string };
-
-function splitPath(p: string): Segment[] {
-  const parts = p.split(/\{([^{}]+)\}/g);
-  const out: Segment[] = [];
-  for (let i = 0; i < parts.length; i++) {
-    const text = parts[i] ?? "";
-    if (i % 2 === 0) {
-      if (text.length > 0) out.push({ kind: "literal", text });
-    } else {
-      out.push({ kind: "param", name: text });
-    }
-  }
-  return out;
-}
+// Break the path into `/`-delimited segments so each renders as its own
+// breadcrumb chip (Mintlify style). Param segments keep their {braces}.
+type Segment = { kind: "literal"; text: string } | { kind: "param"; name: string };
+const segments: Segment[] = path
+  .split("/")
+  .filter((s) => s.length > 0)
+  .map((seg) => {
+    const m = seg.match(/^\{(.+)\}$/);
+    return m ? { kind: "param", name: m[1]! } : { kind: "literal", text: seg };
+  });
 
 const base = showFullUrl && baseUrl ? baseUrl.replace(/\/+$/, "") : "";
-const segments = splitPath(path);
 ---
 
 <div class="tangly-openapi-header flex items-center gap-3 mb-4 not-prose flex-wrap">
   <span
-    class="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase text-white"
+    class="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase text-white shrink-0"
     style={`background:${color}`}
   >
     {method.toUpperCase()}
   </span>
-  <code class="text-sm font-mono text-zinc-800 dark:text-zinc-200 break-all">
-    {base ? <span>{base}</span> : null}
-    {segments.map((seg) =>
-      seg.kind === "literal" ? (
-        <span>{seg.text}</span>
-      ) : (
-        <span
-          class="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-xs font-mono"
-          title={`Path parameter: ${seg.name}`}
-        >
-          {seg.name}
-        </span>
-      ),
-    )}
+  <code class="flex items-center flex-wrap gap-1 text-sm font-mono">
+    {base ? <span class="text-zinc-500 dark:text-zinc-400">{base}</span> : null}
+    {segments.map((seg) => (
+      <Fragment>
+        <span class="text-zinc-300 dark:text-zinc-600 select-none">/</span>
+        {seg.kind === "param" ? (
+          <span
+            class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-xs"
+            title={`Path parameter: ${seg.name}`}
+          >
+            {`{${seg.name}}`}
+          </span>
+        ) : (
+          <span class="text-zinc-700 dark:text-zinc-300">{seg.text}</span>
+        )}
+      </Fragment>
+    ))}
   </code>
+  {showTryIt ? (
+    <button
+      type="button"
+      data-tangly-header-tryit
+      class="ml-auto inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-md text-white shrink-0"
+      style="background: var(--tangly-color-primary, #ea580c)"
+      title="Try this endpoint"
+    >
+      Try it <span aria-hidden="true">→</span>
+    </button>
+  ) : null}
 </div>
+
+{showTryIt ? (
+  <script is:inline>
+    document.querySelectorAll("[data-tangly-header-tryit]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const root = btn.closest(".tangly-openapi-split") || document;
+        const panel = root.querySelector("[data-tangly-api-panel]");
+        if (!panel) return;
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        const form = panel.querySelector("[data-tangly-tryit]");
+        const toggle = panel.querySelector("[data-tangly-tryit-toggle]");
+        if (form && form.classList.contains("hidden") && toggle) toggle.click();
+      });
+    });
+  </script>
+) : null}
