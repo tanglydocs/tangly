@@ -170,6 +170,7 @@ Top-level fields (most common):
 | Field | Purpose |
 | --- | --- |
 | `name` (req) | Project name shown in navbar |
+| `siteUrl` | Absolute site URL (e.g. `https://docs.example.com`). Enables canonical tags + auto social cards. |
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
@@ -178,6 +179,7 @@ Top-level fields (most common):
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
 | `seo` | `metatags`, `indexing` (`all` \| `navigable`) |
+| `thumbnails` | Auto social cards (OG images): `enabled`, `background`, `accent`, `image`. On by default once `siteUrl` set; prerendered to `/og/<slug>.png`. Per-page override via frontmatter `seo.ogImage`. |
 | `redirects` | `[{ source, destination, permanent? }]` |
 | `appearance` | default mode, reading time, reading progress |
 | `search` | Pagefind config |

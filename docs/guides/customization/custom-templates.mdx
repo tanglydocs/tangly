@@ -73,6 +73,10 @@ const { frontmatter, page } = Astro.props;
 </Layout>
 ```
 
+<Note>
+  Wrapping your template in `<Layout>` (as above) gives it canonical tags, Open Graph, and social cards for free. If you render your own `<head>` instead, import `Seo` to keep them: `import Seo from "@tanglydocs/theme-ui/Seo.astro";` then `<Seo config={manifest.config} page={page} pageTitle={title} pageDescription={description} />`.
+</Note>
+
 ### Section-level inheritance
 
 Set `template` on a `_section.mdx` to apply it to every page in that directory subtree:

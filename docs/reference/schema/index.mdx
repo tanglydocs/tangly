@@ -429,13 +429,24 @@ See [Copy page menu](/guides/ai-agents/markdown-for-agents#copy-page-menu) for s
 
 ## `thumbnails`
 
+Controls auto-generated social cards (the Open Graph / Twitter preview image shown when a page is shared). Tangly renders a branded 1200×630 card per page from the page title, description, the owning tab, your theme, and your `colors` / `logo`. Cards generate by default once [`siteUrl`](#siteurl) is set (an absolute URL is required for `og:image`).
+
 | Field | Type | Description |
 |---|---|---|
-| `background` | `string` | Background image used for auto-generated OpenGraph thumbnails |
+| `enabled` | `boolean` | Master switch. Default `true`. Set `false` to turn off generation. |
+| `background` | `string` | Card background: a hex color (e.g. `"#0B0B0F"`). Defaults to the theme surface. |
+| `accent` | `string` | Accent color (hex). Defaults to `colors.primary`. |
+| `image` | `string` | One static image used as `og:image` for every page, instead of generated cards. |
+
+```json
+{ "thumbnails": { "accent": "#EA580C" } }
+```
+
+Cards are prerendered to `/og/<slug>.png` at build (and rendered on demand in `tangly dev` for live preview). Per-page overrides: set [`seo.ogImage`](/reference/schema/frontmatter#seo) in a page's frontmatter. Drafts and `noindex` pages get no card.
 
 ## `metadata`
 
-Free-form `Record<string, string>`. Surfaced as extra `<meta>` tags. Use for `application-name`, `apple-mobile-web-app-title`, etc.
+Free-form `Record<string, string>`. Rendered as extra `<meta>` tags on every page. Use for `application-name`, `apple-mobile-web-app-title`, etc.
 
 ## `banner`
 
