@@ -9,6 +9,7 @@ import OpenApiStoplight from "@tanglydocs/theme-ui/components/OpenApiStoplight.a
 import PageShell from "@tanglydocs/theme-ui/PageShell.astro";
 import type { PageEntry } from "tangly";
 import { mdxComponents } from "../lib/mdx-components.ts";
+import { listRoutablePages } from "../lib/og-pages.ts";
 
 // Eagerly discover user templates so we can dispatch to them per page.
 // `@user-template/*` is aliased by the integration to <userRoot>/templates.
@@ -31,27 +32,15 @@ function findTemplate(name: string | undefined): unknown | null {
 }
 
 export async function getStaticPaths() {
-  const excluded = new Set<string>(manifest.excludedSlugs ?? []);
+  // Shared with the OG card endpoint (og/[...slug].png.ts) via listRoutablePages
+  // so the HTML routes and the card routes can never drift.
   const entries = await getCollection("docs");
-  const entrySlugs = new Set(entries.map((e) => e.id));
-
-  const mdxPaths = entries
-    .filter((entry) => !excluded.has(entry.id))
-    .map((entry) => ({
-      params: { slug: entry.id },
-      props: { entry, synthPage: null as null | (typeof manifest.pages)[number][1] },
-    }));
-
-  // Synthesized OpenAPI pages have no MDX entry — emit a path per
-  // manifest page that isn't already covered by the docs collection.
-  const synthPaths = manifest.pages
-    .filter(([slug]) => !entrySlugs.has(slug) && !excluded.has(slug))
-    .map(([slug, page]) => ({
+  return listRoutablePages(entries, manifest.pages, manifest.excludedSlugs).map(
+    ({ slug, entry, synthPage }) => ({
       params: { slug },
-      props: { entry: null, synthPage: page },
-    }));
-
-  return [...mdxPaths, ...synthPaths];
+      props: { entry, synthPage },
+    }),
+  );
 }
 
 const { entry, synthPage } = Astro.props;

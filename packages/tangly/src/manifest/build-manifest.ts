@@ -33,6 +33,19 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const raw = readFileSync(configPath, "utf8");
   const config = parseDocsJson(JSON.parse(raw));
 
+  // Social cards need an absolute base URL (og:image must be absolute). If
+  // cards are enabled (the default) but siteUrl is missing, no cards are
+  // emitted — surface that via `tangly check`.
+  const thumbnails = config.thumbnails as { enabled?: boolean; image?: string } | undefined;
+  if (!config.siteUrl && thumbnails?.enabled !== false && !thumbnails?.image) {
+    warnings.push({
+      level: "warn",
+      source: opts.configFile ?? "docs.json",
+      message:
+        "Social cards are enabled but `siteUrl` is not set. Open Graph images need an absolute URL, so no cards will be generated until you add `siteUrl`. Set `thumbnails.enabled: false` to silence this.",
+    });
+  }
+
   const diskPagesArr = await scanPages(root);
   const diskPages = new Map(diskPagesArr.map((p) => [p.slug, p]));
 

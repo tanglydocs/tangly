@@ -59,6 +59,7 @@ const SHADOWABLE_COMPONENT_NAMES = [
 const SHADOWABLE_LAYOUT_NAMES = [
   "Layout",
   "PageShell",
+  "Seo",
   "Sidebar",
   "TopNav",
   "Footer",
