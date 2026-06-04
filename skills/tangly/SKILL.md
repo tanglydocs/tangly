@@ -19,7 +19,7 @@ compatibility: Designed for Claude Code and other agent-skills clients. Requires
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 metadata:
   author: tanglydocs
-  version: 0.1.1
+  version: 0.1.2
   category: documentation
   tags: tangly, documentation, docs, mintlify, mdx, astro, static-site, site-generator, docs-as-code, openapi
   homepage: https://tangly.dev

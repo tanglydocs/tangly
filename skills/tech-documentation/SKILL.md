@@ -12,7 +12,7 @@ compatibility: Designed for Claude Code and other agent-skills clients.
 allowed-tools: Read, Write, Edit, Glob, Grep
 metadata:
   author: tanglydocs
-  version: 0.1.1
+  version: 0.1.2
   category: documentation
   tags: documentation, docs, technical-writing, readme, api-docs, diataxis, style-guide, content, writing, doc-review
   homepage: https://tangly.dev
