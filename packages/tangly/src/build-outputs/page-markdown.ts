@@ -20,7 +20,7 @@ function normalizeBase(base?: string): string {
  * a `URL:` preamble (mirrors `generateLlmsFullTxt`). Frontmatter is
  * preserved — agents can use `title`/`description` as context.
  */
-export function generatePageMarkdown(page: PageEntry, urlPath: string): string {
+function generatePageMarkdown(page: PageEntry, urlPath: string): string {
   let raw: string;
   try {
     raw = readFileSync(page.file, "utf8");

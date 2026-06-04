@@ -72,7 +72,7 @@ interface RawOp {
   "x-excluded"?: boolean;
 }
 
-export function isHttpMethod(s: string): s is Method {
+function isHttpMethod(s: string): s is Method {
   return (HTTP_METHODS as readonly string[]).includes(s.toLowerCase());
 }
 
