@@ -345,7 +345,21 @@ const SearchSchema = z
 
 const ThumbnailsSchema = z
   .object({
+    /**
+     * Master switch for auto-generated social cards (Open Graph / Twitter
+     * images). Cards generate by default when `siteUrl` is set; set to
+     * `false` to disable generation entirely.
+     */
+    enabled: z.boolean().optional(),
+    /** Card background — hex color or absolute image path. Defaults to the theme surface. */
     background: z.string().optional(),
+    /** Accent color (hex) for the card. Defaults to `colors.primary`. */
+    accent: z.string().optional(),
+    /**
+     * A single static image used as `og:image` for every page, in place of
+     * per-page generated cards. Absolute URL or root-relative path.
+     */
+    image: z.string().optional(),
   })
   .strict()
   .optional();
