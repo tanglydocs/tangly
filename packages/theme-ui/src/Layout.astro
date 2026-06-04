@@ -11,6 +11,7 @@ import Sidebar from "@tanglydocs/theme-ui/Sidebar.astro";
 import Footer from "@tanglydocs/theme-ui/Footer.astro";
 import SearchModal from "@tanglydocs/theme-ui/SearchModal.astro";
 import MermaidLoader from "@tanglydocs/theme-ui/MermaidLoader.astro";
+import Seo from "@tanglydocs/theme-ui/Seo.astro";
 // `@tanglydocs/theme/theme.css` is resolved by the Tangly Astro integration to
 // the active theme's `styles/theme.css` (theme-tang or theme-pith), with
 // `<userRoot>/theme/styles/theme.css` overriding when present.
@@ -34,16 +35,6 @@ const favicon =
   typeof config.favicon === "string"
     ? config.favicon
     : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
-
-// Logo links
-const logoLight =
-  typeof config.logo === "string"
-    ? config.logo
-    : (config.logo?.light ?? config.logo?.dark);
-const logoDark =
-  typeof config.logo === "string"
-    ? config.logo
-    : (config.logo?.dark ?? config.logo?.light);
 
 // Active tab from current page
 const currentTabSlug = page.tab?.slug;
@@ -86,27 +77,6 @@ const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamili
 
 const appearanceDefault = config.appearance?.default ?? "system";
 const showReadingProgress = config.appearance?.readingProgress === true;
-const ogTitle = pageTitle;
-const ogDesc = pageDescription ?? config.description ?? "";
-
-// Canonical + OG/Twitter URL/image. Requires siteUrl in docs.json to emit
-// absolute URLs. Falls back to logo as og:image. Canonical matches the
-// served URL (no trailing slash) to avoid redirect chains. Routes paths
-// through withBase() so subpath hosting (e.g. `tangly build --base /docs`)
-// emits URLs in the deployed namespace.
-const siteUrl = (config as { siteUrl?: string }).siteUrl?.replace(/\/+$/, "") ?? "";
-const slug = page.slug.replace(/\/+$/, "");
-const pagePathRaw = slug ? `/${slug}` : "/";
-const pagePath = withBase(pagePathRaw).replace(/\/+$/, "") || "/";
-const canonicalUrl = siteUrl ? `${siteUrl}${pagePath}` : "";
-const ogImage = (() => {
-  if (siteUrl && logoLight) {
-    if (logoLight.startsWith("http")) return logoLight;
-    const logoPath = withBase(logoLight);
-    return `${siteUrl}${logoPath}`;
-  }
-  return "";
-})();
 
 // Optional dark-mode background override.
 const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
@@ -126,18 +96,8 @@ const bannerType = banner?.type ?? "info";
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={withBase(favicon)} />
-    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <link rel="alternate" type="text/markdown" href={withBase(`/${page.slug}.md`)} />
-    <meta property="og:title" content={ogTitle} />
-    <meta property="og:description" content={ogDesc} />
-    <meta property="og:type" content="article" />
-    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-    {config.name && <meta property="og:site_name" content={config.name} />}
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={ogTitle} />
-    <meta name="twitter:description" content={ogDesc} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <Seo config={config} page={page} pageTitle={pageTitle} pageDescription={pageDescription} />
     <meta name="color-scheme" content="light dark" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

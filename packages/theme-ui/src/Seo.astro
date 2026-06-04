@@ -1,0 +1,126 @@
+---
+/**
+ * Shared SEO / social-meta head fragment. Used by every theme's Layout so the
+ * og:/twitter: tags stay consistent in one place. Emits canonical + Open Graph
+ * + Twitter card meta, then any user-supplied `seo.metatags` / `metadata`.
+ *
+ * og:image precedence (first match wins; all absolutized via siteUrl since
+ * crawlers reject relative image URLs):
+ *   1. seo.metatags["og:image"]  — explicit global override (rendered by the
+ *      metatags loop; we skip our own og:image to avoid a duplicate)
+ *   2. frontmatter seo.ogImage    — per-page override (cascades via _meta.json)
+ *   3. thumbnails.image           — one static image for the whole site
+ *   4. generated /og/<slug>.png   — auto card (when enabled + siteUrl + indexed)
+ *   5. logo                       — last-resort fallback (legacy behavior)
+ */
+import type { DocsJson } from "@tanglydocs/schema";
+import type { PageEntry } from "tangly";
+import { withBase } from "./with-base.ts";
+
+export interface Props {
+  config: DocsJson;
+  page: PageEntry;
+  pageTitle: string;
+  pageDescription?: string;
+}
+
+const { config, page, pageTitle, pageDescription } = Astro.props as Props;
+
+const fmSeo = page.frontmatter.seo as
+  | { title?: string; description?: string; ogImage?: string }
+  | undefined;
+
+const ogTitle = fmSeo?.title ?? pageTitle;
+const ogDesc = fmSeo?.description ?? pageDescription ?? config.description ?? "";
+
+// Absolute base URL (required for absolute og:image / canonical URLs).
+const siteUrl = (config as { siteUrl?: string }).siteUrl?.replace(/\/+$/, "") ?? "";
+
+const slug = page.slug.replace(/\/+$/, "");
+const pagePath = withBase(slug ? `/${slug}` : "/")?.replace(/\/+$/, "") || "/";
+const canonicalUrl = siteUrl ? `${siteUrl}${pagePath}` : "";
+
+/** Turn a relative or external path into an absolute URL (or "" if it can't be). */
+function absolutize(path: string | undefined): string {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (!siteUrl) return "";
+  // Normalize to a root-relative path so withBase() prefixes it correctly
+  // (a bare "images/x.png" would otherwise concat straight onto the origin).
+  const local = path.startsWith("/") ? path : `/${path}`;
+  return `${siteUrl}${withBase(local)}`;
+}
+
+// Logo (legacy fallback).
+const logo = config.logo;
+const logoLight = typeof logo === "string" ? logo : (logo?.light ?? logo?.dark);
+
+const thumbnails = config.thumbnails as
+  | { enabled?: boolean; image?: string }
+  | undefined;
+const metatags = (config.seo as { metatags?: Record<string, string> } | undefined)?.metatags;
+const metadata = config.metadata as Record<string, string> | undefined;
+
+const hasMetaOgImage = Boolean(metatags && "og:image" in metatags);
+
+// Auto cards run when enabled, a siteUrl exists, the page is indexable, and no
+// single static image is configured (a static image opts out of generation).
+const cardsEnabled = thumbnails?.enabled !== false && !thumbnails?.image;
+const generatedCard =
+  cardsEnabled && siteUrl && !page.frontmatter.noindex
+    ? absolutize(`/og/${slug || "index"}.png`)
+    : "";
+
+let ogImage = "";
+let isGenerated = false;
+if (hasMetaOgImage) {
+  ogImage = ""; // metatags loop emits it
+} else if (fmSeo?.ogImage) {
+  ogImage = absolutize(fmSeo.ogImage);
+} else if (thumbnails?.image) {
+  ogImage = absolutize(thumbnails.image);
+} else if (generatedCard) {
+  ogImage = generatedCard;
+  isGenerated = true;
+} else if (logoLight) {
+  ogImage = absolutize(logoLight);
+}
+
+const twitterCard = ogImage || hasMetaOgImage ? "summary_large_image" : "summary";
+
+function metaProp(key: string): boolean {
+  return key.startsWith("og:") || key.startsWith("fb:") || key.startsWith("article:");
+}
+---
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+<meta property="og:title" content={ogTitle} />
+<meta property="og:description" content={ogDesc} />
+<meta property="og:type" content="article" />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+{config.name && <meta property="og:site_name" content={config.name} />}
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:alt" content={ogTitle} />}
+{isGenerated && (
+  <>
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+  </>
+)}
+<meta name="twitter:card" content={twitterCard} />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={ogDesc} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+{metatags &&
+  Object.entries(metatags).map(([key, value]) => {
+    // Absolutize image overrides so they unfurl (crawlers reject relative URLs).
+    const content =
+      key === "og:image" || key === "twitter:image" ? absolutize(value) || value : value;
+    return metaProp(key) ? (
+      <meta property={key} content={content} />
+    ) : (
+      <meta name={key} content={content} />
+    );
+  })}
+{metadata &&
+  Object.entries(metadata).map(([key, value]) => <meta name={key} content={value} />)}
