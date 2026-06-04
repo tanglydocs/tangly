@@ -5,20 +5,25 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
-<Update label="v0.1.1" description="2026-06-03" tags={["fix"]}>
+<Update label="v0.1.2" description="2026-06-04" tags={["feat","fix"]}>
   ## Highlights
 
-  A theme polish pass on the reading experience.
-
-  - **Cleaner code blocks.** The code body now has a single border with square top and rounded bottom corners, instead of doubled borders and all-four rounded corners. Code-group tabs switched to readable underline tabs, and the Copy button got a clipboard icon (a check on success).
-  - **Sidebar keeps your place.** The nav no longer resets to the top on every navigation. It restores scroll position and keeps the active page in view, and gained bottom padding so the last item is not clipped under the announcement banner.
+  - **OpenAPI endpoint pages, closer to Mintlify.** Endpoint pages now render an Authorizations section derived from the spec's security scheme, a breadcrumb method/path header with an inline Try it button, left-aligned method badges in the sidebar, and request bodies that expand `anyOf`/`oneOf`/`allOf` schemas (with spurious `GET`/`HEAD` bodies suppressed).
+  - **Theme polish.** Cleaner code blocks: a single border with square top and rounded bottom corners, readable underline tabs, and a Copy button with a clipboard icon (a check on success). The sidebar keeps your place across navigations and gained bottom padding so the last item is not clipped under the announcement banner.
 
   ## Changes
 
+  ### Features
+  - feat(theme-ui): bring OpenAPI endpoint pages to Mintlify parity ([`eba59d4`](https://github.com/tanglydocs/tangly/commit/eba59d442d27a36b001e4d2f749c1e4d0d2c55a3))
+
   ### Fixes
+  - fix(theme-ui): force white text on primary navbar button ([`4ad013a`](https://github.com/tanglydocs/tangly/commit/4ad013a6619b060024462444459c357011df32e3))
   - fix(theme-ui): add sidebar bottom padding so the last nav item clears the fold ([`9d25f71`](https://github.com/tanglydocs/tangly/commit/9d25f711b0c4c296bf86fce353986f3498687df3))
   - fix(theme-ui): tidy code block chrome (corners, borders, tabs, copy icon) ([`169ebe7`](https://github.com/tanglydocs/tangly/commit/169ebe716c7eadf0ba08627ad36e82b1f85aecf3))
   - fix(theme-ui): keep sidebar scrolled to active page across navigations ([`aacd7ab`](https://github.com/tanglydocs/tangly/commit/aacd7abe92f948514bf10d1871ae75b8e29a55f0))
+
+  ### Chore
+  - chore(tangly): drop unused exports flagged by knip ([`e3f49ea`](https://github.com/tanglydocs/tangly/commit/e3f49ea7547c840934ba549fbedd93c1cbfc8c64))
 
 </Update>
 
