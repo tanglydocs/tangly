@@ -5,6 +5,20 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.1.4" description="5 Jun 26" tags={["fix"]}>
+  ## Highlights
+
+  - **Windows is unblocked.** `tangly dev` and `tangly build` crashed on Windows with `TypeError [ERR_INVALID_URL_SCHEME]: The URL must be of scheme file`. The content loader handed your project root to Astro as a raw path string, and a drive-letter path like `E:\project` parses its `E:` as a URL scheme. The root is now passed as a proper `file:` URL, so it resolves on every platform ([#6](https://github.com/tanglydocs/tangly/issues/6)).
+  - **Mintlify `api.playground.display` is accepted.** Mintlify renamed `api.playground.mode` to `display` (`interactive` / `simple` / `none` / `auth`). Unmodified projects hit `Unrecognized key: "display"` on parse. The value now normalizes to Tangly's native `mode` (`none` maps to `hide`, `auth` to `interactive`) across `dev`, `build`, `check`, and `migrate`.
+
+  ## Changes
+
+  ### Fixes
+  - fix(schema): alias api.playground.display to native mode ([`666771a`](https://github.com/tanglydocs/tangly/commit/666771a9c92d3a508ffee0dfc1a3e7c993b3de30))
+  - fix(runtime): pass file URL as glob base for Windows compat ([`15ad9aa`](https://github.com/tanglydocs/tangly/commit/15ad9aaf67f98a36e31426a180e4dccdc75e1368))
+
+</Update>
+
 <Update label="v0.1.3" description="5 Jun 26" tags={["feat","fix"]}>
   ## Highlights
 
