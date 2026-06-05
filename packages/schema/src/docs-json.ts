@@ -231,6 +231,18 @@ const ApiSchema = z
     mdx: z
       .object({
         server: z.union([z.string(), z.array(z.string())]).optional(),
+        /**
+         * Default auth applied to MDX-defined (non-OpenAPI) API pages.
+         * `method` is a loose string for forward-compat with Mintlify's enum
+         * (bearer/basic/key/cobo/…).
+         */
+        auth: z
+          .object({
+            method: z.string().optional(),
+            name: z.string().optional(),
+          })
+          .loose()
+          .optional(),
       })
       .strict()
       .optional(),
@@ -314,9 +326,52 @@ const ContextualSchema = z
      * - `chatgpt`  open ChatGPT prefilled with the Markdown URL
      * - `claude`   open Claude prefilled with the Markdown URL
      *
+     * Tangly renders the five above. The remaining string presets and the
+     * custom-object form are Mintlify's full `contextual.options` set, accepted
+     * for parity (the menu filters to what it implements, ignoring the rest) so
+     * unmodified Mintlify projects parse. Keep the enum in sync with Mintlify's
+     * schema (see `packages/schema/fixtures/mintlify/`).
+     *
      * Omit `contextual` entirely → all actions show. Empty array → menu hidden.
      */
-    options: z.array(z.enum(["copy", "copy-url", "view", "chatgpt", "claude"])).optional(),
+    options: z
+      .array(
+        z.union([
+          z.enum([
+            "copy",
+            "copy-url",
+            "view",
+            "chatgpt",
+            "claude",
+            "assistant",
+            "download-pdf",
+            "download-spec",
+            "perplexity",
+            "grok",
+            "aistudio",
+            "devin",
+            "devin-mcp",
+            "windsurf",
+            "mcp",
+            "add-mcp",
+            "cursor",
+            "vscode",
+          ]),
+          // Mintlify custom action: a labeled button with its own href/icon.
+          // Unrendered today; `.loose()` keeps us forward-compatible.
+          z
+            .object({
+              title: z.string().optional(),
+              description: z.string().optional(),
+              // `z.unknown()` is a *required* key in Zod 4 unless marked
+              // optional; Mintlify requires none of these.
+              icon: z.unknown().optional(),
+              href: z.unknown().optional(),
+            })
+            .loose(),
+        ]),
+      )
+      .optional(),
   })
   .strict()
   .optional();

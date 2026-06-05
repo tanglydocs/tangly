@@ -10,3 +10,5 @@ examples/
 **/*.mdx
 **/*.md
 **/*.astro
+# Vendored Mintlify configs (refreshed verbatim by scripts/fetch-mintlify-fixtures.ts)
+packages/schema/fixtures/mintlify/

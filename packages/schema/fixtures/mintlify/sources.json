@@ -1,0 +1,18 @@
+[
+  {
+    "name": "mintlify-docs",
+    "url": "https://raw.githubusercontent.com/mintlify/docs/main/docs.json"
+  },
+  {
+    "name": "mintlify-starter",
+    "url": "https://raw.githubusercontent.com/mintlify/starter/main/docs.json"
+  },
+  {
+    "name": "dub",
+    "url": "https://raw.githubusercontent.com/dubinc/docs/main/docs.json"
+  },
+  {
+    "name": "mem0",
+    "url": "https://raw.githubusercontent.com/mem0ai/mem0/main/docs/docs.json"
+  }
+]

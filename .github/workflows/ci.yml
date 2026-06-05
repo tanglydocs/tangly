@@ -83,19 +83,29 @@ jobs:
           file: ${{ runner.temp }}/coverage-badge.json
           forceUpdate: true
 
+  # Windows is in this matrix on purpose: issue #6 (ERR_INVALID_URL_SCHEME from
+  # a drive-letter path fed to Astro's glob loader) was invisible to the
+  # ubuntu/macos legs. smoke-init.ts drives init+migrate+build against a
+  # synthesized project carrying Mintlify aliases, so this job gates both the
+  # OS-path layer and the Mintlify-compat schema surface on every platform.
+  # Job-level bash default lets the inline shell steps run under git-bash on
+  # the Windows runner (the setup action already installs bun via bash).
   smoke:
     name: smoke (${{ matrix.os }})
     needs: test
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup
       - run: bun run build
-      - name: tangly init + migrate + build
+      - name: tangly init + migrate + build (Mintlify aliases)
         run: bun run scripts/smoke-init.ts
       - name: build own docs
         run: bun run build:docs

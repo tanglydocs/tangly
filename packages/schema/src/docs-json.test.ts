@@ -48,7 +48,8 @@ describe("DocsJsonSchema", () => {
     const result = safeParseDocsJson({
       name: "Test",
       navigation: { pages: ["index"] },
-      contextual: { options: ["copy", "perplexity"] },
+      // `perplexity` et al. are now valid Mintlify presets; use a bogus action.
+      contextual: { options: ["copy", "not-a-real-action"] },
     });
     expect(result.success).toBe(false);
   });
@@ -200,6 +201,62 @@ describe("ApiSchema (codeSamples + Mintlify aliases)", () => {
       },
     });
     expect(cfg.api?.codeSamples?.languages).toEqual(["tang-wins"]);
+  });
+
+  test("accepts api.mdx.auth (Mintlify MDX-page default auth)", () => {
+    const cfg = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: { mdx: { auth: { method: "bearer", name: "Authorization" } } },
+    });
+    expect((cfg.api?.mdx as { auth?: { method?: string } } | undefined)?.auth?.method).toBe(
+      "bearer",
+    );
+  });
+});
+
+describe("contextual.options (Mintlify parity)", () => {
+  test("accepts Mintlify's full preset set + Tangly-native copy-url", () => {
+    const result = safeParseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      contextual: {
+        options: ["copy", "copy-url", "view", "perplexity", "cursor", "vscode", "mcp", "claude"],
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("accepts custom-object actions alongside string presets", () => {
+    const result = safeParseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      contextual: {
+        options: [
+          "copy",
+          { title: "Open in Playground", href: "https://example.com", icon: "play" },
+        ],
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("custom-object actions require none of title/icon/href", () => {
+    // Mintlify marks every key optional; e.g. an href-only action.
+    expect(
+      safeParseDocsJson({
+        name: "T",
+        navigation: { pages: ["x"] },
+        contextual: { options: [{ href: "https://example.com" }] },
+      }).success,
+    ).toBe(true);
+    expect(
+      safeParseDocsJson({
+        name: "T",
+        navigation: { pages: ["x"] },
+        contextual: { options: [{ title: "Just a title" }] },
+      }).success,
+    ).toBe(true);
   });
 });
 

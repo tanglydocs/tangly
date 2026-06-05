@@ -1,0 +1,587 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "Mintlify",
+  "description": "Mintlify is a platform for building and hosting documentation websites. It provides a set of tools and services for maintaining documentation and making it accessible to AI agents.",
+  "colors": {
+    "primary": "#166E3F",
+    "light": "#26BD6C",
+    "dark": "#166E3F"
+  },
+  "favicon": {
+    "light": "/favicon.ico",
+    "dark": "/favicon.ico"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "interaction": {
+    "drilldown": false
+  },
+  "navigation": {
+    "languages": [
+      {
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Get started",
+                "icon": "rocket",
+                "boost": 2,
+                "pages": [
+                  "index",
+                  "quickstart",
+                  {
+                    "group": "CLI",
+                    "root": "cli/index",
+                    "pages": [
+                      "cli/install",
+                      "cli/preview",
+                      "cli/analytics",
+                      "cli/commands"
+                    ]
+                  },
+                  "ai-native"
+                ]
+              },
+              {
+                "group": "Organize",
+                "icon": "map",
+                "pages": [
+                  {
+                    "group": "Global settings",
+                    "root": "organize/settings",
+                    "pages": [
+                      "organize/settings-appearance",
+                      "organize/settings-structure",
+                      "organize/settings-api",
+                      "organize/settings-integrations",
+                      "organize/settings-seo",
+                      "organize/settings-reference"
+                    ]
+                  },
+                  "organize/navigation",
+                  "organize/pages",
+                  "organize/hidden-pages",
+                  "organize/mintignore"
+                ]
+              },
+              {
+                "group": "Customize",
+                "icon": "paint-bucket",
+                "pages": [
+                  "customize/custom-domain",
+                  "customize/themes",
+                  "customize/fonts",
+                  "customize/custom-scripts",
+                  "customize/react-components",
+                  "customize/custom-404-page"
+                ]
+              },
+              {
+                "group": "Create content",
+                "icon": "pen-line",
+                "pages": [
+                  {
+                    "group": "Editor",
+                    "tag": "New",
+                    "root": "editor/index",
+                    "pages": [
+                      "editor/tutorial",
+                      "editor/branching-and-publishing",
+                      "editor/live-preview",
+                      "editor/pages",
+                      "editor/navigation",
+                      "editor/keyboard-shortcuts",
+                      "editor/configurations",
+                      "editor/settings"
+                    ]
+                  },
+                  "create/text",
+                  "create/code",
+                  {
+                    "group": "Agent",
+                    "root": "agent/index",
+                    "pages": [
+                      "agent/slack",
+                      "agent/integrations",
+                      "agent/customize",
+                      "agent/effective-prompts",
+                      "agent/use-cases"
+                    ]
+                  },
+                  "ai/mintlify-mcp",
+                  {
+                    "group": "Workflows",
+                    "pages": [
+                      "workflows/index",
+                      "workflows/reference",
+                      "workflows/manage",
+                      "workflows/create"
+                    ]
+                  },
+                  {
+                    "group": "Components",
+                    "root": "components/index",
+                    "pages": [
+                      "components/accordions",
+                      "components/badge",
+                      "components/banner",
+                      "components/callouts",
+                      "components/cards",
+                      "components/code-groups",
+                      "components/color",
+                      "components/columns",
+                      "components/examples",
+                      "components/expandables",
+                      "components/fields",
+                      "components/frames",
+                      "components/icons",
+                      "components/mermaid-diagrams",
+                      "components/panel",
+                      "components/prompt",
+                      "components/responses",
+                      "components/steps",
+                      "components/tabs",
+                      "components/tiles",
+                      "components/tooltips",
+                      "components/tree",
+                      "components/update",
+                      "components/view",
+                      "components/visibility"
+                    ]
+                  },
+                  "create/image-embeds",
+                  "create/files",
+                  "create/list-table",
+                  "create/reusable-snippets",
+                  "create/personalization",
+                  "create/redirects",
+                  "create/changelogs"
+                ]
+              },
+              {
+                "group": "Document APIs",
+                "icon": "file-braces",
+                "pages": [
+                  "api-playground/overview",
+                  "api-playground/openapi-setup",
+                  "api-playground/complex-data-types",
+                  "api-playground/adding-sdk-examples",
+                  "api-playground/managing-page-visibility",
+                  "api-playground/multiple-responses",
+                  "api-playground/mdx-setup",
+                  "api-playground/asyncapi-setup",
+                  "api-playground/troubleshooting"
+                ]
+              },
+              {
+                "group": "Deploy",
+                "icon": "boxes",
+                "pages": [
+                  "deploy/deployments",
+                  "deploy/preview-deployments",
+                  "deploy/export",
+                  {
+                    "group": "/docs subpath",
+                    "root": "deploy/docs-subpath",
+                    "pages": [
+                      "deploy/cloudflare",
+                      "deploy/route53-cloudfront",
+                      "deploy/vercel",
+                      "deploy/reverse-proxy",
+                      "deploy/csp-configuration"
+                    ]
+                  },
+                  "deploy/authentication-setup",
+                  {
+                    "group": "Dashboard access",
+                    "pages": [
+                      "dashboard/sso",
+                      "dashboard/permissions",
+                      "dashboard/roles",
+                      "dashboard/audit-logs",
+                      "dashboard/security-contact"
+                    ]
+                  },
+                  "deploy/monorepo",
+                  "deploy/vercel-external-proxies",
+                  "deploy/ci",
+                  "deploy/github",
+                  "deploy/ghes",
+                  "deploy/gitlab",
+                  "deploy/gitlab-self-hosted"
+                ]
+              },
+              {
+                "group": "Optimize",
+                "icon": "wrench",
+                "pages": [
+                  {
+                    "group": "Assistant",
+                    "root": "assistant/index",
+                    "pages": [
+                      "assistant/configure",
+                      "assistant/customize",
+                      "assistant/use"
+                    ]
+                  },
+                  "credits",
+                  "ai/contextual-menu",
+                  "optimize/analytics",
+                  "optimize/feedback",
+                  "ai/llmstxt",
+                  "ai/skillmd",
+                  "ai/model-context-protocol",
+                  "optimize/search",
+                  "optimize/seo",
+                  "ai/markdown-export",
+                  "optimize/pdf-exports",
+                  {
+                    "group": "Integrations",
+                    "pages": [
+                      {
+                        "group": "Analytics",
+                        "root": "integrations/analytics/overview",
+                        "pages": [
+                          "integrations/analytics/adobe",
+                          "integrations/analytics/amplitude",
+                          "integrations/analytics/clarity",
+                          "integrations/analytics/clearbit",
+                          "integrations/analytics/fathom",
+                          "integrations/analytics/google-analytics",
+                          "integrations/analytics/google-tag-manager",
+                          "integrations/analytics/heap",
+                          "integrations/analytics/hightouch",
+                          "integrations/analytics/hotjar",
+                          "integrations/analytics/logrocket",
+                          "integrations/analytics/mixpanel",
+                          "integrations/analytics/pirsch",
+                          "integrations/analytics/plausible",
+                          "integrations/analytics/posthog",
+                          "integrations/analytics/segment"
+                        ]
+                      },
+                      {
+                        "group": "SDKs",
+                        "pages": [
+                          "integrations/sdks/speakeasy",
+                          "integrations/sdks/stainless"
+                        ]
+                      },
+                      {
+                        "group": "Support",
+                        "root": "integrations/support/overview",
+                        "pages": [
+                          "integrations/support/intercom",
+                          "integrations/support/front"
+                        ]
+                      },
+                      {
+                        "group": "Privacy",
+                        "root": "integrations/privacy/overview",
+                        "pages": [
+                          "integrations/privacy/osano"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Overview",
+                "icon": "book-open",
+                "pages": [
+                  "guides/index",
+                  "what-is-mintlify"
+                ]
+              },
+              {
+                "group": "AI",
+                "icon": "bot",
+                "pages": [
+                  "guides/assistant-embed",
+                  "guides/configure-automerge",
+                  "guides/use-workflows",
+                  "guides/claude-code",
+                  "guides/cursor",
+                  "guides/geo",
+                  "guides/windsurf"
+                ]
+              },
+              {
+                "group": "API docs",
+                "icon": "file-braces",
+                "pages": [
+                  "guides/migrating-from-mdx"
+                ]
+              },
+              {
+                "group": "Best practices",
+                "icon": "trophy",
+                "pages": [
+                  "guides/accessibility",
+                  "guides/content-types",
+                  "guides/content-templates",
+                  "guides/custom-layouts",
+                  "guides/improving-docs",
+                  "guides/internationalization",
+                  "guides/linking",
+                  "guides/maintenance",
+                  "guides/media",
+                  "migration",
+                  "guides/navigation",
+                  "guides/seo",
+                  "guides/style-and-tone",
+                  "guides/understand-your-audience"
+                ]
+              },
+              {
+                "group": "Git",
+                "icon": "git-merge",
+                "pages": [
+                  "guides/git-concepts",
+                  "guides/branches"
+                ]
+              },
+              {
+                "group": "Use cases",
+                "icon": "blocks",
+                "pages": [
+                  "guides/developer-documentation",
+                  "guides/knowledge-base",
+                  "guides/help-center",
+                  "guides/custom-frontend"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API reference",
+            "groups": [
+              {
+                "group": "API reference",
+                "icon": "file-json",
+                "pages": [
+                  "api/introduction"
+                ]
+              },
+              {
+                "group": "Admin",
+                "icon": "activity",
+                "pages": [
+                  "api/update/trigger",
+                  "api/update/status",
+                  "api/preview/trigger"
+                ]
+              },
+              {
+                "group": "Agent",
+                "icon": "pen-line",
+                "pages": [
+                  "api/agent/v2/create-agent-job",
+                  "api/agent/v2/get-agent-job",
+                  "api/agent/v2/send-message"
+                ]
+              },
+              {
+                "group": "Assistant",
+                "icon": "bot-message-square",
+                "pages": [
+                  "api/assistant/create-assistant-message-v2",
+                  "api/assistant/search",
+                  "api/assistant/get-page-content"
+                ]
+              },
+              {
+                "group": "Analytics",
+                "icon": "chart-line",
+                "pages": [
+                  "api/analytics/feedback",
+                  "api/analytics/feedback-by-page",
+                  "api/analytics/assistant-conversations",
+                  "api/analytics/assistant-caller-stats",
+                  "api/analytics/searches",
+                  "api/analytics/views",
+                  "api/analytics/visitors"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "groups": [
+              {
+                "group": "Changelog",
+                "icon": "calendar",
+                "boost": 0.5,
+                "pages": [
+                  "changelog"
+                ]
+              }
+            ]
+          }
+        ],
+        "language": "en"
+      },
+      {
+        "$ref": "./fr.json"
+      },
+      {
+        "$ref": "./es.json"
+      },
+      {
+        "$ref": "./zh.json"
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://mintlify.com/docs"
+  },
+  "api": {
+    "mdx": {
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "https://mintlify.com/start"
+    },
+    "links": [
+      {
+        "label": "Talk to us",
+        "href": "https://mintlify.com/contact/sales"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "linkedin": "https://www.linkedin.com/company/mintlify",
+      "github": "https://github.com/mintlify"
+    },
+    "links": [
+      {
+        "header": "Explore",
+        "items": [
+          {
+            "label": "Startups",
+            "href": "https://www.mintlify.com/startups"
+          },
+          {
+            "label": "Enterprise",
+            "href": "https://www.mintlify.com/enterprise"
+          },
+          {
+            "label": "Switch",
+            "href": "https://www.mintlify.com/switch"
+          }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          {
+            "label": "Customers",
+            "href": "https://mintlify.com/customers"
+          },
+          {
+            "label": "Blog",
+            "href": "https://mintlify.com/blog"
+          },
+          {
+            "label": "Pricing",
+            "href": "https://www.mintlify.com/pricing"
+          },
+          {
+            "label": "Contact support",
+            "href": "https://www.mintlify.com/docs/contact-support"
+          },
+          {
+            "label": "Feature Requests",
+            "href": "https://github.com/orgs/mintlify/discussions/categories/feature-requests"
+          },
+          {
+            "label": "Status",
+            "href": "https://www.mintlify.com/docs/status"
+          }
+        ]
+      },
+      {
+        "header": "Company",
+        "items": [
+          {
+            "label": "Careers",
+            "href": "https://mintlify.com/careers"
+          },
+          {
+            "label": "Wall of Love",
+            "href": "https://www.mintlify.com/wall-of-love"
+          }
+        ]
+      },
+      {
+        "header": "Legal",
+        "items": [
+          {
+            "label": "Privacy Policy",
+            "href": "https://mintlify.com/legal/privacy"
+          },
+          {
+            "label": "Terms of Service",
+            "href": "https://mintlify.com/legal/terms"
+          },
+          {
+            "label": "Security",
+            "href": "https://security.mintlify.com/?_gl=1*ascm4x*_gcl_au*NTU1ODkzNjQ0LjE3NTQ5Mjg4NzIuMTgzMDQ5NTExMS4xNzU3NTQwMDk1LjE3NTc1NDAwOTQ."
+          }
+        ]
+      }
+    ]
+  },
+  "thumbnails": {
+    "background": "/images/thumbnail/background.svg"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "download-spec",
+      "chatgpt",
+      "claude",
+      "add-mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "redirects": {
+    "$ref": "./redirects.json"
+  },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-RCYWHL7EQ7"
+    },
+    "posthog": {
+      "apiKey": "phc_eNuN6Ojnk9O7uWfC17z12AK85fNR0BY6IiGVy0Gfwzw"
+    }
+  },
+  "seo": {
+    "metatags": {
+      "canonical": "https://www.mintlify.com/docs",
+      "google-site-verification": "YRuJgIxsRnMkiRTYTo_tEsJSFyIE3AraEiukTbeV4Ag",
+      "og:locale": "en_US",
+      "twitter:site": "@mintlify"
+    }
+  }
+}
