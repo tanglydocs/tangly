@@ -1,5 +1,6 @@
 import type { DocsJson } from "./docs-json.js";
 import type { NavGroup, NavTab } from "./navigation.js";
+import { normalizePlayground } from "./normalize.js";
 
 export interface MintJson {
   name?: string;
@@ -26,7 +27,7 @@ export interface MintJson {
   api?: {
     baseUrl?: string;
     auth?: { method?: string; name?: string };
-    playground?: { mode?: string };
+    playground?: { mode?: string; display?: string; [key: string]: unknown };
   };
   openapi?: string | string[];
   feedback?: { thumbsRating?: boolean; suggestEdits?: boolean };
@@ -104,7 +105,11 @@ export function convertMintToDocs(mint: MintJson): DocsJson {
       ...(apiAny?.baseUrl ? { baseUrl: apiAny.baseUrl } : {}),
       ...(apiAny?.auth ? { auth: apiAny.auth as NonNullable<DocsJson["api"]>["auth"] } : {}),
       ...(apiAny?.playground
-        ? { playground: apiAny.playground as NonNullable<DocsJson["api"]>["playground"] }
+        ? {
+            playground: normalizePlayground(apiAny.playground) as NonNullable<
+              DocsJson["api"]
+            >["playground"],
+          }
         : {}),
       ...(mint.openapi ? { openapi: mint.openapi } : {}),
     };

@@ -106,6 +106,18 @@ describe("convertMintToDocs", () => {
     expect(docs.navigation.groups).toHaveLength(1);
     expect(docs.navigation.global?.anchors).toHaveLength(1);
   });
+
+  test("translates api.playground.display into native mode", () => {
+    const docs = convertMintToDocs({
+      name: "API Project",
+      navigation: [{ group: "G", pages: ["x"] }],
+      api: { baseUrl: "https://api.example.com", playground: { display: "none" } },
+    });
+    expect(docs.api?.playground?.mode).toBe("hide");
+    expect((docs.api?.playground as Record<string, unknown> | undefined)?.display).toBeUndefined();
+    // Generated docs.json must validate against the strict schema.
+    expect(safeParseDocsJson(docs).success).toBe(true);
+  });
 });
 
 describe("ApiSchema (codeSamples + Mintlify aliases)", () => {
@@ -126,6 +138,44 @@ describe("ApiSchema (codeSamples + Mintlify aliases)", () => {
       },
     });
     expect(result.success).toBe(true);
+  });
+
+  test("aliases api.playground.display → mode (none→hide, auth→interactive)", () => {
+    const hide = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: { playground: { display: "none", credentials: true } },
+    });
+    expect(hide.api?.playground?.mode).toBe("hide");
+    // credentials/proxy survive the rewrite; raw `display` is stripped.
+    expect(hide.api?.playground?.credentials).toBe(true);
+    expect((hide.api?.playground as Record<string, unknown> | undefined)?.display).toBeUndefined();
+
+    const auth = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: { playground: { display: "auth" } },
+    });
+    expect(auth.api?.playground?.mode).toBe("interactive");
+
+    for (const v of ["interactive", "simple"] as const) {
+      const cfg = parseDocsJson({
+        name: "T",
+        navigation: { pages: ["x"] },
+        api: { playground: { display: v } },
+      });
+      expect(cfg.api?.playground?.mode).toBe(v);
+    }
+  });
+
+  test("native api.playground.mode wins over display", () => {
+    const cfg = parseDocsJson({
+      name: "T",
+      navigation: { pages: ["x"] },
+      api: { playground: { mode: "simple", display: "none" } },
+    });
+    expect(cfg.api?.playground?.mode).toBe("simple");
+    expect((cfg.api?.playground as Record<string, unknown> | undefined)?.display).toBeUndefined();
   });
 
   test("aliases api.examples → api.codeSamples", () => {
