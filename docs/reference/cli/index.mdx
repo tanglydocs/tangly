@@ -84,7 +84,7 @@ tangly dev --port 8080 --host --no-open
 Production build to `dist/`.
 
 ```bash
-tangly build [--out ./dist] [--adapter <auto>] [--base /] [--analyze]
+tangly build [--out ./dist] [--adapter <auto>] [--base /] [--site-url <url>] [--env <env>] [--analyze]
 ```
 
 | Flag | Type | Default | Description |
@@ -92,7 +92,26 @@ tangly build [--out ./dist] [--adapter <auto>] [--base /] [--analyze]
 | `--out` | string | `./dist` | Output directory |
 | `--adapter` | `vercel \| cloudflare \| node \| static` | (auto) | Auto-detected from project files: `vercel.json` → vercel, `wrangler.toml`/`wrangler.jsonc` → cloudflare, `Dockerfile` → node, else `static`. |
 | `--base` | string | `/` | Subpath. Pass `--base /docs` to deploy under `/docs`. Rewrites every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result. |
+| `--site-url` | string | docs.json `siteUrl` | Absolute deploy URL. Overrides `siteUrl` for canonical, `og:image`, sitemap, and `robots.txt`. Also reads `TANGLY_SITE_URL`. |
+| `--env` | `production \| preview` | (auto) | Deploy environment. `preview` emits `robots: noindex` and points canonical at the production domain. Also reads `TANGLY_ENV`. |
 | `--analyze` | boolean | `false` | Write a build-size report to `dist/_tangly/`. |
+
+### Site URL & environments
+
+Canonical tags and `og:image` need an absolute URL, but the deploy host varies (production, staging, PR previews). Tangly resolves it per build, highest priority first:
+
+1. `--site-url` / `TANGLY_SITE_URL`
+2. Platform auto-detect — Vercel, Netlify, and Cloudflare Pages deploy URLs are read automatically
+3. `siteUrl` in `docs.json`
+
+`og:image` points at the **current deploy** (so the image resolves on a preview); `canonical` points at the **production** domain (so previews never compete in search). Non-production deploys (`--env preview`, or an auto-detected preview/branch context) also get `<meta name="robots" content="noindex, nofollow">`.
+
+```bash
+# Staging deploy: cards resolve at staging, canonical + sitemap stay on prod, noindex
+tangly build --site-url https://staging.docs.example.com --env preview
+```
+
+On Vercel/Netlify this is zero-config — PR previews self-reference and go noindex automatically. Cloudflare Pages exposes no production signal, so set `--env preview` (or `TANGLY_ENV=preview`) on preview branches. In `tangly dev`, canonical/`og:image` use the live request origin so you can preview cards locally.
 
 ### Output
 
@@ -103,6 +122,7 @@ dist/
 ├── guides/<slug>/index.html
 ├── images/                 copied from project root
 ├── logo/
+├── og/<slug>.png           generated social cards
 ├── sitemap.xml
 ├── robots.txt
 ├── llms.txt

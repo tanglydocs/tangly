@@ -30,3 +30,10 @@ export type {
   ResolvedTab,
   SidebarItem,
 } from "./manifest/types.js";
+
+export {
+  detectPlatform,
+  resolveSite,
+  type ResolvedSite,
+  type ResolveSiteInput,
+} from "./site/resolve-site.js";

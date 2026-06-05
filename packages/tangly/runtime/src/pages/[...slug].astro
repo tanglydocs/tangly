@@ -9,6 +9,7 @@ import OpenApiStoplight from "@tanglydocs/theme-ui/components/OpenApiStoplight.a
 import PageShell from "@tanglydocs/theme-ui/PageShell.astro";
 import type { PageEntry } from "tangly";
 import { mdxComponents } from "../lib/mdx-components.ts";
+import { listRoutablePages, operationMeta, parseApiAttr } from "../lib/og-pages.ts";
 
 // Eagerly discover user templates so we can dispatch to them per page.
 // `@user-template/*` is aliased by the integration to <userRoot>/templates.
@@ -31,27 +32,15 @@ function findTemplate(name: string | undefined): unknown | null {
 }
 
 export async function getStaticPaths() {
-  const excluded = new Set<string>(manifest.excludedSlugs ?? []);
+  // Shared with the OG card endpoint (og/[...slug].png.ts) via listRoutablePages
+  // so the HTML routes and the card routes can never drift.
   const entries = await getCollection("docs");
-  const entrySlugs = new Set(entries.map((e) => e.id));
-
-  const mdxPaths = entries
-    .filter((entry) => !excluded.has(entry.id))
-    .map((entry) => ({
-      params: { slug: entry.id },
-      props: { entry, synthPage: null as null | (typeof manifest.pages)[number][1] },
-    }));
-
-  // Synthesized OpenAPI pages have no MDX entry — emit a path per
-  // manifest page that isn't already covered by the docs collection.
-  const synthPaths = manifest.pages
-    .filter(([slug]) => !entrySlugs.has(slug) && !excluded.has(slug))
-    .map(([slug, page]) => ({
+  return listRoutablePages(entries, manifest.pages, manifest.excludedSlugs).map(
+    ({ slug, entry, synthPage }) => ({
       params: { slug },
-      props: { entry: null, synthPage: page },
-    }));
-
-  return [...mdxPaths, ...synthPaths];
+      props: { entry, synthPage },
+    }),
+  );
 }
 
 const { entry, synthPage } = Astro.props;
@@ -104,56 +93,50 @@ const openapiAttr = (entry?.data?.openapi ??
 const isCompanion = Boolean(apiCompanionAttr) && !page.frontmatter.openapi && !entry?.data?.openapi;
 let openapi: { method: string; path: string; spec: string } | undefined;
 let fallbackResponseSchema: Record<string, unknown> | undefined;
-if (openapiAttr) {
-  const parts = openapiAttr.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    const [method, ...rest] = parts;
-    const path = rest.join(" ");
-    const apiCfg = manifest.config.api;
-    // Resolve spec URL: prefer the owning tab's openapi (covers
-    // tab-specific specs), then fall back to top-level api.openapi.
-    const tabOpenapi = manifest.navigation.tabs.find(
-      (t) => t.slug === page.tab?.slug,
-    )?.openapi;
-    const spec = tabOpenapi
-      ?? (typeof apiCfg?.openapi === "string"
-        ? apiCfg.openapi
-        : Array.isArray(apiCfg?.openapi)
-          ? apiCfg.openapi[0]
-          : undefined);
-    if (spec) {
-      openapi = { method: method!.toLowerCase(), path, spec };
-      // Best-effort SSR fetch: title/description for the page header,
-      // plus a JSON-pointer lookup for `api.responseFallback` so we
-      // can synthesize an example body for empty 200 schemas.
-      try {
-        const specUrl = spec.startsWith("http") ? spec : `https://${spec}`;
-        const res = await fetch(specUrl, { redirect: "follow" });
-        if (res.ok) {
-          const doc = (await res.json()) as Record<string, unknown>;
-          const paths = doc.paths as
-            | Record<string, Record<string, { summary?: string; description?: string }>>
-            | undefined;
-          const op = paths?.[path]?.[method!.toLowerCase()];
-          derivedTitle = op?.summary;
-          derivedDesc = op?.description;
+const apiCoords = parseApiAttr(openapiAttr);
+if (apiCoords) {
+  const { method, path } = apiCoords;
+  const apiCfg = manifest.config.api;
+  // Resolve spec URL: prefer the owning tab's openapi (covers
+  // tab-specific specs), then fall back to top-level api.openapi.
+  const tabOpenapi = manifest.navigation.tabs.find(
+    (t) => t.slug === page.tab?.slug,
+  )?.openapi;
+  const spec = tabOpenapi
+    ?? (typeof apiCfg?.openapi === "string"
+      ? apiCfg.openapi
+      : Array.isArray(apiCfg?.openapi)
+        ? apiCfg.openapi[0]
+        : undefined);
+  if (spec) {
+    openapi = { method, path, spec };
+    // Best-effort SSR fetch: title/description for the page header,
+    // plus a JSON-pointer lookup for `api.responseFallback` so we
+    // can synthesize an example body for empty 200 schemas.
+    try {
+      const specUrl = spec.startsWith("http") ? spec : `https://${spec}`;
+      const res = await fetch(specUrl, { redirect: "follow" });
+      if (res.ok) {
+        const doc = (await res.json()) as Record<string, unknown>;
+        const op = operationMeta(doc, method, path);
+        derivedTitle = op.title;
+        derivedDesc = op.description;
 
-          const ptr = (apiCfg as { responseFallback?: string } | undefined)?.responseFallback;
-          if (ptr && ptr.startsWith("#/")) {
-            const segments = ptr.slice(2).split("/").map((p) => p.replace(/~1/g, "/").replace(/~0/g, "~"));
-            let cur: unknown = doc;
-            for (const segment of segments) {
-              if (cur === null || typeof cur !== "object") { cur = undefined; break; }
-              cur = (cur as Record<string, unknown>)[segment];
-            }
-            if (cur && typeof cur === "object") {
-              fallbackResponseSchema = cur as Record<string, unknown>;
-            }
+        const ptr = (apiCfg as { responseFallback?: string } | undefined)?.responseFallback;
+        if (ptr && ptr.startsWith("#/")) {
+          const segments = ptr.slice(2).split("/").map((p) => p.replace(/~1/g, "/").replace(/~0/g, "~"));
+          let cur: unknown = doc;
+          for (const segment of segments) {
+            if (cur === null || typeof cur !== "object") { cur = undefined; break; }
+            cur = (cur as Record<string, unknown>)[segment];
+          }
+          if (cur && typeof cur === "object") {
+            fallbackResponseSchema = cur as Record<string, unknown>;
           }
         }
-      } catch {
-        // ignore — endpoint will still render via OpenApiEndpoint
       }
+    } catch {
+      // ignore — endpoint will still render via OpenApiEndpoint
     }
   }
 }

@@ -102,9 +102,13 @@ Production static build.
 - `--adapter <vercel|cloudflare|node|static>` — auto-detected if omitted
 - `--config <path>`, `--root <dir>`
 - `--base <path>` — subpath like `/docs` (default `/`)
+- `--site-url <url>` / `TANGLY_SITE_URL` — absolute deploy URL; overrides docs.json `siteUrl` for canonical + `og:image` + sitemap
+- `--env <production|preview>` / `TANGLY_ENV` — `preview` emits `robots:noindex` + canonical→prod
 - `--analyze` — write a build-size report to `dist/_tangly/`
 
-Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `og/<slug>.png` social cards, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+
+Site URL resolves per build: `--site-url`/`TANGLY_SITE_URL` > platform auto-detect (Vercel/Netlify/Cloudflare Pages) > docs.json `siteUrl`. `og:image` uses the deploy host, canonical uses prod; previews go noindex. `tangly dev` uses the live request origin.
 
 ### `tangly preview`
 Serve `./dist` locally to spot-check the build.
@@ -170,6 +174,7 @@ Top-level fields (most common):
 | Field | Purpose |
 | --- | --- |
 | `name` (req) | Project name shown in navbar |
+| `siteUrl` | Absolute site URL (e.g. `https://docs.example.com`). Enables canonical tags + auto social cards. |
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
@@ -178,6 +183,7 @@ Top-level fields (most common):
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
 | `seo` | `metatags`, `indexing` (`all` \| `navigable`) |
+| `thumbnails` | Auto social cards (OG images): `enabled`, `background`, `accent`, `image`. On by default once `siteUrl` set; prerendered to `/og/<slug>.png`. Per-page override via frontmatter `seo.ogImage`. |
 | `redirects` | `[{ source, destination, permanent? }]` |
 | `appearance` | default mode, reading time, reading progress |
 | `search` | Pagefind config |

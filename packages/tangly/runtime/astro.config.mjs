@@ -198,6 +198,14 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwind()],
+    // OG card deps must not be bundled into the prerender chunk: satori loads
+    // its own yoga wasm and @resvg/resvg-wasm ships a .wasm resolved at runtime.
+    ssr: { external: ["satori", "@resvg/resvg-wasm"] },
+    optimizeDeps: { exclude: ["satori", "@resvg/resvg-wasm"] },
+    // Absolute path to this runtime dir, baked in at the user's build time.
+    // The OG renderer reads bundled fonts from <here>/src/og/fonts, which
+    // import.meta.url can't locate once the endpoint is bundled into a chunk.
+    define: { __TANGLY_RUNTIME_DIR__: JSON.stringify(__dirname) },
     server: {
       fs: {
         // katex (and other workspace deps under bun's hoist dir) must be

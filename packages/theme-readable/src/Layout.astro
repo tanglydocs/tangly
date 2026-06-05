@@ -3,6 +3,7 @@ import type { DocsJson } from "@tanglydocs/schema";
 import type { PageEntry, ResolvedNavigation, SidebarItem } from "tangly";
 import Icon from "@tanglydocs/theme-ui/components/Icon.astro";
 import MermaidLoader from "@tanglydocs/theme-ui/MermaidLoader.astro";
+import Seo from "@tanglydocs/theme-ui/Seo.astro";
 import "@tanglydocs/theme/theme.css";
 import "@tanglydocs/theme-ui/styles/prose.css";
 import "katex/dist/katex.min.css";
@@ -74,8 +75,6 @@ const googleFamilies = [...new Set([headingFont, bodyFont, "Crimson Pro"])]
 const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamilies}&family=${monoFont.replace(/ /g, "+")}:wght@400;500;600&display=swap`;
 
 const appearanceDefault = config.appearance?.default ?? "system";
-const ogTitle = pageTitle;
-const ogDesc = pageDescription ?? config.description ?? "";
 const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
 ---
 <!DOCTYPE html>
@@ -86,10 +85,7 @@ const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={favicon} />
-    <meta property="og:title" content={ogTitle} />
-    <meta property="og:description" content={ogDesc} />
-    <meta property="og:type" content="article" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <Seo config={config} page={page} pageTitle={pageTitle} pageDescription={pageDescription} />
     <meta name="color-scheme" content="light dark" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

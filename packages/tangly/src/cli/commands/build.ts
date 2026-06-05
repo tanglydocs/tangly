@@ -9,6 +9,7 @@ import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
 import { buildManifest } from "../../manifest/index.js";
+import { resolveSite } from "../../site/resolve-site.js";
 import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 
@@ -41,6 +42,16 @@ export const buildCommand = defineCommand({
       type: "string",
       description: "Deploy under subpath like /docs",
       default: "/",
+    },
+    siteUrl: {
+      type: "string",
+      description:
+        "Absolute deploy URL (overrides docs.json siteUrl). Sets canonical + og:image host.",
+    },
+    env: {
+      type: "string",
+      description:
+        "Deploy environment: production | preview. Previews get robots:noindex + canonical->prod.",
     },
     analyze: {
       type: "boolean",
@@ -75,6 +86,16 @@ export const buildCommand = defineCommand({
     process.env.TANGLY_CONFIG_FILE = args.config;
     process.env.TANGLY_BASE = args.base;
     process.env.TANGLY_ADAPTER = adapter;
+    // --site-url / --env override docs.json + platform detection for this build.
+    if (args.env && args.env !== "production" && args.env !== "preview") {
+      // Without this guard a typo (e.g. --env stagng) falls through to the
+      // production default — no noindex — and silently lets a staging deploy
+      // get indexed.
+      console.error(pc.red(`✗ Unknown --env "${args.env}". Expected: production | preview.`));
+      process.exit(1);
+    }
+    if (args.siteUrl) process.env.TANGLY_SITE_URL = args.siteUrl;
+    if (args.env) process.env.TANGLY_ENV = args.env;
 
     // Validate first
     const manifest = await buildManifest({ root: userRoot, configFile: args.config });
@@ -163,9 +184,14 @@ export const buildCommand = defineCommand({
     const assetsResult = await copyStaticAssets({ manifest, outDir, astroEmitted });
 
     // Sitemap, llms.txt, llms-full.txt, robots.txt, per-page <slug>.md
-    const siteUrl = (manifest.config as { siteUrl?: string }).siteUrl;
+    // Sitemap / robots / llms.txt are production SEO artifacts — use the
+    // canonical (prod) URL, which honors --site-url / --env / platform detection.
+    const site = resolveSite({
+      docsSiteUrl: (manifest.config as { siteUrl?: string }).siteUrl,
+      env: process.env,
+    });
     const opts: Parameters<typeof writeBuildOutputs>[0] = { manifest, outDir, base: args.base };
-    if (siteUrl) opts.siteUrl = siteUrl;
+    if (site.canonicalUrl) opts.siteUrl = site.canonicalUrl;
     const buildOutputs = writeBuildOutputs(opts);
 
     // Pagefind: search index over rendered HTML. Done last so it sees
