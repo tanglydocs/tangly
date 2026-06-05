@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -31,7 +31,20 @@ step("init --from <projectDir> (synthesize docs.json from existing files)");
 runCli(["init", "--from", projectDir, projectDir]);
 assertExists(join(projectDir, "docs.json"));
 
-step("migrate --yes");
+// Exercise the Mintlify-compat alias surface end-to-end (issue #6). A real
+// Mintlify docs.json carries `api.playground.display` (Mintlify's rename of
+// `mode`, value `none`/`auth`) and `api.examples` (renamed to `codeSamples`).
+// Inject both so the migrate validation below and the build's parse-time
+// normalization gate the aliases on every platform — not just unit tests.
+step("inject Mintlify aliases (api.playground.display + api.examples)");
+patchJson(join(projectDir, "docs.json"), (cfg) => {
+  cfg.api = {
+    playground: { display: "none" },
+    examples: { languages: ["curl", "python"] },
+  };
+});
+
+step("migrate --yes (gates: Mintlify aliases accepted by the schema)");
 runCli(["migrate", "--yes", "--root", projectDir]);
 
 // Drop deploy-meta files + custom robots.txt + .tanglyignore + .gitignore to
@@ -78,6 +91,12 @@ function runCli(args: string[], env: Record<string, string> = {}): void {
   if (result.status !== 0) fail(`tangly ${args.join(" ")} exited ${result.status}`);
 }
 
+function patchJson(path: string, mutate: (cfg: Record<string, unknown>) => void): void {
+  const cfg = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+  mutate(cfg);
+  writeFileSync(path, `${JSON.stringify(cfg, null, 2)}\n`);
+}
+
 function assertExists(path: string): void {
   if (!existsSync(path)) fail(`expected ${path} to exist`);
   log(`  ✓ ${path}`);
@@ -90,7 +109,6 @@ function assertNotExists(path: string): void {
 
 function assertContains(path: string, needle: string): void {
   if (!existsSync(path)) fail(`expected ${path} to exist`);
-  const { readFileSync } = require("node:fs") as typeof import("node:fs");
   const body = readFileSync(path, "utf8");
   if (!body.includes(needle)) {
     fail(`expected ${path} to contain "${needle}", got:\n${body.slice(0, 200)}`);
