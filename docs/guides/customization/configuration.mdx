@@ -130,6 +130,8 @@ Cards are prerendered to `/og/<slug>.png` during `tangly build`, and rendered on
 
 Override per page with `seo.ogImage` in frontmatter, or set `thumbnails.image` for one static image across the whole site. Turn generation off with `thumbnails.enabled: false`. Full options: [`thumbnails`](/reference/schema#thumbnails).
 
+Staging, PR previews, and production each need a different host. You don't have to hard-code one: `--site-url` / `TANGLY_SITE_URL` override `siteUrl` per build, Vercel/Netlify/Cloudflare deploy URLs are auto-detected, and `tangly dev` uses the live origin. Previews point `og:image` at the deploy while keeping canonical on production and going `noindex`. See [Site URL & environments](/reference/cli#build).
+
 ### Footer
 
 Beyond the existing `socials` and `links`, the footer now drives last-updated stamps and edit-on-source links.

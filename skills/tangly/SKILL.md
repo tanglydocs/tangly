@@ -102,9 +102,13 @@ Production static build.
 - `--adapter <vercel|cloudflare|node|static>` — auto-detected if omitted
 - `--config <path>`, `--root <dir>`
 - `--base <path>` — subpath like `/docs` (default `/`)
+- `--site-url <url>` / `TANGLY_SITE_URL` — absolute deploy URL; overrides docs.json `siteUrl` for canonical + `og:image` + sitemap
+- `--env <production|preview>` / `TANGLY_ENV` — `preview` emits `robots:noindex` + canonical→prod
 - `--analyze` — write a build-size report to `dist/_tangly/`
 
-Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `og/<slug>.png` social cards, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+
+Site URL resolves per build: `--site-url`/`TANGLY_SITE_URL` > platform auto-detect (Vercel/Netlify/Cloudflare Pages) > docs.json `siteUrl`. `og:image` uses the deploy host, canonical uses prod; previews go noindex. `tangly dev` uses the live request origin.
 
 ### `tangly preview`
 Serve `./dist` locally to spot-check the build.
