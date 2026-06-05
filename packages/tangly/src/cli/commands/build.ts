@@ -163,7 +163,7 @@ export const buildCommand = defineCommand({
       process.chdir(originalCwd);
 
       if (existsSync(outDir)) {
-        rmSync(outDir, { recursive: true, force: true });
+        rmSync(outDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
       }
       cpSync(stagingOut, outDir, { recursive: true, dereference: true });
     } finally {
@@ -172,7 +172,19 @@ export const buildCommand = defineCommand({
       } catch {
         // best-effort
       }
-      rmSync(stagingDir, { recursive: true, force: true });
+      // Windows holds handles on the staging tree briefly after Astro/Vite
+      // exits, so the remove can hit EBUSY. rmSync retries those (only when
+      // recursive). Output is already copied to outDir by here, so a stubborn
+      // lock should leave a temp dir behind, not fail an otherwise-good build.
+      try {
+        rmSync(stagingDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+      } catch (err) {
+        console.warn(
+          pc.yellow(
+            `⚠ Could not remove build staging dir ${stagingDir}: ${(err as Error).message}`,
+          ),
+        );
+      }
     }
 
     // Snapshot what Astro just emitted so copyStaticAssets can hard-protect
