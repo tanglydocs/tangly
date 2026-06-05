@@ -74,6 +74,10 @@ export const devCommand = defineCommand({
     // Set mode/overrides before building the manifest so its social-card
     // warning knows we're in dev (cards render live via the request origin).
     process.env.TANGLY_MODE = "dev";
+    if (args.env && args.env !== "production" && args.env !== "preview") {
+      console.error(pc.red(`✗ Unknown --env "${args.env}". Expected: production | preview.`));
+      process.exit(1);
+    }
     if (args.siteUrl) process.env.TANGLY_SITE_URL = args.siteUrl;
     if (args.env) process.env.TANGLY_ENV = args.env;
 

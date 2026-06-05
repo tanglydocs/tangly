@@ -87,6 +87,13 @@ export const buildCommand = defineCommand({
     process.env.TANGLY_BASE = args.base;
     process.env.TANGLY_ADAPTER = adapter;
     // --site-url / --env override docs.json + platform detection for this build.
+    if (args.env && args.env !== "production" && args.env !== "preview") {
+      // Without this guard a typo (e.g. --env stagng) falls through to the
+      // production default — no noindex — and silently lets a staging deploy
+      // get indexed.
+      console.error(pc.red(`✗ Unknown --env "${args.env}". Expected: production | preview.`));
+      process.exit(1);
+    }
     if (args.siteUrl) process.env.TANGLY_SITE_URL = args.siteUrl;
     if (args.env) process.env.TANGLY_ENV = args.env;
 
