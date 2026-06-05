@@ -38,6 +38,7 @@
 - **OpenAPI 3.0 / 3.1.** Point at a spec, get browseable endpoint pages with try-it.
 - **Static output.** `tangly build` emits a folder. No runtime.
 - **Pagefind search built in.** Instant, ⌘K, no Algolia key.
+- **Social cards, generated.** Every page gets a branded 1200×630 Open Graph image built from its title, theme, and your colors. Links unfurl instead of rendering blank. Per-environment URLs mean PR previews self-reference and stay out of search.
 - **Custom themes.** Build them using components from `@tanglydocs/theme-ui`.
 - **One-line migration from Mintlify.** `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
 
