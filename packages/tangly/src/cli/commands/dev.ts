@@ -45,6 +45,14 @@ export const devCommand = defineCommand({
       description: "Verbose logging",
       default: false,
     },
+    siteUrl: {
+      type: "string",
+      description: "Absolute site URL override (default: the dev server origin).",
+    },
+    env: {
+      type: "string",
+      description: "Deploy environment: production | preview.",
+    },
     tunnel: {
       type: "boolean",
       description: "Expose dev server publicly via cloudflared quick tunnel",
@@ -63,13 +71,18 @@ export const devCommand = defineCommand({
       process.exit(1);
     }
 
+    // Set mode/overrides before building the manifest so its social-card
+    // warning knows we're in dev (cards render live via the request origin).
+    process.env.TANGLY_MODE = "dev";
+    if (args.siteUrl) process.env.TANGLY_SITE_URL = args.siteUrl;
+    if (args.env) process.env.TANGLY_ENV = args.env;
+
     // Pre-validate the manifest before launching Astro so the user sees
     // schema errors immediately, not buried in an Astro stack trace.
     const manifest = await buildManifest({ root: userRoot, configFile: args.config });
 
     process.env.TANGLY_USER_ROOT = userRoot;
     process.env.TANGLY_CONFIG_FILE = args.config;
-    process.env.TANGLY_MODE = "dev";
 
     const runtimeDir = getRuntimeDir();
     const port = Number(args.port);

@@ -10,6 +10,7 @@ import { getCollection } from "astro:content";
 import { manifest } from "virtual:tangly/manifest";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { resolveSite } from "tangly/site";
 import { listRoutablePages, toOgPage, type OgPage } from "../../lib/og-pages.ts";
 import { renderOgPng } from "../../lib/og-render.ts";
 
@@ -23,7 +24,12 @@ export async function getStaticPaths() {
   const thumbnails = manifest.config.thumbnails;
   const generationEnabled = thumbnails?.enabled !== false && !thumbnails?.image;
   if (!generationEnabled) return [];
-  if (import.meta.env.PROD && !manifest.config.siteUrl) return [];
+  // At build, skip when no absolute base is resolvable (env override, platform,
+  // or docs.json siteUrl) — nothing would reference the PNGs. Dev always renders.
+  if (import.meta.env.PROD) {
+    const site = resolveSite({ docsSiteUrl: manifest.config.siteUrl, env: process.env });
+    if (!site.ogUrl) return [];
+  }
 
   const entries = await getCollection("docs");
   const pageMap = new Map(manifest.pages);

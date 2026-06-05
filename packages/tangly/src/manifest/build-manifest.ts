@@ -6,6 +6,7 @@ import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { applyOpenApiOverride } from "../openapi/resolve-source.js";
 import { resolveEditUrl } from "./git-meta.js";
+import { resolveSite } from "../site/resolve-site.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
 import { resolveSectionDefaults } from "./section-defaults.js";
@@ -33,16 +34,23 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const raw = readFileSync(configPath, "utf8");
   const config = parseDocsJson(JSON.parse(raw));
 
-  // Social cards need an absolute base URL (og:image must be absolute). If
-  // cards are enabled (the default) but siteUrl is missing, no cards are
-  // emitted — surface that via `tangly check`.
+  // Social cards need an absolute base (og:image must be absolute). If cards
+  // are enabled but no base resolves (no siteUrl, --site-url, or platform), no
+  // cards are emitted at build — surface that via `tangly check`. Skip in dev,
+  // where cards render live against the request origin.
   const thumbnails = config.thumbnails as { enabled?: boolean; image?: string } | undefined;
-  if (!config.siteUrl && thumbnails?.enabled !== false && !thumbnails?.image) {
+  const cardsEnabled = thumbnails?.enabled !== false && !thumbnails?.image;
+  const isDev = process.env.TANGLY_MODE === "dev";
+  if (
+    cardsEnabled &&
+    !isDev &&
+    !resolveSite({ docsSiteUrl: config.siteUrl, env: process.env }).ogUrl
+  ) {
     warnings.push({
       level: "warn",
       source: opts.configFile ?? "docs.json",
       message:
-        "Social cards are enabled but `siteUrl` is not set. Open Graph images need an absolute URL, so no cards will be generated until you add `siteUrl`. Set `thumbnails.enabled: false` to silence this.",
+        "Social cards are enabled but no site URL is set. Open Graph images need an absolute URL — set `siteUrl` in docs.json (or pass --site-url / TANGLY_SITE_URL). Set `thumbnails.enabled: false` to silence this.",
     });
   }
 

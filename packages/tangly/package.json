@@ -49,6 +49,10 @@
     "./content": {
       "types": "./dist/content/index.d.ts",
       "import": "./dist/content/index.js"
+    },
+    "./site": {
+      "types": "./dist/site/resolve-site.d.ts",
+      "import": "./dist/site/resolve-site.js"
     }
   },
   "publishConfig": {
