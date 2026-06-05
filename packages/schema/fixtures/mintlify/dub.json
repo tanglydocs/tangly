@@ -1,0 +1,1200 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "aspen",
+  "name": "Dub",
+  "colors": {
+    "primary": "#155dfc",
+    "light": "#155dfc",
+    "dark": "#155dfc"
+  },
+  "favicon": "/logos/favicon.png",
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "fonts": {
+    "heading": {
+      "family": "Satoshi",
+      "source": "/fonts/Satoshi-Variable.woff2",
+      "format": "woff2",
+      "weight": 700
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Developer Docs",
+        "icon": "books",
+        "groups": [
+          {
+            "group": "GETTING STARTED",
+            "pages": [
+              "docs",
+              "docs/concepts/attribution",
+              {
+                "group": "Web installation",
+                "expanded": true,
+                "pages": [
+                  "docs/quickstart/server",
+                  "docs/quickstart/client"
+                ]
+              },
+              {
+                "group": "Mobile installation",
+                "pages": [
+                  "docs/sdks/client-side-mobile/installation-guides/swift",
+                  "docs/sdks/client-side-mobile/installation-guides/react-native"
+                ]
+              },
+              {
+                "group": "Third-party integrations",
+                "expanded": true,
+                "pages": [
+                  "docs/integrations/stripe",
+                  "docs/integrations/google-tag-manager",
+                  "docs/integrations/shopify",
+                  "docs/integrations/hubspot",
+                  "docs/integrations/segment"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "CONCEPTS",
+            "pages": [
+              {
+                "group": "Conversion tracking",
+                "pages": [
+                  "docs/conversions/leads/deferred",
+                  "docs/conversions/sales/direct",
+                  "docs/conversions/sales/refunds",
+                  {
+                    "group": "Auth framework guides",
+                    "pages": [
+                      "docs/conversions/leads/clerk",
+                      "docs/conversions/leads/better-auth",
+                      "docs/conversions/leads/auth0",
+                      "docs/conversions/leads/supabase",
+                      "docs/conversions/leads/next-auth",
+                      "docs/conversions/leads/appwrite"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Deep links",
+                "pages": [
+                  "docs/concepts/deep-links/quickstart",
+                  "docs/concepts/deep-links/deferred-deep-linking",
+                  "docs/concepts/deep-links/attribution",
+                  "docs/concepts/deep-links/migrating-from-firebase"
+                ]
+              },
+              {
+                "group": "Links API",
+                "pages": [
+                  "docs/concepts/links/introduction",
+                  "docs/concepts/links/bulk-operations",
+                  "docs/concepts/links/organization"
+                ]
+              },
+              {
+                "group": "Analytics API",
+                "pages": [
+                  "docs/concepts/analytics/introduction",
+                  {
+                    "group": "Filtering and aggregation",
+                    "pages": [
+                      "docs/concepts/analytics/partners",
+                      "docs/concepts/analytics/links",
+                      "docs/concepts/analytics/location",
+                      "docs/concepts/analytics/device",
+                      "docs/concepts/analytics/referrers",
+                      "docs/concepts/analytics/utm"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "INTEGRATIONS",
+            "pages": [
+              "docs/integrations",
+              "docs/integrations/quickstart"
+            ]
+          },
+          {
+            "group": "OPEN SOURCE",
+            "pages": [
+              "docs/local-development",
+              "docs/self-hosting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Help Center",
+        "icon": "life-ring",
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
+              "help"
+            ]
+          },
+          {
+            "group": "MANAGING A PROGRAM",
+            "pages": [
+              "help/article/dub-partners",
+              {
+                "group": "Getting started",
+                "pages": [
+                  "help/article/setting-up-your-program",
+                  "help/article/program-resources",
+                  "help/article/partner-link-settings",
+                  "help/article/importing-partners"
+                ]
+              },
+              {
+                "group": "Rewards and commissions",
+                "pages": [
+                  "help/article/partner-rewards",
+                  "help/article/dual-sided-incentives",
+                  "help/article/partner-commissions",
+                  "help/article/non-monetary-rewards"
+                ]
+              },
+              {
+                "group": "Recruiting partners",
+                "pages": [
+                  "help/article/inviting-partners",
+                  "help/article/program-landing-page",
+                  "help/article/program-application-form",
+                  "help/article/program-applications",
+                  "docs/partners/embedded-referrals"
+                ]
+              },
+              {
+                "group": "Managing partners",
+                "pages": [
+                  "help/article/managing-program-partners",
+                  "help/article/partner-groups",
+                  "help/article/partner-tags"
+                ]
+              },
+              {
+                "group": "Sending payouts",
+                "pages": [
+                  "help/article/partner-payouts",
+                  "help/article/how-to-set-up-bank-account"
+                ]
+              },
+              {
+                "group": "Engaging partners",
+                "pages": [
+                  "help/article/program-bounties",
+                  "help/article/email-campaigns",
+                  "help/article/messaging-partners",
+                  "help/article/partner-referrals"
+                ]
+              },
+              {
+                "group": "Insights and reporting",
+                "pages": [
+                  "help/article/program-analytics",
+                  "help/article/commission-analytics",
+                  "help/article/application-analytics",
+                  "help/article/fraud-detection"
+                ]
+              },
+              {
+                "group": "Migration guides",
+                "pages": [
+                  "help/article/migrating-from-rewardful",
+                  "help/article/migrating-from-partnerstack",
+                  "help/article/migrating-from-firstpromoter",
+                  "help/article/migrating-from-tolt"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "PARTNERING WITH PROGRAMS",
+            "pages": [
+              {
+                "group": "Getting started",
+                "pages": [
+                  "help/article/partner-profile",
+                  "help/article/managing-partner-teams",
+                  "help/article/merging-partner-accounts",
+                  "help/article/partners-faq"
+                ]
+              },
+              {
+                "group": "Joining programs",
+                "pages": [
+                  "help/article/program-marketplace",
+                  "help/article/navigating-partner-program",
+                  "help/article/communicating-with-programs"
+                ]
+              },
+              {
+                "group": "Receiving payouts",
+                "pages": [
+                  "help/article/receiving-payouts",
+                  "help/article/commissions-payouts",
+                  "help/article/network-referral-bonus",
+                  "help/article/partner-payout-invoice"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "MANAGING YOUR LINKS",
+            "pages": [
+              "help/article/dub-links",
+              {
+                "group": "Links",
+                "pages": [
+                  "help/article/how-to-create-link",
+                  "help/article/utm-builder",
+                  "help/article/how-to-create-utm-templates",
+                  "help/article/custom-qr-codes",
+                  "help/article/custom-link-previews",
+                  "help/article/device-targeting",
+                  "help/article/geo-targeting",
+                  "help/article/link-cloaking",
+                  "help/article/ab-testing",
+                  "help/article/password-protected-links",
+                  "help/article/link-expiration",
+                  "help/article/link-comments",
+                  "help/article/bulk-link-actions",
+                  "help/article/how-to-use-tags",
+                  "help/article/link-folders",
+                  "help/article/folders-rbac"
+                ]
+              },
+              {
+                "group": "Analytics",
+                "pages": [
+                  "help/article/dub-analytics",
+                  "help/article/dub-conversions",
+                  "help/article/real-time-events-stream",
+                  "help/article/customer-insights",
+                  {
+                    "group": "Filtering analytics",
+                    "pages": [
+                      "help/article/filter-analytics-by-folders",
+                      "help/article/filter-analytics-by-tags",
+                      "help/article/filter-analytics-by-utms",
+                      "help/article/filter-analytics-by-trigger"
+                    ]
+                  },
+                  "help/article/share-analytics",
+                  "help/article/dub-analytics-limits",
+                  "help/article/how-to-export-analytics",
+                  "help/article/incorrect-analytics-geolocation-data"
+                ]
+              },
+              {
+                "group": "Custom domains",
+                "pages": [
+                  "help/article/how-to-add-custom-domain",
+                  "help/article/choosing-a-custom-domain",
+                  "help/article/how-to-redirect-root-domain",
+                  "help/article/free-dot-link-domain",
+                  "help/article/how-to-use-dub-with-subpath",
+                  "help/article/using-cloudflare-domains",
+                  "help/article/troubleshooting-domains",
+                  "help/article/default-dub-domains",
+                  "help/article/how-to-set-primary-domain",
+                  "help/article/archiving-domains",
+                  "help/article/setting-not-found-url",
+                  "help/article/how-to-transfer-domains",
+                  "help/article/using-proxies-on-custom-domains"
+                ]
+              },
+              {
+                "group": "Additional guides",
+                "pages": [
+                  "help/article/dub-link-builder",
+                  "help/article/parameter-passing",
+                  "help/article/how-to-transfer-links",
+                  "help/article/how-to-export-links",
+                  "help/article/how-noindex-works",
+                  "help/article/how-to-check-link-destination",
+                  "help/article/link-double-redirects",
+                  "help/article/dub-links-not-working"
+                ]
+              },
+              {
+                "group": "Migration guides",
+                "pages": [
+                  "help/article/migrating-from-bitly",
+                  "help/article/migrating-from-rebrandly",
+                  "help/article/migrating-from-short",
+                  "help/article/how-to-import-csv"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "MANAGING YOUR WORKSPACE",
+            "pages": [
+              "help/article/what-is-a-workspace",
+              {
+                "group": "Workspace members",
+                "pages": [
+                  "help/article/how-to-invite-teammates",
+                  "help/article/workspace-roles"
+                ]
+              },
+              {
+                "group": "Billing & subscription",
+                "pages": [
+                  "help/article/free-trial",
+                  "help/article/how-to-change-billing-information",
+                  "help/article/how-to-download-invoice",
+                  "help/article/how-to-cancel-subscription"
+                ]
+              },
+              {
+                "group": "SAML/SSO",
+                "pages": [
+                  "help/article/okta-saml",
+                  "help/article/okta-scim",
+                  "help/article/google-saml",
+                  "help/article/azure-saml",
+                  "help/article/azure-scim"
+                ]
+              },
+              {
+                "group": "Additional guides",
+                "pages": [
+                  "help/article/how-to-change-default-workspace",
+                  "help/article/how-to-delete-account"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "code",
+        "dropdowns": [
+          {
+            "dropdown": "Dub API",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "DUB API",
+                "pages": [
+                  "docs/api-reference/introduction",
+                  "docs/api-reference/authentication",
+                  "docs/api-reference/rate-limits"
+                ]
+              },
+              {
+                "group": "SDKs",
+                "pages": [
+                  "docs/sdks/overview",
+                  "docs/mcp-server",
+                  {
+                    "group": "Server-side SDKs",
+                    "pages": [
+                      "docs/sdks/typescript",
+                      "docs/sdks/python",
+                      "docs/sdks/ruby",
+                      "docs/sdks/php",
+                      "docs/sdks/go"
+                    ]
+                  },
+                  {
+                    "group": "Client-side SDK (Web)",
+                    "pages": [
+                      "docs/sdks/client-side/introduction",
+                      {
+                        "group": "Installation guides",
+                        "pages": [
+                          "docs/sdks/client-side/installation-guides/react",
+                          "docs/sdks/client-side/installation-guides/google-tag-manager",
+                          "docs/sdks/client-side/installation-guides/manual",
+                          "docs/sdks/client-side/installation-guides/webflow",
+                          "docs/sdks/client-side/installation-guides/wordpress",
+                          "docs/sdks/client-side/installation-guides/framer",
+                          "docs/sdks/client-side/installation-guides/shopify"
+                        ]
+                      },
+                      {
+                        "group": "Features",
+                        "pages": [
+                          "docs/sdks/client-side/features/click-tracking",
+                          "docs/sdks/client-side/features/conversion-tracking",
+                          "docs/sdks/client-side/features/cross-domain-tracking",
+                          "docs/sdks/client-side/features/reverse-proxy-support"
+                        ]
+                      },
+                      "docs/sdks/client-side/variants"
+                    ]
+                  },
+                  {
+                    "group": "Client-side SDK (Mobile)",
+                    "pages": [
+                      "docs/sdks/client-side-mobile/introduction",
+                      {
+                        "group": "Installation Guides",
+                        "pages": [
+                          "docs/sdks/client-side-mobile/installation-guides/swift",
+                          "docs/sdks/client-side-mobile/installation-guides/react-native"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "DUB PARTNERS API",
+                "pages": [
+                  {
+                    "group": "Partners",
+                    "pages": [
+                      "docs/api-reference/partners/create",
+                      "docs/api-reference/partners/list",
+                      "docs/api-reference/partners/ban",
+                      "docs/api-reference/partners/deactivate",
+                      "docs/api-reference/partners/create-link",
+                      "docs/api-reference/partners/upsert-link",
+                      "docs/api-reference/partners/retrieve-links"
+                    ]
+                  },
+                  {
+                    "group": "Applications",
+                    "pages": [
+                      "docs/api-reference/partners/applications/list",
+                      "docs/api-reference/partners/applications/approve",
+                      "docs/api-reference/partners/applications/reject"
+                    ]
+                  },
+                  {
+                    "group": "Analytics",
+                    "pages": [
+                      "docs/api-reference/analytics/retrieve",
+                      "docs/api-reference/events/list"
+                    ]
+                  },
+                  {
+                    "group": "Tracking",
+                    "pages": [
+                      "docs/api-reference/track/lead",
+                      "docs/api-reference/track/sale",
+                      "docs/api-reference/track/open"
+                    ]
+                  },
+                  {
+                    "group": "Customers",
+                    "pages": [
+                      "docs/api-reference/customers/retrieve",
+                      "docs/api-reference/customers/list",
+                      "docs/api-reference/customers/update",
+                      "docs/api-reference/customers/delete"
+                    ]
+                  },
+                  {
+                    "group": "Bounties",
+                    "pages": [
+                      "docs/api-reference/bounties/list",
+                      "docs/api-reference/bounties/approve",
+                      "docs/api-reference/bounties/reject"
+                    ]
+                  },
+                  {
+                    "group": "Commissions",
+                    "pages": [
+                      "docs/api-reference/commissions/list",
+                      "docs/api-reference/commissions/update"
+                    ]
+                  },
+                  {
+                    "group": "Payouts",
+                    "pages": [
+                      "docs/api-reference/payouts/list"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "DUB LINKS API",
+                "pages": [
+                  {
+                    "group": "Links",
+                    "pages": [
+                      "docs/api-reference/links/create",
+                      "docs/api-reference/links/update",
+                      "docs/api-reference/links/upsert",
+                      "docs/api-reference/links/delete",
+                      "docs/api-reference/links/retrieve",
+                      "docs/api-reference/links/list",
+                      "docs/api-reference/links/count",
+                      "docs/api-reference/links/bulk-create",
+                      "docs/api-reference/links/bulk-update",
+                      "docs/api-reference/links/bulk-delete"
+                    ]
+                  },
+                  {
+                    "group": "Domains",
+                    "pages": [
+                      "docs/api-reference/domains/create",
+                      "docs/api-reference/domains/update",
+                      "docs/api-reference/domains/delete",
+                      "docs/api-reference/domains/register",
+                      "docs/api-reference/domains/check-availability"
+                    ]
+                  },
+                  {
+                    "group": "Folders",
+                    "pages": [
+                      "docs/api-reference/folders/create",
+                      "docs/api-reference/folders/update",
+                      "docs/api-reference/folders/delete",
+                      "docs/api-reference/folders/list"
+                    ]
+                  },
+                  {
+                    "group": "Tags",
+                    "pages": [
+                      "docs/api-reference/tags/create",
+                      "docs/api-reference/tags/list",
+                      "docs/api-reference/tags/update"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "Dub Partner API",
+            "icon": "chart-line",
+            "groups": [
+              {
+                "group": "DUB PARTNER API",
+                "pages": [
+                  "docs/partner-api-reference/introduction"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Webhooks",
+        "icon": "webhook",
+        "dropdowns": [
+          {
+            "dropdown": "Dub Webhooks",
+            "icon": "webhook",
+            "groups": [
+              {
+                "group": "DUB WEBHOOKS",
+                "pages": [
+                  "docs/webhooks/introduction",
+                  "docs/webhooks/event-types",
+                  "docs/webhooks/verify-webhook-requests"
+                ]
+              },
+              {
+                "group": "DUB PARTNERS WEBHOOKS",
+                "pages": [
+                  "docs/webhooks/events/partner-enrolled",
+                  "docs/webhooks/events/partner-application-submitted",
+                  "docs/webhooks/events/lead-created",
+                  "docs/webhooks/events/sale-created",
+                  "docs/webhooks/events/commission-created"
+                ]
+              },
+              {
+                "group": "DUB LINKS WEBHOOKS",
+                "pages": [
+                  "docs/webhooks/events/link-created",
+                  "docs/webhooks/events/link-updated",
+                  "docs/webhooks/events/link-deleted",
+                  "docs/webhooks/events/link-clicked"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "Dub Postbacks",
+            "icon": "arrow-progress",
+            "groups": [
+              {
+                "group": "DUB POSTBACKS",
+                "pages": [
+                  "docs/postbacks/introduction",
+                  "docs/postbacks/event-types",
+                  "docs/postbacks/verify-postback-requests"
+                ]
+              },
+              {
+                "group": "DUB POSTBACK EVENTS",
+                "pages": [
+                  "docs/postbacks/events/lead-created",
+                  "docs/postbacks/events/sale-created",
+                  "docs/postbacks/events/commission-created"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logos/wordmark.svg",
+    "dark": "/logos/wordmark-dark.svg",
+    "href": "https://dub.co/home"
+  },
+  "api": {
+    "openapi": "https://spec.speakeasy.com/dub/dub/dub-with-code-samples"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact support",
+        "href": "https://dub.co/contact/support"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.dub.co/register"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/dubinc/dub",
+      "linkedin": "https://www.linkedin.com/company/dubinc",
+      "twitter": "https://twitter.com/dubdotco",
+      "website": "https://dub.co"
+    }
+  },
+  "integrations": {
+    "plausible": {
+      "domain": "dub.co"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/docs/introduction",
+      "destination": "/docs"
+    },
+    {
+      "source": "/docs/examples",
+      "destination": "https://github.com/dubinc/examples"
+    },
+    {
+      "source": "/docs/sdks",
+      "destination": "/docs/sdks/overview"
+    },
+    {
+      "source": "/docs/sdks/typescript/:path*",
+      "destination": "/docs/sdks/typescript"
+    },
+    {
+      "source": "/docs/sdks/cli/overview",
+      "destination": "/docs/sdks/cli"
+    },
+    {
+      "source": "/docs/sdks/js-client/overview",
+      "destination": "/docs/sdks/client-side/installation-guides/react"
+    },
+    {
+      "source": "/docs/sdks/client-side/features/client-side-click-tracking",
+      "destination": "/docs/sdks/client-side/features/click-tracking"
+    },
+    {
+      "source": "/docs/self-hosting/guide",
+      "destination": "/docs/self-hosting"
+    },
+    {
+      "source": "/docs/integrations/webhooks",
+      "destination": "/docs/webhooks/introduction"
+    },
+    {
+      "source": "/docs/integrations/zapier",
+      "destination": "https://dub.co/integrations/zapier"
+    },
+    {
+      "source": "/docs/integrations/make",
+      "destination": "https://dub.co/integrations/make"
+    },
+    {
+      "source": "/docs/integrations/wordpress",
+      "destination": "https://dub.co/integrations/wordpress"
+    },
+    {
+      "source": "/docs/integrations/raycast",
+      "destination": "https://dub.co/integrations/raycast"
+    },
+    {
+      "source": "/docs/integrations/slack",
+      "destination": "https://dub.co/integrations/slack"
+    },
+    {
+      "source": "/docs/concepts/links/bulk-actions",
+      "destination": "/docs/concepts/links/bulk-operations"
+    },
+    {
+      "source": "/docs/concepts/analytics",
+      "destination": "/docs/concepts/analytics/introduction"
+    },
+    {
+      "source": "/docs/concepts/analytics/tags",
+      "destination": "/docs/concepts/analytics/links"
+    },
+    {
+      "source": "/docs/concepts/webhooks/introduction",
+      "destination": "/docs/webhooks/introduction"
+    },
+    {
+      "source": "/docs/concepts/webhooks/event-types",
+      "destination": "/docs/webhooks/event-types"
+    },
+    {
+      "source": "/docs/webhooks/event-types#link-created",
+      "destination": "/docs/webhooks/events/link-created"
+    },
+    {
+      "source": "/docs/webhooks/event-types#link-updated",
+      "destination": "/docs/webhooks/events/link-updated"
+    },
+    {
+      "source": "/docs/webhooks/event-types#link-deleted",
+      "destination": "/docs/webhooks/events/link-deleted"
+    },
+    {
+      "source": "/docs/webhooks/event-types#link-clicked",
+      "destination": "/docs/webhooks/events/link-clicked"
+    },
+    {
+      "source": "/docs/webhooks/event-types#lead-created",
+      "destination": "/docs/webhooks/events/lead-created"
+    },
+    {
+      "source": "/docs/webhooks/event-types#sale-created",
+      "destination": "/docs/webhooks/events/sale-created"
+    },
+    {
+      "source": "/docs/webhooks/event-types#partner-application-submitted",
+      "destination": "/docs/webhooks/events/partner-application-submitted"
+    },
+    {
+      "source": "/docs/webhooks/event-types#partner-enrolled",
+      "destination": "/docs/webhooks/events/partner-enrolled"
+    },
+    {
+      "source": "/docs/webhooks/event-types#commission-created",
+      "destination": "/docs/webhooks/events/commission-created"
+    },
+    {
+      "source": "/docs/webhooks/event-types#payout-confirmed",
+      "destination": "/docs/webhooks/events/payout-confirmed"
+    },
+    {
+      "source": "/docs/concepts/webhooks/verify-webhook-requests",
+      "destination": "/docs/webhooks/verify-webhook-requests"
+    },
+    {
+      "source": "/docs/conversions/clicks/introduction",
+      "destination": "/docs/sdks/client-side/features/client-side-click-tracking"
+    },
+    {
+      "source": "/docs/conversions/leads/introduction",
+      "destination": "/docs/quickstart/server"
+    },
+    {
+      "source": "/docs/conversions/leads/client-side",
+      "destination": "/docs/quickstart/client"
+    },
+    {
+      "source": "/docs/conversions/leads/supabase-auth",
+      "destination": "/docs/conversions/leads/supabase"
+    },
+    {
+      "source": "/docs/conversions/sales/introduction",
+      "destination": "/docs/quickstart/server"
+    },
+    {
+      "source": "/docs/conversions/sales/client-side",
+      "destination": "/docs/quickstart/client"
+    },
+    {
+      "source": "/docs/conversions/sales/stripe",
+      "destination": "/docs/integrations/stripe"
+    },
+    {
+      "source": "/docs/conversions/sales/shopify",
+      "destination": "/docs/integrations/shopify"
+    },
+    {
+      "source": "/docs/conversions/leads/segment",
+      "destination": "/docs/integrations/segment"
+    },
+    {
+      "source": "/docs/conversions/sales/segment",
+      "destination": "/docs/integrations/segment"
+    },
+    {
+      "source": "/docs/conversions/leads/hubspot",
+      "destination": "/docs/integrations/hubspot"
+    },
+    {
+      "source": "/docs/conversions/leads/google-tag-manager",
+      "destination": "/docs/integrations/google-tag-manager"
+    },
+    {
+      "source": "/docs/conversions/sales/google-tag-manager",
+      "destination": "/docs/integrations/google-tag-manager"
+    },
+    {
+      "source": "/docs/conversions/quickstart",
+      "destination": "/docs/quickstart/server"
+    },
+    {
+      "source": "/docs/partners/quickstart",
+      "destination": "/docs/quickstart/server"
+    },
+    {
+      "source": "/docs/partners/link-based-discounts",
+      "destination": "/help/article/dual-sided-incentives"
+    },
+    {
+      "source": "/docs/api-reference/tokens",
+      "destination": "/docs/api-reference/authentication"
+    },
+    {
+      "source": "/docs/api-reference/publishable-keys",
+      "destination": "/docs/api-reference/authentication#publishable-keys"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-new-link",
+      "destination": "/docs/api-reference/links/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-link",
+      "destination": "/docs/api-reference/links/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-link",
+      "destination": "/docs/api-reference/links/update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/upsert-a-link",
+      "destination": "/docs/api-reference/links/upsert"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/delete-a-link",
+      "destination": "/docs/api-reference/links/delete"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-link",
+      "destination": "/docs/api-reference/links/retrieve"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-links",
+      "destination": "/docs/api-reference/links/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-domains",
+      "destination": "/docs/api-reference/domains/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-number-of-links",
+      "destination": "/docs/api-reference/links/count"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/bulk-create-links",
+      "destination": "/docs/api-reference/links/bulk-create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/bulk-update-links",
+      "destination": "/docs/api-reference/links/bulk-update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/bulk-delete-links",
+      "destination": "/docs/api-reference/links/bulk-delete"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-analytics",
+      "destination": "/docs/api-reference/analytics/retrieve"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-events",
+      "destination": "/docs/api-reference/events/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/track-lead",
+      "destination": "/docs/api-reference/track/lead"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/track-sale",
+      "destination": "/docs/api-reference/track/sale"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/track-open",
+      "destination": "/docs/api-reference/track/open"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/track-customer",
+      "destination": "/docs/api-reference/track/lead"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-partner",
+      "destination": "/docs/api-reference/partners/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-partners",
+      "destination": "/docs/api-reference/partners/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/ban-a-partner",
+      "destination": "/docs/api-reference/partners/ban"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/deactivate-a-partner",
+      "destination": "/docs/api-reference/partners/deactivate"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-partner-link",
+      "destination": "/docs/api-reference/partners/create-link"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/upsert-a-partner-link",
+      "destination": "/docs/api-reference/partners/upsert-link"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-partners-links",
+      "destination": "/docs/api-reference/partners/retrieve-links"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-partner-analytics",
+      "destination": "/docs/api-reference/partners/retrieve-analytics"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-customer",
+      "destination": "/docs/api-reference/customers/retrieve"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-customers",
+      "destination": "/docs/api-reference/customers/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-customer",
+      "destination": "/docs/api-reference/customers/update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/delete-a-customer",
+      "destination": "/docs/api-reference/customers/delete"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/list-submissions-for-a-bounty",
+      "destination": "/docs/api-reference/bounties/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/approve-a-bounty-submission",
+      "destination": "/docs/api-reference/bounties/approve"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/reject-a-bounty-submission",
+      "destination": "/docs/api-reference/bounties/reject"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-commissions",
+      "destination": "/docs/api-reference/commissions/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-commission",
+      "destination": "/docs/api-reference/commissions/update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-payouts",
+      "destination": "/docs/api-reference/payouts/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-domain",
+      "destination": "/docs/api-reference/domains/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-domain",
+      "destination": "/docs/api-reference/domains/update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/delete-a-domain",
+      "destination": "/docs/api-reference/domains/delete"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/register-a-domain",
+      "destination": "/docs/api-reference/domains/register"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/check-a-domain-availability",
+      "destination": "/docs/api-reference/domains/check-availability"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-folder",
+      "destination": "/docs/api-reference/folders/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-folder",
+      "destination": "/docs/api-reference/folders/update"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/delete-a-folder",
+      "destination": "/docs/api-reference/folders/delete"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-folders",
+      "destination": "/docs/api-reference/folders/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/create-a-tag",
+      "destination": "/docs/api-reference/tags/create"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/retrieve-a-list-of-tags",
+      "destination": "/docs/api-reference/tags/list"
+    },
+    {
+      "source": "/docs/api-reference/endpoint/update-a-tag",
+      "destination": "/docs/api-reference/tags/update"
+    },
+    {
+      "source": "/help/category/overview",
+      "destination": "/help"
+    },
+    {
+      "source": "/help/category/getting-started",
+      "destination": "/help/article/setting-up-your-program"
+    },
+    {
+      "source": "/help/category/link-management",
+      "destination": "/help/article/dub-links"
+    },
+    {
+      "source": "/help/category/analytics",
+      "destination": "/help/article/dub-analytics"
+    },
+    {
+      "source": "/help/category/partners",
+      "destination": "/help/article/dub-partners"
+    },
+    {
+      "source": "/help/category/programs",
+      "destination": "/help/article/partner-profile"
+    },
+    {
+      "source": "/help/category/custom-domains",
+      "destination": "/help/article/how-to-add-custom-domain"
+    },
+    {
+      "source": "/help/category/workspaces",
+      "destination": "/help/article/what-is-a-workspace"
+    },
+    {
+      "source": "/help/category/migrating",
+      "destination": "/help/article/migrating-from-rewardful"
+    },
+    {
+      "source": "/help/category/saml-sso",
+      "destination": "/help/article/okta-saml"
+    },
+    {
+      "source": "/help/article/what-is-dub",
+      "destination": "/help/article/dub-links"
+    },
+    {
+      "source": "/help/category/api",
+      "destination": "/docs/api-reference/introduction"
+    },
+    {
+      "source": "/help/category/conversions",
+      "destination": "/help/category/analytics",
+      "permanent": false
+    },
+    {
+      "source": "/help/article/dub-api",
+      "destination": "/docs/api-reference/introduction"
+    },
+    {
+      "source": "/help/article/self-host",
+      "destination": "/docs/self-hosting"
+    },
+    {
+      "source": "/help/article/pro-plan",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/help/article/business-plan",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/help/article/public-stats-pages",
+      "destination": "/help/article/share-analytics"
+    },
+    {
+      "source": "/help/article/what-is-a-project",
+      "destination": "/help/article/what-is-a-workspace"
+    },
+    {
+      "source": "/help/article/how-to-get-workspace-id",
+      "destination": "/help/article/what-is-a-workspace"
+    },
+    {
+      "source": "/help/article/custom-social-media-cards",
+      "destination": "/help/article/custom-link-previews"
+    },
+    {
+      "source": "/help/article/what-is-dubrequired",
+      "destination": "/help/article/what-is-dub"
+    },
+    {
+      "source": "/help/article-/how-to-set-primary-domain",
+      "destination": "/help/article/how-to-set-primary-domain"
+    },
+    {
+      "source": "/help/article/partner-commissions-clawbacks",
+      "destination": "/help/article/partner-commissions"
+    },
+    {
+      "source": "/help/article/program-branding",
+      "destination": "/help/article/program-resources"
+    },
+    {
+      "source": "/help/article/program-communication",
+      "destination": "/help/article/program-resources"
+    },
+    {
+      "source": "/help/article/partner-profile-sites",
+      "destination": "/help/article/partner-profile"
+    },
+    {
+      "source": "/help/article/why-are-dub-links-blacklisted",
+      "destination": "/help/article/dub-links-not-working"
+    },
+    {
+      "source": "/help/article/custom-domain-deep-links",
+      "destination": "/docs/concepts/deep-links/quickstart"
+    },
+    {
+      "source": "/help/article/submitted-referrals",
+      "destination": "/help/article/submitted-leads"
+    }
+  ]
+}
