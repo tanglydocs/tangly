@@ -8,10 +8,20 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { manifest } from "virtual:tangly/manifest";
+import type { PageEntry } from "tangly";
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 import { resolveSite } from "tangly/site";
-import { listRoutablePages, toOgPage, type OgPage } from "../../lib/og-pages.ts";
+import {
+  apiAttrOf,
+  hasExplicitTitle,
+  listRoutablePages,
+  operationMeta,
+  parseApiAttr,
+  toOgPage,
+  type OgPage,
+  type RoutablePage,
+} from "../../lib/og-pages.ts";
 import { renderOgPng } from "../../lib/og-render.ts";
 
 export const prerender = true;
@@ -33,15 +43,79 @@ export async function getStaticPaths() {
 
   const entries = await getCollection("docs");
   const pageMap = new Map(manifest.pages);
-  const cards = listRoutablePages(entries, manifest.pages, manifest.excludedSlugs)
-    .map((p) => toOgPage(p, pageMap))
-    .filter((p): p is OgPage => p !== null);
+
+  interface CardItem {
+    page: RoutablePage;
+    meta: PageEntry | undefined;
+    og: OgPage;
+  }
+  const items = listRoutablePages(entries, manifest.pages, manifest.excludedSlugs)
+    .map((page) => ({ page, meta: pageMap.get(page.slug), og: toOgPage(page, pageMap) }))
+    .filter((x): x is CardItem => x.og !== null);
+
+  await enrichApiCards(items);
 
   // Home page (slug "") maps to /og/index.png.
-  return cards.map((card) => ({
-    params: { slug: card.slug || "index" },
-    props: { card },
+  return items.map(({ og }) => ({
+    params: { slug: og.slug || "index" },
+    props: { card: og },
   }));
+}
+
+/**
+ * API pages without an explicit title fall back to the humanized slug in
+ * `toOgPage`, whereas the HTML route (`[...slug].astro`) derives the title and
+ * description from the OpenAPI operation. Mirror that derivation so the card
+ * text matches the rendered page header. Best-effort: each spec is fetched at
+ * most once, and any failure leaves the slug fallback in place.
+ */
+async function enrichApiCards(
+  items: Array<{ page: RoutablePage; meta: PageEntry | undefined; og: OgPage }>,
+): Promise<void> {
+  const apiCfg = manifest.config.api;
+  const topSpec =
+    typeof apiCfg?.openapi === "string"
+      ? apiCfg.openapi
+      : Array.isArray(apiCfg?.openapi)
+        ? apiCfg.openapi[0]
+        : undefined;
+  const specCache = new Map<string, Promise<unknown | null>>();
+
+  await Promise.all(
+    items.map(async ({ page, meta, og }) => {
+      // Mirror [...slug].astro, which derives title and description
+      // independently: title only when no explicit title exists, description
+      // only when no explicit description exists.
+      const titleIsFallback = !hasExplicitTitle(page, meta);
+      const descMissing = og.description === undefined;
+      if (!titleIsFallback && !descMissing) return;
+      const coords = parseApiAttr(apiAttrOf(page, meta));
+      if (!coords) return;
+      const tabSlug = meta?.tab?.slug ?? page.synthPage?.tab?.slug;
+      const spec = manifest.navigation.tabs.find((t) => t.slug === tabSlug)?.openapi ?? topSpec;
+      if (!spec) return;
+      const doc = await fetchSpec(spec, specCache);
+      if (!doc) return;
+      const op = operationMeta(doc, coords.method, coords.path);
+      if (titleIsFallback && op.title) og.title = op.title;
+      if (descMissing && op.description) og.description = op.description;
+    }),
+  );
+}
+
+function fetchSpec(
+  spec: string,
+  cache: Map<string, Promise<unknown | null>>,
+): Promise<unknown | null> {
+  let pending = cache.get(spec);
+  if (!pending) {
+    const url = spec.startsWith("http") ? spec : `https://${spec}`;
+    pending = fetch(url, { redirect: "follow" })
+      .then((res) => (res.ok ? (res.json() as Promise<unknown>) : null))
+      .catch(() => null);
+    cache.set(spec, pending);
+  }
+  return pending;
 }
 
 const MIME: Record<string, string> = {
@@ -72,6 +146,10 @@ function resolveLogoDataUri(): string | undefined {
       resolve(manifest.root, clean),
       resolve(manifest.root, "public", clean),
     ]) {
+      // Containment: a `logo` like `../secret.png` resolves outside the docs
+      // root. Never read (let alone embed) a file that escapes the project.
+      const relToRoot = relative(manifest.root, candidate);
+      if (relToRoot.startsWith("..") || isAbsolute(relToRoot)) continue;
       if (existsSync(candidate)) {
         logoDataUri = `data:${mime};base64,${readFileSync(candidate).toString("base64")}`;
         return logoDataUri;

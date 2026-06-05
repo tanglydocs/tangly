@@ -13,7 +13,13 @@ import type { PageEntry } from "tangly";
 /** Minimal shape of an `astro:content` docs entry we rely on. */
 export interface DocEntryLike {
   id: string;
-  data: { title?: string; description?: string; noindex?: boolean };
+  data: {
+    title?: string;
+    description?: string;
+    noindex?: boolean;
+    api?: string;
+    openapi?: string;
+  };
 }
 
 export interface RoutablePage {
@@ -58,6 +64,49 @@ export interface OgPage {
 function humanizeSlug(slug: string): string {
   const last = slug.split("/").pop() ?? slug;
   return last.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** The raw `api: METHOD path` / `openapi: METHOD path` attr for a page, if any. */
+export function apiAttrOf(page: RoutablePage, meta: PageEntry | undefined): string | undefined {
+  const fm = (meta?.frontmatter ?? page.synthPage?.frontmatter) as
+    | { api?: string; openapi?: string }
+    | undefined;
+  return page.entry?.data?.openapi ?? page.entry?.data?.api ?? fm?.openapi ?? fm?.api;
+}
+
+/**
+ * Whether the page declares an explicit title anywhere (frontmatter or synth).
+ * When false, `toOgPage` resolves the title from the humanized slug, so an API
+ * page needs its OpenAPI-derived summary to match the rendered page header.
+ */
+export function hasExplicitTitle(page: RoutablePage, meta: PageEntry | undefined): boolean {
+  return Boolean(
+    page.entry?.data?.title ?? meta?.frontmatter?.title ?? page.synthPage?.frontmatter?.title,
+  );
+}
+
+/** Parse `METHOD path` from an api/openapi frontmatter attr. Method lowercased. */
+export function parseApiAttr(attr: string | undefined): { method: string; path: string } | null {
+  if (!attr) return null;
+  const parts = attr.trim().split(/\s+/);
+  if (parts.length < 2) return null;
+  const [method, ...rest] = parts;
+  return { method: method!.toLowerCase(), path: rest.join(" ") };
+}
+
+/** Pull an operation's summary/description out of a fetched OpenAPI document. */
+export function operationMeta(
+  doc: unknown,
+  method: string,
+  path: string,
+): { title?: string; description?: string } {
+  const paths = (
+    doc as {
+      paths?: Record<string, Record<string, { summary?: string; description?: string }>>;
+    } | null
+  )?.paths;
+  const op = paths?.[path]?.[method];
+  return { title: op?.summary, description: op?.description };
 }
 
 /**
