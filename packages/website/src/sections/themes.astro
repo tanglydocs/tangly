@@ -1,60 +1,56 @@
 ---
 import { ArrowUpRight } from "lucide-astro";
 
+// Five themes. Switch by setting the `theme` field in docs.json. `starter` is
+// not a theme: it's the default `tangly init` scaffold (it ships on `tang`).
 const themes = [
   {
     name: "Tang",
     slug: "tang",
     badge: "default",
     blurb: "Mintlify-Mint inspired. Sidebar nav, on-page TOC, monospace headings.",
-    init: "tangly init --theme tang",
+    use: '"theme": "tang"',
     shot: "/themes/tang.webp",
-    dark: false,
   },
   {
     name: "Pith",
     slug: "pith",
     badge: "editorial",
     blurb: "Serif headings, cream surface, generous measure. For long-form writing.",
-    init: "tangly init --theme pith",
+    use: '"theme": "pith"',
     shot: "/themes/pith.webp",
-    dark: false,
   },
   {
     name: "Pip",
     slug: "pip",
     badge: "minimal",
     blurb: "No sidebar. Single-column reading mode. Headings as the only navigation.",
-    init: "tangly init --theme pip",
+    use: '"theme": "pip"',
     shot: "/themes/pip.webp",
-    dark: false,
   },
   {
     name: "Readable",
     slug: "readable",
     badge: "book-like",
     blurb: "Narrow column, large body type, drop caps. Reads like a manual.",
-    init: "tangly init --theme readable",
+    use: '"theme": "readable"',
     shot: "/themes/readable.webp",
-    dark: false,
   },
   {
     name: "Geist",
     slug: "geist",
     badge: "developer",
     blurb: "Vercel/Linear register. Ink ground, thin rules, dense type scale.",
-    init: "tangly init --theme geist",
+    use: '"theme": "geist"',
     shot: "/themes/geist.webp",
-    dark: false,
   },
   {
     name: "Starter",
     slug: "starter",
     badge: "scaffold",
-    blurb: "Three sections, three pages, no opinions. The fastest way to start typing.",
-    init: "tangly init --theme starter",
+    blurb: "The default `tangly init` scaffold. Three sections, three pages, on the tang theme. The fastest way to start typing.",
+    use: "tangly init",
     shot: "/themes/starter.webp",
-    dark: false,
   },
 ];
 ---
@@ -69,14 +65,14 @@ const themes = [
       <h2
         class="flex flex-col font-sans text-[44px] font-extrabold leading-[1.05] tracking-[-0.025em]"
       >
-        <span class="text-ink">Six themes.</span>
+        <span class="text-ink">Five themes.</span>
         <span class="text-tang-700">Same Markdown.</span>
       </h2>
       <p class="max-w-[520px] font-sans text-[15px] leading-6 text-mute">
         Swap a one-line value in <code class="font-mono text-[14px] text-ink"
           >docs.json</code
-        >. Same content, new register. Each tile is a real Tangly site —
-        click through to <a
+        >. Same content, new register. Each tile is a real Tangly site.
+        Click through to <a
           href="https://examples.tangly.dev"
           class="text-ink underline decoration-line-light underline-offset-2 hover:decoration-tang-600">examples.tangly.dev</a
         >.
@@ -99,7 +95,7 @@ const themes = [
           <div class="aspect-[16/10] overflow-hidden border-b border-line-light bg-line-light/40">
             <img
               src={t.shot}
-              alt={`${t.name} theme — live demo`}
+              alt={`${t.name} live demo`}
               width="1200"
               height="750"
               loading="lazy"
@@ -125,7 +121,7 @@ const themes = [
             <p class="font-sans text-[12.5px] leading-[19px] text-mute">
               {t.blurb}
             </p>
-            <div class="mt-1 font-mono text-[10.5px] text-mute">{t.init}</div>
+            <div class="mt-1 font-mono text-[10.5px] text-mute">{t.use}</div>
           </div>
         </a>
       ))
