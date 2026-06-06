@@ -15,15 +15,17 @@
   <a href="https://docs.tangly.dev">docs</a> ·
   <a href="https://docs.tangly.dev/changelog">changelog</a> ·
   <a href="https://examples.tangly.dev">examples</a> ·
-  <a href="https://www.npmjs.com/package/tangly">npm</a>
+  <a href="https://www.npmjs.com/package/tangly">npm</a> ·
+  <a href="https://github.com/tanglydocs/tangly">GitHub</a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/v/tangly?color=EA580C&label=npm" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/v/tangly?color=ea580c&label=npm" alt="npm version"></a>
+  <a href="https://github.com/tanglydocs/tangly"><img src="https://img.shields.io/github/stars/tanglydocs/tangly?color=ea580c&logo=github&label=stars" alt="GitHub stars"></a>
   <a href="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml"><img src="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml/badge.svg?branch=main" alt="build status"></a>
   <a href="https://github.com/tanglydocs/tangly/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nc9/e57cc6d614485c741294a2e7b5073890/raw/coverage.json" alt="coverage"></a>
-  <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/dm/tangly?color=EA580C&label=downloads" alt="downloads/month"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/tanglydocs/tangly?color=EA580C" alt="MIT license"></a>
+  <a href="https://www.npmjs.com/package/tangly"><img src="https://img.shields.io/npm/dm/tangly?color=ea580c&label=downloads" alt="downloads/month"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/tangly?color=6b6b70" alt="MIT license"></a>
 </p>
 
 ## Features
@@ -32,7 +34,7 @@
 - **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
 - **Built on Astro.** Builds an [Astro](https://astro.build) site you can eject.
 - **Drop-in Mintlify compat.** Point Tangly at an existing `docs.json` + MDX project. No source edits.
-- **Five themes.** `tang`, `pith`, `pip`, `readable`, `geist`. See [live demos](https://examples.tangly.dev).
+- **Five themes.** `tang`, `pith`, `pip`, `readable`, `geist`. One `theme` field in `docs.json`, no component changes. See [live demos](https://examples.tangly.dev).
 - **38 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
 - **Built for AI agents.** Every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). About 10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
 - **OpenAPI 3.0 / 3.1.** Point at a spec, get browseable endpoint pages with try-it.
