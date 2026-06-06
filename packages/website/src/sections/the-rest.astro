@@ -9,6 +9,18 @@ const rows = [
     demo: "fastdev",
   },
   {
+    label: "Built for agents",
+    title: "Every page, also raw Markdown.",
+    body: 'Append <code class="font-mono text-sm text-ink">.md</code> to any URL or send <code class="font-mono text-sm text-ink">Accept: text/markdown</code>. About 10× fewer tokens. <code class="font-mono text-sm text-ink">/llms.txt</code> and <code class="font-mono text-sm text-ink">/llms-full.txt</code> ship by default.',
+    demo: "md",
+  },
+  {
+    label: "Social cards",
+    title: "Every page unfurls.",
+    body: "A branded 1200×630 Open Graph image per page, generated from its title, theme, and your colors. Links unfurl in Slack, iMessage, and X instead of rendering blank. Previews self-reference and stay out of search.",
+    demo: "og",
+  },
+  {
     label: "Search",
     title: "Built-in, instant, ⌘K.",
     body: 'Static index built at <code class="font-mono text-sm text-ink">tangly build</code>. No Algolia key, no third-party request, no per-month cost.',
@@ -100,6 +112,32 @@ const rows = [
                 <div class="text-mute">↳ ready in <span class="text-tang-300">1.7s</span></div>
                 <div class="text-mute"># edit any .mdx</div>
                 <div class="text-mute">↳ HMR <span class="text-tang-300">187ms</span></div>
+              </div>
+            )}
+            {row.demo === "md" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">curl docs.tangly.dev/quickstart.md</span></div>
+                <div class="text-mute">↳ <span class="text-tang-300"># Quickstart</span></div>
+                <div class="text-mute">↳ raw markdown · ~10× fewer tokens</div>
+                <div class="text-mute">↳ <span class="text-tang-300">/llms.txt</span> · <span class="text-tang-300">/llms-full.txt</span> by default</div>
+              </div>
+            )}
+            {row.demo === "og" && (
+              <div class="max-w-[520px] overflow-hidden rounded-[10px] border border-line-light">
+                <div
+                  class="flex aspect-[1200/630] w-full flex-col justify-between p-5"
+                  style="background: linear-gradient(135deg, #FAFAF7 0%, #F2EFE9 100%);"
+                >
+                  <div class="flex items-center gap-2">
+                    <img src="/brand/tangly-icon-64.png" alt="" width="18" height="18" class="h-[18px] w-[18px]" loading="lazy" />
+                    <span class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">Documentation</span>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <div class="font-sans text-[22px] font-extrabold leading-[1.05] tracking-[-0.02em] text-ink">Streaming responses</div>
+                    <div class="font-sans text-[11px] text-mute">docs.tangly.dev</div>
+                  </div>
+                  <div class="h-1 w-16 rounded-full" style="background: linear-gradient(135deg, #F97316 0%, #C2410C 100%);" />
+                </div>
               </div>
             )}
             {row.demo === "search" && (
