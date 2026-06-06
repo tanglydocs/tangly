@@ -1,5 +1,11 @@
 ---
-import { Github } from "lucide-astro";
+import { Github, Star } from "lucide-astro";
+import { getRepoMeta, GITHUB_URL, CHANGELOG_URL } from "~/lib/repo";
+import { timeAgo, formatStars } from "~/lib/relative-time";
+
+const { version, stars, releasedAt } = await getRepoMeta();
+const releasedAgo = releasedAt ? timeAgo(releasedAt) : "";
+const starLabel = stars === null ? "" : formatStars(stars);
 ---
 
 <nav
@@ -8,33 +14,83 @@ import { Github } from "lucide-astro";
   <div
     class="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-10"
   >
-    <a href="/" class="flex items-center gap-2">
-      <img
-        src="/brand/tangly-icon-64.png"
-        alt=""
-        width="20"
-        height="20"
-        class="h-5 w-5"
-      />
-      <span class="font-sans text-[14px] font-bold tracking-[-0.015em] text-ink"
-        >Tangly</span
-      >
-      <span
-        class="ml-1 rounded-full border border-line-light/80 px-1.5 py-px font-mono text-[10px] uppercase tracking-[0.04em] text-mute"
-        >v0.1</span
-      >
-    </a>
-    <div class="flex items-center gap-7 font-sans text-[13px] text-mute">
-      <a href="https://docs.tangly.dev" class="hover:text-ink">Docs</a>
-      <a href="#themes" class="hover:text-ink">Themes</a>
-      <a href="#components" class="hover:text-ink">Components</a>
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2">
+        <img
+          src="/brand/tangly-icon-64.png"
+          alt=""
+          width="20"
+          height="20"
+          class="h-5 w-5"
+        />
+        <span class="font-sans text-[14px] font-bold tracking-[-0.015em] text-ink"
+          >Tangly</span
+        >
+      </a>
       <a
-        href="https://github.com/tanglydocs/tangly"
-        aria-label="GitHub"
-        class="flex h-7 w-7 items-center justify-center hover:text-ink"
+        href={CHANGELOG_URL}
+        title="Changelog"
+        class="hidden items-center gap-1.5 rounded-full border border-line-light/80 px-2 py-px font-mono text-[10px] text-mute transition-colors hover:border-tang-600/40 hover:text-ink sm:inline-flex"
       >
-        <Github size={15} />
+        <span class="uppercase tracking-[0.04em] text-tang-700">v{version}</span>
+        {
+          releasedAgo && (
+            <>
+              <span class="text-line-light">·</span>
+              <span data-rel-time data-iso={releasedAt}>
+                {releasedAgo}
+              </span>
+            </>
+          )
+        }
+      </a>
+    </div>
+    <div class="flex items-center gap-6 font-sans text-[13px] text-mute">
+      <a href="https://docs.tangly.dev" class="hover:text-ink">Docs</a>
+      <a href="#themes" class="hidden hover:text-ink sm:inline">Themes</a>
+      <a href="#components" class="hidden hover:text-ink sm:inline">Components</a>
+      <a href={CHANGELOG_URL} class="hover:text-ink">Changelog</a>
+      <a
+        href={GITHUB_URL}
+        aria-label="Tangly on GitHub"
+        class="flex h-7 items-center gap-1.5 rounded-full border border-line-light/80 px-2.5 text-mute transition-colors hover:border-tang-600/40 hover:text-ink"
+      >
+        <Github size={14} />
+        <span class="flex items-center gap-0.5 font-mono text-[11px]">
+          <Star size={10} class="text-tang-600" fill="currentColor" />
+          <span data-gh-stars>{starLabel}</span>
+        </span>
       </a>
     </div>
   </div>
 </nav>
+
+<script>
+  import { timeAgo, formatStars } from "~/lib/relative-time";
+
+  // Recompute the release time from the baked ISO so a long-cached page never
+  // drifts (the build only knew "3 days ago" at deploy time).
+  for (const el of document.querySelectorAll<HTMLElement>(
+    "[data-rel-time][data-iso]",
+  )) {
+    const iso = el.dataset.iso;
+    if (iso) el.textContent = timeAgo(iso);
+  }
+
+  // Live-refresh the star count from the GitHub API (CORS-enabled, public).
+  fetch("https://api.github.com/repos/tanglydocs/tangly", {
+    headers: { Accept: "application/vnd.github+json" },
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      const n = data?.stargazers_count;
+      if (typeof n !== "number") return;
+      const label = formatStars(n);
+      for (const el of document.querySelectorAll("[data-gh-stars]")) {
+        el.textContent = label;
+      }
+    })
+    .catch(() => {
+      // Rate-limited or offline: keep the build-time value.
+    });
+</script>

@@ -1,9 +1,14 @@
 ---
+import { getRepoMeta, GITHUB_URL, CHANGELOG_URL } from "~/lib/repo";
+import { timeAgo } from "~/lib/relative-time";
+
+const { version, releasedAt } = await getRepoMeta();
+const releasedAgo = releasedAt ? timeAgo(releasedAt) : "";
 ---
 
 <footer class="border-t border-line-light bg-paper">
   <div
-    class="mx-auto flex max-w-[1200px] items-center justify-between px-10 py-8"
+    class="mx-auto flex max-w-[1200px] flex-col gap-4 px-10 py-8 sm:flex-row sm:items-center sm:justify-between"
   >
     <div class="flex items-center gap-2.5">
       <img
@@ -17,13 +22,31 @@
       <span class="font-mono text-[11px] text-mute">
         tangly · <a href="/license" class="hover:text-ink">MIT</a> · © 2026 Nik Cubrilovic
       </span>
+      <a
+        href={CHANGELOG_URL}
+        title="Changelog"
+        class="hidden items-center gap-1.5 rounded-full border border-line-light/80 px-2 py-px font-mono text-[10px] text-mute transition-colors hover:border-tang-600/40 hover:text-ink sm:inline-flex"
+      >
+        <span class="uppercase tracking-[0.04em] text-tang-700">v{version}</span>
+        {
+          releasedAgo && (
+            <>
+              <span class="text-line-light">·</span>
+              <span data-rel-time data-iso={releasedAt}>
+                {releasedAgo}
+              </span>
+            </>
+          )
+        }
+      </a>
     </div>
     <ul class="flex items-center gap-6 font-sans text-[12px] text-mute">
       <li><a href="https://docs.tangly.dev" class="hover:text-ink">Docs</a></li>
       <li>
-        <a href="https://github.com/tanglydocs/tangly" class="hover:text-ink"
-          >GitHub</a
-        >
+        <a href={CHANGELOG_URL} class="hover:text-ink">Changelog</a>
+      </li>
+      <li>
+        <a href={GITHUB_URL} class="hover:text-ink">GitHub</a>
       </li>
       <li>
         <a href="https://www.npmjs.com/package/tangly" class="hover:text-ink"
