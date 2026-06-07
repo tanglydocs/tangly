@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { confirm, intro, isCancel, outro } from "@clack/prompts";
 import {
   convertMintToDocs,
+  formatDocsJsonError,
   parseDocsJson,
   safeParseDocsJson,
   TANGLY_THEMES,
@@ -137,9 +138,8 @@ async function migrateExistingDocs(opts: {
 
   const result = safeParseDocsJson(parsed);
   if (!result.success) {
-    console.error(pc.red(`✗ Existing docs.json doesn't validate against Tangly's schema:`));
-    console.error(pc.red(result.error.message.split("\n").slice(0, 10).join("\n")));
-    console.error(pc.dim(`  Fix the file (or open an issue) and rerun.`));
+    console.error(formatDocsJsonError(result.error, { raw, file: "docs.json" }));
+    console.error(pc.dim(`\n  Fix the keys above (or open an issue) and rerun.`));
     process.exit(1);
   }
 

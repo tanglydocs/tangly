@@ -9,6 +9,13 @@ export {
   safeParseFrontmatter,
   type Frontmatter,
 } from "./frontmatter.js";
+export {
+  DocsJsonValidationError,
+  type FormatDocsJsonErrorOptions,
+  formatDocsJsonError,
+  formatJsonSyntaxError,
+  parseDocsJsonOrThrow,
+} from "./format-error.js";
 export { generateDocsJsonSchema } from "./json-schema.js";
 export { convertMintToDocs, type MintJson } from "./mint-json.js";
 export {

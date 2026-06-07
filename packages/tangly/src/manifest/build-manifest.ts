@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
-import { parseDocsJson } from "@tanglydocs/schema";
+import { formatJsonSyntaxError, parseDocsJsonOrThrow } from "@tanglydocs/schema";
+import { ConfigError } from "./config-error.js";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
@@ -32,7 +33,23 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
   const warnings: ManifestWarning[] = [];
 
   const raw = readFileSync(configPath, "utf8");
-  const config = parseDocsJson(JSON.parse(raw));
+  const configLabel = opts.configFile ?? "docs.json";
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    // Surface a friendly "not valid JSON" with line/column instead of a raw
+    // SyntaxError dump; ConfigError lets the CLI print it verbatim.
+    throw new ConfigError(formatJsonSyntaxError(raw, err, { file: configLabel }));
+  }
+  // `parseDocsJsonOrThrow` raises DocsJsonValidationError whose `.message` is the
+  // rendered, key-by-key explanation. Re-wrap as ConfigError so callers print it raw.
+  let config: ReturnType<typeof parseDocsJsonOrThrow>;
+  try {
+    config = parseDocsJsonOrThrow(parsed, { raw, file: configLabel });
+  } catch (err) {
+    throw new ConfigError(err instanceof Error ? err.message : String(err));
+  }
 
   // Social cards need an absolute base (og:image must be absolute). If cards
   // are enabled but no base resolves (no siteUrl, --site-url, or platform), no

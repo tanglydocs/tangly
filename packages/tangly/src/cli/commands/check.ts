@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { ConfigError } from "../../manifest/config-error.js";
 import { buildManifest } from "../../manifest/index.js";
 
 export const checkCommand = defineCommand({
@@ -50,6 +51,9 @@ export const checkCommand = defineCommand({
       const msg = err instanceof Error ? err.message : String(err);
       if (args.json) {
         console.log(JSON.stringify({ ok: false, errors: [{ message: msg }] }));
+      } else if (err instanceof ConfigError) {
+        // Already a rendered key/reason/fix block — print as-is.
+        console.error(msg);
       } else {
         console.error(pc.red(`✗ ${msg}`));
       }
