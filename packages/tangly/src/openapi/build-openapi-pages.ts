@@ -38,8 +38,11 @@ export async function buildOpenApiPages(opts: {
     // auto-routes only attach when a tab opts in. Only auto-route when the tab
     // has no manually-curated sidebar; explicit groups/pages win.
     if (tab.openapi && tab.sidebar.length === 0) {
+      // Mintlify object-form refs scope pages under `directory`; fall back to
+      // the tab slug for the string/array forms.
+      const prefix = tab.openapiDirectory ?? tab.slug;
       // eslint-disable-next-line no-await-in-loop -- per-tab sequential is intentional
-      const expanded = await loadSpec(tab.openapi, tab.slug, tab.title, opts.root, warnings);
+      const expanded = await loadSpec(tab.openapi, prefix, tab.title, opts.root, warnings);
       if (expanded) {
         const sidebarItems = synthesizeSidebar(expanded);
         sidebarsByTab[tab.slug] = sidebarItems;
@@ -50,8 +53,9 @@ export async function buildOpenApiPages(opts: {
     // Group-level: any group in this tab that declares its own spec and has no
     // hand-authored children. Endpoints nest under that group in place.
     for (const group of groupsWithSpec(tab.sidebar)) {
+      const prefix = group.openapiDirectory ?? tab.slug;
       // eslint-disable-next-line no-await-in-loop -- per-group sequential is intentional
-      const expanded = await loadSpec(group.openapi!, tab.slug, tab.title, opts.root, warnings);
+      const expanded = await loadSpec(group.openapi!, prefix, tab.title, opts.root, warnings);
       if (!expanded) continue;
       group.children = synthesizeSidebar(expanded);
       pages.push(...synthesizePages(expanded, tab, group.openapi!, [group.title]));

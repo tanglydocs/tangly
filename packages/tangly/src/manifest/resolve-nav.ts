@@ -4,6 +4,7 @@ import {
   type NavGroup,
   type NavNode,
   type NavTab,
+  openApiDirectory,
   openApiSource,
 } from "@tanglydocs/schema";
 import { resolveMethodColor } from "../openapi/method-color.js";
@@ -149,7 +150,11 @@ function buildSidebar(
       if (node.tag) item.tag = node.tag;
       if (node.expanded) item.expanded = true;
       const groupSpec = openApiSource(node.openapi);
-      if (groupSpec) item.openapi = groupSpec;
+      if (groupSpec) {
+        item.openapi = groupSpec;
+        const dir = openApiDirectory(node.openapi);
+        if (dir) item.openapiDirectory = dir;
+      }
       out.push(item);
     } else {
       warnings.push({
@@ -210,7 +215,11 @@ function tabFromNavTab(
       if (g.tag) item.tag = g.tag;
       if (g.expanded) item.expanded = true;
       const groupSpec = openApiSource(g.openapi);
-      if (groupSpec) item.openapi = groupSpec;
+      if (groupSpec) {
+        item.openapi = groupSpec;
+        const dir = openApiDirectory(g.openapi);
+        if (dir) item.openapiDirectory = dir;
+      }
       sidebar.push(item);
     }
   }
@@ -226,7 +235,11 @@ function tabFromNavTab(
   if (typeof tab.icon === "string") out.icon = tab.icon;
   if (tab.href) out.href = tab.href;
   const tabSpec = openApiSource(tab.openapi);
-  if (tabSpec) out.openapi = tabSpec;
+  if (tabSpec) {
+    out.openapi = tabSpec;
+    const tabDir = openApiDirectory(tab.openapi);
+    if (tabDir) out.openapiDirectory = tabDir;
+  }
   return out;
 }
 
@@ -270,7 +283,11 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
       if (g.tag) item.tag = g.tag;
       if (g.expanded) item.expanded = true;
       const groupSpec = openApiSource(g.openapi);
-      if (groupSpec) item.openapi = groupSpec;
+      if (groupSpec) {
+        item.openapi = groupSpec;
+        const dir = openApiDirectory(g.openapi);
+        if (dir) item.openapiDirectory = dir;
+      }
       rootSidebar.push(item);
     }
     for (const s of collected) navSlugs.add(s);

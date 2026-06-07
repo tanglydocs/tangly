@@ -22,6 +22,7 @@ export {
   type NavNode,
   type NavTab,
   type NavVersion,
+  openApiDirectory,
   openApiSource,
   type OpenApiRef,
   OpenApiRefSchema,

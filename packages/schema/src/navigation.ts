@@ -34,6 +34,15 @@ export function openApiSource(ref: OpenApiRef | undefined): string | undefined {
   return Array.isArray(ref.source) ? ref.source[0] : ref.source;
 }
 
+/**
+ * Output `directory` for the object form of an `OpenApiRef` — Mintlify scopes
+ * the generated endpoint pages under it. Undefined for the string/array forms.
+ */
+export function openApiDirectory(ref: OpenApiRef | undefined): string | undefined {
+  if (ref === undefined || typeof ref === "string" || Array.isArray(ref)) return undefined;
+  return ref.directory;
+}
+
 const NavGroupBase = z.object({
   group: z.string(),
   icon: Icon,

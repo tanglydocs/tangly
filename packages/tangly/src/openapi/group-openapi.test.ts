@@ -81,3 +81,44 @@ describe("group-level OpenAPI expansion", () => {
     }
   });
 });
+
+// Object-form `openapi` ({ source, directory }) scopes the generated endpoint
+// slugs under `directory` rather than the tab slug (Mintlify behavior).
+describe("group-level OpenAPI object ref with directory", () => {
+  let dir: string;
+  let m: Manifest;
+
+  beforeAll(async () => {
+    dir = mkdtempSync(join(tmpdir(), "tangly-group-oas-dir-"));
+    writeFileSync(
+      join(dir, "docs.json"),
+      JSON.stringify({
+        name: "Object Ref",
+        navigation: {
+          tabs: [
+            {
+              tab: "Reference",
+              groups: [
+                { group: "Endpoints", openapi: { source: "spec.json", directory: "ref/v1" } },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+    writeFileSync(join(dir, "spec.json"), JSON.stringify(SPEC));
+    m = await buildManifest({ root: dir, configFile: "docs.json" });
+  });
+
+  afterAll(() => {
+    rmSync(dir, { recursive: true, force: true, maxRetries: 3 });
+  });
+
+  test("prefixes endpoint slugs with the directory, not the tab slug", () => {
+    const endpointSlugs = [...m.pages.values()]
+      .filter((p) => p.frontmatter?.openapi)
+      .map((p) => p.slug);
+    expect(endpointSlugs.length).toBe(3);
+    expect(endpointSlugs.every((s) => s.startsWith("ref/v1/"))).toBe(true);
+  });
+});

@@ -22,6 +22,8 @@ export interface SidebarItem {
    * expands the spec into endpoint pages nested under this group.
    */
   openapi?: string;
+  /** Output directory for object-form `openapi` refs — scopes endpoint slugs. */
+  openapiDirectory?: string;
 }
 
 export interface PageEntry {
@@ -71,6 +73,8 @@ export interface ResolvedTab {
   href?: string;
   /** Top-level openapi spec URL/path. */
   openapi?: string;
+  /** Output directory for an object-form `openapi` ref — scopes endpoint slugs. */
+  openapiDirectory?: string;
   /** Sidebar for this tab. */
   sidebar: SidebarItem[];
   /** Pages reachable in this tab. */
