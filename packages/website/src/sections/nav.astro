@@ -6,6 +6,11 @@ import { timeAgo, formatStars } from "~/lib/relative-time";
 const { version, stars, releasedAt } = await getRepoMeta();
 const releasedAgo = releasedAt ? timeAgo(releasedAt) : "";
 const starLabel = stars === null ? "" : formatStars(stars);
+// WCAG 2.5.3 (Label in Name): the visible star count must be part of the
+// link's accessible name, so fold it into the aria-label.
+const ghLabel = starLabel
+  ? `Tangly on GitHub, ${starLabel} stars`
+  : "Tangly on GitHub";
 ---
 
 <nav
@@ -18,7 +23,7 @@ const starLabel = stars === null ? "" : formatStars(stars);
       <a href="/" class="flex items-center gap-2">
         <img
           src="/brand/tangly-icon-64.png"
-          alt=""
+          alt="Tangly"
           width="20"
           height="20"
           class="h-5 w-5"
@@ -52,7 +57,8 @@ const starLabel = stars === null ? "" : formatStars(stars);
       <a href={CHANGELOG_URL} class="hover:text-ink">Changelog</a>
       <a
         href={GITHUB_URL}
-        aria-label="Tangly on GitHub"
+        aria-label={ghLabel}
+        data-gh-link
         class="flex h-7 items-center gap-1.5 rounded-full border border-line-light/80 px-2.5 text-mute transition-colors hover:border-tang-600/40 hover:text-ink"
       >
         <Github size={14} />
@@ -88,6 +94,10 @@ const starLabel = stars === null ? "" : formatStars(stars);
       const label = formatStars(n);
       for (const el of document.querySelectorAll("[data-gh-stars]")) {
         el.textContent = label;
+      }
+      // Keep the accessible name in sync with the visible count (WCAG 2.5.3).
+      for (const el of document.querySelectorAll("[data-gh-link]")) {
+        el.setAttribute("aria-label", `Tangly on GitHub, ${label} stars`);
       }
     })
     .catch(() => {

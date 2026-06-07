@@ -19,7 +19,6 @@ import AccordionGroup from "@tanglydocs/theme-ui/components/AccordionGroup.astro
 import CodeGroup from "@tanglydocs/theme-ui/components/CodeGroup.astro";
 import FileTree from "@tanglydocs/theme-ui/components/FileTree.astro";
 import Snippet from "@tanglydocs/theme-ui/components/Snippet.astro";
-import Video from "@tanglydocs/theme-ui/components/Video.astro";
 import LightboxImage from "@tanglydocs/theme-ui/components/LightboxImage.astro";
 // Embed needs Tangly's manifest virtual module — render a static placeholder.
 import ParamField from "@tanglydocs/theme-ui/components/ParamField.astro";
@@ -185,7 +184,14 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                     </div>
                   )}
                   {tag === "Video" && (
-                    <Video src="/video.mp4" />
+                    <div class="relative aspect-video w-full overflow-hidden rounded-lg bg-ink">
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-paper/90">
+                          <svg viewBox="0 0 24 24" aria-hidden="true" class="h-4 w-4 translate-x-px fill-ink"><path d="M8 5v14l11-7z" /></svg>
+                        </span>
+                      </div>
+                      <span class="absolute bottom-1.5 left-2 font-mono text-[10px] text-paper/70">demo.mp4</span>
+                    </div>
                   )}
                   {tag === "LightboxImage" && (
                     <LightboxImage src="/brand/tangly-icon-512.png" alt="Tangly Möbius mark" width={120} height={120} />
