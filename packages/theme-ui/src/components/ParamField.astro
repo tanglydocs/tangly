@@ -28,7 +28,7 @@ const location = props.path
       <code class="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">{name}</code>
     )}
     {props.type && (
-      <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{props.type}</span>
+      <span class="font-mono text-xs text-zinc-600 dark:text-zinc-400">{props.type}</span>
     )}
     {location && (
       <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{location}</span>
@@ -40,7 +40,7 @@ const location = props.path
       <span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-medium">deprecated</span>
     )}
     {props.default !== undefined && (
-      <span class="text-xs text-zinc-500 dark:text-zinc-400">default: <code class="font-mono">{props.default}</code></span>
+      <span class="text-xs text-zinc-600 dark:text-zinc-400">default: <code class="font-mono">{props.default}</code></span>
     )}
   </div>
   <div class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed [&>p:first-child]:mt-0 [&>p:last-child]:mb-0">
