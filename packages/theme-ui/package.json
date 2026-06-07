@@ -60,13 +60,13 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "tailwindcss": "^4.2.4",
-    "tangly": "workspace:*",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "vfile": "^6.0.3"
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",
-    "@types/node": "^25.6.0"
+    "@types/node": "^25.6.0",
+    "tangly": "workspace:*"
   }
 }

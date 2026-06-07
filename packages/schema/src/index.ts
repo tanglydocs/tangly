@@ -43,6 +43,12 @@ export {
 } from "./ref-resolve.js";
 export { normalizeDocsJson } from "./normalize.js";
 export {
+  detectPlatform,
+  resolveSite,
+  type ResolvedSite,
+  type ResolveSiteInput,
+} from "./resolve-site.js";
+export {
   resolveTheme,
   TANGLY_THEMES,
   ThemeSchema,

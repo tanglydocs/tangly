@@ -50,10 +50,11 @@ const PUBLISHABLE: readonly PkgDef[] = [
 ];
 
 // Cascade graph = what CONSUMERS install. devDependencies never reach consumers,
-// so a devDep edge must not trigger a republish cascade. (theme-ui → tangly is a
-// real *runtime* dep via `resolveSite` from `tangly/site`, so the theme-ui⇄tangly
-// cycle is genuine and stays in the graph; minor/major bumps therefore cascade
-// broadly. patch never cascades, so the common case is unaffected.)
+// so a devDep edge must not trigger a republish cascade. This keeps the graph
+// acyclic: theme-ui's only remaining `tangly` import is type-only (declared as a
+// devDependency), so it's excluded here. The DAG is schema → theme-ui → leaf
+// themes → tangly, with tangly a true sink — a theme minor cascades only to its
+// own dependents, not the whole tree.
 const RUNTIME_DEP_FIELDS = ["dependencies", "peerDependencies", "optionalDependencies"] as const;
 // Rewrite touches every field so no published package.json ships `workspace:*`.
 const ALL_DEP_FIELDS = [

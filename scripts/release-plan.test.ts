@@ -62,13 +62,13 @@ describe("reverseClosure (algorithm)", () => {
   });
 });
 
-// Production-matching fixture INCLUDING the real theme-ui <-> tangly runtime
-// cycle (theme-ui imports `resolveSite` from tangly/site). This documents the
-// actual cascade behavior: patch is surgical; minor/major cascade broadly
-// because the cycle ties theme-ui + every leaf theme + tangly together.
+// Production-matching fixture — ACYCLIC. `resolveSite` was moved to
+// @tanglydocs/schema, so theme-ui's only `tangly` import is type-only (declared
+// as a devDependency, excluded from the runtime cascade graph). DAG: schema ->
+// theme-ui -> leaf themes -> tangly, with tangly a true sink.
 const PROD: Record<string, string[]> = {
   schema: [],
-  "theme-ui": ["schema", "tangly"], // <-- runtime back-edge => cycle with tangly
+  "theme-ui": ["schema"],
   "theme-tang": ["theme-ui"],
   "theme-pith": ["theme-ui"],
   "theme-pip": ["theme-ui"],
@@ -85,7 +85,6 @@ const PROD: Record<string, string[]> = {
   ],
 };
 const ORDER = Object.keys(PROD);
-const NON_SCHEMA = ORDER.filter((k) => k !== "schema").toSorted();
 
 function inputs(changed: string[], version = "0.1.6"): PlanInputPkg[] {
   return ORDER.map((key) => ({
@@ -110,7 +109,7 @@ describe("planFromInputs (production graph)", () => {
     expect(plan.distTag).toBe("latest");
   });
 
-  it("a theme PATCH ships solo — cycle is irrelevant for patch", () => {
+  it("a theme PATCH ships solo", () => {
     const plan = planFromInputs(inputs(["theme-tang"]), "patch", "rc");
     expect(plan.publish).toEqual(["theme-tang"]);
     expect(plan.corePublished).toBe(false);
@@ -120,15 +119,13 @@ describe("planFromInputs (production graph)", () => {
     expect(plan.tanglyVersion).toBe("0.1.6");
   });
 
-  it("a theme MINOR cascades broadly through the cycle (all but schema)", () => {
+  it("a theme MINOR cascades only to its dependents (theme-tang -> tangly)", () => {
     const plan = planFromInputs(inputs(["theme-tang"]), "minor", "rc");
-    expect([...plan.publish].toSorted()).toEqual(NON_SCHEMA);
-    expect(plan.publish).not.toContain("schema");
+    expect(plan.publish).toEqual(["theme-tang", "tangly"]); // NOT the other themes
+    expect(plan.packages["theme-ui"]!.publish).toBe(false); // acyclic: theme-ui untouched
     expect(plan.packages["theme-tang"]!.newVersion).toBe("0.2.0"); // directly changed -> minor
-    expect(plan.packages.tangly!.newVersion).toBe("0.1.7"); // pulled-in dependent -> patch
-    expect(plan.packages["theme-ui"]!.newVersion).toBe("0.1.7"); // pulled in via cycle -> patch
+    expect(plan.packages.tangly!.newVersion).toBe("0.1.7"); // dependent -> patch
     expect(plan.corePublished).toBe(true);
-    expect(plan.publish[plan.publish.length - 1]).toBe("tangly"); // tangly published last (topo)
   });
 
   it("a schema MINOR cascades to the whole graph", () => {

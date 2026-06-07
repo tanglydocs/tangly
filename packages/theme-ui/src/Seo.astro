@@ -14,8 +14,8 @@
  *   5. logo                       — last-resort fallback (legacy behavior)
  */
 import type { DocsJson } from "@tanglydocs/schema";
+import { resolveSite } from "@tanglydocs/schema/site";
 import type { PageEntry } from "tangly";
-import { resolveSite } from "tangly/site";
 import { withBase } from "./with-base.ts";
 
 export interface Props {

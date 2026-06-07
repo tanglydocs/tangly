@@ -37,14 +37,14 @@
     },
     "packages/schema": {
       "name": "@tanglydocs/schema",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "zod": "^4.3.6",
       },
     },
     "packages/tangly": {
       "name": "tangly",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "bin": {
         "tangly": "./bin/tangly.js",
       },
@@ -107,7 +107,7 @@
     },
     "packages/theme-geist": {
       "name": "@tanglydocs/theme-geist",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@tanglydocs/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
@@ -118,7 +118,7 @@
     },
     "packages/theme-pip": {
       "name": "@tanglydocs/theme-pip",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@tanglydocs/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
@@ -129,7 +129,7 @@
     },
     "packages/theme-pith": {
       "name": "@tanglydocs/theme-pith",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@tanglydocs/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
@@ -140,7 +140,7 @@
     },
     "packages/theme-readable": {
       "name": "@tanglydocs/theme-readable",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@tanglydocs/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
@@ -151,7 +151,7 @@
     },
     "packages/theme-tang": {
       "name": "@tanglydocs/theme-tang",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@tanglydocs/theme-ui": "workspace:*",
         "tailwindcss": "^4.2.4",
@@ -162,7 +162,7 @@
     },
     "packages/theme-ui": {
       "name": "@tanglydocs/theme-ui",
-      "version": "0.1.2",
+      "version": "0.1.6",
       "dependencies": {
         "@astrojs/mdx": "^5.0.4",
         "@scalar/api-reference": "^1.53.1",
@@ -182,7 +182,6 @@
         "remark-parse": "^11.0.0",
         "remark-rehype": "^11.1.2",
         "tailwindcss": "^4.2.4",
-        "tangly": "workspace:*",
         "unified": "^11.0.5",
         "unist-util-visit": "^5.0.0",
         "vfile": "^6.0.3",
@@ -190,6 +189,7 @@
       "devDependencies": {
         "@types/hast": "^3.0.4",
         "@types/node": "^25.6.0",
+        "tangly": "workspace:*",
       },
     },
     "packages/website": {

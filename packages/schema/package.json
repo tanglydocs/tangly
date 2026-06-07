@@ -29,6 +29,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./site": {
+      "types": "./dist/resolve-site.d.ts",
+      "import": "./dist/resolve-site.js"
+    },
     "./docs.json": "./dist/docs.json"
   },
   "publishConfig": {
