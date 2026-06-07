@@ -53,8 +53,11 @@ const pkgInfo = workspacePkgs.map((rel) => {
 const canonicalVersion = pkgInfo.find((p) => p.name === "tangly")?.version;
 if (!canonicalVersion) fail("could not read tangly version");
 const internalNames = new Set(pkgInfo.map((p) => p.name));
+// Packages now version independently, so each internal dep resolves to its own
+// version (not one canonical version). Mirrors release.yml's caret rewrite.
+const versionByName = new Map(pkgInfo.map((p) => [p.name, p.version]));
 
-step("stage packages with workspace:* rewritten to concrete versions");
+step("stage packages with workspace:* rewritten to caret ranges");
 for (const { rel, name } of pkgInfo) {
   const src = join(repoRoot, rel);
   const dst = join(stage, rel);
@@ -75,7 +78,7 @@ for (const { rel, name } of pkgInfo) {
     if (!block) continue;
     for (const dep of Object.keys(block)) {
       if (internalNames.has(dep)) {
-        block[dep] = canonicalVersion;
+        block[dep] = `^${versionByName.get(dep)!}`;
       }
     }
   }

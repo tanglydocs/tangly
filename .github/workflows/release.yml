@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: "Release bump"
+        description: "Release bump (applied to each CHANGED package)"
         type: choice
         required: true
         default: patch
@@ -16,7 +16,7 @@ on:
         default: rc
         options: [rc, beta, alpha]
       dry_run:
-        description: "Dry run (no tag, no publish)"
+        description: "Dry run (compute plan only — no tag, no publish)"
         type: boolean
         default: false
       confirm:
@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   release:
-    name: release tangly + @tanglydocs/*
+    name: release changed @tanglydocs/* packages
     runs-on: ubuntu-latest
     env:
       BUMP: ${{ github.event.inputs.bump }}
@@ -78,212 +78,158 @@ jobs:
       - name: Ensure all packages built
         run: bun run build
 
-      - name: Compute next version
-        id: ver
-        run: |
-          current=$(node -p "require('./packages/tangly/package.json').version")
-          # Inline semver bump — avoids `npx --yes semver` which has flaked
-          # (registry hiccups produce `sh: 1: semver: not found` and exit 127).
-          next=$(BUMP="$BUMP" PRERELEASE_ID="$PRERELEASE_ID" node -e '
-            const cur = process.argv[1];
-            const bump = process.env.BUMP;
-            const id = process.env.PRERELEASE_ID || "rc";
-            const m = cur.match(/^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/);
-            if (!m) { console.error("bad semver: " + cur); process.exit(1); }
-            let [, maj, min, pat, pre] = m;
-            maj = +maj; min = +min; pat = +pat;
-            if (bump === "major") { maj++; min = 0; pat = 0; pre = undefined; }
-            else if (bump === "minor") { min++; pat = 0; pre = undefined; }
-            else if (bump === "patch") { pat++; pre = undefined; }
-            else if (bump === "prerelease") {
-              if (pre && pre.startsWith(id + ".")) {
-                const n = parseInt(pre.slice(id.length + 1), 10);
-                pre = `${id}.${Number.isFinite(n) ? n + 1 : 0}`;
-              } else {
-                pat++;
-                pre = `${id}.0`;
-              }
-            } else { console.error("unknown bump: " + bump); process.exit(1); }
-            const out = `${maj}.${min}.${pat}` + (pre ? `-${pre}` : "");
-            console.log(out);
-          ' "$current")
-          echo "version=$next" >> "$GITHUB_OUTPUT"
-          echo "tag=v$next" >> "$GITHUB_OUTPUT"
-          if [ "$BUMP" = "prerelease" ]; then
-            echo "dist_tag=$PRERELEASE_ID" >> "$GITHUB_OUTPUT"
-          else
-            echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
-          fi
-          echo "Releasing $current → $next"
+      - name: Validate release planner
+        run: bun x vitest run scripts/release-plan.test.ts
 
-      # Step 1: bump VERSION only in source-of-truth (workspace:* preserved).
-      # This is what gets committed back to main.
-      - name: Bump versions in package.json
-        env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
+      # ---- Changed-only release plan ----
+      # Detect which publishable packages changed since their last publish, expand
+      # to dependents only when a bump escapes their caret range, and emit the
+      # exact version + publish + dep-rewrite plan. Computed ONCE here, persisted
+      # to $RUNNER_TEMP/plan.json, and consumed (never re-detected) by later steps.
+      - name: Compute release plan
+        id: plan
         run: |
+          bun scripts/release-plan.ts plan \
+            --bump "$BUMP" --prerelease-id "$PRERELEASE_ID" \
+            --out "$RUNNER_TEMP/plan.json"
           node -e '
             const fs = require("node:fs");
-            const path = require("node:path");
-            const v = process.env.NEW_VERSION;
-            const dirs = [
-              "packages/schema",
-              "packages/theme-ui",
-              "packages/theme-tang",
-              "packages/theme-pith",
-              "packages/theme-pip",
-              "packages/theme-readable",
-              "packages/theme-geist",
-              "packages/tangly",
-            ];
-            for (const d of dirs) {
-              const p = path.join(d, "package.json");
-              const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
-              pkg.version = v;
-              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
-              console.log(pkg.name, "→", v);
-            }
+            const p = require(process.env.RUNNER_TEMP + "/plan.json");
+            const set = (k, v) => fs.appendFileSync(process.env.GITHUB_OUTPUT, `${k}=${v}\n`);
+            set("any", p.anyPublish);
+            set("core", p.corePublished);
+            set("tangly", p.tanglyVersion);
+            set("tag", p.tag ?? "");
+            set("dist_tag", p.distTag);
           '
+          echo "----- plan -----"
+          cat "$RUNNER_TEMP/plan.json"
 
-      - name: Sync skill versions to package version
-        run: bun run scripts/sync-skill-versions.ts
+      - name: Nothing to publish
+        if: ${{ steps.plan.outputs.any != 'true' }}
+        run: |
+          echo "No publishable package changed since its last release — nothing to do." \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # Core (tangly) releases REQUIRE a changelog entry. Runs in dry-run too so a
+      # missing entry surfaces before a real release. Non-core releases skip this.
+      - name: Changelog gate (core release requires an entry)
+        if: ${{ steps.plan.outputs.any == 'true' && steps.plan.outputs.core == 'true' }}
+        env:
+          TANGLY_VERSION: ${{ steps.plan.outputs.tangly }}
+        run: |
+          if ! bun scripts/extract-release-notes.ts "$TANGLY_VERSION" > /dev/null; then
+            echo "::error::tangly is being published as v$TANGLY_VERSION but docs/changelog.mdx has no <Update label=\"v$TANGLY_VERSION\"> entry. Add it and re-run."
+            exit 1
+          fi
+          echo "Changelog entry for v$TANGLY_VERSION present."
 
       - name: Dry run summary
         if: ${{ env.DRY_RUN == 'true' }}
-        env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
-          DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
         run: |
           {
-            echo "## Dry run"
-            echo "- version: \`$NEW_VERSION\`"
-            echo "- dist-tag: \`$DIST_TAG\`"
-            echo "- bump: \`$BUMP\`"
+            echo "## Dry run — release plan"
+            echo '```json'
+            cat "$RUNNER_TEMP/plan.json"
+            echo '```'
+            echo "No tag created, no publish."
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "No tag created, no publish."
 
-      # Step 2: commit & tag the VERSION bump (deps still workspace:* — clean state).
+      # ---- From here on: real release of the changed subset only ----
+
+      # Bump package.json versions for the publish set (committed) + sync skills
+      # to tangly's version. Internal deps stay workspace:* until the publish rewrite.
+      - name: Apply versions + sync skills
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
+        run: |
+          bun scripts/release-plan.ts apply-versions --plan "$RUNNER_TEMP/plan.json"
+          bun run scripts/sync-skill-versions.ts
+
+      # Smoke BEFORE commit/tag/publish so a resolution failure aborts cleanly with
+      # nothing pushed. The smoke scripts stage their own copies + caret-rewrite, so
+      # the source tree keeps workspace:* here. They pack ALL packages (tangly needs
+      # the full graph) at the just-bumped versions.
+      - name: Tarball install smoke (gates publish)
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
+        run: bun run scripts/smoke-tarball.ts
+
+      - name: Tarball flat-install smoke (gates publish)
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
+        run: bun run scripts/smoke-tarball-flat.ts
+
+      # Commit the version bumps (workspace:* intact) + per-package tags
+      # `<key>@<version>` (the change baselines for next time). Core releases also
+      # get a `v<tanglyVersion>` tag.
       - name: Commit + tag
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
         env:
-          TAG: ${{ steps.ver.outputs.tag }}
+          CORE: ${{ steps.plan.outputs.core }}
+          TAG: ${{ steps.plan.outputs.tag }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          SUBJECT=$(node -e 'const p=require(process.env.RUNNER_TEMP+"/plan.json");console.log(p.publish.map(k=>`${p.packages[k].name}@${p.packages[k].newVersion}`).join(", "))')
           git add packages/*/package.json skills/*/SKILL.md
-          git commit -m "chore(release): $TAG [skip ci]"
-          # Annotated tag (lightweight tags are NOT pushed by --follow-tags).
-          git tag -a "$TAG" -m "Release $TAG"
+          git commit -m "chore(release): $SUBJECT [skip ci]"
+          node -e 'const p=require(process.env.RUNNER_TEMP+"/plan.json");for(const k of p.publish)console.log(`${k}@${p.packages[k].newVersion}`)' > "$RUNNER_TEMP/tags.txt"
+          while read -r t; do
+            [ -n "$t" ] && git tag -a "$t" -m "Release $t"
+          done < "$RUNNER_TEMP/tags.txt"
+          if [ "$CORE" = "true" ]; then
+            git tag -a "$TAG" -m "Release $TAG"
+          fi
           git push origin HEAD
-          git push origin "$TAG"
+          git push origin --tags
 
-      # Step 3: rewrite workspace:* → concrete versions IN-PLACE for publish.
-      # NOT committed — so source-of-truth on main stays workspace:*.
-      - name: Rewrite workspace:* deps for publish (working tree only)
-        if: ${{ env.DRY_RUN != 'true' }}
+      # Rewrite workspace:* -> ^version IN-PLACE for publish only (NOT committed —
+      # source-of-truth on main stays workspace:*).
+      - name: Rewrite internal deps to caret (working tree)
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
+        run: bun scripts/release-plan.ts apply-rewrite --plan "$RUNNER_TEMP/plan.json"
+
+      - name: Publish changed packages (topological order)
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
         env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
-        run: |
-          node -e '
-            const fs = require("node:fs");
-            const path = require("node:path");
-            const v = process.env.NEW_VERSION;
-            const dirs = [
-              "packages/schema",
-              "packages/theme-ui",
-              "packages/theme-tang",
-              "packages/theme-pith",
-              "packages/theme-pip",
-              "packages/theme-readable",
-              "packages/theme-geist",
-              "packages/tangly",
-            ];
-            const names = dirs.map(d => JSON.parse(fs.readFileSync(path.join(d, "package.json"), "utf8")).name);
-            for (const d of dirs) {
-              const p = path.join(d, "package.json");
-              const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
-              for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
-                if (!pkg[field]) continue;
-                for (const dep of Object.keys(pkg[field])) {
-                  // Always rewrite internal deps to current release version, regardless of prior value.
-                  if (names.includes(dep)) {
-                    pkg[field][dep] = v;
-                  }
-                }
-              }
-              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + "\n");
-            }
-            console.log("Rewrote internal deps →", v);
-          '
-
-      - name: Pack & smoke (verify the published tarball works)
-        if: ${{ env.DRY_RUN != 'true' }}
-        run: |
-          cd packages/tangly
-          bun pm pack --destination "$RUNNER_TEMP"
-          tarball=$(ls "$RUNNER_TEMP"/tangly-*.tgz | head -1)
-          echo "Tarball: $tarball"
-
-      # Pack all 8 packages, install into a clean dir outside the workspace,
-      # run init+build end-to-end. This is the only gate that catches the
-      # resolution bugs visible to bunx/npx users (single-vite hoisting,
-      # peer auto-install) before publish — failing here aborts the release.
-      - name: Tarball install smoke (gates publish)
-        if: ${{ env.DRY_RUN != 'true' }}
-        run: bun run scripts/smoke-tarball.ts
-
-      # Same pack as above, but installs ONLY tangly as a direct dep (the
-      # realistic `npm i -g tangly` shape). Catches transitive-dep hoisting
-      # bugs the full-graph smoke flattens past. 0.0.8 → 0.0.10 each shipped
-      # broken because no pre-publish gate exercised this layout.
-      - name: Tarball flat-install smoke (gates publish)
-        if: ${{ env.DRY_RUN != 'true' }}
-        run: bun run scripts/smoke-tarball-flat.ts
-
-      - name: Publish all packages (topological order)
-        if: ${{ env.DRY_RUN != 'true' }}
-        env:
-          DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
+          DIST_TAG: ${{ steps.plan.outputs.dist_tag }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          for d in packages/schema packages/theme-ui packages/theme-tang packages/theme-pith packages/theme-pip packages/theme-readable packages/theme-geist packages/tangly; do
-            echo "::group::Publish $d @ $DIST_TAG"
-            (cd "$d" && npm publish --tag "$DIST_TAG" --access public)
+          for dir in $(node -e 'const p=require(process.env.RUNNER_TEMP+"/plan.json");console.log(p.publish.map(k=>p.packages[k].dir).join(" "))'); do
+            echo "::group::Publish $dir @ $DIST_TAG"
+            (cd "$dir" && npm publish --tag "$DIST_TAG" --access public)
             echo "::endgroup::"
           done
 
-      - name: Extract release notes from docs/changelog.mdx
-        if: ${{ env.DRY_RUN != 'true' }}
-        id: notes
+      - name: Extract release notes (core)
+        if: ${{ steps.plan.outputs.any == 'true' && steps.plan.outputs.core == 'true' && env.DRY_RUN != 'true' }}
         env:
-          NEW_VERSION: ${{ steps.ver.outputs.version }}
-        run: |
-          if bun run scripts/extract-release-notes.ts "$NEW_VERSION" > RELEASE_NOTES.md; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "Using docs/changelog.mdx body for v$NEW_VERSION"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            rm -f RELEASE_NOTES.md
-            echo "::warning::No <Update label=\"v$NEW_VERSION\"> in docs/changelog.mdx; falling back to --generate-notes"
-          fi
+          TANGLY_VERSION: ${{ steps.plan.outputs.tangly }}
+        run: bun scripts/extract-release-notes.ts "$TANGLY_VERSION" > RELEASE_NOTES.md
 
-      - name: Create GitHub Release
-        if: ${{ env.DRY_RUN != 'true' }}
+      - name: Create GitHub Release (core)
+        if: ${{ steps.plan.outputs.any == 'true' && steps.plan.outputs.core == 'true' && env.DRY_RUN != 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.ver.outputs.tag }}
-          FOUND: ${{ steps.notes.outputs.found }}
+          TAG: ${{ steps.plan.outputs.tag }}
         run: |
-          # --target $GITHUB_SHA: belt + suspenders in case the tag isn't
-          # visible to gh CLI yet (it just got pushed in a prior step).
-          flags=()
-          if [ "$FOUND" = "true" ]; then
-            flags+=(--notes-file RELEASE_NOTES.md)
-          else
-            flags+=(--generate-notes)
-          fi
+          # --target $GITHUB_SHA: belt + suspenders in case the tag isn't visible
+          # to gh CLI yet (it was just pushed). An existing pushed tag wins.
           if [ "$BUMP" = "prerelease" ]; then
-            gh release create "$TAG" --prerelease --title "$TAG" --target "$GITHUB_SHA" "${flags[@]}"
+            gh release create "$TAG" --prerelease --title "$TAG" --target "$GITHUB_SHA" --notes-file RELEASE_NOTES.md
           else
-            gh release create "$TAG" --latest --title "$TAG" --target "$GITHUB_SHA" "${flags[@]}"
+            gh release create "$TAG" --latest --title "$TAG" --target "$GITHUB_SHA" --notes-file RELEASE_NOTES.md
           fi
+
+      - name: Release summary
+        if: ${{ steps.plan.outputs.any == 'true' && env.DRY_RUN != 'true' }}
+        run: |
+          {
+            echo "## Released"
+            node -e 'const p=require(process.env.RUNNER_TEMP+"/plan.json");for(const k of p.publish)console.log(`- ${p.packages[k].name}@${p.packages[k].newVersion} (\`${k}@${p.packages[k].newVersion}\`)`)'
+            if [ "${{ steps.plan.outputs.core }}" = "true" ]; then
+              echo ""
+              echo "Core release: \`${{ steps.plan.outputs.tag }}\` (GitHub Release created from changelog)."
+            else
+              echo ""
+              echo "Non-core release: theme/schema packages only — no \`v*\` tag, no GitHub Release."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
