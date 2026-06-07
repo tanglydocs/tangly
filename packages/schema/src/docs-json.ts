@@ -275,7 +275,7 @@ const CodeSchema = z
     copyButton: z.boolean().optional(),
     /**
      * Shiki theme(s). String → same theme for light + dark.
-     * Object → split. Defaults to github-light/github-dark.
+     * Object → split. Defaults to vitesse-light/vitesse-dark.
      */
     theme: z
       .union([z.string(), z.object({ light: z.string(), dark: z.string() }).strict()])

@@ -59,7 +59,7 @@ try {
 const codeThemes =
   typeof codeConfig.theme === "string"
     ? { light: codeConfig.theme, dark: codeConfig.theme }
-    : (codeConfig.theme ?? { light: "github-light", dark: "github-dark" });
+    : (codeConfig.theme ?? { light: "vitesse-light", dark: "vitesse-dark" });
 const codeCopyButton = codeConfig.copyButton !== false;
 
 // Load glossary entries once at config-load. Errors are non-fatal —
