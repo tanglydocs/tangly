@@ -8,6 +8,7 @@ import { buildBuildReport, writeBuildReport } from "../../build-outputs/build-re
 import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
+import { reportConfigError } from "../../manifest/config-error.js";
 import { buildManifest } from "../../manifest/index.js";
 import { resolveSite } from "../../site/resolve-site.js";
 import { loadDotenv } from "../load-env.js";
@@ -98,7 +99,13 @@ export const buildCommand = defineCommand({
     if (args.env) process.env.TANGLY_ENV = args.env;
 
     // Validate first
-    const manifest = await buildManifest({ root: userRoot, configFile: args.config });
+    let manifest: Awaited<ReturnType<typeof buildManifest>>;
+    try {
+      manifest = await buildManifest({ root: userRoot, configFile: args.config });
+    } catch (err) {
+      if (reportConfigError(err)) process.exit(1);
+      throw err;
+    }
     console.log(pc.dim(`  ${manifest.pages.size} pages, ${manifest.warnings.length} warnings`));
 
     const runtimeDir = getRuntimeDir();

@@ -4,6 +4,7 @@ import { confirm, intro, isCancel, outro } from "@clack/prompts";
 import {
   convertMintToDocs,
   formatDocsJsonError,
+  formatJsonSyntaxError,
   parseDocsJson,
   safeParseDocsJson,
   TANGLY_THEMES,
@@ -134,7 +135,13 @@ async function migrateExistingDocs(opts: {
 }): Promise<void> {
   const { docsPath, yes } = opts;
   const raw = readFileSync(docsPath, "utf8");
-  const parsed = JSON.parse(raw) as Record<string, unknown>;
+  let parsed: Record<string, unknown>;
+  try {
+    parsed = JSON.parse(raw) as Record<string, unknown>;
+  } catch (err) {
+    console.error(formatJsonSyntaxError(raw, err, { file: "docs.json" }));
+    process.exit(1);
+  }
 
   const result = safeParseDocsJson(parsed);
   if (!result.success) {

@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 import { VERSION } from "../../index.js";
+import { reportConfigError } from "../../manifest/config-error.js";
 import { buildManifest } from "../../manifest/index.js";
 import { printBanner } from "../banner.js";
 import { loadDotenv } from "../load-env.js";
@@ -83,7 +84,13 @@ export const devCommand = defineCommand({
 
     // Pre-validate the manifest before launching Astro so the user sees
     // schema errors immediately, not buried in an Astro stack trace.
-    const manifest = await buildManifest({ root: userRoot, configFile: args.config });
+    let manifest: Awaited<ReturnType<typeof buildManifest>>;
+    try {
+      manifest = await buildManifest({ root: userRoot, configFile: args.config });
+    } catch (err) {
+      if (reportConfigError(err)) process.exit(1);
+      throw err;
+    }
 
     process.env.TANGLY_USER_ROOT = userRoot;
     process.env.TANGLY_CONFIG_FILE = args.config;
