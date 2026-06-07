@@ -136,6 +136,30 @@ Excluded pages (`noindex: true`, drafts) are excluded from the search index by d
 
 You're running the runtime directly without going through the CLI. Use `tangly dev` / `tangly build`. The runtime is internal; direct invocation is unsupported.
 
+### Same errors after upgrading (stale global install)
+
+You upgraded Tangly, but `tangly check` / `tangly migrate` keep reporting errors you already fixed. The output itself is the clue: every command stamps the version that produced it.
+
+```
+tangly v0.1.6
+Pages: 12    Orphans: 0
+```
+
+If that version is older than the one you just installed, you're running a different binary than you think. A global install (`bun add -g tangly` / `npm i -g tangly`) takes precedence on your `PATH` over the project-local copy, so updating the local dependency leaves the global untouched. That's why `npm list tangly` can show the new version while the typed `tangly` command runs the old global.
+
+Confirm and fix:
+
+```bash
+tangly --version          # the version actually running (expect the old one)
+npm i -g tangly@latest    # update the global
+```
+
+Or skip the global entirely and invoke the local copy:
+
+```bash
+npx tangly check
+```
+
 ### More
 
 - [`tangly check`](/reference/cli) for config validation.

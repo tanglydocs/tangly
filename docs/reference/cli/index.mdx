@@ -21,6 +21,23 @@ Or install globally:
 bun add -g tangly
 ```
 
+## Staying up to date
+
+In an interactive terminal, `tangly` checks npm at most once every 12 hours and prints a one-line notice when a newer version is published:
+
+```
+⚠ Update available: tangly 0.1.5 → 0.1.6
+  Upgrade: `npm i -g tangly@latest` (or run `npx tangly` for the local copy)
+```
+
+The check is fail-silent (offline or slow registry: no notice) and never runs in CI or piped output. Opt out with `TANGLY_NO_UPDATE_CHECK=1` or `NO_UPDATE_NOTIFIER=1`.
+
+Every command also stamps the running version into its output, and `tangly --version` prints it directly, so you can always confirm which binary ran.
+
+<Warning>
+**Stale global install.** A global `tangly` (`bun add -g` / `npm i -g`) takes precedence on your `PATH` over a project-local one. If you upgrade the local copy (`npm list tangly` shows the new version) but the typed `tangly` command still behaves like an old version, the global is shadowing it. Run `tangly --version` to confirm, then `npm i -g tangly@latest`, or invoke the local copy with `npx tangly`. See [Same errors after upgrading](/troubleshooting/common-errors).
+</Warning>
+
 ## Common flags
 
 Every command accepts these:

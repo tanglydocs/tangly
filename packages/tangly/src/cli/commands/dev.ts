@@ -9,6 +9,7 @@ import { printBanner } from "../banner.js";
 import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
 import { findCloudflaredBin, startCloudflaredTunnel } from "../tunnel.js";
+import { errorFooter, notifyUpdate } from "../version-notice.js";
 
 export const devCommand = defineCommand({
   meta: {
@@ -88,7 +89,10 @@ export const devCommand = defineCommand({
     try {
       manifest = await buildManifest({ root: userRoot, configFile: args.config });
     } catch (err) {
-      if (reportConfigError(err)) process.exit(1);
+      if (reportConfigError(err)) {
+        errorFooter();
+        process.exit(1);
+      }
       throw err;
     }
 
@@ -129,6 +133,8 @@ export const devCommand = defineCommand({
         console.log(pc.dim(`    • ${w.message}`));
       }
     }
+
+    await notifyUpdate();
 
     let tunnelChild: ReturnType<typeof startCloudflaredTunnel>["child"] | null = null;
     if (args.tunnel) {

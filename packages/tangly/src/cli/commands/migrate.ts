@@ -11,6 +11,8 @@ import {
 } from "@tanglydocs/schema";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { VERSION } from "../../index.js";
+import { errorFooter, notifyUpdate } from "../version-notice.js";
 
 const TANGLY_SCHEMA_URL = "https://tangly.dev/schema/docs.json";
 
@@ -45,7 +47,7 @@ export const migrateCommand = defineCommand({
     },
   },
   async run({ args }) {
-    intro(pc.bgCyan(pc.black(" Tangly migrate ")));
+    intro(pc.bgCyan(pc.black(` Tangly migrate v${VERSION} `)));
 
     const userRoot = resolve(args.root);
     const mintPath = resolve(userRoot, "mint.json");
@@ -80,6 +82,7 @@ export const migrateCommand = defineCommand({
       });
     }
 
+    await notifyUpdate();
     outro(`${pc.green("✓")} Done. Run ${pc.cyan("tangly dev")} to preview.`);
   },
 });
@@ -140,6 +143,7 @@ async function migrateExistingDocs(opts: {
     parsed = JSON.parse(raw) as Record<string, unknown>;
   } catch (err) {
     console.error(formatJsonSyntaxError(raw, err, { file: "docs.json" }));
+    errorFooter();
     process.exit(1);
   }
 
@@ -147,6 +151,7 @@ async function migrateExistingDocs(opts: {
   if (!result.success) {
     console.error(formatDocsJsonError(result.error, { raw, file: "docs.json" }));
     console.error(pc.dim(`\n  Fix the keys above (or open an issue) and rerun.`));
+    errorFooter();
     process.exit(1);
   }
 

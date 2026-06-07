@@ -10,9 +10,11 @@ import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
 import { reportConfigError } from "../../manifest/config-error.js";
 import { buildManifest } from "../../manifest/index.js";
+import { VERSION } from "../../index.js";
 import { resolveSite } from "../../site/resolve-site.js";
 import { loadDotenv } from "../load-env.js";
 import { getRuntimeDir } from "../runtime-paths.js";
+import { errorFooter, notifyUpdate } from "../version-notice.js";
 
 export const buildCommand = defineCommand({
   meta: {
@@ -74,7 +76,7 @@ export const buildCommand = defineCommand({
       );
       process.exit(1);
     }
-    console.log(pc.cyan(`▲ Building Tangly project (${adapter})…`));
+    console.log(pc.cyan(`▲ Building Tangly project v${VERSION} (${adapter})…`));
     if (adapter === "cloudflare" || adapter === "node") {
       console.log(
         pc.dim(
@@ -103,7 +105,10 @@ export const buildCommand = defineCommand({
     try {
       manifest = await buildManifest({ root: userRoot, configFile: args.config });
     } catch (err) {
-      if (reportConfigError(err)) process.exit(1);
+      if (reportConfigError(err)) {
+        errorFooter();
+        process.exit(1);
+      }
       throw err;
     }
     console.log(pc.dim(`  ${manifest.pages.size} pages, ${manifest.warnings.length} warnings`));
@@ -257,6 +262,8 @@ export const buildCommand = defineCommand({
         }
       }
     }
+
+    await notifyUpdate();
   },
 });
 
