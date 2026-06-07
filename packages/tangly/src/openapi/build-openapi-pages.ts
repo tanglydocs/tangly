@@ -1,6 +1,6 @@
 import type { DocsJson } from "@tanglydocs/schema";
 import type { ManifestWarning, PageEntry, ResolvedTab, SidebarItem } from "../manifest/types.js";
-import { expandOpenApiSpec, loadOpenApiSpec, type ExpandedSpec } from "./expand-spec.js";
+import { expandOpenApiSpec, type ExpandedSpec, loadOpenApiSpec } from "./expand-spec.js";
 import { resolveMethodColor } from "./method-color.js";
 
 export interface OpenApiBuildResult {
@@ -12,9 +12,17 @@ export interface OpenApiBuildResult {
 }
 
 /**
- * Walk navigation tabs, find ones with `openapi` set, fetch + expand each
- * spec into per-endpoint pages, and synthesize PageEntry + SidebarItem
- * additions for the manifest.
+ * Walk navigation tabs and expand any attached OpenAPI specs into per-endpoint
+ * pages. Two attachment points are supported, mirroring Mintlify:
+ *
+ *   - **tab-level** (`tab.openapi`): the whole tab is the spec; endpoints fill
+ *     its (otherwise empty) sidebar.
+ *   - **group-level** (`group.openapi`): a single group inside a tab carries a
+ *     spec; endpoints nest under that group, alongside hand-authored groups.
+ *
+ * Both synthesize PageEntry records whose frontmatter carries
+ * `openapi: METHOD path`; the runtime catch-all renders them via
+ * OpenApiEndpoint just like a hand-authored page.
  */
 export async function buildOpenApiPages(opts: {
   config: DocsJson;
@@ -25,59 +33,95 @@ export async function buildOpenApiPages(opts: {
   const sidebarsByTab: Record<string, SidebarItem[]> = {};
   const warnings: ManifestWarning[] = [];
 
-  // Collect (tab, openapi) pairs. Top-level api.openapi falls under no tab
-  // and is skipped here — auto-routes only attach when a tab opts in.
   for (const tab of opts.tabs) {
-    if (!tab.openapi) continue;
-    // Only auto-route when the tab has no manually-curated sidebar. If the
-    // user already wrote explicit `groups`/`pages` in docs.json, those win
-    // and we don't synthesize duplicates.
-    if (tab.sidebar.length > 0) continue;
-    // eslint-disable-next-line no-await-in-loop -- per-tab sequential is intentional
-    const spec = await loadOpenApiSpec(tab.openapi, opts.root);
-    if (!spec) {
-      warnings.push({
-        level: "warn",
-        source: tab.openapi,
-        message: `Could not load OpenAPI spec for tab "${tab.title}"`,
-      });
-      continue;
-    }
-    const expanded = expandOpenApiSpec(spec, { prefix: tab.slug });
-    // x-excluded: drop the operation entirely (no page, no sidebar entry).
-    expanded.operations = expanded.operations.filter((o) => !o.op.excluded);
-    if (expanded.operations.length === 0) {
-      warnings.push({
-        level: "warn",
-        message: `OpenAPI spec for tab "${tab.title}" has no operations`,
-      });
-      continue;
+    // Tab-level: top-level api.openapi falls under no tab and is skipped here —
+    // auto-routes only attach when a tab opts in. Only auto-route when the tab
+    // has no manually-curated sidebar; explicit groups/pages win.
+    if (tab.openapi && tab.sidebar.length === 0) {
+      // eslint-disable-next-line no-await-in-loop -- per-tab sequential is intentional
+      const expanded = await loadSpec(tab.openapi, tab.slug, tab.title, opts.root, warnings);
+      if (expanded) {
+        const sidebarItems = synthesizeSidebar(expanded);
+        sidebarsByTab[tab.slug] = sidebarItems;
+        pages.push(...synthesizePages(expanded, tab, tab.openapi, []));
+      }
     }
 
-    const sidebarItems = synthesizeSidebar(expanded);
-    sidebarsByTab[tab.slug] = sidebarItems;
-
-    for (const op of expanded.operations) {
-      const sidebar = [...(sidebarsByTab[tab.slug] ?? [])];
-      pages.push({
-        slug: op.slug,
-        file: `<openapi:${tab.openapi}#${op.op.method}-${op.op.path}>`,
-        frontmatter: {
-          title: op.title,
-          ...(op.op.description ? { description: op.op.description } : {}),
-          openapi: `${op.op.method} ${op.op.path}`,
-          ...(op.group ? { tag: op.group } : {}),
-        },
-        breadcrumbs: [{ title: tab.title }, ...(op.group ? [{ title: op.group }] : [])],
-        sidebar,
-        tab: { slug: tab.slug, title: tab.title },
-        draft: false,
-        ...(op.op.hidden && { hidden: true }),
-      });
+    // Group-level: any group in this tab that declares its own spec and has no
+    // hand-authored children. Endpoints nest under that group in place.
+    for (const group of groupsWithSpec(tab.sidebar)) {
+      // eslint-disable-next-line no-await-in-loop -- per-group sequential is intentional
+      const expanded = await loadSpec(group.openapi!, tab.slug, tab.title, opts.root, warnings);
+      if (!expanded) continue;
+      group.children = synthesizeSidebar(expanded);
+      pages.push(...synthesizePages(expanded, tab, group.openapi!, [group.title]));
     }
   }
 
   return { pages, sidebarsByTab, warnings };
+}
+
+/** Load + expand a spec, filtering x-excluded ops. Returns null (with a warning) on miss/empty. */
+async function loadSpec(
+  source: string,
+  prefix: string,
+  label: string,
+  root: string,
+  warnings: ManifestWarning[],
+): Promise<ExpandedSpec | null> {
+  const spec = await loadOpenApiSpec(source, root);
+  if (!spec) {
+    warnings.push({ level: "warn", source, message: `Could not load OpenAPI spec for "${label}"` });
+    return null;
+  }
+  const expanded = expandOpenApiSpec(spec, { prefix });
+  // x-excluded: drop the operation entirely (no page, no sidebar entry).
+  expanded.operations = expanded.operations.filter((o) => !o.op.excluded);
+  if (expanded.operations.length === 0) {
+    warnings.push({ level: "warn", message: `OpenAPI spec for "${label}" has no operations` });
+    return null;
+  }
+  return expanded;
+}
+
+/** One PageEntry per endpoint. `extraCrumbs` adds breadcrumb levels (e.g. the owning group). */
+function synthesizePages(
+  expanded: ExpandedSpec,
+  tab: ResolvedTab,
+  source: string,
+  extraCrumbs: string[],
+): PageEntry[] {
+  return expanded.operations.map((op) => ({
+    slug: op.slug,
+    file: `<openapi:${source}#${op.op.method}-${op.op.path}>`,
+    frontmatter: {
+      title: op.title,
+      ...(op.op.description ? { description: op.op.description } : {}),
+      openapi: `${op.op.method} ${op.op.path}`,
+      ...(op.group ? { tag: op.group } : {}),
+    },
+    breadcrumbs: [
+      { title: tab.title },
+      ...extraCrumbs.map((title) => ({ title })),
+      ...(op.group ? [{ title: op.group }] : []),
+    ],
+    // Wired to the tab's full sidebar by build-manifest once all specs resolve.
+    sidebar: [],
+    tab: { slug: tab.slug, title: tab.title },
+    draft: false,
+    ...(op.op.hidden && { hidden: true }),
+  }));
+}
+
+/** Depth-first yield of group items that carry an `openapi` spec and no hand-authored children. */
+function* groupsWithSpec(items: SidebarItem[]): Generator<SidebarItem> {
+  for (const item of items) {
+    if (item.isGroup && item.openapi && !(item.children && item.children.length > 0)) {
+      yield item;
+    } else if (item.children) {
+      yield* groupsWithSpec(item.children);
+    }
+  }
 }
 
 function synthesizeSidebar(expanded: ExpandedSpec): SidebarItem[] {

@@ -1,4 +1,11 @@
-import type { DocsJson, Frontmatter, NavGroup, NavNode, NavTab } from "@tanglydocs/schema";
+import {
+  type DocsJson,
+  type Frontmatter,
+  type NavGroup,
+  type NavNode,
+  type NavTab,
+  openApiSource,
+} from "@tanglydocs/schema";
 import { resolveMethodColor } from "../openapi/method-color.js";
 
 // NavTab type is referenced via tabFromNavTab below.
@@ -141,6 +148,8 @@ function buildSidebar(
       if (groupIcon) item.icon = groupIcon;
       if (node.tag) item.tag = node.tag;
       if (node.expanded) item.expanded = true;
+      const groupSpec = openApiSource(node.openapi);
+      if (groupSpec) item.openapi = groupSpec;
       out.push(item);
     } else {
       warnings.push({
@@ -200,6 +209,8 @@ function tabFromNavTab(
       if (typeof g.icon === "string") item.icon = g.icon;
       if (g.tag) item.tag = g.tag;
       if (g.expanded) item.expanded = true;
+      const groupSpec = openApiSource(g.openapi);
+      if (groupSpec) item.openapi = groupSpec;
       sidebar.push(item);
     }
   }
@@ -214,7 +225,8 @@ function tabFromNavTab(
   };
   if (typeof tab.icon === "string") out.icon = tab.icon;
   if (tab.href) out.href = tab.href;
-  if (tab.openapi) out.openapi = tab.openapi;
+  const tabSpec = openApiSource(tab.openapi);
+  if (tabSpec) out.openapi = tabSpec;
   return out;
 }
 
@@ -257,6 +269,8 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
       if (typeof g.icon === "string") item.icon = g.icon;
       if (g.tag) item.tag = g.tag;
       if (g.expanded) item.expanded = true;
+      const groupSpec = openApiSource(g.openapi);
+      if (groupSpec) item.openapi = groupSpec;
       rootSidebar.push(item);
     }
     for (const s of collected) navSlugs.add(s);

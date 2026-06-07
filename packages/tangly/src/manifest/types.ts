@@ -17,6 +17,11 @@ export interface SidebarItem {
   expanded?: boolean;
   /** Children (for groups). */
   children?: SidebarItem[];
+  /**
+   * Group-scoped OpenAPI spec URL/path. When set on a group, the manifest
+   * expands the spec into endpoint pages nested under this group.
+   */
+  openapi?: string;
 }
 
 export interface PageEntry {

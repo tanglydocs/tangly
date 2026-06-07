@@ -22,6 +22,9 @@ export {
   type NavNode,
   type NavTab,
   type NavVersion,
+  openApiSource,
+  type OpenApiRef,
+  OpenApiRefSchema,
 } from "./navigation.js";
 export {
   isPathSafe,

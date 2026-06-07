@@ -222,17 +222,20 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     for (const synth of openapi.pages) {
       pages.set(synth.slug, synth);
     }
-    // Attach the synthesized sidebar to each tab in-place. Endpoint pages
-    // share the same per-tab sidebar.
+    // Append tab-level synthesized sidebars in-place. Group-level specs mutate
+    // their own group's children, so they're already present in tab.sidebar.
     for (const tab of navigation.tabs) {
       const additions = openapi.sidebarsByTab[tab.slug];
-      if (additions && additions.length > 0) {
-        tab.sidebar.push(...additions);
-        for (const synth of openapi.pages.filter((p) => p.tab?.slug === tab.slug)) {
-          synth.sidebar = tab.sidebar;
-          tab.pages.push(synth.slug);
-        }
-      }
+      if (additions && additions.length > 0) tab.sidebar.push(...additions);
+    }
+    // Wire every synthesized endpoint to its tab's now-complete sidebar and
+    // register its slug as tab-reachable (covers both attachment points).
+    const tabBySlug = new Map(navigation.tabs.map((t) => [t.slug, t]));
+    for (const synth of openapi.pages) {
+      const tab = synth.tab ? tabBySlug.get(synth.tab.slug) : undefined;
+      if (!tab) continue;
+      synth.sidebar = tab.sidebar;
+      if (!tab.pages.includes(synth.slug)) tab.pages.push(synth.slug);
     }
     warnings.push(...openapi.warnings);
   } catch (err) {

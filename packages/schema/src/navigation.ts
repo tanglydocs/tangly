@@ -7,6 +7,33 @@ const Icon = z
   .union([z.string(), z.object({ name: z.string(), library: z.string().optional() })])
   .optional();
 
+/**
+ * Mintlify's OpenAPI/AsyncAPI reference: a single path/URL, an array of them,
+ * or a `{ source, directory }` object (the object form scopes generated pages
+ * under `directory`). Accepted on tabs, groups, and anchors. Use
+ * `openApiSource()` to extract the primary source string.
+ */
+export const OpenApiRefSchema = z.union([
+  z.string(),
+  z.array(z.string()),
+  z
+    .object({
+      source: z.union([z.string(), z.array(z.string())]),
+      directory: z.string().optional(),
+    })
+    .strict(),
+]);
+
+export type OpenApiRef = z.infer<typeof OpenApiRefSchema>;
+
+/** Primary spec source for an `OpenApiRef` (first entry of any array/object form). */
+export function openApiSource(ref: OpenApiRef | undefined): string | undefined {
+  if (ref === undefined) return undefined;
+  if (typeof ref === "string") return ref;
+  if (Array.isArray(ref)) return ref[0];
+  return Array.isArray(ref.source) ? ref.source[0] : ref.source;
+}
+
 const NavGroupBase = z.object({
   group: z.string(),
   icon: Icon,
@@ -14,13 +41,16 @@ const NavGroupBase = z.object({
   tag: Tag,
   expanded: z.boolean().optional(),
   template: z.string().optional(),
+  // Group-scoped OpenAPI spec. Mintlify expands it into per-endpoint pages
+  // nested under this group (see issue #6's `groups[].openapi`).
+  openapi: OpenApiRefSchema.optional(),
 });
 
 const NavTabBase = z.object({
   tab: z.string(),
   icon: Icon,
   href: z.string().optional(),
-  openapi: z.string().optional(),
+  openapi: OpenApiRefSchema.optional(),
   template: z.string().optional(),
 });
 
