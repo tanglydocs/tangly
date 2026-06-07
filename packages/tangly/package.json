@@ -1,6 +1,6 @@
 {
   "name": "tangly",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Self-hosted, open-source documentation framework. Drop-in compatible with Mintlify projects — render existing docs.json/MDX corpora unmodified, with Astro under the hood. Includes a CLI (init, dev, build, migrate), pluggable themes, and full MDX component parity.",
   "keywords": [
     "astro",
