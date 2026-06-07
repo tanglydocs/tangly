@@ -5,6 +5,41 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.1.5" description="7 Jun 26" tags={["feat","fix","test"]}>
+  ## Highlights
+
+  - **Friendly, key-by-key config errors.** When `docs.json` does not validate, `tangly check`, `migrate`, `dev`, and `build` now print an exhaustive, readable report instead of a raw Zod dump. Each problem names the key (with a `navigation.tabs[1].groups[0].pages` style path), the line number, a plain-English reason, the offending value, and a suggested fix (Mintlify rename hints plus did-you-mean for misspelled enum values). Malformed JSON points a caret at the exact line and column.
+  - **Broader Mintlify compatibility.** A group inside a tab can now carry its own `openapi` spec and expands into endpoint pages nested under that group (`{ source, directory }` object refs scope the generated slugs under `directory`). Many more real-world `docs.json` shapes parse unmodified: groups without `pages`, `banner` `critical` tone and `color`, `errors.404` `title`/`description`, `icons.library: "tabler"`, `background.image` light/dark pairs, object-form `styling.codeblocks`, bare-font-face `fonts`, `metadata.timestamp`, navbar social links and `primary` CTAs, `api.auth.default`, `contextual.display`, and `thumbnails.appearance`/`fonts`.
+  - **Extensive Mintlify backwards-compat CI.** Tangly now vendors 24 real published `docs.json` configs from across the ecosystem (bun, ngrok, Cobo, Hyperswitch, Upstash, Portkey, and more, spanning six themes and 2KB to 180KB) and parses every one in CI, so a future change that breaks compatibility with a real Mintlify project fails the build.
+
+  Thanks to [@quader864](https://github.com/quader864) for the detailed report in [#6](https://github.com/tanglydocs/tangly/issues/6) that drove this round of compatibility work.
+
+  ## Changes
+
+  ### Features
+  - feat(cli): friendly, key-by-key docs.json validation errors ([#6](https://github.com/tanglydocs/tangly/issues/6), [`5be6200`](https://github.com/tanglydocs/tangly/commit/5be62003aacfb01c2b1c0b129d7a6d5d5874e893))
+  - feat(manifest): expand group-level OpenAPI specs ([#6](https://github.com/tanglydocs/tangly/issues/6), [`5f7ee98`](https://github.com/tanglydocs/tangly/commit/5f7ee98ab1bd9458e2b45c0503330752eb5079c3))
+  - feat(website): showcase social cards and agent-markdown features ([`b73bffc`](https://github.com/tanglydocs/tangly/commit/b73bffc0729574c1de14d6105ad96f116e92ce21))
+  - feat(website): live GitHub stars + version/release pill in header ([`d08ed8a`](https://github.com/tanglydocs/tangly/commit/d08ed8a460bc2b8e4a24ebc662f2353aa73773c8))
+
+  ### Fixes
+  - fix(cli): surface friendly config errors from dev/build + migrate JSON ([`93a2bfd`](https://github.com/tanglydocs/tangly/commit/93a2bfd2075060361a5be99793a7a3fe85b8ab6a))
+  - fix(schema): accept navbar/api/contextual/thumbnails shapes + 16 configs ([#6](https://github.com/tanglydocs/tangly/issues/6), [`19f72ea`](https://github.com/tanglydocs/tangly/commit/19f72ea11e5062e4ecd847603c5fe66dea77aca9))
+  - fix(manifest): scope object-ref openapi pages under directory ([#6](https://github.com/tanglydocs/tangly/issues/6), [`a9880d7`](https://github.com/tanglydocs/tangly/commit/a9880d7a98137905de7969f979e54b72748b4d7a))
+  - fix(schema): accept more Mintlify docs.json shapes ([#6](https://github.com/tanglydocs/tangly/issues/6), [`51774e4`](https://github.com/tanglydocs/tangly/commit/51774e4d4ca853a0ac0624d9f65d0e20fec03833))
+  - fix(website): show 5 themes with docs.json theme field, starter as scaffold ([`141efb8`](https://github.com/tanglydocs/tangly/commit/141efb859dcc95dfbcbe98a5b65d9bd60fda5078))
+
+  ### Docs
+  - docs: sync npm/GitHub READMEs, correct theme and component counts ([`cfcbf66`](https://github.com/tanglydocs/tangly/commit/cfcbf66080e954cf81248f4f6c391cd07b82c0fe))
+
+  ### CI
+  - ci(smoke): Windows CI leg + parity tests vs real Mintlify configs ([#6](https://github.com/tanglydocs/tangly/issues/6), [`f358fb6`](https://github.com/tanglydocs/tangly/commit/f358fb65449e1bc87a3cfa88584bff9cb30a6118))
+
+  ### Tests
+  - test(schema): use Mintlify pages-nesting in #6 nested-group fixture ([#6](https://github.com/tanglydocs/tangly/issues/6), [`2a1b4bb`](https://github.com/tanglydocs/tangly/commit/2a1b4bbe5866c03eec1afaa2d120308f00ddfef2))
+
+</Update>
+
 <Update label="v0.1.4" description="5 Jun 26" tags={["fix"]}>
   ## Highlights
 
