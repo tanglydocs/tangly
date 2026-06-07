@@ -7,6 +7,7 @@
  *   api.examples.*       → api.codeSamples.*
  *   api.examples.languages → api.codeSamples.languages
  *   api.playground.display → api.playground.mode  (none→hide, auth→interactive)
+ *   fonts (bare font-face) → fonts.{heading,body}
  *
  * Mutates a shallow clone — never the caller's object.
  */
@@ -15,6 +16,17 @@ type Json = Record<string, unknown>;
 
 const isObject = (v: unknown): v is Json =>
   typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Mintlify `fonts` may be a bare font-face (`{ family, weight, ... }`) that
+ * applies to every text role. Tangly theme layouts only read
+ * `fonts.heading` / `fonts.body`, so expand the bare form into both. The
+ * already-split `{ heading, body }` shape (no `family` key) passes through.
+ */
+export function normalizeFonts(fonts: unknown): unknown {
+  if (!isObject(fonts) || !("family" in fonts)) return fonts;
+  return { heading: { ...fonts }, body: { ...fonts } };
+}
 
 /**
  * Mintlify renamed `api.playground.mode` → `api.playground.display` and uses
@@ -54,6 +66,10 @@ export function normalizeDocsJson(input: unknown): unknown {
     }
 
     out.api = api;
+  }
+
+  if ("fonts" in out) {
+    out.fonts = normalizeFonts(out.fonts);
   }
 
   return out;

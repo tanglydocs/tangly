@@ -286,18 +286,38 @@ const FontFaceSchema = z
   })
   .strict();
 
+// Mintlify `fonts` is either a bare font-face (applied to all text) or a
+// `{ heading, body }` split. `normalize.ts` expands the bare form into the
+// split shape so theme layouts only read `fonts.heading` / `fonts.body`.
 const FontsSchema = z
-  .object({
-    heading: FontFaceSchema.optional(),
-    body: FontFaceSchema.optional(),
-  })
-  .strict()
+  .union([
+    FontFaceSchema,
+    z
+      .object({
+        heading: FontFaceSchema.optional(),
+        body: FontFaceSchema.optional(),
+      })
+      .strict(),
+  ])
   .optional();
 
 const StylingSchema = z
   .object({
     eyebrows: z.enum(["section", "breadcrumbs"]).optional(),
-    codeblocks: z.enum(["system", "dark"]).optional(),
+    // Mintlify accepts either the `system`/`dark` preset or a
+    // `{ theme }` object (single Shiki theme or a light/dark pair).
+    codeblocks: z
+      .union([
+        z.enum(["system", "dark"]),
+        z
+          .object({
+            theme: z
+              .union([z.string(), z.object({ light: z.string(), dark: z.string() }).strict()])
+              .optional(),
+          })
+          .strict(),
+      ])
+      .optional(),
   })
   .strict()
   .optional();
@@ -309,6 +329,10 @@ const ErrorsSchema = z
     "404": z
       .object({
         redirect: z.boolean().optional(),
+        /** Custom 404 page title (Mintlify). */
+        title: z.string().optional(),
+        /** Custom 404 page body, MDX-formatted (Mintlify). */
+        description: z.string().optional(),
       })
       .strict()
       .optional(),
@@ -378,7 +402,10 @@ const ContextualSchema = z
 
 const BackgroundSchema = z
   .object({
-    image: z.string().optional(),
+    // Mintlify allows a single image or a `{ light, dark }` pair.
+    image: z
+      .union([z.string(), z.object({ light: z.string(), dark: z.string() }).strict()])
+      .optional(),
     color: z
       .object({
         light: z.string().optional(),
@@ -446,7 +473,12 @@ export const DocsJsonSchema = z
     contextual: ContextualSchema,
     search: SearchSchema,
     thumbnails: ThumbnailsSchema,
-    metadata: z.record(z.string(), z.string()).optional(),
+    /**
+     * Mintlify's `metadata` is `{ timestamp }` (show each page's last-modified
+     * date), not the SEO meta-tag record it was previously modeled as. Kept
+     * loose so unmodified Mintlify projects — and any extra keys — still parse.
+     */
+    metadata: z.object({ timestamp: z.boolean().optional() }).loose().optional(),
     banner: z
       .object({
         content: z.string(),
@@ -456,14 +488,22 @@ export const DocsJsonSchema = z
          * id to re-show after a previous dismiss.
          */
         id: z.string().optional(),
-        /** Tone (color). Default: info. */
-        type: z.enum(["info", "warning", "success"]).optional(),
+        /**
+         * Tone (color). Default: info. `critical` is Mintlify's danger tone;
+         * `success` is a Tangly addition. Renders as `tangly-banner-{type}`.
+         */
+        type: z.enum(["info", "warning", "success", "critical"]).optional(),
+        /** Mintlify per-banner color override. Accepted; not yet themed. */
+        color: z
+          .object({ light: z.string().optional(), dark: z.string().optional() })
+          .strict()
+          .optional(),
       })
       .strict()
       .optional(),
     icons: z
       .object({
-        library: z.enum(["lucide", "fontawesome"]).optional(),
+        library: z.enum(["lucide", "fontawesome", "tabler"]).optional(),
       })
       .strict()
       .optional(),

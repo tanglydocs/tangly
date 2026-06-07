@@ -24,9 +24,21 @@ const SOURCES = [
     name: "mintlify-starter",
     url: "https://raw.githubusercontent.com/mintlify/starter/main/docs.json",
   },
-  // Large real-world configs.
+  // Large real-world configs — breadth across themes + nested nav shapes.
   { name: "dub", url: "https://raw.githubusercontent.com/dubinc/docs/main/docs.json" },
   { name: "mem0", url: "https://raw.githubusercontent.com/mem0ai/mem0/main/docs/docs.json" },
+  // `maple` theme + deeply nested tabs/groups (exercises optional group.pages).
+  {
+    name: "trigger",
+    url: "https://raw.githubusercontent.com/triggerdotdev/trigger.dev/main/docs/docs.json",
+  },
+  { name: "upstash", url: "https://raw.githubusercontent.com/upstash/docs/main/docs.json" },
+  {
+    name: "helicone",
+    url: "https://raw.githubusercontent.com/Helicone/helicone/main/docs/docs.json",
+  },
+  // 180KB config — `metadata.timestamp` boolean, broad API/contextual usage.
+  { name: "portkey", url: "https://raw.githubusercontent.com/Portkey-AI/docs-core/main/docs.json" },
 ] as const;
 
 mkdirSync(outDir, { recursive: true });

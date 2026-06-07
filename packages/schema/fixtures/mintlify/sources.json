@@ -14,5 +14,21 @@
   {
     "name": "mem0",
     "url": "https://raw.githubusercontent.com/mem0ai/mem0/main/docs/docs.json"
+  },
+  {
+    "name": "trigger",
+    "url": "https://raw.githubusercontent.com/triggerdotdev/trigger.dev/main/docs/docs.json"
+  },
+  {
+    "name": "upstash",
+    "url": "https://raw.githubusercontent.com/upstash/docs/main/docs.json"
+  },
+  {
+    "name": "helicone",
+    "url": "https://raw.githubusercontent.com/Helicone/helicone/main/docs/docs.json"
+  },
+  {
+    "name": "portkey",
+    "url": "https://raw.githubusercontent.com/Portkey-AI/docs-core/main/docs.json"
   }
 ]

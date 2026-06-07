@@ -1,0 +1,4089 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Portkey Docs",
+  "description": "Comprehensive documentation for Portkey's AI Gateway, Guardrails, Observability, Prompts, and Governance features.",
+  "colors": {
+    "primary": "#0891B2",
+    "light": "#0891B2",
+    "dark": "#0891B2"
+  },
+  "favicon": "/favicon.png",
+  "banner": {
+    "content": "🚀 Introducing **[Agent Gateway](https://portkey.sh/agent-gateway)** — governance, observability, and control for your AI agents. &nbsp; [Register for live webinar ↗](https://portkey.sh/agent-webinar)",
+    "dismissible": true
+  },
+  "navigation": {
+    "versions": [
+      {
+        "version": "Latest",
+        "tabs": [
+          {
+            "tab": "Docs",
+            "groups": [
+              {
+                "group": "Introduction",
+                "icon": "rocket",
+                "pages": [
+                  "introduction/what-is-portkey",
+                  "introduction/make-your-first-request",
+                  "introduction/feature-overview"
+                ]
+              },
+              {
+                "group": "Product",
+                "icon": "cube",
+                "pages": [
+                  {
+                    "group": "Observability",
+                    "pages": [
+                      "product/observability",
+                      {
+                        "group": "OpenTelemetry",
+                        "pages": [
+                          "product/observability/opentelemetry",
+                          "product/observability/opentelemetry/list-of-supported-otel-instrumenters"
+                        ]
+                      },
+                      "product/observability/logs",
+                      "product/observability/traces",
+                      "product/observability/analytics",
+                      "product/observability/feedback",
+                      "product/observability/metadata",
+                      "product/observability/filters",
+                      "product/observability/logs-export",
+                      "product/observability/cost-management",
+                      "product/observability/budget-limits",
+                      "product/observability/auto-instrumentation"
+                    ]
+                  },
+                  {
+                    "group": "AI Gateway",
+                    "pages": [
+                      "product/ai-gateway",
+                      {
+                        "group": "Universal API",
+                        "pages": [
+                          "product/ai-gateway/universal-api",
+                          "product/ai-gateway/chat-completions",
+                          "product/ai-gateway/messages-api",
+                          "product/ai-gateway/responses-api"
+                        ]
+                      },
+                      "product/ai-gateway/configs",
+                      "product/ai-gateway/custom-hosts",
+                      "product/ai-gateway/remote-mcp",
+                      "product/ai-gateway/conditional-routing",
+                      {
+                        "group": "Multimodal Capabilities",
+                        "pages": [
+                          "product/ai-gateway/multimodal-capabilities",
+                          "product/ai-gateway/multimodal-capabilities/image-generation",
+                          "product/ai-gateway/multimodal-capabilities/function-calling",
+                          "product/ai-gateway/multimodal-capabilities/vision",
+                          "product/ai-gateway/multimodal-capabilities/text-to-speech",
+                          "product/ai-gateway/multimodal-capabilities/speech-to-text",
+                          "/product/ai-gateway/multimodal-capabilities/thinking-mode"
+                        ]
+                      },
+                      "product/ai-gateway/cache-simple-and-semantic",
+                      "product/ai-gateway/fallbacks",
+                      "product/ai-gateway/automatic-retries",
+                      "product/ai-gateway/circuit-breaker",
+                      "product/ai-gateway/realtime-api",
+                      "product/ai-gateway/grpc",
+                      "product/ai-gateway/load-balancing",
+                      "product/ai-gateway/canary-testing",
+                      "product/ai-gateway/strict-open-ai-compliance",
+                      {
+                        "group": "Virtual Keys [Deprecated]",
+                        "pages": [
+                          "product/ai-gateway/virtual-keys",
+                          "product/ai-gateway/virtual-keys/budget-limits",
+                          "product/ai-gateway/virtual-keys/rate-limits",
+                          "product/ai-gateway/virtual-keys/bedrock-amazon-assumed-role"
+                        ]
+                      },
+                      "product/ai-gateway/request-timeouts",
+                      "product/ai-gateway/files",
+                      "product/ai-gateway/batches",
+                      "product/ai-gateway/fine-tuning",
+                      "product/ai-gateway/nitro-mode"
+                    ]
+                  },
+                  {
+                    "group": "Model Catalog",
+                    "pages": [
+                      "product/model-catalog",
+                      "product/model-catalog/portkey-models",
+                      "product/model-catalog/integrations",
+                      "product/model-catalog/budget-limits",
+                      "product/model-catalog/rate-limits",
+                      "product/model-catalog/workspace-provisioning",
+                      "product/model-catalog/model-provisioning",
+                      "product/model-catalog/custom-models",
+                      "product/model-catalog/pricing-adjustments",
+                      "product/model-catalog/model-overrides",
+                      "product/model-catalog/connect-bedrock-with-amazon-assumed-role"
+                    ]
+                  },
+                  {
+                    "group": "MCP Gateway",
+                    "pages": [
+                      "product/mcp-gateway",
+                      "product/mcp-gateway/quickstart",
+                      {
+                        "group": "MCP Registry",
+                        "pages": [
+                          "product/mcp-gateway/mcp-registry",
+                          "product/mcp-gateway/internal-mcp-servers",
+                          "product/mcp-gateway/external-mcp-servers",
+                          "product/mcp-gateway/advanced-configuration"
+                        ]
+                      },
+                      "product/mcp-gateway/using-mcp-servers",
+                      "product/mcp-gateway/access-control",
+                      "product/mcp-gateway/tool-provisioning",
+                      {
+                        "group": "Authentication",
+                        "pages": [
+                          "product/mcp-gateway/authentication",
+                          "product/mcp-gateway/authentication/oauth",
+                          "product/mcp-gateway/authentication/external-oauth",
+                          "product/mcp-gateway/authentication/identity-forwarding",
+                          "product/mcp-gateway/authentication/jwt",
+                          "product/mcp-gateway/authentication/oauth-client-metadata",
+                          "product/mcp-gateway/authentication/forwarding-headers",
+                          "product/mcp-gateway/authentication/custom-auth"
+                        ]
+                      },
+                      "product/mcp-gateway/authorization",
+                      "product/mcp-gateway/observability",
+                      "product/mcp-gateway/integrations",
+                      "product/mcp-gateway/guardrails",
+                      {
+                        "group": "Reliability",
+                        "pages": [
+                          "product/mcp-gateway/rate-limits",
+                          "product/mcp-gateway/circuit-breakers"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Agent Gateway",
+                    "pages": [
+                      "product/agent-gateway",
+                      "product/agent-gateway/quickstart",
+                      "product/agent-gateway/registry",
+                      "product/agent-gateway/servers",
+                      "product/agent-gateway/advanced-code-snippets-and-examples"
+                    ]
+                  },
+                  "product/coding-agent",
+                  {
+                    "group": "Prompt Studio",
+                    "pages": [
+                      "product/prompt-engineering-studio",
+                      "product/prompt-engineering-studio/prompt-playground",
+                      "product/prompt-engineering-studio/prompt-library",
+                      "product/prompt-engineering-studio/prompt-versioning",
+                      "product/prompt-engineering-studio/prompt-observability",
+                      "product/prompt-engineering-studio/prompt-partial",
+                      "product/prompt-engineering-studio/prompt-sharing",
+                      "product/prompt-engineering-studio/prompt-api",
+                      "product/prompt-engineering-studio/tool-library",
+                      "product/prompt-engineering-studio/prompt-integration",
+                      "product/prompt-engineering-studio/prompt-guides"
+                    ]
+                  },
+                  {
+                    "group": "Guardrails",
+                    "pages": [
+                      "product/guardrails",
+                      "product/guardrails/capabilities",
+                      "product/guardrails/list-of-guardrail-checks",
+                      "product/guardrails/embedding-guardrails",
+                      "product/guardrails/creating-raw-guardrails-in-json",
+                      "product/guardrails/pii-redaction",
+                      "product/guardrails/guardrails-for-batches",
+                      "integrations/guardrails/bring-your-own-guardrails"
+                    ]
+                  },
+                  {
+                    "group": "Administration",
+                    "pages": [
+                      "product/administration/enforcing-request-metadata",
+                      "product/administration/enforce-orgnization-level-guardrails",
+                      "product/administration/enforce-workspace-level-guardials",
+                      "product/administration/configuring-request-logging",
+                      "product/administration/enforce-default-config",
+                      "product/administration/enforce-budget-and-rate-limit",
+                      "product/administration/enforce-workspace-budget-limts-and-rate-limits",
+                      "product/administration/configure-logs-access-permissions-in-workspace",
+                      "product/administration/configure-analytics-access-permissions",
+                      "product/administration/configure-data-visibility-settings",
+                      "product/administration/configure-virtual-key-access-permissions",
+                      "product/administration/configure-api-key-access-permissions",
+                      "product/administration/configure-prompt-access-permissions",
+                      "product/administration/configure-guardrail-access-permissions",
+                      "product/administration/configure-integration-access-permissions",
+                      "product/administration/configure-workspace-provisioning-for-your-ai-integrations",
+                      "/product/administration/configure-model-access-permissioning-for-ai-integratinon",
+                      "product/administration/enforce-rate-limits-on-your-ai-provider",
+                      "product/administration/enforce-budget-limits-on-your-ai-provider"
+                    ]
+                  },
+                  {
+                    "group": "Enterprise Offering",
+                    "pages": [
+                      "product/enterprise-offering",
+                      {
+                        "group": "Org Management",
+                        "pages": [
+                          "product/enterprise-offering/org-management",
+                          "product/enterprise-offering/org-management/organizations",
+                          "product/enterprise-offering/org-management/workspaces",
+                          "product/enterprise-offering/org-management/user-roles-and-permissions",
+                          "product/enterprise-offering/org-management/api-keys-authn-and-authz",
+                          "product/enterprise-offering/org-management/api-key-rotation",
+                          "product/enterprise-offering/org-management/jwt",
+                          {
+                            "group": "SCIM",
+                            "pages": [
+                              "product/enterprise-offering/org-management/scim/scim",
+                              "product/enterprise-offering/org-management/scim/group-management",
+                              "product/enterprise-offering/org-management/scim/azure-ad",
+                              "product/enterprise-offering/org-management/scim/okta"
+                            ]
+                          },
+                          "product/enterprise-offering/org-management/sso"
+                        ]
+                      },
+                      "product/enterprise-offering/access-control-management",
+                      "product/enterprise-offering/budget-limits",
+                      "product/enterprise-offering/security-portkey",
+                      {
+                        "group": "OpenTelemetry(OTel)",
+                        "pages": [
+                          "product/enterprise-offering/otel/otel",
+                          "product/enterprise-offering/otel/analytics",
+                          "product/enterprise-offering/otel/complete-logs"
+                        ]
+                      },
+                      "product/enterprise-offering/logs-export",
+                      "/product/enterprise-offering/audit-logs",
+                      "product/enterprise-offering/budget-policies",
+                      "product/enterprise-offering/components",
+                      "product/enterprise-offering/kms",
+                      "product/enterprise-offering/secret-references"
+                    ]
+                  },
+                  "product/open-source",
+                  "product/product-feature-comparison"
+                ]
+              },
+              {
+                "group": "Self-Hosting",
+                "icon": "server",
+                "pages": [
+                  {
+                    "group": "Hybrid Deployments",
+                    "pages": [
+                      "self-hosting/hybrid-deployments/architecture",
+                      {
+                        "group": "AWS",
+                        "pages": [
+                          "self-hosting/hybrid-deployments/aws/eks",
+                          "self-hosting/hybrid-deployments/aws/ecs",
+                          "self-hosting/hybrid-deployments/aws/marketplace"
+                        ]
+                      },
+                      {
+                        "group": "Azure",
+                        "pages": [
+                          "self-hosting/hybrid-deployments/azure/aks",
+                          "self-hosting/hybrid-deployments/azure/aca"
+                        ]
+                      },
+                      "self-hosting/hybrid-deployments/gcp"
+                    ]
+                  },
+                  "self-hosting/cache-behavior",
+                  "self-hosting/prometheus-metrics",
+                  "self-hosting/fips-compliant-images",
+                  {
+                    "group": "Air-Gapped Deployments",
+                    "pages": [
+                      "self-hosting/airgapped/model-pricing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Support",
+                "icon": "life-ring",
+                "pages": [
+                  "support/upgrade-to-model-catalog",
+                  "README",
+                  "support/contact-us",
+                  "support/developer-forum",
+                  "support/common-errors-and-resolutions",
+                  "support/portkeys-december-migration"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Integrations",
+            "groups": [
+              {
+                "group": "Ecosystem",
+                "pages": [
+                  "integrations/ecosystem",
+                  "integrations/partner"
+                ]
+              },
+              {
+                "group": "LLM Integrations",
+                "pages": [
+                  "integrations/llms",
+                  {
+                    "group": "OpenAI",
+                    "pages": [
+                      "integrations/llms/openai",
+                      "integrations/llms/openai/structured-outputs",
+                      "integrations/llms/openai/prompt-caching-openai",
+                      "integrations/llms/openai/embeddings",
+                      "integrations/llms/openai/files",
+                      "integrations/llms/openai/batches",
+                      "integrations/llms/openai/fine-tuning",
+                      "integrations/llms/openai/remote-mcp"
+                    ]
+                  },
+                  {
+                    "group": "Anthropic",
+                    "pages": [
+                      "integrations/llms/anthropic",
+                      "integrations/llms/anthropic/structured-outputs",
+                      "integrations/llms/anthropic/prompt-caching",
+                      "integrations/llms/anthropic/computer-use",
+                      "integrations/llms/anthropic/remote-mcp",
+                      "integrations/llms/anthropic/count-tokens",
+                      "integrations/llms/anthropic/files",
+                      "integrations/llms/anthropic/batches"
+                    ]
+                  },
+                  "integrations/llms/gemini",
+                  {
+                    "group": "Google Vertex AI",
+                    "pages": [
+                      "integrations/llms/vertex-ai",
+                      "integrations/llms/vertex-ai/text-to-speech",
+                      "integrations/llms/vertex-ai/files",
+                      "integrations/llms/vertex-ai/batches",
+                      "integrations/llms/vertex-ai/fine-tuning",
+                      "integrations/llms/vertex-ai/controlled-generations",
+                      "integrations/llms/vertex-ai/embeddings",
+                      "integrations/llms/vertex-ai/rerank"
+                    ]
+                  },
+                  {
+                    "group": "Azure",
+                    "pages": [
+                      "integrations/llms/azure-foundry",
+                      "integrations/llms/azure-openai/azure-openai",
+                      "integrations/llms/azure-openai/authentication",
+                      "integrations/llms/azure-openai/azure-govcloud",
+                      "integrations/llms/azure-openai/fine-tuning",
+                      "integrations/llms/azure-openai/files",
+                      "integrations/llms/azure-openai/batches"
+                    ]
+                  },
+                  {
+                    "group": "Bedrock",
+                    "pages": [
+                      "integrations/llms/bedrock/aws-bedrock",
+                      "integrations/llms/bedrock/aws-govcloud",
+                      "product/model-catalog/connect-bedrock-with-amazon-assumed-role",
+                      "integrations/llms/bedrock/structured-outputs",
+                      "integrations/llms/bedrock/files",
+                      "integrations/llms/bedrock/batches",
+                      "integrations/llms/bedrock/fine-tuning",
+                      "integrations/llms/bedrock/prompt-caching",
+                      "integrations/llms/bedrock/embeddings",
+                      "integrations/llms/bedrock/rerank",
+                      "integrations/llms/bedrock/bedrock-knowledgebase"
+                    ]
+                  },
+                  {
+                    "group": "Claude Platform on AWS",
+                    "pages": [
+                      "integrations/llms/claude-platform-aws/claude-platform-aws",
+                      "integrations/llms/claude-platform-aws/setup-assumed-role",
+                      "integrations/llms/claude-platform-aws/files",
+                      "integrations/llms/claude-platform-aws/batches"
+                    ]
+                  },
+                  "integrations/llms/bedrock-mantle",
+                  "integrations/llms/aws-sagemaker",
+                  "integrations/llms/ollama",
+                  {
+                    "group": "More",
+                    "pages": [
+                      "integrations/llms/local-ai",
+                      "integrations/llms/vllm",
+                      "integrations/llms/triton",
+                      "integrations/llms/ai21",
+                      "integrations/llms/anyscale-llama2-mistral-zephyr",
+                      "integrations/llms/byteplus",
+                      "integrations/llms/claude-platform-aws",
+                      "integrations/llms/cerebras",
+                      "integrations/llms/cohere",
+                      "integrations/llms/databricks",
+                      {
+                        "group": "Fireworks",
+                        "pages": [
+                          "integrations/llms/fireworks",
+                          "integrations/llms/fireworks/files",
+                          "integrations/llms/fireworks/fine-tuning"
+                        ]
+                      },
+                      "integrations/llms/dashscope",
+                      "integrations/llms/deepinfra",
+                      "integrations/llms/deepbricks",
+                      "integrations/llms/deepgram",
+                      "integrations/llms/deepseek",
+                      "integrations/llms/github",
+                      "integrations/llms/groq",
+                      "integrations/llms/huggingface",
+                      "integrations/llms/inference.net",
+                      "integrations/llms/fal-ai",
+                      "integrations/llms/featherless",
+                      "integrations/llms/jina-ai",
+                      "integrations/llms/lambda",
+                      "integrations/llms/lemon-fox",
+                      "integrations/llms/lepton",
+                      "integrations/llms/lingyi-01.ai",
+                      "integrations/llms/mistral-ai",
+                      "integrations/llms/modal",
+                      "integrations/llms/monster-api",
+                      "integrations/llms/moonshot",
+                      "integrations/llms/ncompass",
+                      "integrations/llms/nomic",
+                      "integrations/llms/nscale",
+                      "integrations/llms/novita-ai",
+                      "integrations/llms/nebius",
+                      "integrations/llms/oracle",
+                      "integrations/llms/openrouter",
+                      "integrations/llms/ovhcloud",
+                      "integrations/llms/perplexity-ai",
+                      "integrations/llms/predibase",
+                      "integrations/llms/reka-ai",
+                      "integrations/llms/recraft-ai",
+                      "integrations/llms/sambanova",
+                      "integrations/llms/segmind",
+                      "integrations/llms/snowflake-cortex",
+                      "integrations/llms/stability-ai",
+                      "integrations/llms/siliconflow",
+                      "integrations/llms/together-ai",
+                      "integrations/llms/upstage",
+                      "integrations/llms/voyage-ai",
+                      "integrations/llms/workers-ai",
+                      "integrations/llms/x-ai",
+                      "integrations/llms/zhipu",
+                      "integrations/llms/replicate",
+                      "integrations/llms/z-ai",
+                      "integrations/llms/suggest-a-new-integration"
+                    ]
+                  },
+                  "integrations/llms/byollm"
+                ]
+              },
+              {
+                "group": "Cloud Platforms",
+                "pages": [
+                  "integrations/cloud/azure"
+                ]
+              },
+              {
+                "group": "Guardrails",
+                "pages": [
+                  "integrations/guardrails/aporia",
+                  "integrations/guardrails/acuvity",
+                  "integrations/guardrails/akto",
+                  "integrations/guardrails/azure-guardrails",
+                  "integrations/guardrails/bedrock-guardrails",
+                  "integrations/guardrails/cato",
+                  "integrations/guardrails/crowdstrike-aidr",
+                  "integrations/guardrails/lasso",
+                  "integrations/guardrails/lakera",
+                  "integrations/guardrails/mistral",
+                  "integrations/guardrails/pangea",
+                  "integrations/guardrails/patronus-ai",
+                  "integrations/guardrails/palo-alto-panw-prisma",
+                  "integrations/guardrails/pillar",
+                  "integrations/guardrails/prompt-security",
+                  "integrations/guardrails/qualifire",
+                  "integrations/guardrails/javelin",
+                  "integrations/guardrails/f5-guardrails",
+                  "integrations/guardrails/tavily",
+                  "integrations/guardrails/jwt",
+                  "integrations/guardrails/model-rules",
+                  "integrations/guardrails/regex",
+                  "integrations/guardrails/request-parameters-check",
+                  "integrations/guardrails/zscaler",
+                  "integrations/guardrails/bring-your-own-guardrails"
+                ]
+              },
+              {
+                "group": "Plugins",
+                "pages": [
+                  "integrations/plugins/exa",
+                  "integrations/plugins/tavily"
+                ]
+              },
+              {
+                "group": "Vector Databases",
+                "pages": [
+                  "integrations/vector-databases/milvus",
+                  "integrations/vector-databases/qdrant"
+                ]
+              },
+              {
+                "group": "Agents",
+                "pages": [
+                  "integrations/agents",
+                  "integrations/agents/openai-agents",
+                  "integrations/agents/openai-agents-ts",
+                  "integrations/agents/claude-agent-sdk",
+                  "integrations/agents/agentcore",
+                  "integrations/agents/autogen",
+                  "integrations/agents/agno-ai",
+                  "integrations/agents/control-flow",
+                  "integrations/agents/crewai",
+                  "integrations/agents/langchain-agents",
+                  "integrations/agents/langroid",
+                  "integrations/agents/langgraph",
+                  "integrations/agents/livekit",
+                  "integrations/agents/llama-agents",
+                  "integrations/agents/mastra-agents",
+                  "integrations/agents/openai-swarm",
+                  "integrations/agents/pydantic-ai",
+                  "integrations/agents/phidata",
+                  "integrations/agents/strands",
+                  "integrations/agents/bring-your-own-agents"
+                ]
+              },
+              {
+                "group": "AI Apps",
+                "pages": [
+                  "integrations/ai-apps",
+                  "integrations/libraries/anythingllm",
+                  {
+                    "group": "Claude Code",
+                    "pages": [
+                      "integrations/libraries/claude-code",
+                      "integrations/libraries/claude-code-anthropic",
+                      "integrations/libraries/claude-code-bedrock",
+                      "integrations/libraries/claude-code-vertex"
+                    ]
+                  },
+                  {
+                    "group": "Claude Desktop",
+                    "pages": [
+                      "integrations/libraries/claude-desktop",
+                      "integrations/libraries/claude-desktop-platform-admins",
+                      "integrations/libraries/claude-desktop-developers"
+                    ]
+                  },
+                  "integrations/libraries/claude-cowork",
+                  "integrations/libraries/opencode",
+                  "integrations/libraries/pi-agent",
+                  "integrations/libraries/hermes-agent",
+                  "integrations/libraries/openclaw",
+                  "integrations/libraries/anthropic-computer-use",
+                  "integrations/libraries/cline",
+                  "integrations/libraries/android-studio",
+                  "integrations/libraries/cursor",
+                  "integrations/libraries/langflow",
+                  "integrations/libraries/goose",
+                  "integrations/libraries/github-copilot",
+                  "integrations/libraries/janhq",
+                  "integrations/libraries/openai-agent-builder",
+                  "integrations/libraries/openai-agent-builder-python",
+                  {
+                    "group": "Librechat",
+                    "pages": [
+                      "integrations/libraries/librechat",
+                      "guides/use-cases/librechat-web-search"
+                    ]
+                  },
+                  {
+                    "group": "Open WebUI",
+                    "pages": [
+                      "integrations/libraries/openwebui",
+                      "integrations/libraries/openwebui/image-generation-with-openwebui"
+                    ]
+                  },
+                  "integrations/libraries/n8n",
+                  "integrations/libraries/retool",
+                  "integrations/libraries/codex",
+                  "integrations/libraries/conductor",
+                  "integrations/libraries/roo-code",
+                  "integrations/libraries/zed"
+                ]
+              },
+              {
+                "group": "Libraries",
+                "pages": [
+                  "integrations/libraries",
+                  "integrations/libraries/autogen",
+                  "integrations/libraries/dspy",
+                  "integrations/libraries/instructor",
+                  "integrations/libraries/langchain-python",
+                  "integrations/libraries/langchain-js",
+                  "integrations/libraries/llama-index-python",
+                  "integrations/libraries/promptfoo",
+                  "integrations/libraries/vercel",
+                  "integrations/libraries/mindsdb",
+                  "integrations/libraries/tooljet",
+                  "integrations/libraries/mongodb",
+                  "integrations/libraries/supabase",
+                  "integrations/libraries/zed",
+                  "integrations/libraries/openai-compatible",
+                  "integrations/libraries/microsoft-semantic-kernel"
+                ]
+              },
+              {
+                "group": "Tracing Providers",
+                "pages": [
+                  "integrations/tracing-providers/arize",
+                  "integrations/tracing-providers/logfire",
+                  "integrations/tracing-providers/future-agi",
+                  "integrations/tracing-providers/langfuse",
+                  "integrations/tracing-providers/langsmith",
+                  "integrations/tracing-providers/phoenix",
+                  "integrations/tracing-providers/logfire",
+                  "integrations/tracing-providers/ml-flow",
+                  "integrations/tracing-providers/openlit",
+                  "integrations/tracing-providers/opentelemetry-python-sdk",
+                  "integrations/tracing-providers/honeyhive",
+                  "integrations/tracing-providers/traceloop"
+                ]
+              },
+              {
+                "group": "MCP Clients",
+                "pages": [
+                  "integrations/mcp-clients/claude",
+                  "integrations/mcp-clients/cursor",
+                  "integrations/mcp-clients/librechat",
+                  "integrations/mcp-clients/vs-code",
+                  "integrations/mcp-clients/claude-code"
+                ]
+              },
+              {
+                "group": "MCP Servers",
+                "pages": [
+                  "integrations/mcp-servers/postman-mcp-server",
+                  "integrations/mcp-servers/atlassian-mcp-server",
+                  "integrations/mcp-servers/datadog-mcp-server",
+                  "integrations/mcp-servers/figma-mcp-server",
+                  "integrations/mcp-servers/firebase-mcp-server",
+                  "integrations/mcp-servers/tavily-mcp-server",
+                  "integrations/mcp-servers/firecrawl-mcp-server",
+                  "integrations/mcp-servers/github-mcp-server",
+                  "integrations/mcp-servers/gitlab-mcp-server",
+                  "integrations/mcp-servers/cerebras-code-mcp-server",
+                  "integrations/mcp-servers/grafana-mcp-server",
+                  "integrations/mcp-servers/kubernetes-mcp-server",
+                  "integrations/mcp-servers/linear-mcp-server",
+                  "integrations/mcp-servers/notion-mcp-server",
+                  "integrations/mcp-servers/open-library-mcp-server",
+                  "integrations/mcp-servers/playwright-mcp-server",
+                  "integrations/mcp-servers/qdrant-mcp-server",
+                  "integrations/mcp-servers/slack-mcp-server",
+                  "integrations/mcp-servers/stripe-mcp-server",
+                  "integrations/mcp-servers/vectara-mcp-server"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Gateway APIs",
+            "groups": [
+              {
+                "group": "API Reference",
+                "pages": [
+                  "api-reference/inference-api/introduction",
+                  "api-reference/inference-api/agentic-usage",
+                  "api-reference/inference-api/supported-providers",
+                  "api-reference/inference-api/authentication",
+                  "api-reference/inference-api/headers",
+                  "api-reference/inference-api/error-codes",
+                  "api-reference/inference-api/response-schema",
+                  {
+                    "group": "More",
+                    "pages": [
+                      "api-reference/inference-api/config-object",
+                      "api-reference/inference-api/open-api-specification"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "SDK",
+                "pages": [
+                  "api-reference/sdk/list",
+                  "api-reference/sdk/python",
+                  "api-reference/sdk/node",
+                  "api-reference/sdk/c-sharp"
+                ]
+              },
+              {
+                "group": "Chat Completions",
+                "pages": [
+                  "api-reference/inference-api/chat"
+                ]
+              },
+              {
+                "group": "Responses",
+                "pages": [
+                  "api-reference/inference-api/responses/responses",
+                  "api-reference/inference-api/responses/retrieve-response",
+                  "api-reference/inference-api/responses/delete-response",
+                  "api-reference/inference-api/responses/retrieve-inputs"
+                ]
+              },
+              {
+                "group": "Portkey Endpoints",
+                "pages": [
+                  "api-reference/inference-api/prompts/prompt-completion",
+                  "api-reference/inference-api/prompts/render",
+                  "api-reference/admin-api/data-plane/logs/insert-a-log",
+                  "api-reference/admin-api/data-plane/feedback/create-feedback",
+                  "api-reference/admin-api/data-plane/feedback/update-feedback",
+                  {
+                    "group": "Log Exports",
+                    "pages": [
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/retrieve-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/update-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/list-log-exports",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/create-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/start-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/cancel-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/download-a-log-export"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Embeddings",
+                "pages": [
+                  "api-reference/inference-api/embeddings"
+                ]
+              },
+              {
+                "group": "Rerank",
+                "pages": [
+                  "api-reference/inference-api/rerank"
+                ]
+              },
+              {
+                "group": "Images",
+                "pages": [
+                  "api-reference/inference-api/images/create-image",
+                  "api-reference/inference-api/images/create-image-edit",
+                  "api-reference/inference-api/images/create-image-variation"
+                ]
+              },
+              {
+                "group": "Models",
+                "pages": [
+                  "api-reference/inference-api/models/models"
+                ]
+              },
+              {
+                "group": "Audio",
+                "pages": [
+                  "api-reference/inference-api/audio/create-speech",
+                  "api-reference/inference-api/audio/create-transcription",
+                  "api-reference/inference-api/audio/create-translation"
+                ]
+              },
+              {
+                "group": "Other APIs",
+                "pages": [
+                  "api-reference/inference-api/gateway-for-other-apis"
+                ]
+              },
+              {
+                "group": "Completions",
+                "pages": [
+                  "api-reference/inference-api/completions"
+                ]
+              },
+              {
+                "group": "Moderations",
+                "pages": [
+                  "api-reference/inference-api/moderations"
+                ]
+              },
+              {
+                "group": "Fine-tuning",
+                "pages": [
+                  "api-reference/inference-api/fine-tuning/create-fine-tuning-job",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-jobs",
+                  "api-reference/inference-api/fine-tuning/retrieve-fine-tuning-job",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-events",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-checkpoints",
+                  "api-reference/inference-api/fine-tuning/cancel-fine-tuning"
+                ]
+              },
+              {
+                "group": "Batch",
+                "pages": [
+                  "api-reference/inference-api/batch/create-batch",
+                  "api-reference/inference-api/batch/list-batch",
+                  "api-reference/inference-api/batch/retrieve-batch",
+                  "api-reference/inference-api/batch/cancel-batch"
+                ]
+              },
+              {
+                "group": "Files",
+                "pages": [
+                  "api-reference/inference-api/files/upload-file",
+                  "api-reference/inference-api/files/list-files",
+                  "api-reference/inference-api/files/retrieve-file",
+                  "api-reference/inference-api/files/retrieve-file-content",
+                  "api-reference/inference-api/files/delete-file"
+                ]
+              },
+              {
+                "group": "Assistants",
+                "pages": [
+                  {
+                    "group": "Assistants",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/assistants/create-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/list-assistants",
+                      "api-reference/inference-api/assistants-api/assistants/retrieve-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/modify-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/delete-assistant"
+                    ]
+                  },
+                  {
+                    "group": "Threads",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/threads/create-thread",
+                      "api-reference/inference-api/assistants-api/threads/retrieve-thread",
+                      "api-reference/inference-api/assistants-api/threads/modify-thread",
+                      "api-reference/inference-api/assistants-api/threads/delete-thread"
+                    ]
+                  },
+                  {
+                    "group": "Messages",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/messages/create-message",
+                      "api-reference/inference-api/assistants-api/messages/list-messages",
+                      "api-reference/inference-api/assistants-api/messages/retrieve-message",
+                      "api-reference/inference-api/assistants-api/messages/modify-message",
+                      "api-reference/inference-api/assistants-api/messages/delete-message"
+                    ]
+                  },
+                  {
+                    "group": "Runs",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/runs/create-run",
+                      "api-reference/inference-api/assistants-api/runs/create-thread-and-run",
+                      "api-reference/inference-api/assistants-api/runs/list-runs",
+                      "api-reference/inference-api/assistants-api/runs/retrieve-run",
+                      "api-reference/inference-api/assistants-api/runs/modify-run",
+                      "api-reference/inference-api/assistants-api/runs/submit-tool-outputs-to-run",
+                      "api-reference/inference-api/assistants-api/runs/cancel-run"
+                    ]
+                  },
+                  {
+                    "group": "Run Steps",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/run-steps/list-run-steps",
+                      "api-reference/inference-api/assistants-api/run-steps/retrieve-run-steps"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Admin APIs",
+            "groups": [
+              {
+                "group": "API Reference",
+                "pages": [
+                  "api-reference/admin-api/introduction",
+                  "api-reference/admin-api/error"
+                ]
+              },
+              {
+                "group": "Configs",
+                "pages": [
+                  "api-reference/admin-api/control-plane/configs/create-config",
+                  "api-reference/admin-api/control-plane/configs/list-configs",
+                  "api-reference/admin-api/control-plane/configs/retrieve-config",
+                  "api-reference/admin-api/control-plane/configs/list-config-versions",
+                  "api-reference/admin-api/control-plane/configs/update-config",
+                  "api-reference/admin-api/control-plane/configs/delete-config"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "api-reference/admin-api/control-plane/integrations/create-integration",
+                  "api-reference/admin-api/control-plane/integrations/list-integrations",
+                  "api-reference/admin-api/control-plane/integrations/retrieve-integration",
+                  "api-reference/admin-api/control-plane/integrations/update-integration",
+                  "api-reference/admin-api/control-plane/integrations/delete-integration",
+                  {
+                    "group": "Model Access",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/integrations/models/list-model-access",
+                      "api-reference/admin-api/control-plane/integrations/models/update-model-access",
+                      "api-reference/admin-api/control-plane/integrations/models/delete-custom-model"
+                    ]
+                  },
+                  {
+                    "group": "Workspace Access",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/integrations/workspaces/list-workspace-access",
+                      "api-reference/admin-api/control-plane/integrations/workspaces/update-workspace-access"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "MCP Integrations",
+                "pages": [
+                  "api-reference/admin-api/control-plane/mcp-integrations/create-mcp-integration",
+                  "api-reference/admin-api/control-plane/mcp-integrations/list-mcp-integrations",
+                  "api-reference/admin-api/control-plane/mcp-integrations/retrieve-mcp-integration",
+                  "api-reference/admin-api/control-plane/mcp-integrations/update-mcp-integration",
+                  "api-reference/admin-api/control-plane/mcp-integrations/delete-mcp-integration",
+                  {
+                    "group": "Workspaces",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/mcp-integrations/workspaces/list-mcp-integration-workspaces",
+                      "api-reference/admin-api/control-plane/mcp-integrations/workspaces/update-mcp-integration-workspaces"
+                    ]
+                  },
+                  {
+                    "group": "Capabilities",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/mcp-integrations/capabilities/list-mcp-integration-capabilities",
+                      "api-reference/admin-api/control-plane/mcp-integrations/capabilities/update-mcp-integration-capabilities"
+                    ]
+                  },
+                  "api-reference/admin-api/control-plane/mcp-integrations/retrieve-mcp-integration-metadata"
+                ]
+              },
+              {
+                "group": "MCP Servers",
+                "pages": [
+                  "api-reference/admin-api/control-plane/mcp-servers/create-mcp-server",
+                  "api-reference/admin-api/control-plane/mcp-servers/list-mcp-servers",
+                  "api-reference/admin-api/control-plane/mcp-servers/retrieve-mcp-server",
+                  "api-reference/admin-api/control-plane/mcp-servers/update-mcp-server",
+                  "api-reference/admin-api/control-plane/mcp-servers/delete-mcp-server",
+                  "api-reference/admin-api/control-plane/mcp-servers/test-mcp-server",
+                  {
+                    "group": "Capabilities",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/mcp-servers/capabilities/list-mcp-server-capabilities",
+                      "api-reference/admin-api/control-plane/mcp-servers/capabilities/bulk-update-mcp-server-capabilities"
+                    ]
+                  },
+                  {
+                    "group": "User Access",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/mcp-servers/user-access/list-mcp-server-user-access",
+                      "api-reference/admin-api/control-plane/mcp-servers/user-access/bulk-update-mcp-server-user-access"
+                    ]
+                  },
+                  {
+                    "group": "Connections",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/mcp-servers/connections/list-mcp-server-connections",
+                      "api-reference/admin-api/control-plane/mcp-servers/connections/delete-mcp-server-connection"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Providers",
+                "pages": [
+                  "api-reference/admin-api/control-plane/providers/create-provider",
+                  "api-reference/admin-api/control-plane/providers/list-providers",
+                  "api-reference/admin-api/control-plane/providers/retrieve-provider",
+                  "api-reference/admin-api/control-plane/providers/update-provider",
+                  "api-reference/admin-api/control-plane/providers/delete-provider"
+                ]
+              },
+              {
+                "group": "Virtual Keys",
+                "pages": [
+                  "api-reference/admin-api/control-plane/virtual-keys/create-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/list-virtual-keys",
+                  "api-reference/admin-api/control-plane/virtual-keys/retrieve-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/update-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/delete-virtual-key"
+                ]
+              },
+              {
+                "group": "Prompts",
+                "pages": [
+                  "api-reference/admin-api/control-plane/prompts/create-prompt",
+                  "api-reference/admin-api/control-plane/prompts/list-prompts",
+                  "api-reference/admin-api/control-plane/prompts/retrieve-prompt",
+                  "api-reference/admin-api/control-plane/prompts/update-prompt",
+                  "api-reference/admin-api/control-plane/prompts/delete-prompt",
+                  "api-reference/admin-api/control-plane/prompts/publish-prompt",
+                  "api-reference/admin-api/control-plane/prompts/list-prompt-versions",
+                  "api-reference/admin-api/control-plane/prompts/retrieve-prompt-version",
+                  "api-reference/admin-api/control-plane/prompts/update-prompt-version",
+                  {
+                    "group": "Prompt Partials",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/partials/create-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/list-partials",
+                      "api-reference/admin-api/control-plane/prompts/partials/retrieve-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/update-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/delete-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/list-partial-versions",
+                      "api-reference/admin-api/control-plane/prompts/partials/publish-partial"
+                    ]
+                  },
+                  {
+                    "group": "Prompt Labels",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/labels/create-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/list-labels",
+                      "api-reference/admin-api/control-plane/prompts/labels/retrieve-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/update-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/delete-label"
+                    ]
+                  },
+                  {
+                    "group": "Prompt Collections",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/collections/create-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/list-collections",
+                      "api-reference/admin-api/control-plane/prompts/collections/retrieve-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/update-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/delete-collection"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "API Keys",
+                "pages": [
+                  "api-reference/admin-api/control-plane/api-keys/create-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/update-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/rotate-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/delete-an-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/retrieve-an-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/list-api-keys"
+                ]
+              },
+              {
+                "group": "Analytics [BETA]",
+                "pages": [
+                  {
+                    "group": "Summary",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/summary/get-all-cache-data"
+                    ]
+                  },
+                  {
+                    "group": "Groups Paginated Data",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-metadata-grouped-data",
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-model-grouped-data",
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-user-grouped-data"
+                    ]
+                  },
+                  {
+                    "group": "Graphs - Time Series Data",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-latency-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-rate-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cost-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-error-rate-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-errors-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-per-ai-models-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-score-distribution-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-latency-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-per-user-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-rescued-requests-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-status-code-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-tokens-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-unique-status-code-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-users-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-weighted-feedback-data"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Users",
+                "pages": [
+                  "api-reference/admin-api/control-plane/users/retrieve-a-user",
+                  "api-reference/admin-api/control-plane/users/retrieve-all-users",
+                  "api-reference/admin-api/control-plane/users/update-a-user",
+                  "api-reference/admin-api/control-plane/users/remove-a-user"
+                ]
+              },
+              {
+                "group": "User Invites",
+                "pages": [
+                  "api-reference/admin-api/control-plane/user-invites/invite-a-user",
+                  "api-reference/admin-api/control-plane/user-invites/retrieve-an-invite",
+                  "api-reference/admin-api/control-plane/user-invites/retrieve-all-user-invites",
+                  "api-reference/admin-api/control-plane/user-invites/delete-a-user-invite",
+                  "api-reference/admin-api/control-plane/user-invites/resend-a-user-invite"
+                ]
+              },
+              {
+                "group": "Workspaces",
+                "pages": [
+                  "api-reference/admin-api/control-plane/workspaces/create-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/retrieve-all-workspaces",
+                  "api-reference/admin-api/control-plane/workspaces/retrieve-a-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/update-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/delete-a-workspace"
+                ]
+              },
+              {
+                "group": "Workspace Members",
+                "pages": [
+                  "api-reference/admin-api/control-plane/workspace-members/add-a-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/retrieve-all-workspace-members",
+                  "api-reference/admin-api/control-plane/workspace-members/retrieve-a-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/update-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/remove-workspace-member"
+                ]
+              },
+              {
+                "group": "SCIM Workspace Mappings",
+                "pages": [
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/list-scim-workspace-mappings",
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/create-scim-workspace-mapping",
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/delete-scim-workspace-mapping"
+                ]
+              },
+              {
+                "group": "Audit Logs",
+                "pages": [
+                  "api-reference/admin-api/control-plane/audit-logs/list-audit-logs"
+                ]
+              },
+              {
+                "group": "Guardrails",
+                "pages": [
+                  "api-reference/admin-api/control-plane/guardrails/create-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/list-guardrails",
+                  "api-reference/admin-api/control-plane/guardrails/retrieve-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/update-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/delete-guardrail"
+                ]
+              },
+              {
+                "group": "Secret References",
+                "pages": [
+                  "api-reference/admin-api/control-plane/secret-references/create-secret-reference",
+                  "api-reference/admin-api/control-plane/secret-references/list-secret-references",
+                  "api-reference/admin-api/control-plane/secret-references/retrieve-secret-reference",
+                  "api-reference/admin-api/control-plane/secret-references/update-secret-reference",
+                  "api-reference/admin-api/control-plane/secret-references/delete-secret-reference"
+                ]
+              },
+              {
+                "group": "Policies",
+                "pages": [
+                  {
+                    "group": "Usage Limits",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/policies/usage-limits/create-usage-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/list-usage-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/retrieve-usage-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/update-usage-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/delete-usage-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/list-usage-limits-policy-entities",
+                      "api-reference/admin-api/control-plane/policies/usage-limits/reset-usage-limits-policy-entity"
+                    ]
+                  },
+                  {
+                    "group": "Rate Limits",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/policies/rate-limits/create-rate-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/rate-limits/list-rate-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/rate-limits/retrieve-rate-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/rate-limits/update-rate-limits-policy",
+                      "api-reference/admin-api/control-plane/policies/rate-limits/delete-rate-limits-policy"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "OpenAPI",
+                "pages": [
+                  "api-reference/admin-api/open-api-specification"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Cookbooks",
+            "groups": [
+              {
+                "group": "Evals",
+                "pages": [
+                  "guides/use-cases/run-batch-evals",
+                  "guides/prompts/llm-as-a-judge"
+                ]
+              },
+              {
+                "group": "Prompt Engineering",
+                "pages": [
+                  "guides/prompts",
+                  "guides/prompts/ultimate-ai-sdr",
+                  "guides/prompts/build-a-chatbot-using-portkeys-prompt-templates",
+                  "guides/prompts/llm-as-a-judge",
+                  "guides/prompts/llama-prompts"
+                ]
+              },
+              {
+                "group": "Whitepapers",
+                "pages": [
+                  {
+                    "group": "Optimizing LLM Costs",
+                    "pages": [
+                      "guides/whitepapers/optimizing-llm-costs/executive-summary",
+                      "guides/whitepapers/optimizing-llm-costs/introduction",
+                      "guides/whitepapers/optimizing-llm-costs/llm-cost-drivers",
+                      "guides/whitepapers/optimizing-llm-costs/frugalgpt-techniques",
+                      "guides/whitepapers/optimizing-llm-costs/advanced-strategies",
+                      "guides/whitepapers/optimizing-llm-costs/architectural-considerations",
+                      "guides/whitepapers/optimizing-llm-costs/operational-best-practices",
+                      "guides/whitepapers/optimizing-llm-costs/cost-effective-development",
+                      "guides/whitepapers/optimizing-llm-costs/user-education",
+                      "guides/whitepapers/optimizing-llm-costs/future-trends",
+                      "guides/whitepapers/optimizing-llm-costs/conclusion-and-key-takeaways"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "guides/getting-started",
+                  "guides/getting-started/a-b-test-prompts-and-models",
+                  "guides/getting-started/tackling-rate-limiting",
+                  "guides/getting-started/function-calling",
+                  "guides/getting-started/image-generation",
+                  "guides/getting-started/getting-started-with-ai-gateway",
+                  "guides/getting-started/llama-3-on-groq",
+                  "guides/getting-started/return-repeat-requests-from-cache",
+                  "guides/getting-started/trigger-automatic-retries-on-llm-failures",
+                  "guides/getting-started/101-on-portkey-s-gateway-configs"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "guides/integrations",
+                  "guides/coding-agents/agent-cli",
+                  "guides/coding-agents/skills",
+                  "guides/integrations/llama-3-on-portkey-+-together-ai",
+                  "guides/integrations/introduction-to-gpt-4o",
+                  "guides/integrations/anyscale",
+                  "guides/integrations/mistral",
+                  "guides/integrations/vercel-ai",
+                  "guides/integrations/deepinfra",
+                  "guides/integrations/groq",
+                  "guides/integrations/langchain",
+                  "guides/integrations/mixtral-8x22b",
+                  "guides/integrations/segmind",
+                  "guides/integrations/openwebui-to-portkey"
+                ]
+              },
+              {
+                "group": "Use Cases",
+                "pages": [
+                  "guides/use-cases",
+                  "guides/use-cases/enterprise-ready-unified-api",
+                  "guides/use-cases/multi-tenant-ai-feature",
+                  "guides/use-cases/enforcing-limits-and-budgets",
+                  "guides/use-cases/fallbacks-test",
+                  "guides/use-cases/guardrail-pii-use-case",
+                  "guides/use-cases/creating-partner-guardrails",
+                  "guides/use-cases/librechat-web-search",
+                  "guides/use-cases/few-shot-prompting",
+                  "guides/use-cases/enforcing-json-schema-with-anyscale-and-together",
+                  "guides/use-cases/emotions-with-gpt-4o",
+                  "guides/use-cases/build-an-article-suggestion-app-with-supabase-pgvector-and-portkey",
+                  "guides/use-cases/setting-up-resilient-load-balancers-with-failure-mitigating-fallbacks",
+                  "guides/use-cases/combining-routing-strategies",
+                  "guides/use-cases/run-portkey-on-prompts-from-langchain-hub",
+                  "guides/use-cases/smart-fallback-with-model-optimized-prompts",
+                  "guides/use-cases/how-to-use-openai-sdk-with-portkey-prompt-templates",
+                  "guides/use-cases/setup-openai-greater-than-azure-openai-fallback",
+                  "guides/use-cases/fallback-from-sdxl-to-dall-e-3",
+                  "guides/use-cases/comparing-top10-lmsys-models-with-portkey",
+                  "guides/use-cases/metadata-use-cases",
+                  "guides/use-cases/track-costs-using-metadata",
+                  "guides/use-cases/deepseek-r1",
+                  "guides/use-cases/openai-computer-use",
+                  "guides/use-cases/private-mcp-servers",
+                  "guides/converting-stdio-to-streamable-http"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "groups": [
+              {
+                "group": "Monthly Summary",
+                "pages": [
+                  {
+                    "group": "2026",
+                    "pages": [
+                      "changelog/2026/march",
+                      "changelog/2026/february",
+                      "changelog/2026/january",
+                      "changelog/2026/april"
+                    ]
+                  },
+                  {
+                    "group": "2025",
+                    "pages": [
+                      "changelog/2025/december",
+                      "changelog/2025/november",
+                      "changelog/2025/october",
+                      "changelog/2025/september",
+                      "changelog/2025/august",
+                      "changelog/2025/july",
+                      "changelog/2025/june",
+                      "changelog/2025/may",
+                      "changelog/2025/apr",
+                      "changelog/2025/mar",
+                      "changelog/2025/feb",
+                      "changelog/2025/jan"
+                    ]
+                  },
+                  {
+                    "group": "2024",
+                    "pages": [
+                      "changelog/2024/dec",
+                      "changelog/2024/nov",
+                      "changelog/2024/oct"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Enterprise Releases",
+                "pages": [
+                  "changelog/enterprise",
+                  "changelog/helm-chart",
+                  "changelog/data-service",
+                  "changelog/frontend",
+                  "changelog/backend"
+                ]
+              },
+              {
+                "group": "Product Releases",
+                "pages": [
+                  "changelog/product"
+                ]
+              },
+              {
+                "group": "SDK Releases",
+                "pages": [
+                  "changelog/node-sdk-changelog",
+                  "changelog/python-sdk-changelog"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Help Center",
+            "groups": [
+              {
+                "group": "Articles",
+                "pages": [
+                  "help-center/you-do-not-have-enough-permissions"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "Virtual Keys (Deprecated)",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "virtual_key_old/introduction/what-is-portkey",
+                  "virtual_key_old/introduction/make-your-first-request",
+                  "virtual_key_old/introduction/feature-overview"
+                ]
+              },
+              {
+                "group": "Product",
+                "pages": [
+                  {
+                    "group": "Observability",
+                    "pages": [
+                      "virtual_key_old/product/observability",
+                      "virtual_key_old/product/observability/logs",
+                      "virtual_key_old/product/observability/traces",
+                      "virtual_key_old/product/observability/analytics",
+                      "virtual_key_old/product/observability/feedback",
+                      "virtual_key_old/product/observability/metadata",
+                      "virtual_key_old/product/observability/filters",
+                      "virtual_key_old/product/observability/logs-export",
+                      "virtual_key_old/product/observability/budget-limits",
+                      "virtual_key_old/product/observability/auto-instrumentation"
+                    ]
+                  },
+                  {
+                    "group": "AI Gateway",
+                    "pages": [
+                      "virtual_key_old/product/ai-gateway",
+                      "virtual_key_old/product/ai-gateway/universal-api",
+                      "virtual_key_old/product/ai-gateway/configs",
+                      "virtual_key_old/product/ai-gateway/remote-mcp",
+                      "virtual_key_old/product/ai-gateway/conditional-routing",
+                      {
+                        "group": "Multimodal Capabilities",
+                        "pages": [
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/image-generation",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/function-calling",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/vision",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/text-to-speech",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/speech-to-text",
+                          "virtual_key_old/product/ai-gateway/multimodal-capabilities/thinking-mode"
+                        ]
+                      },
+                      "virtual_key_old/product/ai-gateway/cache-simple-and-semantic",
+                      "virtual_key_old/product/ai-gateway/fallbacks",
+                      "virtual_key_old/product/ai-gateway/automatic-retries",
+                      "virtual_key_old/product/ai-gateway/realtime-api",
+                      "virtual_key_old/product/ai-gateway/load-balancing",
+                      "virtual_key_old/product/ai-gateway/canary-testing",
+                      "virtual_key_old/product/ai-gateway/strict-open-ai-compliance",
+                      {
+                        "group": "Virtual Keys",
+                        "pages": [
+                          "virtual_key_old/product/ai-gateway/virtual-keys",
+                          "virtual_key_old/product/ai-gateway/virtual-keys/budget-limits",
+                          "virtual_key_old/product/ai-gateway/virtual-keys/rate-limits",
+                          "virtual_key_old/product/ai-gateway/virtual-keys/bedrock-amazon-assumed-role"
+                        ]
+                      },
+                      "virtual_key_old/product/ai-gateway/request-timeouts",
+                      "virtual_key_old/product/ai-gateway/files",
+                      "virtual_key_old/product/ai-gateway/batches",
+                      "virtual_key_old/product/ai-gateway/fine-tuning"
+                    ]
+                  },
+                  {
+                    "group": "Guardrails",
+                    "pages": [
+                      "virtual_key_old/product/guardrails",
+                      "virtual_key_old/product/guardrails/list-of-guardrail-checks",
+                      "virtual_key_old/product/guardrails/embedding-guardrails",
+                      "virtual_key_old/product/guardrails/creating-raw-guardrails-in-json",
+                      "virtual_key_old/product/guardrails/pii-redaction",
+                      "virtual_key_old/integrations/guardrails/bring-your-own-guardrails"
+                    ]
+                  },
+                  "virtual_key_old/product/mcp",
+                  {
+                    "group": "Administration",
+                    "pages": [
+                      "virtual_key_old/product/administration/enforcing-request-metadata",
+                      "virtual_key_old/product/administration/enforce-orgnization-level-guardrails",
+                      "virtual_key_old/product/administration/enforce-workspace-level-guardials",
+                      "virtual_key_old/product/administration/enforce-default-config",
+                      "virtual_key_old/product/administration/enforce-budget-and-rate-limit",
+                      "virtual_key_old/product/administration/configure-logs-access-permissions-in-workspace",
+                      "virtual_key_old/product/administration/configure-virtual-key-access-permissions",
+                      "virtual_key_old/product/administration/configure-api-key-access-permissions"
+                    ]
+                  },
+                  {
+                    "group": "Security",
+                    "pages": [
+                      "virtual_key_old/product/security/pii"
+                    ]
+                  },
+                  "virtual_key_old/product/autonomous-fine-tuning",
+                  {
+                    "group": "Enterprise Offering",
+                    "pages": [
+                      "virtual_key_old/product/enterprise-offering",
+                      {
+                        "group": "Org Management",
+                        "pages": [
+                          "virtual_key_old/product/enterprise-offering/org-management",
+                          "virtual_key_old/product/enterprise-offering/org-management/organizations",
+                          "virtual_key_old/product/enterprise-offering/org-management/workspaces",
+                          "virtual_key_old/product/enterprise-offering/org-management/user-roles-and-permissions",
+                          "virtual_key_old/product/enterprise-offering/org-management/api-keys-authn-and-authz",
+                          "virtual_key_old/product/enterprise-offering/org-management/jwt",
+                          {
+                            "group": "SCIM",
+                            "pages": [
+                              "virtual_key_old/product/enterprise-offering/org-management/scim/scim",
+                              "virtual_key_old/product/enterprise-offering/org-management/scim/azure-ad",
+                              "virtual_key_old/product/enterprise-offering/org-management/scim/okta"
+                            ]
+                          },
+                          "virtual_key_old/product/enterprise-offering/org-management/sso"
+                        ]
+                      },
+                      "virtual_key_old/product/enterprise-offering/access-control-management",
+                      "virtual_key_old/product/enterprise-offering/budget-limits",
+                      "virtual_key_old/product/enterprise-offering/security-portkey",
+                      "virtual_key_old/product/enterprise-offering/analytics-logs-export",
+                      "virtual_key_old/product/enterprise-offering/logs-export",
+                      "virtual_key_old/product/enterprise-offering/audit-logs",
+                      {
+                        "group": "Private Cloud Deployments",
+                        "pages": [
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/architecture",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/aws",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/gcp",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/azure",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/cloudflare-workers",
+                          "virtual_key_old/product/enterprise-offering/private-cloud-deployments/f5-app-stack"
+                        ]
+                      },
+                      "virtual_key_old/product/enterprise-offering/components",
+                      "virtual_key_old/product/enterprise-offering/kms",
+                      {
+                        "group": "Cloud Marketplace",
+                        "pages": [
+                          "virtual_key_old/product/enterprise-offering/cloud-marketplace/aws"
+                        ]
+                      }
+                    ]
+                  },
+                  "virtual_key_old/product/open-source",
+                  "virtual_key_old/product/product-feature-comparison"
+                ]
+              },
+              {
+                "group": "Support",
+                "pages": [
+                  "support/upgrade-to-model-catalog",
+                  "README",
+                  "support/contact-us",
+                  "support/developer-forum",
+                  "support/common-errors-and-resolutions",
+                  "support/portkeys-december-migration"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Integrations",
+            "groups": [
+              {
+                "group": "Ecosystem",
+                "pages": [
+                  "virtual_key_old/integrations/ecosystem",
+                  "virtual_key_old/integrations/partner"
+                ]
+              },
+              {
+                "group": "LLM Integrations",
+                "pages": [
+                  "virtual_key_old/integrations/llms",
+                  {
+                    "group": "OpenAI",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/openai",
+                      "virtual_key_old/integrations/llms/openai/structured-outputs",
+                      "virtual_key_old/integrations/llms/openai/prompt-caching-openai",
+                      "virtual_key_old/integrations/llms/openai/files",
+                      "virtual_key_old/integrations/llms/openai/batches",
+                      "virtual_key_old/integrations/llms/openai/fine-tuning"
+                    ]
+                  },
+                  {
+                    "group": "Anthropic",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/anthropic",
+                      "virtual_key_old/integrations/llms/anthropic/prompt-caching",
+                      "virtual_key_old/integrations/llms/anthropic/computer-use"
+                    ]
+                  },
+                  "virtual_key_old/integrations/llms/gemini",
+                  {
+                    "group": "Google Vertex AI",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/vertex-ai",
+                      "virtual_key_old/integrations/llms/vertex-ai/files",
+                      "virtual_key_old/integrations/llms/vertex-ai/batches",
+                      "virtual_key_old/integrations/llms/vertex-ai/fine-tuning",
+                      "virtual_key_old/integrations/llms/vertex-ai/controlled-generations",
+                      "virtual_key_old/integrations/llms/vertex-ai/embeddings"
+                    ]
+                  },
+                  {
+                    "group": "Azure",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/azure-foundry",
+                      "virtual_key_old/integrations/llms/azure-openai/azure-openai",
+                      "virtual_key_old/integrations/llms/azure-openai/fine-tuning",
+                      "virtual_key_old/integrations/llms/azure-openai/files",
+                      "virtual_key_old/integrations/llms/azure-openai/batches"
+                    ]
+                  },
+                  {
+                    "group": "Bedrock",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/bedrock/aws-bedrock",
+                      "virtual_key_old/integrations/llms/bedrock/files",
+                      "virtual_key_old/integrations/llms/bedrock/batches",
+                      "virtual_key_old/integrations/llms/bedrock/fine-tuning",
+                      "virtual_key_old/integrations/llms/bedrock/prompt-caching",
+                      "virtual_key_old/integrations/llms/bedrock/embeddings"
+                    ]
+                  },
+                  "virtual_key_old/integrations/llms/aws-sagemaker",
+                  "virtual_key_old/integrations/llms/ollama",
+                  {
+                    "group": "More",
+                    "pages": [
+                      "virtual_key_old/integrations/llms/local-ai",
+                      "virtual_key_old/integrations/llms/vllm",
+                      "virtual_key_old/integrations/llms/triton",
+                      "virtual_key_old/integrations/llms/ai21",
+                      "virtual_key_old/integrations/llms/anyscale-llama2-mistral-zephyr",
+                      "virtual_key_old/integrations/llms/cerebras",
+                      "virtual_key_old/integrations/llms/cohere",
+                      {
+                        "group": "Fireworks",
+                        "pages": [
+                          "virtual_key_old/integrations/llms/fireworks",
+                          "virtual_key_old/integrations/llms/fireworks/files",
+                          "virtual_key_old/integrations/llms/fireworks/fine-tuning"
+                        ]
+                      },
+                      "virtual_key_old/integrations/llms/dashscope",
+                      "virtual_key_old/integrations/llms/deepinfra",
+                      "virtual_key_old/integrations/llms/deepbricks",
+                      "virtual_key_old/integrations/llms/deepgram",
+                      "virtual_key_old/integrations/llms/deepseek",
+                      "virtual_key_old/integrations/llms/github",
+                      "virtual_key_old/integrations/llms/groq",
+                      "virtual_key_old/integrations/llms/huggingface",
+                      "virtual_key_old/integrations/llms/inference.net",
+                      "virtual_key_old/integrations/llms/jina-ai",
+                      "virtual_key_old/integrations/llms/lambda",
+                      "virtual_key_old/integrations/llms/lemon-fox",
+                      "virtual_key_old/integrations/llms/lepton",
+                      "virtual_key_old/integrations/llms/lingyi-01.ai",
+                      "virtual_key_old/integrations/llms/mistral-ai",
+                      "virtual_key_old/integrations/llms/monster-api",
+                      "virtual_key_old/integrations/llms/moonshot",
+                      "virtual_key_old/integrations/llms/ncompass",
+                      "virtual_key_old/integrations/llms/nomic",
+                      "virtual_key_old/integrations/llms/nscale",
+                      "virtual_key_old/integrations/llms/novita-ai",
+                      "virtual_key_old/integrations/llms/nebius",
+                      "virtual_key_old/integrations/llms/openrouter",
+                      "virtual_key_old/integrations/llms/perplexity-ai",
+                      "virtual_key_old/integrations/llms/predibase",
+                      "virtual_key_old/integrations/llms/reka-ai",
+                      "virtual_key_old/integrations/llms/recraft-ai",
+                      "virtual_key_old/integrations/llms/sambanova",
+                      "virtual_key_old/integrations/llms/segmind",
+                      "virtual_key_old/integrations/llms/snowflake-cortex",
+                      "virtual_key_old/integrations/llms/stability-ai",
+                      "virtual_key_old/integrations/llms/siliconflow",
+                      "virtual_key_old/integrations/llms/together-ai",
+                      "virtual_key_old/integrations/llms/upstage",
+                      "virtual_key_old/integrations/llms/voyage-ai",
+                      "virtual_key_old/integrations/llms/workers-ai",
+                      "virtual_key_old/integrations/llms/x-ai",
+                      "virtual_key_old/integrations/llms/zhipu",
+                      "virtual_key_old/integrations/llms/replicate",
+                      "virtual_key_old/integrations/llms/suggest-a-new-integration"
+                    ]
+                  },
+                  "virtual_key_old/integrations/llms/byollm"
+                ]
+              },
+              {
+                "group": "Cloud Platforms",
+                "pages": [
+                  "virtual_key_old/integrations/cloud/azure"
+                ]
+              },
+              {
+                "group": "Guardrails",
+                "pages": [
+                  "virtual_key_old/integrations/guardrails/aporia",
+                  "virtual_key_old/integrations/guardrails/acuvity",
+                  "virtual_key_old/integrations/guardrails/azure-guardrails",
+                  "virtual_key_old/integrations/guardrails/bedrock-guardrails",
+                  "virtual_key_old/integrations/guardrails/lasso",
+                  "virtual_key_old/integrations/guardrails/mistral",
+                  "virtual_key_old/integrations/guardrails/pangea",
+                  "virtual_key_old/integrations/guardrails/patronus-ai",
+                  "virtual_key_old/integrations/guardrails/pillar",
+                  "virtual_key_old/integrations/guardrails/prompt-security",
+                  "virtual_key_old/integrations/guardrails/bring-your-own-guardrails"
+                ]
+              },
+              {
+                "group": "Plugins",
+                "pages": [
+                  "virtual_key_old/integrations/plugins/exa"
+                ]
+              },
+              {
+                "group": "Vector Databases",
+                "pages": [
+                  "virtual_key_old/integrations/vector-databases/milvus",
+                  "virtual_key_old/integrations/vector-databases/qdrant"
+                ]
+              },
+              {
+                "group": "Agents",
+                "pages": [
+                  "virtual_key_old/integrations/agents",
+                  "virtual_key_old/integrations/agents/openai-agents",
+                  "virtual_key_old/integrations/agents/openai-agents-ts",
+                  "virtual_key_old/integrations/agents/autogen",
+                  "virtual_key_old/integrations/agents/control-flow",
+                  "virtual_key_old/integrations/agents/crewai",
+                  "virtual_key_old/integrations/agents/langchain-agents",
+                  "virtual_key_old/integrations/agents/langroid",
+                  "virtual_key_old/integrations/agents/langgraph",
+                  "virtual_key_old/integrations/agents/livekit",
+                  "virtual_key_old/integrations/agents/llama-agents",
+                  "virtual_key_old/integrations/agents/openai-swarm",
+                  "virtual_key_old/integrations/agents/pydantic-ai",
+                  "virtual_key_old/integrations/agents/phidata",
+                  "virtual_key_old/integrations/agents/strands",
+                  "virtual_key_old/integrations/agents/bring-your-own-agents"
+                ]
+              },
+              {
+                "group": "AI Apps",
+                "pages": [
+                  "virtual_key_old/integrations/ai-apps",
+                  "virtual_key_old/integrations/libraries/anythingllm",
+                  {
+                    "group": "Claude Code",
+                    "pages": [
+                      "virtual_key_old/integrations/libraries/claude-code",
+                      "virtual_key_old/integrations/libraries/claude-code-anthropic",
+                      "virtual_key_old/integrations/libraries/claude-code-bedrock",
+                      "virtual_key_old/integrations/libraries/claude-code-vertex"
+                    ]
+                  },
+                  "virtual_key_old/integrations/libraries/anthropic-computer-use",
+                  "virtual_key_old/integrations/libraries/cline",
+                  "virtual_key_old/integrations/libraries/goose",
+                  "virtual_key_old/integrations/libraries/janhq",
+                  {
+                    "group": "Librechat",
+                    "pages": [
+                      "virtual_key_old/integrations/libraries/librechat",
+                      "guides/use-cases/librechat-web-search"
+                    ]
+                  },
+                  "virtual_key_old/integrations/libraries/n8n",
+                  "virtual_key_old/integrations/libraries/codex",
+                  "virtual_key_old/integrations/libraries/openwebui",
+                  "virtual_key_old/integrations/libraries/roo-code",
+                  "virtual_key_old/integrations/libraries/zed"
+                ]
+              },
+              {
+                "group": "Libraries",
+                "pages": [
+                  "virtual_key_old/integrations/libraries",
+                  "virtual_key_old/integrations/libraries/autogen",
+                  "virtual_key_old/integrations/libraries/dspy",
+                  "virtual_key_old/integrations/libraries/instructor",
+                  "virtual_key_old/integrations/libraries/langchain-python",
+                  "virtual_key_old/integrations/libraries/langchain-js",
+                  "virtual_key_old/integrations/libraries/llama-index-python",
+                  "virtual_key_old/integrations/libraries/promptfoo",
+                  "virtual_key_old/integrations/libraries/vercel",
+                  "virtual_key_old/integrations/libraries/mindsdb",
+                  "virtual_key_old/integrations/libraries/tooljet",
+                  "virtual_key_old/integrations/libraries/mongodb",
+                  "virtual_key_old/integrations/libraries/supabase",
+                  "virtual_key_old/integrations/libraries/zed",
+                  "virtual_key_old/integrations/libraries/openai-compatible",
+                  "virtual_key_old/integrations/libraries/microsoft-semantic-kernel"
+                ]
+              },
+              {
+                "group": "Tracing Providers",
+                "pages": [
+                  "virtual_key_old/integrations/tracing-providers/arize",
+                  "virtual_key_old/integrations/tracing-providers/logfire"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Inference API",
+            "groups": [
+              {
+                "group": "API Reference",
+                "pages": [
+                  "api-reference/inference-api/introduction",
+                  "api-reference/inference-api/agentic-usage",
+                  "api-reference/inference-api/supported-providers",
+                  "api-reference/inference-api/authentication",
+                  "api-reference/inference-api/headers",
+                  "api-reference/inference-api/error-codes",
+                  "api-reference/inference-api/response-schema",
+                  {
+                    "group": "More",
+                    "pages": [
+                      "api-reference/inference-api/config-object",
+                      "api-reference/inference-api/open-api-specification"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "SDK",
+                "pages": [
+                  "api-reference/sdk/list",
+                  "api-reference/sdk/python",
+                  "api-reference/sdk/node",
+                  "api-reference/sdk/c-sharp"
+                ]
+              },
+              {
+                "group": "Chat Completions",
+                "pages": [
+                  "api-reference/inference-api/chat"
+                ]
+              },
+              {
+                "group": "Responses",
+                "pages": [
+                  "api-reference/inference-api/responses/responses",
+                  "api-reference/inference-api/responses/retrieve-response",
+                  "api-reference/inference-api/responses/delete-response",
+                  "api-reference/inference-api/responses/retrieve-inputs"
+                ]
+              },
+              {
+                "group": "Portkey Endpoints",
+                "pages": [
+                  "api-reference/inference-api/prompts/prompt-completion",
+                  "api-reference/inference-api/prompts/render",
+                  "api-reference/admin-api/data-plane/logs/insert-a-log",
+                  "api-reference/admin-api/data-plane/feedback/create-feedback",
+                  "api-reference/admin-api/data-plane/feedback/update-feedback",
+                  {
+                    "group": "Log Exports",
+                    "pages": [
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/retrieve-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/update-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/list-log-exports",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/create-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/start-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/cancel-a-log-export",
+                      "api-reference/admin-api/data-plane/logs/log-exports-beta/download-a-log-export"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Embeddings",
+                "pages": [
+                  "api-reference/inference-api/embeddings"
+                ]
+              },
+              {
+                "group": "Rerank",
+                "pages": [
+                  "api-reference/inference-api/rerank"
+                ]
+              },
+              {
+                "group": "Images",
+                "pages": [
+                  "api-reference/inference-api/images/create-image",
+                  "api-reference/inference-api/images/create-image-edit",
+                  "api-reference/inference-api/images/create-image-variation"
+                ]
+              },
+              {
+                "group": "Audio",
+                "pages": [
+                  "api-reference/inference-api/audio/create-speech",
+                  "api-reference/inference-api/audio/create-transcription",
+                  "api-reference/inference-api/audio/create-translation"
+                ]
+              },
+              {
+                "group": "Other APIs",
+                "pages": [
+                  "api-reference/inference-api/gateway-for-other-apis"
+                ]
+              },
+              {
+                "group": "Completions",
+                "pages": [
+                  "api-reference/inference-api/completions"
+                ]
+              },
+              {
+                "group": "Moderations",
+                "pages": [
+                  "api-reference/inference-api/moderations"
+                ]
+              },
+              {
+                "group": "Fine-tuning",
+                "pages": [
+                  "api-reference/inference-api/fine-tuning/create-fine-tuning-job",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-jobs",
+                  "api-reference/inference-api/fine-tuning/retrieve-fine-tuning-job",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-events",
+                  "api-reference/inference-api/fine-tuning/list-fine-tuning-checkpoints",
+                  "api-reference/inference-api/fine-tuning/cancel-fine-tuning"
+                ]
+              },
+              {
+                "group": "Batch",
+                "pages": [
+                  "api-reference/inference-api/batch/create-batch",
+                  "api-reference/inference-api/batch/list-batch",
+                  "api-reference/inference-api/batch/retrieve-batch",
+                  "api-reference/inference-api/batch/cancel-batch"
+                ]
+              },
+              {
+                "group": "Files",
+                "pages": [
+                  "api-reference/inference-api/files/upload-file",
+                  "api-reference/inference-api/files/list-files",
+                  "api-reference/inference-api/files/retrieve-file",
+                  "api-reference/inference-api/files/retrieve-file-content",
+                  "api-reference/inference-api/files/delete-file"
+                ]
+              },
+              {
+                "group": "Assistants",
+                "pages": [
+                  {
+                    "group": "Assistants",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/assistants/create-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/list-assistants",
+                      "api-reference/inference-api/assistants-api/assistants/retrieve-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/modify-assistant",
+                      "api-reference/inference-api/assistants-api/assistants/delete-assistant"
+                    ]
+                  },
+                  {
+                    "group": "Threads",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/threads/create-thread",
+                      "api-reference/inference-api/assistants-api/threads/retrieve-thread",
+                      "api-reference/inference-api/assistants-api/threads/modify-thread",
+                      "api-reference/inference-api/assistants-api/threads/delete-thread"
+                    ]
+                  },
+                  {
+                    "group": "Messages",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/messages/create-message",
+                      "api-reference/inference-api/assistants-api/messages/list-messages",
+                      "api-reference/inference-api/assistants-api/messages/retrieve-message",
+                      "api-reference/inference-api/assistants-api/messages/modify-message",
+                      "api-reference/inference-api/assistants-api/messages/delete-message"
+                    ]
+                  },
+                  {
+                    "group": "Runs",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/runs/create-run",
+                      "api-reference/inference-api/assistants-api/runs/create-thread-and-run",
+                      "api-reference/inference-api/assistants-api/runs/list-runs",
+                      "api-reference/inference-api/assistants-api/runs/retrieve-run",
+                      "api-reference/inference-api/assistants-api/runs/modify-run",
+                      "api-reference/inference-api/assistants-api/runs/submit-tool-outputs-to-run",
+                      "api-reference/inference-api/assistants-api/runs/cancel-run"
+                    ]
+                  },
+                  {
+                    "group": "Run Steps",
+                    "pages": [
+                      "api-reference/inference-api/assistants-api/run-steps/list-run-steps",
+                      "api-reference/inference-api/assistants-api/run-steps/retrieve-run-steps"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Admin API",
+            "groups": [
+              {
+                "group": "API Reference",
+                "pages": [
+                  "api-reference/admin-api/introduction"
+                ]
+              },
+              {
+                "group": "Configs",
+                "pages": [
+                  "api-reference/admin-api/control-plane/configs/create-config",
+                  "api-reference/admin-api/control-plane/configs/list-configs",
+                  "api-reference/admin-api/control-plane/configs/retrieve-config",
+                  "api-reference/admin-api/control-plane/configs/list-config-versions",
+                  "api-reference/admin-api/control-plane/configs/update-config",
+                  "api-reference/admin-api/control-plane/configs/delete-config"
+                ]
+              },
+              {
+                "group": "Virtual Keys",
+                "pages": [
+                  "api-reference/admin-api/control-plane/virtual-keys/create-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/list-virtual-keys",
+                  "api-reference/admin-api/control-plane/virtual-keys/retrieve-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/update-virtual-key",
+                  "api-reference/admin-api/control-plane/virtual-keys/delete-virtual-key"
+                ]
+              },
+              {
+                "group": "Prompts",
+                "pages": [
+                  "api-reference/admin-api/control-plane/prompts/create-prompt",
+                  "api-reference/admin-api/control-plane/prompts/list-prompts",
+                  "api-reference/admin-api/control-plane/prompts/retrieve-prompt",
+                  "api-reference/admin-api/control-plane/prompts/update-prompt",
+                  "api-reference/admin-api/control-plane/prompts/delete-prompt",
+                  "api-reference/admin-api/control-plane/prompts/publish-prompt",
+                  "api-reference/admin-api/control-plane/prompts/list-prompt-versions",
+                  "api-reference/admin-api/control-plane/prompts/retrieve-prompt-version",
+                  "api-reference/admin-api/control-plane/prompts/update-prompt-version",
+                  {
+                    "group": "Prompt Partials",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/partials/create-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/list-partials",
+                      "api-reference/admin-api/control-plane/prompts/partials/retrieve-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/update-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/delete-partial",
+                      "api-reference/admin-api/control-plane/prompts/partials/list-partial-versions",
+                      "api-reference/admin-api/control-plane/prompts/partials/publish-partial"
+                    ]
+                  },
+                  {
+                    "group": "Prompt Labels",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/labels/create-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/list-labels",
+                      "api-reference/admin-api/control-plane/prompts/labels/retrieve-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/update-label",
+                      "api-reference/admin-api/control-plane/prompts/labels/delete-label"
+                    ]
+                  },
+                  {
+                    "group": "Prompt Collections",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/prompts/collections/create-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/list-collections",
+                      "api-reference/admin-api/control-plane/prompts/collections/retrieve-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/update-collection",
+                      "api-reference/admin-api/control-plane/prompts/collections/delete-collection"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "API Keys",
+                "pages": [
+                  "api-reference/admin-api/control-plane/api-keys/create-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/update-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/rotate-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/delete-an-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/retrieve-an-api-key",
+                  "api-reference/admin-api/control-plane/api-keys/list-api-keys"
+                ]
+              },
+              {
+                "group": "Analytics [BETA]",
+                "pages": [
+                  {
+                    "group": "Summary",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/summary/get-all-cache-data"
+                    ]
+                  },
+                  {
+                    "group": "Groups Paginated Data",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-metadata-grouped-data",
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-model-grouped-data",
+                      "api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-user-grouped-data"
+                    ]
+                  },
+                  {
+                    "group": "Graphs - Time Series Data",
+                    "pages": [
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-latency-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-rate-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cost-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-error-rate-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-errors-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-per-ai-models-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-score-distribution-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-latency-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-per-user-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-rescued-requests-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-status-code-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-tokens-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-unique-status-code-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-users-data",
+                      "api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-weighted-feedback-data"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Users",
+                "pages": [
+                  "api-reference/admin-api/control-plane/users/retrieve-a-user",
+                  "api-reference/admin-api/control-plane/users/retrieve-all-users",
+                  "api-reference/admin-api/control-plane/users/update-a-user",
+                  "api-reference/admin-api/control-plane/users/remove-a-user"
+                ]
+              },
+              {
+                "group": "User Invites",
+                "pages": [
+                  "api-reference/admin-api/control-plane/user-invites/invite-a-user",
+                  "api-reference/admin-api/control-plane/user-invites/retrieve-an-invite",
+                  "api-reference/admin-api/control-plane/user-invites/retrieve-all-user-invites",
+                  "api-reference/admin-api/control-plane/user-invites/delete-a-user-invite",
+                  "api-reference/admin-api/control-plane/user-invites/resend-a-user-invite"
+                ]
+              },
+              {
+                "group": "Workspaces",
+                "pages": [
+                  "api-reference/admin-api/control-plane/workspaces/create-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/retrieve-all-workspaces",
+                  "api-reference/admin-api/control-plane/workspaces/retrieve-a-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/update-workspace",
+                  "api-reference/admin-api/control-plane/workspaces/delete-a-workspace"
+                ]
+              },
+              {
+                "group": "Workspace Members",
+                "pages": [
+                  "api-reference/admin-api/control-plane/workspace-members/add-a-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/retrieve-all-workspace-members",
+                  "api-reference/admin-api/control-plane/workspace-members/retrieve-a-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/update-workspace-member",
+                  "api-reference/admin-api/control-plane/workspace-members/remove-workspace-member"
+                ]
+              },
+              {
+                "group": "SCIM Workspace Mappings",
+                "pages": [
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/list-scim-workspace-mappings",
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/create-scim-workspace-mapping",
+                  "api-reference/admin-api/control-plane/scim-workspace-mappings/delete-scim-workspace-mapping"
+                ]
+              },
+              {
+                "group": "Audit Logs",
+                "pages": [
+                  "api-reference/admin-api/control-plane/audit-logs/list-audit-logs"
+                ]
+              },
+              {
+                "group": "Guardrails",
+                "pages": [
+                  "api-reference/admin-api/control-plane/guardrails/create-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/list-guardrails",
+                  "api-reference/admin-api/control-plane/guardrails/retrieve-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/update-guardrail",
+                  "api-reference/admin-api/control-plane/guardrails/delete-guardrail"
+                ]
+              },
+              {
+                "group": "OpenAPI",
+                "pages": [
+                  "api-reference/admin-api/open-api-specification"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Cookbooks",
+            "groups": [
+              {
+                "group": "Evals",
+                "pages": [
+                  "guides/use-cases/run-batch-evals",
+                  "guides/prompts/llm-as-a-judge"
+                ]
+              },
+              {
+                "group": "Prompt Engineering",
+                "pages": [
+                  "guides/prompts",
+                  "guides/prompts/ultimate-ai-sdr",
+                  "guides/prompts/build-a-chatbot-using-portkeys-prompt-templates",
+                  "guides/prompts/llm-as-a-judge",
+                  "guides/prompts/llama-prompts"
+                ]
+              },
+              {
+                "group": "Whitepapers",
+                "pages": [
+                  {
+                    "group": "Optimizing LLM Costs",
+                    "pages": [
+                      "guides/whitepapers/optimizing-llm-costs/executive-summary",
+                      "guides/whitepapers/optimizing-llm-costs/introduction",
+                      "guides/whitepapers/optimizing-llm-costs/llm-cost-drivers",
+                      "guides/whitepapers/optimizing-llm-costs/frugalgpt-techniques",
+                      "guides/whitepapers/optimizing-llm-costs/advanced-strategies",
+                      "guides/whitepapers/optimizing-llm-costs/architectural-considerations",
+                      "guides/whitepapers/optimizing-llm-costs/operational-best-practices",
+                      "guides/whitepapers/optimizing-llm-costs/cost-effective-development",
+                      "guides/whitepapers/optimizing-llm-costs/user-education",
+                      "guides/whitepapers/optimizing-llm-costs/future-trends",
+                      "guides/whitepapers/optimizing-llm-costs/conclusion-and-key-takeaways"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "guides/getting-started",
+                  "guides/getting-started/a-b-test-prompts-and-models",
+                  "guides/getting-started/tackling-rate-limiting",
+                  "guides/getting-started/function-calling",
+                  "guides/getting-started/image-generation",
+                  "guides/getting-started/getting-started-with-ai-gateway",
+                  "guides/getting-started/llama-3-on-groq",
+                  "guides/getting-started/return-repeat-requests-from-cache",
+                  "guides/getting-started/trigger-automatic-retries-on-llm-failures",
+                  "guides/getting-started/101-on-portkey-s-gateway-configs"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "guides/integrations",
+                  "guides/integrations/arize-portkey",
+                  "guides/integrations/llama-3-on-portkey-+-together-ai",
+                  "guides/integrations/introduction-to-gpt-4o",
+                  "guides/integrations/anyscale",
+                  "guides/integrations/mistral",
+                  "guides/integrations/vercel-ai",
+                  "guides/integrations/deepinfra",
+                  "guides/integrations/groq",
+                  "guides/integrations/langchain",
+                  "guides/integrations/mixtral-8x22b",
+                  "guides/integrations/segmind"
+                ]
+              },
+              {
+                "group": "Use Cases",
+                "pages": [
+                  "guides/use-cases",
+                  "guides/use-cases/librechat-web-search",
+                  "guides/use-cases/few-shot-prompting",
+                  "guides/use-cases/enforcing-json-schema-with-anyscale-and-together",
+                  "guides/use-cases/emotions-with-gpt-4o",
+                  "guides/use-cases/build-an-article-suggestion-app-with-supabase-pgvector-and-portkey",
+                  "guides/use-cases/setting-up-resilient-load-balancers-with-failure-mitigating-fallbacks",
+                  "guides/use-cases/combining-routing-strategies",
+                  "guides/use-cases/run-portkey-on-prompts-from-langchain-hub",
+                  "guides/use-cases/smart-fallback-with-model-optimized-prompts",
+                  "guides/use-cases/how-to-use-openai-sdk-with-portkey-prompt-templates",
+                  "guides/use-cases/setup-openai-greater-than-azure-openai-fallback",
+                  "guides/use-cases/fallback-from-sdxl-to-dall-e-3",
+                  "guides/use-cases/comparing-top10-lmsys-models-with-portkey",
+                  "guides/use-cases/metadata-use-cases",
+                  "guides/use-cases/track-costs-using-metadata",
+                  "guides/use-cases/enforcing-limits-and-budgets",
+                  "guides/use-cases/deepseek-r1",
+                  "guides/use-cases/openai-computer-use",
+                  "guides/use-cases/private-mcp-servers"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "groups": [
+              {
+                "group": "Monthly Summary",
+                "pages": [
+                  {
+                    "group": "2025",
+                    "pages": [
+                      "changelog/2025/may",
+                      "changelog/2025/apr",
+                      "changelog/2025/mar",
+                      "changelog/2025/feb",
+                      "changelog/2025/jan"
+                    ]
+                  },
+                  {
+                    "group": "2024",
+                    "pages": [
+                      "changelog/2024/dec",
+                      "changelog/2024/nov",
+                      "changelog/2024/oct"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Enterprise Releases",
+                "pages": [
+                  "changelog/enterprise",
+                  "changelog/helm-chart",
+                  "changelog/data-service"
+                ]
+              },
+              {
+                "group": "Product Releases",
+                "pages": [
+                  "changelog/product"
+                ]
+              },
+              {
+                "group": "SDK Releases",
+                "pages": [
+                  "changelog/node-sdk-changelog",
+                  "changelog/python-sdk-changelog"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Help articles",
+            "groups": [
+              {
+                "group": "Articles",
+                "pages": [
+                  "help-center/you-do-not-have-enough-permissions"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "styling": {
+    "codeblocks": "system",
+    "eyebrows": "breadcrumbs"
+  },
+  "logo": {
+    "light": "/images/portkey-PANW-company-logo-positive.png",
+    "dark": "/images/portkey-PANW-company-logo-negative.png"
+  },
+  "api": {
+    "openapi": "https://raw.githubusercontent.com/Portkey-AI/openapi/refs/heads/master/openapi.yaml"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Models",
+        "href": "https://portkey.ai/models"
+      },
+      {
+        "label": "Support",
+        "href": "https://portkey.ai/community"
+      },
+      {
+        "label": "Book Demo",
+        "href": "https://portkey.sh/demo-18"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Sign in",
+      "href": "https://app.portkey.ai/login"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://twitter.com/PortkeyAI",
+      "linkedin": "https://www.linkedin.com/company/portkey-ai/",
+      "discord": "https://portkey.wiki/community",
+      "github": "https://git.new/portkey"
+    },
+    "links": [
+      {
+        "header": "For LLMs",
+        "items": [
+          {
+            "label": "llms.txt",
+            "href": "https://portkey.ai/docs/llms.txt"
+          },
+          {
+            "label": "llms-full.txt",
+            "href": "https://portkey.ai/docs/llms-full.txt"
+          }
+        ]
+      },
+      {
+        "header": "Products",
+        "items": [
+          {
+            "label": "Observability",
+            "href": "https://portkey.ai/features/observability"
+          },
+          {
+            "label": "AI Gateway",
+            "href": "https://portkey.ai/features/ai-gateway"
+          },
+          {
+            "label": "Guardrails",
+            "href": "https://portkey.ai/features/guardrails"
+          },
+          {
+            "label": "Prompt Management",
+            "href": "https://portkey.ai/features/prompt-management"
+          },
+          {
+            "label": "Agents",
+            "href": "https://portkey.ai/features/agents"
+          },
+          {
+            "label": "MCP Gateway",
+            "href": "https://portkey.ai/docs/product/mcp-gateway"
+          },
+          {
+            "label": "Security",
+            "href": "https://portkey.ai/features/security-and-compliance"
+          },
+          {
+            "label": "Auto-Instrumentation",
+            "href": "https://portkey.ai/features/auto-instrumentation"
+          }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          {
+            "label": "API Status",
+            "href": "https://status.portkey.ai/"
+          },
+          {
+            "label": "Helm Charts",
+            "href": "https://github.com/portkey-ai/helm"
+          },
+          {
+            "label": "AI Grants Finder",
+            "href": "https://grantsfinder.portkey.ai/"
+          },
+          {
+            "label": "Events Calendar",
+            "href": "https://lu.ma/portkey"
+          },
+          {
+            "label": "Support Forum",
+            "href": "https://portkey.wiki/community"
+          },
+          {
+            "label": "Blog",
+            "href": "https://portkey.ai/blog"
+          },
+          {
+            "label": "Error Library",
+            "href": "https://portkey.ai/error-library"
+          },
+          {
+            "label": "Models & Pricing",
+            "href": "https://portkey.ai/models"
+          }
+        ]
+      },
+      {
+        "header": "Company",
+        "items": [
+          {
+            "label": "Pricing",
+            "href": "https://portkey.ai/pricing"
+          },
+          {
+            "label": "Compliances",
+            "href": "https://trust.portkey.ai/"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://portkey.ai/privacy-policy"
+          },
+          {
+            "label": "Terms of Service",
+            "href": "https://portkey.ai/terms"
+          },
+          {
+            "label": "DPA",
+            "href": "https://portkey.ai/dpa"
+          },
+          {
+            "label": "Cookie Policy",
+            "href": "https://portkey.ai/cookie-policy"
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-JJMXYE4DRL"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/integrations/observability-integrations",
+      "destination": "/product/observability/opentelemetry/list-of-supported-otel-instrumenters"
+    },
+    {
+      "source": "/integrations/tracing-providers",
+      "destination": "/product/observability/opentelemetry/list-of-supported-otel-instrumenters"
+    },
+    {
+      "source": "/changelog/enterprise/oct-24",
+      "destination": "/changelog/enterprise"
+    },
+    {
+      "source": "/changelog/product/oct-24",
+      "destination": "/changelog/2024/oct"
+    },
+    {
+      "source": "/api-reference",
+      "destination": "/api-reference/inference-api"
+    },
+    {
+      "source": "/api-reference/introduction",
+      "destination": "/api-reference/inference-api/introduction"
+    },
+    {
+      "source": "/api-reference/authentication",
+      "destination": "/api-reference/inference-api/authentication"
+    },
+    {
+      "source": "/api-reference/headers",
+      "destination": "/api-reference/inference-api/headers"
+    },
+    {
+      "source": "/api-reference/config-object",
+      "destination": "/api-reference/inference-api/config-object"
+    },
+    {
+      "source": "/api-reference/portkey-sdk-client",
+      "destination": "/api-reference/sdk"
+    },
+    {
+      "source": "/provider-endpoints/supported-providers",
+      "destination": "/api-reference/inference-api/supported-providers"
+    },
+    {
+      "source": "/api-reference/response-schema",
+      "destination": "/api-reference/inference-api/response-schema"
+    },
+    {
+      "source": "/provider-endpoints",
+      "destination": "/api-reference/inference-api"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants/create-assistant",
+      "destination": "/api-reference/inference-api/assistants-api/assistants/create-assistant"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants/delete-assistant",
+      "destination": "/api-reference/inference-api/assistants-api/assistants/delete-assistant"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants/list-assistants",
+      "destination": "/api-reference/inference-api/assistants-api/assistants/list-assistants"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants/modify-assistant",
+      "destination": "/api-reference/inference-api/assistants-api/assistants/modify-assistant"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants/retrieve-assistant",
+      "destination": "/api-reference/inference-api/assistants-api/assistants/retrieve-assistant"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/assistants",
+      "destination": "/api-reference/inference-api/assistants-api/assistants"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages/create-message",
+      "destination": "/api-reference/inference-api/assistants-api/messages/create-message"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages/delete-message",
+      "destination": "/api-reference/inference-api/assistants-api/messages/delete-message"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages/list-messages",
+      "destination": "/api-reference/inference-api/assistants-api/messages/list-messages"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages/modify-message",
+      "destination": "/api-reference/inference-api/assistants-api/messages/modify-message"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages/retrieve-message",
+      "destination": "/api-reference/inference-api/assistants-api/messages/retrieve-message"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/messages",
+      "destination": "/api-reference/inference-api/assistants-api/messages"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/run-steps/list-run-steps",
+      "destination": "/api-reference/inference-api/assistants-api/run-steps/list-run-steps"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/run-steps/retrieve-run-steps",
+      "destination": "/api-reference/inference-api/assistants-api/run-steps/retrieve-run-steps"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/run-steps",
+      "destination": "/api-reference/inference-api/assistants-api/run-steps"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/cancel-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/cancel-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/create-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/create-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/create-thread-and-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/create-thread-and-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/list-runs",
+      "destination": "/api-reference/inference-api/assistants-api/runs/list-runs"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/modify-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/modify-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/retrieve-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/retrieve-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs/submit-tool-outputs-to-run",
+      "destination": "/api-reference/inference-api/assistants-api/runs/submit-tool-outputs-to-run"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/runs",
+      "destination": "/api-reference/inference-api/assistants-api/runs"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/threads/create-thread",
+      "destination": "/api-reference/inference-api/assistants-api/threads/create-thread"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/threads/delete-thread",
+      "destination": "/api-reference/inference-api/assistants-api/threads/delete-thread"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/threads/modify-thread",
+      "destination": "/api-reference/inference-api/assistants-api/threads/modify-thread"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/threads/retrieve-thread",
+      "destination": "/api-reference/inference-api/assistants-api/threads/retrieve-thread"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api/threads",
+      "destination": "/api-reference/inference-api/assistants-api/threads"
+    },
+    {
+      "source": "/provider-endpoints/assistants-api",
+      "destination": "/api-reference/inference-api/assistants-api"
+    },
+    {
+      "source": "/provider-endpoints/audio/create-speech",
+      "destination": "/api-reference/inference-api/audio/create-speech"
+    },
+    {
+      "source": "/provider-endpoints/audio/create-transcription",
+      "destination": "/api-reference/inference-api/audio/create-transcription"
+    },
+    {
+      "source": "/provider-endpoints/audio/create-translation",
+      "destination": "/api-reference/inference-api/audio/create-translation"
+    },
+    {
+      "source": "/provider-endpoints/audio",
+      "destination": "/api-reference/inference-api/audio"
+    },
+    {
+      "source": "/provider-endpoints/batch/cancel-batch",
+      "destination": "/api-reference/inference-api/batch/cancel-batch"
+    },
+    {
+      "source": "/provider-endpoints/batch/create-batch",
+      "destination": "/api-reference/inference-api/batch/create-batch"
+    },
+    {
+      "source": "/provider-endpoints/batch/list-batch",
+      "destination": "/api-reference/inference-api/batch/list-batch"
+    },
+    {
+      "source": "/provider-endpoints/batch/retrieve-batch",
+      "destination": "/api-reference/inference-api/batch/retrieve-batch"
+    },
+    {
+      "source": "/provider-endpoints/batch",
+      "destination": "/api-reference/inference-api/batch"
+    },
+    {
+      "source": "/provider-endpoints/chat",
+      "destination": "/api-reference/inference-api/chat"
+    },
+    {
+      "source": "/provider-endpoints/completions",
+      "destination": "/api-reference/inference-api/completions"
+    },
+    {
+      "source": "/provider-endpoints/embeddings",
+      "destination": "/api-reference/inference-api/embeddings"
+    },
+    {
+      "source": "/provider-endpoints/files/delete-file",
+      "destination": "/api-reference/inference-api/files/delete-file"
+    },
+    {
+      "source": "/provider-endpoints/files/list-files",
+      "destination": "/api-reference/inference-api/files/list-files"
+    },
+    {
+      "source": "/provider-endpoints/files/retrieve-file-content",
+      "destination": "/api-reference/inference-api/files/retrieve-file-content"
+    },
+    {
+      "source": "/provider-endpoints/files/retrieve-file",
+      "destination": "/api-reference/inference-api/files/retrieve-file"
+    },
+    {
+      "source": "/provider-endpoints/files/upload-file",
+      "destination": "/api-reference/inference-api/files/upload-file"
+    },
+    {
+      "source": "/provider-endpoints/files",
+      "destination": "/api-reference/inference-api/files"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/cancel-fine-tuning",
+      "destination": "/api-reference/inference-api/fine-tuning/cancel-fine-tuning"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/create-fine-tuning-job",
+      "destination": "/api-reference/inference-api/fine-tuning/create-fine-tuning-job"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/list-fine-tuning-checkpoints",
+      "destination": "/api-reference/inference-api/fine-tuning/list-fine-tuning-checkpoints"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/list-fine-tuning-events",
+      "destination": "/api-reference/inference-api/fine-tuning/list-fine-tuning-events"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/list-fine-tuning-jobs",
+      "destination": "/api-reference/inference-api/fine-tuning/list-fine-tuning-jobs"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning/retrieve-fine-tuning-job",
+      "destination": "/api-reference/inference-api/fine-tuning/retrieve-fine-tuning-job"
+    },
+    {
+      "source": "/provider-endpoints/fine-tuning",
+      "destination": "/api-reference/inference-api/fine-tuning"
+    },
+    {
+      "source": "/provider-endpoints/gateway-for-other-apis",
+      "destination": "/api-reference/inference-api/gateway-for-other-apis"
+    },
+    {
+      "source": "/provider-endpoints/images/create-image-edit",
+      "destination": "/api-reference/inference-api/images/create-image-edit"
+    },
+    {
+      "source": "/provider-endpoints/images/create-image-variation",
+      "destination": "/api-reference/inference-api/images/create-image-variation"
+    },
+    {
+      "source": "/provider-endpoints/images/create-image",
+      "destination": "/api-reference/inference-api/images/create-image"
+    },
+    {
+      "source": "/provider-endpoints/images",
+      "destination": "/api-reference/inference-api/images"
+    },
+    {
+      "source": "/provider-endpoints/moderations",
+      "destination": "/api-reference/inference-api/moderations"
+    },
+    {
+      "source": "/portkey-endpoints",
+      "destination": "/api-reference/admin-api/control-plane"
+    },
+    {
+      "source": "/portkey-endpoints/admin/user-invites/delete-a-user-invite",
+      "destination": "/api-reference/admin-api/control-plane/user-invites/delete-a-user-invite"
+    },
+    {
+      "source": "/portkey-endpoints/admin/user-invites/invite-a-user",
+      "destination": "/api-reference/admin-api/control-plane/user-invites/invite-a-user"
+    },
+    {
+      "source": "/portkey-endpoints/admin/user-invites/retrieve-all-user-invites",
+      "destination": "/api-reference/admin-api/control-plane/user-invites/retrieve-all-user-invites"
+    },
+    {
+      "source": "/portkey-endpoints/admin/user-invites/retrieve-an-invite",
+      "destination": "/api-reference/admin-api/control-plane/user-invites/retrieve-an-invite"
+    },
+    {
+      "source": "/portkey-endpoints/admin/users/remove-a-user",
+      "destination": "/api-reference/admin-api/control-plane/users/remove-a-user"
+    },
+    {
+      "source": "/portkey-endpoints/admin/users/retrieve-a-user",
+      "destination": "/api-reference/admin-api/control-plane/users/retrieve-a-user"
+    },
+    {
+      "source": "/portkey-endpoints/admin/users/retrieve-all-users",
+      "destination": "/api-reference/admin-api/control-plane/users/retrieve-all-users"
+    },
+    {
+      "source": "/portkey-endpoints/admin/users/update-a-user",
+      "destination": "/api-reference/admin-api/control-plane/users/update-a-user"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspace-members/add-a-workspace-member",
+      "destination": "/api-reference/admin-api/control-plane/workspace-members/add-a-workspace-member"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspace-members/remove-workspace-member",
+      "destination": "/api-reference/admin-api/control-plane/workspace-members/remove-workspace-member"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspace-members/retrieve-a-workspace-member",
+      "destination": "/api-reference/admin-api/control-plane/workspace-members/retrieve-a-workspace-member"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspace-members/retrieve-all-workspace-members",
+      "destination": "/api-reference/admin-api/control-plane/workspace-members/retrieve-all-workspace-members"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspace-members/update-workspace-member",
+      "destination": "/api-reference/admin-api/control-plane/workspace-members/update-workspace-member"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces/create-workspace",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/create-workspace"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces/delete-a-workspace",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/delete-a-workspace"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces/retrieve-a-workspace",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/retrieve-a-workspace"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces/retrieve-all-workspaces",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/retrieve-all-workspaces"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces/update-workspace",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/update-workspace"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-cache-hit-latency-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-latency-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-cache-hit-rate-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-rate-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-cost-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cost-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-error-rate-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-error-rate-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-errors-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-errors-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-feedback-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-feedback-per-ai-models",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-per-ai-models"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-feedback-score-distribution-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-feedback-score-distribution-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-latency-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-latency-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-requests-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-requests-per-user",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-requests-per-user"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-rescued-requests-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-rescued-requests-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-status-code-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-status-code-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-tokens-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-tokens-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-unique-status-code-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-unique-status-code-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-users-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-users-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data/get-weighted-feeback-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-weighted-feeback-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/groups-paginated-data/get-metadata-grouped-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-metadata-grouped-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/groups-paginated-data/get-model-grouped-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-model-grouped-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/groups-paginated-data/get-user-grouped-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-user-grouped-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/summary/get-all-cache-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/summary/get-all-cache-data"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/create-api-key",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/create-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/delete-an-api-key",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/delete-an-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/list-api-keys",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/list-api-keys"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/retrieve-an-api-key",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/retrieve-an-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/update-api-key",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/update-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys/rotate-api-key",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/rotate-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/configs/create-config",
+      "destination": "/api-reference/admin-api/control-plane/configs/create-config"
+    },
+    {
+      "source": "/portkey-endpoints/configs/list-configs",
+      "destination": "/api-reference/admin-api/control-plane/configs/list-configs"
+    },
+    {
+      "source": "/portkey-endpoints/configs/retrieve-config",
+      "destination": "/api-reference/admin-api/control-plane/configs/retrieve-config"
+    },
+    {
+      "source": "/portkey-endpoints/configs/update-config",
+      "destination": "/api-reference/admin-api/control-plane/configs/update-config"
+    },
+    {
+      "source": "/portkey-endpoints/feedback/create-feedback",
+      "destination": "/api-reference/admin-api/data-plane/feedback/create-feedback"
+    },
+    {
+      "source": "/docs/portkey-endpoints/feedback/create-feedback",
+      "destination": "/api-reference/admin-api/data-plane/feedback/create-feedback"
+    },
+    {
+      "source": "/portkey-endpoints/feedback/update-feedback",
+      "destination": "/api-reference/admin-api/data-plane/feedback/update-feedback"
+    },
+    {
+      "source": "/docs/portkey-endpoints/feedback/update-feedback",
+      "destination": "/api-reference/admin-api/data-plane/feedback/update-feedback"
+    },
+    {
+      "source": "/portkey-endpoints/guardrails",
+      "destination": "/api-reference/admin-api/data-plane/guardrails"
+    },
+    {
+      "source": "/docs/portkey-endpoints/logs/insert-a-log",
+      "destination": "/api-reference/admin-api/data-plane/logs/insert-a-log"
+    },
+    {
+      "source": "/portkey-endpoints/logs/insert-a-log",
+      "destination": "/api-reference/admin-api/data-plane/logs/insert-a-log"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/cancel-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/cancel-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/create-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/create-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/download-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/download-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/list-log-exports",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/list-log-exports"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/retrieve-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/retrieve-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/start-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/start-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/logs/log-exports-beta/update-a-log-export",
+      "destination": "/api-reference/admin-api/data-plane/logs/log-exports-beta/update-a-log-export"
+    },
+    {
+      "source": "/portkey-endpoints/prompts/prompt-completion",
+      "destination": "/api-reference/inference-api/prompts/prompt-completion"
+    },
+    {
+      "source": "/portkey-endpoints/prompts/render",
+      "destination": "/api-reference/inference-api/prompts/render"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys/create-virtual-key",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/create-virtual-key"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys/delete-virtual-key",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/delete-virtual-key"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys/list-virtual-keys",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/list-virtual-keys"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys/retrieve-virtual-key",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/retrieve-virtual-key"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys/update-virtual-key",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/update-virtual-key"
+    },
+    {
+      "source": "/product/observability-modern-monitoring-for-llms",
+      "destination": "/product/observability"
+    },
+    {
+      "source": "/product/observability-modern-monitoring-for-llms/:slug*",
+      "destination": "/product/observability/:slug*"
+    },
+    {
+      "source": "/product/guardrails/list-of-guardrail-checks/:slug*",
+      "destination": "/product/guardrails/:slug*"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations",
+      "destination": "/product/ai-gateway"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations/:slug*",
+      "destination": "/product/ai-gateway/:slug*"
+    },
+    {
+      "source": "/welcome/agents",
+      "destination": "/integrations/agents"
+    },
+    {
+      "source": "/welcome/agents/:slug*",
+      "destination": "/integrations/agents/:slug*"
+    },
+    {
+      "source": "/welcome/integration-guides",
+      "destination": "/integrations"
+    },
+    {
+      "source": "/welcome/integration-guides/:slug*",
+      "destination": "/integrations/llms/:slug*"
+    },
+    {
+      "source": "/key-features/prompt-management#versioning-of-prompts",
+      "destination": "/product/prompt-library/prompt-templates#versioning-prompts"
+    },
+    {
+      "source": "/introduction/welcome-to-portkey",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/introduction/getting-started",
+      "destination": "/introduction/make-your-first-request"
+    },
+    {
+      "source": "/introduction/features",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/introduction/portkey-headers",
+      "destination": "/api-reference/inference-api/headers"
+    },
+    {
+      "source": "/portkey-features/ai-gateway",
+      "destination": "/product/ai-gateway"
+    },
+    {
+      "source": "/portkey-features/ai-gateway/:slug*",
+      "destination": "/product/ai-gateway/:slug*"
+    },
+    {
+      "source": "/portkey-features/ai-gateway/configs",
+      "destination": "/product/ai-gateway/configs"
+    },
+    {
+      "source": "/portkey-features/ai-gateway/simple-and-semantic-cache",
+      "destination": "/product/ai-gateway/cache-simple-and-semantic"
+    },
+    {
+      "source": "/portkey-features/ai-gateway/fallbacks-on-llms",
+      "destination": "/product/ai-gateway/fallbacks"
+    },
+    {
+      "source": "/portkey-features/observability",
+      "destination": "/product/observability"
+    },
+    {
+      "source": "/portkey-features/observability/logs-and-analytics",
+      "destination": "/product/observability/logs"
+    },
+    {
+      "source": "/portkey-features/observability/request-tracing",
+      "destination": "/product/observability/traces"
+    },
+    {
+      "source": "/portkey-features/observability/custom-metadata",
+      "destination": "/product/observability/metadata"
+    },
+    {
+      "source": "/portkey-features/model-management",
+      "destination": "/product/prompt-library"
+    },
+    {
+      "source": "/portkey-features/feedback",
+      "destination": "/product/observability/feedback"
+    },
+    {
+      "source": "/portkey-features/security-and-compliance",
+      "destination": "/product/enterprise-offering/security-portkey"
+    },
+    {
+      "source": "/portkey-features/security-and-compliance/virtual-keys",
+      "destination": "/product/ai-gateway/virtual-keys"
+    },
+    {
+      "source": "/portkey-features/continuous-fine-tuning-beta",
+      "destination": "/product/autonomous-fine-tuning"
+    },
+    {
+      "source": "/sdk",
+      "destination": "/api-reference/inference-api/portkey-sdk-client"
+    },
+    {
+      "source": "/sdk/python",
+      "destination": "/api-reference/inference-api/portkey-sdk-client"
+    },
+    {
+      "source": "/sdk/node",
+      "destination": "/api-reference/inference-api/portkey-sdk-client"
+    },
+    {
+      "source": "/integrations",
+      "destination": "/integrations/llms"
+    },
+    {
+      "source": "/integrations/llm-providers",
+      "destination": "/integrations/llms"
+    },
+    {
+      "source": "/integrations/llm-providers/open-ai-sdk",
+      "destination": "/integrations/llms/openai"
+    },
+    {
+      "source": "/integrations/llm-providers/anthropic-sdk",
+      "destination": "/integrations/llms/anthropic"
+    },
+    {
+      "source": "/integrations/llm-providers/whisper",
+      "destination": "/integrations/llms/openai"
+    },
+    {
+      "source": "/integrations/llm-providers/anyscale-llama-2-and-mistral-7b",
+      "destination": "/integrations/llms/anyscale-llama2-mistral-zephyr"
+    },
+    {
+      "source": "/integrations/llm-providers/anyscale-llama-2-and-mistral-7b/fallback-to-llama2-70b-in-llamaindex",
+      "destination": "/integrations/llms/anyscale-llama2-mistral-zephyr"
+    },
+    {
+      "source": "/integrations/llm-providers/cohere",
+      "destination": "/integrations/llms/cohere"
+    },
+    {
+      "source": "/integrations/llamaindex",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integrations/llamaindex/implementing-fallbacks-and-retries",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integrations/llamaindex/implementing-load-balancing",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integrations/llamaindex/implementing-semantic-caching",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integrations/llamaindex/observability",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integrations/langchain",
+      "destination": "/integrations/libraries/langchain-python"
+    },
+    {
+      "source": "/integrations/rest-api",
+      "destination": "/api-reference/inference-api/introduction"
+    },
+    {
+      "source": "/integrations/rest-api/portkey-headers",
+      "destination": "/api-reference/inference-api/headers"
+    },
+    {
+      "source": "/cookbook",
+      "destination": "/guides/getting-started"
+    },
+    {
+      "source": "/cookbook/few-shot-prompting",
+      "destination": "/guides/use-cases/few-shot-prompting"
+    },
+    {
+      "source": "/support-and-faq/why-portkey",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/support-and-faq/why-portkey/observability",
+      "destination": "/product/observability"
+    },
+    {
+      "source": "/support-and-faq/why-portkey/lower-cost-and-latency",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/support-and-faq/why-portkey/improve-llm-success-rate",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/support-and-faq/why-portkey/optimise-generation-quality",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/support-and-faq/why-portkey/hide-pii-from-llms",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/support-and-faq/common-errors-and-resolutions",
+      "destination": "/support/common-errors-and-resolutions"
+    },
+    {
+      "source": "/overview/introduction",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/overview/features-overview",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/getting-started/setup-your-account",
+      "destination": "/introduction/make-your-first-request"
+    },
+    {
+      "source": "/getting-started/quick-integration",
+      "destination": "/introduction/make-your-first-request"
+    },
+    {
+      "source": "/how-portkey-works/portkey-modes",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/how-portkey-works/portkey-headers",
+      "destination": "/api-reference/inference-api/headers"
+    },
+    {
+      "source": "/how-portkey-works/supported-llms",
+      "destination": "/integrations/llms"
+    },
+    {
+      "source": "/key-features/request-caching",
+      "destination": "/product/ai-gateway/cache-simple-and-semantic"
+    },
+    {
+      "source": "/key-features/request-tracing",
+      "destination": "/product/observability/traces"
+    },
+    {
+      "source": "/key-features/automatic-retries",
+      "destination": "/product/ai-gateway/automatic-retries"
+    },
+    {
+      "source": "/key-features/circuit-breaker",
+      "destination": "/product/ai-gateway/circuit-breaker"
+    },
+    {
+      "source": "/key-features/custom-metadata",
+      "destination": "/product/observability/metadata"
+    },
+    {
+      "source": "/key-features/fallbacks-on-llms",
+      "destination": "/product/ai-gateway/fallbacks"
+    },
+    {
+      "source": "/key-features/load-balancing",
+      "destination": "/product/ai-gateway/load-balancing"
+    },
+    {
+      "source": "/key-features/feedback-api",
+      "destination": "/product/observability/feedback"
+    },
+    {
+      "source": "/key-features/logs-and-analytics",
+      "destination": "/product/observability/analytics"
+    },
+    {
+      "source": "/key-features/ai-provider-keys",
+      "destination": "/product/ai-gateway/virtual-keys"
+    },
+    {
+      "source": "/key-features/prompt-management",
+      "destination": "/product/prompt-library"
+    },
+    {
+      "source": "/key-features/prompt-management/few-shot-prompting",
+      "destination": "/guides/use-cases/few-shot-prompting"
+    },
+    {
+      "source": "/integration-guides/open-ai-sdk",
+      "destination": "/integrations/llms/openai"
+    },
+    {
+      "source": "/integration-guides/llamaindex",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integration-guides/llamaindex/implementing-fallbacks-and-retries",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integration-guides/llamaindex/implementing-load-balancing",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integration-guides/llamaindex/implementing-semantic-caching",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integration-guides/llamaindex/observability",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/integration-guides/langchain",
+      "destination": "/integrations/libraries/langchain-python"
+    },
+    {
+      "source": "/integration-guides/cohere",
+      "destination": "/integrations/llms/cohere"
+    },
+    {
+      "source": "/integration-guides/anthropic-sdk",
+      "destination": "/integrations/llms/anthropic"
+    },
+    {
+      "source": "/integration-guides/microsoft-guidance",
+      "destination": "/integrations/llms/suggest-a-new-integration"
+    },
+    {
+      "source": "/integration-guides/rest-api",
+      "destination": "/api-reference/inference-api/introduction"
+    },
+    {
+      "source": "/why-portkey/observability",
+      "destination": "/product/observability"
+    },
+    {
+      "source": "/why-portkey/lower-cost-and-latency",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/why-portkey/improve-llm-success-rate",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/why-portkey/optimise-generation-quality",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/why-portkey/hide-pii-from-llms",
+      "destination": "/introduction/feature-overview"
+    },
+    {
+      "source": "/troubleshooting-and-support/common-errors-and-resolutions",
+      "destination": "/support/common-errors-and-resolutions"
+    },
+    {
+      "source": "/open-source",
+      "destination": "/product/open-source"
+    },
+    {
+      "source": "/open-source/rubeus-by-portkey",
+      "destination": "/product/open-source"
+    },
+    {
+      "source": "/support-and-faq/join-portkey-on-discord",
+      "destination": "/support/developer-forum"
+    },
+    {
+      "source": "/support-and-faq/contacting-support",
+      "destination": "/support/contact-us"
+    },
+    {
+      "source": "/support-and-faq/reporting-issues",
+      "destination": "/support/developer-forum"
+    },
+    {
+      "source": "/troubleshooting-and-support/reporting-issues",
+      "destination": "/support/developer-forum"
+    },
+    {
+      "source": "/troubleshooting-and-support/contacting-support",
+      "destination": "/support/contact-us"
+    },
+    {
+      "source": "/troubleshooting-and-support/join-portkey-on-discord",
+      "destination": "/support/developer-forum"
+    },
+    {
+      "source": "/welcome/what-is-portkey",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/welcome/readme",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/welcome/integration-guides/openai",
+      "destination": "/integrations/llms/openai"
+    },
+    {
+      "source": "/welcome/make-your-first-request",
+      "destination": "/introduction/make-your-first-request"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations/cache-simple-and-semantic",
+      "destination": "/product/ai-gateway/cache-simple-and-semantic"
+    },
+    {
+      "source": "/welcome/integration-guides/langchain-python",
+      "destination": "/integrations/libraries/langchain-python"
+    },
+    {
+      "source": "/welcome/integration-guides/azure-openai",
+      "destination": "/integrations/llms/azure-openai"
+    },
+    {
+      "source": "/api-reference/chat-completions",
+      "destination": "/api-reference/inference-api/chat"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations/virtual-keys",
+      "destination": "/product/ai-gateway/virtual-keys"
+    },
+    {
+      "source": "/welcome/integration-guides/llama-index-python",
+      "destination": "/integrations/libraries/llama-index-python"
+    },
+    {
+      "source": "/welcome/integration-guides/anthropic",
+      "destination": "/integrations/llms/anthropic"
+    },
+    {
+      "source": "/api-reference/gateway-for-other-apis",
+      "destination": "/api-reference/inference-api/gateway-for-other-apis"
+    },
+    {
+      "source": "/welcome/integration-guides/ollama",
+      "destination": "/integrations/llms/ollama"
+    },
+    {
+      "source": "/cookbooks/few-shot-prompting",
+      "destination": "/guides/use-cases/few-shot-prompting"
+    },
+    {
+      "source": "/welcome/integration-guides/gemini",
+      "destination": "/integrations/llms/gemini"
+    },
+    {
+      "source": "product/guardrails/bedrock-guardrials",
+      "destination": "product/guardrails/bedrock-guardrails"
+    },
+    {
+      "source": "/api-reference/prompts",
+      "destination": "/api-reference/inference-api/prompts"
+    },
+    {
+      "source": "/welcome/integration-guides/aws-bedrock",
+      "destination": "/integrations/llms/bedrock/aws-bedrock"
+    },
+    {
+      "source": "/product/prompt-library/retrieve-prompt-templates",
+      "destination": "/api-reference/inference-api/prompts/render"
+    },
+    {
+      "source": "/api-reference/embeddings",
+      "destination": "/api-reference/inference-api/embeddings"
+    },
+    {
+      "source": "/api-reference/prompts/prompt-completion",
+      "destination": "/api-reference/inference-api/prompts/prompt-completion"
+    },
+    {
+      "source": "/api-reference/completions",
+      "destination": "/api-reference/inference-api/completions"
+    },
+    {
+      "source": "/welcome/integration-guides/anyscale-llama2-mistral-zephyr",
+      "destination": "/integrations/llms/anyscale-llama2-mistral-zephyr"
+    },
+    {
+      "source": "/cookbooks/a-b-test-prompts-and-models",
+      "destination": "/guides/getting-started/a-b-test-prompts-and-models"
+    },
+    {
+      "source": "/changelog/portkeys-december-migration",
+      "destination": "/support/portkeys-december-migration"
+    },
+    {
+      "source": "/portkey-endpoints/configs",
+      "destination": "/api-reference/admin-api/control-plane/configs/create-config"
+    },
+    {
+      "source": "/welcome/integration-guides/autogen",
+      "destination": "/integrations/agents/autogen"
+    },
+    {
+      "source": "/api-reference/evals",
+      "destination": "/product/guardrails"
+    },
+    {
+      "source": "/api-reference/feedback",
+      "destination": "/product/observability/feedback"
+    },
+    {
+      "source": "/cookbooks/function-calling",
+      "destination": "/guides/getting-started/function-calling"
+    },
+    {
+      "source": "/portkey-endpoints/virtual-keys",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/create-virtual-key"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations/virtual-keys/budget-limits-enterprise-feature",
+      "destination": "/product/ai-gateway/virtual-keys/budget-limits"
+    },
+    {
+      "source": "/portkey-endpoints/prompts",
+      "destination": "/api-reference/inference-api/prompts"
+    },
+    {
+      "source": "/api-reference/completions-1",
+      "destination": "/api-reference/inference-api/completions"
+    },
+    {
+      "source": "/portkey-endpoints/admin",
+      "destination": "/api-reference/admin-api/control-plane/users/retrieve-a-user"
+    },
+    {
+      "source": "/cookbooks/enforcing-json-schema-with-anyscale-and-together",
+      "destination": "/guides/use-cases/enforcing-json-schema-with-anyscale-and-together"
+    },
+    {
+      "source": "/api-reference/logs",
+      "destination": "/api-reference/admin-api/data-plane/logs/insert-a-log"
+    },
+    {
+      "source": "/cookbooks/emotions-with-gpt-4o",
+      "destination": "/guides/use-cases/emotions-with-gpt-4o"
+    },
+    {
+      "source": "/product/ai-gateway-streamline-llm-integrations/multimodal-capabilities/vision-1",
+      "destination": "/product/ai-gateway/multimodal-capabilities/speech-to-text"
+    },
+    {
+      "source": "/portkey-endpoints/api-keys",
+      "destination": "/api-reference/admin-api/control-plane/api-keys/update-api-key"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/graphs-time-series-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/graphs-time-series-data/get-cache-hit-latency-data"
+    },
+    {
+      "source": "/api-reference/virtual-keys",
+      "destination": "/api-reference/admin-api/control-plane/virtual-keys/create-virtual-key"
+    },
+    {
+      "source": "/guides/practitioners-cookbooks/quickstarts/a-b-test-prompts-and-models",
+      "destination": "/guides/getting-started/a-b-test-prompts-and-models"
+    },
+    {
+      "source": "/portkey-endpoints/logs",
+      "destination": "/api-reference/admin-api/data-plane/logs/insert-a-log"
+    },
+    {
+      "source": "/integrations/llms/openai/structued-outputs",
+      "destination": "/integrations/llms/openai/structured-outputs"
+    },
+    {
+      "source": "/portkey-endpoints/analytics",
+      "destination": "/api-reference/admin-api/control-plane/analytics/summary/get-all-cache-data"
+    },
+    {
+      "source": "/portkey-endpoints/analytics/groups-paginated-data",
+      "destination": "/api-reference/admin-api/control-plane/analytics/groups-paginated-data/get-metadata-grouped-data"
+    },
+    {
+      "source": "/portkey-endpoints/admin/workspaces",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/create-workspace"
+    },
+    {
+      "source": "/product/enterprise-offering/components/log-store/mongodb",
+      "destination": "/integrations/libraries/mongodb"
+    },
+    {
+      "source": "/portkey-docs/introduction/getting-started",
+      "destination": "/introduction/what-is-portkey"
+    },
+    {
+      "source": "/api-reference/admin-api/control-plane/admin/:slug*",
+      "destination": "/api-reference/admin-api/control-plane/:slug*"
+    },
+    {
+      "source": "/integrations/llms/aws-bedrock",
+      "destination": "/integrations/llms/bedrock/aws-bedrock"
+    },
+    {
+      "source": "/product/prompt-library/advanced-prompting-with-json-mode",
+      "destination": "/product/prompt-engineering-studio/prompt-playground"
+    },
+    {
+      "source": "/product/prompt-library/prompt-partials",
+      "destination": "/product/prompt-engineering-studio/prompt-partial"
+    },
+    {
+      "source": "/product/prompt-library/prompt-templates",
+      "destination": "/product/prompt-engineering-studio/prompt-playground"
+    },
+    {
+      "source": "/product/prompt-library/retrieve-prompts",
+      "destination": "/product/prompt-engineering-studio/prompt-api"
+    },
+    {
+      "source": "/product/prompt-library",
+      "destination": "/product/prompt-engineering-studio"
+    },
+    {
+      "source": "/guides/use-cases/build-a-chatbot-using-portkeys-prompt-templates",
+      "destination": "/guides/prompts/build-a-chatbot-using-portkeys-prompt-templates"
+    },
+    {
+      "source": "/integrations/tools/exa",
+      "destination": "/integrations/plugins/exa"
+    },
+    {
+      "source": "/api-reference/inference-api/sdks/supported-sdks",
+      "destination": "/api-reference/sdk/list"
+    },
+    {
+      "source": "/api-reference/inference-api/portkey-sdk-client",
+      "destination": "/api-reference/sdk/python"
+    },
+    {
+      "source": "/api-reference/inference-api/sdks/c-sharp",
+      "destination": "/api-reference/sdk/c-sharp"
+    },
+    {
+      "source": "/product/guardrails/aporia",
+      "destination": "/integrations/guardrails/aporia"
+    },
+    {
+      "source": "/product/guardrails/acuvity",
+      "destination": "/integrations/guardrails/acuvity"
+    },
+    {
+      "source": "/product/guardrails/akto",
+      "destination": "/integrations/guardrails/akto"
+    },
+    {
+      "source": "/product/guardrails/azure-guardrails",
+      "destination": "/integrations/guardrails/azure-guardrails"
+    },
+    {
+      "source": "/product/guardrails/bedrock-guardrails",
+      "destination": "/integrations/guardrails/bedrock-guardrails"
+    },
+    {
+      "source": "/product/guardrails/lasso",
+      "destination": "/integrations/guardrails/lasso"
+    },
+    {
+      "source": "/product/guardrails/mistral",
+      "destination": "/integrations/guardrails/mistral"
+    },
+    {
+      "source": "/product/guardrails/pangea",
+      "destination": "/integrations/guardrails/pangea"
+    },
+    {
+      "source": "/product/guardrails/patronus-ai",
+      "destination": "/integrations/guardrails/patronus-ai"
+    },
+    {
+      "source": "/product/guardrails/pillar",
+      "destination": "/integrations/guardrails/pillar"
+    },
+    {
+      "source": "/product/guardrails/prompt-security",
+      "destination": "/integrations/guardrails/prompt-security"
+    },
+    {
+      "source": "/product/guardrails/qualifire",
+      "destination": "/integrations/guardrails/qualifire"
+    },
+    {
+      "source": "/product/guardrails/bring-your-own-guardrails",
+      "destination": "/integrations/guardrails/bring-your-own-guardrails"
+    },
+    {
+      "source": "/product/integrations/models/custom-models",
+      "destination": "/product/model-catalog/custom-models"
+    },
+    {
+      "source": "/pricing/quote",
+      "destination": "/enterprise/pricing"
+    },
+    {
+      "source": "/product/integrations/model-overrides",
+      "destination": "/product/model-catalog/model-overrides"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/aws",
+      "destination": "/self-hosting/hybrid-deployments/aws/eks"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/azure",
+      "destination": "/self-hosting/hybrid-deployments/azure"
+    },
+    {
+      "source": "/self-hosting/hybrid-deployments/azure",
+      "destination": "/self-hosting/hybrid-deployments/azure/aks"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/gcp",
+      "destination": "/self-hosting/hybrid-deployments/gcp"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/cloudflare-workers",
+      "destination": "/"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/f5-app-stack",
+      "destination": "/"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/architecture",
+      "destination": "/self-hosting/hybrid-deployments/architecture"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments/prometheus-metrics",
+      "destination": "/self-hosting/prometheus-metrics"
+    },
+    {
+      "source": "/product/enterprise-offering/cloud-marketplace/aws",
+      "destination": "/self-hosting/hybrid-deployments/aws/marketplace"
+    },
+    {
+      "source": "/enterprise/customer-support-portal",
+      "destination": "/enterprise/customer-support/portal"
+    },
+    {
+      "source": "/product/mcp",
+      "destination": "/product/mcp-gateway"
+    },
+    {
+      "source": "/features/mcp",
+      "destination": "/product/mcp-gateway"
+    },
+    {
+      "source": "/product/mcp-gateway/architecture",
+      "destination": "/product/mcp-gateway"
+    },
+    {
+      "source": "/product/mcp-gateway/deployment",
+      "destination": "/product/mcp-gateway/quickstart"
+    },
+    {
+      "source": "/product/mcp-gateway/mcp-hub",
+      "destination": "/product/mcp-gateway/mcp-registry"
+    },
+    {
+      "source": "/product/mcp-gateway/mcp-clients",
+      "destination": "/product/mcp-gateway/using-mcp-servers"
+    },
+    {
+      "source": "/integrations/llms/instructor",
+      "destination": "/integrations/libraries/instructor"
+    },
+    {
+      "source": "/integrations/llms/promptfoo",
+      "destination": "/integrations/libraries/promptfoo"
+    },
+    {
+      "source": "/integrations/libraries/openwebui-portkey-pipe.py",
+      "destination": "https://raw.githubusercontent.com/Portkey-AI/docs-core/refs/heads/main/integrations/libraries/openwebui-portkey-pipe.py"
+    },
+    {
+      "source": "/api-reference/admin-api/control-plane/admin/workspaces/create-workspace",
+      "destination": "/api-reference/admin-api/control-plane/workspaces/create-workspace"
+    },
+    {
+      "source": "/api-reference/admin-api/control-plane/admin/user-invites/resend-a-user-invite",
+      "destination": "/api-reference/admin-api/control-plane/user-invites/resend-a-user-invite"
+    },
+    {
+      "source": "/integrations/llms/openai/product/ai-gateway/remote-mcp",
+      "destination": "/product/ai-gateway/remote-mcp"
+    },
+    {
+      "source": "/integrations/llms/product/ai-gateway/remote-mcp",
+      "destination": "/product/ai-gateway/remote-mcp"
+    },
+    {
+      "source": "/product/guardrails/list-of-guardrail-checks/bring-your-own-guardrails",
+      "destination": "/integrations/guardrails/bring-your-own-guardrails"
+    },
+    {
+      "source": "/product/enterprise-offering/private-cloud-deployments",
+      "destination": "/self-hosting/hybrid-deployments"
+    },
+    {
+      "source": "/docs/:slug*",
+      "destination": "/:slug*"
+    },
+    {
+      "source": "/docs/docs/:slug*",
+      "destination": "/:slug*"
+    },
+    {
+      "source": "/docs/integrations/llms/openai/remote-mcp",
+      "destination": "/product/ai-gateway/remote-mcp"
+    },
+    {
+      "source": "/docs/integrations/llms/openai/product/ai-gateway/remote-mcp",
+      "destination": "/product/ai-gateway/remote-mcp"
+    },
+    {
+      "source": "/docs/integrations/llms/product/ai-gateway/remote-mcp",
+      "destination": "/product/ai-gateway/remote-mcp"
+    },
+    {
+      "source": "/docs/integrations/llms/instructor",
+      "destination": "/integrations/libraries/instructor"
+    },
+    {
+      "source": "/docs/integrations/llms/promptfoo",
+      "destination": "/integrations/libraries/promptfoo"
+    },
+    {
+      "source": "/welcome/integration-guides/instructor",
+      "destination": "/integrations/libraries/instructor"
+    },
+    {
+      "source": "/welcome/integration-guides/promptfoo",
+      "destination": "/integrations/libraries/promptfoo"
+    },
+    {
+      "source": "/docs/welcome/integration-guides/instructor",
+      "destination": "/integrations/libraries/instructor"
+    },
+    {
+      "source": "/docs/welcome/integration-guides/promptfoo",
+      "destination": "/integrations/libraries/promptfoo"
+    },
+    {
+      "source": "/docs/integrations/libraries/openwebui-portkey-pipe.py",
+      "destination": "https://raw.githubusercontent.com/Portkey-AI/docs-core/refs/heads/main/integrations/libraries/openwebui-portkey-pipe.py"
+    },
+    {
+      "source": "/docs/product/guardrails/list-of-guardrail-checks/bring-your-own-guardrails",
+      "destination": "/integrations/guardrails/bring-your-own-guardrails"
+    },
+    {
+      "source": "/docs/product/enterprise-offering/private-cloud-deployments",
+      "destination": "/self-hosting/hybrid-deployments"
+    },
+    {
+      "source": "/product/ai-gateway/multimodal-capabilities/parallel-function-calling",
+      "destination": "/guides/getting-started/function-calling"
+    },
+    {
+      "source": "/docs/product/ai-gateway/multimodal-capabilities/parallel-function-calling",
+      "destination": "/guides/getting-started/function-calling"
+    },
+    {
+      "source": "/docs/docs/api-reference/introduction",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/docs/docs",
+      "destination": "/"
+    },
+    {
+      "source": "/models",
+      "destination": "https://portkey.ai/models"
+    },
+    {
+      "source": "/models?ref=portkey.ai",
+      "destination": "https://portkey.ai/models"
+    },
+    {
+      "source": "/models?utm_source=portkey-docs&utm_medium=footer&utm_campaign=models",
+      "destination": "https://portkey.ai/models"
+    },
+    {
+      "source": "/rankings?ref=portkey.ai",
+      "destination": "https://portkey.ai/rankings"
+    },
+    {
+      "source": "/demo?ref=portkey.ai",
+      "destination": "https://portkey.ai/book-a-demo"
+    }
+  ],
+  "seo": {
+    "metatags": {
+      "og:type": "website",
+      "og:site_name": "Portkey AI Gateway Docs"
+    },
+    "indexing": "navigable"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "metadata": {
+    "timestamp": true
+  }
+}

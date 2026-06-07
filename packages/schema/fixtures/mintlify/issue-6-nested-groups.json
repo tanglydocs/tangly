@@ -1,0 +1,52 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "Poultry Docs",
+  "colors": { "primary": "#16A34A", "light": "#4ADE80", "dark": "#15803D" },
+  "favicon": "/favicon.ico",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          { "group": "Getting Started", "pages": ["index", "quickstart"] },
+          {
+            "group": "Operations",
+            "groups": [
+              { "group": "Feeding", "pages": ["ops/feeding"] },
+              { "group": "Housing", "pages": ["ops/housing"] }
+            ]
+          },
+          { "group": "Reference" }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "openapi.json",
+        "groups": [{ "group": "Endpoints", "pages": ["api/birds"] }]
+      }
+    ]
+  },
+  "api": {
+    "playground": { "display": "simple", "proxy": false },
+    "mdx": { "auth": { "method": "cobo", "name": "X-API-Key" } }
+  },
+  "appearance": { "default": "system" },
+  "banner": {
+    "content": "Heads up: schema migration in progress.",
+    "type": "critical",
+    "color": { "light": "#B91C1C", "dark": "#FCA5A5" }
+  },
+  "errors": {
+    "404": { "redirect": false, "title": "Lost the flock", "description": "That page flew the coop." }
+  },
+  "icons": { "library": "tabler" },
+  "background": {
+    "image": { "light": "/bg-light.png", "dark": "/bg-dark.png" }
+  },
+  "styling": { "codeblocks": { "theme": "dracula" } },
+  "fonts": { "family": "Inter", "weight": 500 },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
+  }
+}

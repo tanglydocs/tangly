@@ -90,13 +90,15 @@ interface SidebarBuildCtx extends ResolveOptions {
 }
 
 function buildSidebar(
-  nodes: NavNode[],
+  // `pages` is optional on Mintlify groups/tabs (see issue #6), so callers may
+  // pass `undefined` — treat it as an empty child list rather than throwing.
+  nodes: NavNode[] | undefined,
   ctx: SidebarBuildCtx,
   warnings: ManifestWarning[],
   collectedSlugs: Set<string>,
 ): SidebarItem[] {
   const out: SidebarItem[] = [];
-  for (const node of nodes) {
+  for (const node of nodes ?? []) {
     if (isString(node)) {
       // `foo/index` and `foo` resolve to the same page. Astro's content
       // collection emits `foo` as the entry id; normalize so docs.json

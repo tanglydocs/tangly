@@ -47,7 +47,10 @@ const NavLanguageBase = z.object({
 
 export const NavGroupSchema: z.ZodType<NavGroup> = z.lazy(() =>
   NavGroupBase.extend({
-    pages: z.array(NavNodeSchema),
+    // Mintlify groups may omit `pages` (a group that only nests other groups,
+    // or is driven by `openapi`/`asyncapi`). Requiring `pages` rejected real
+    // configs — see issue #6 (`navigation.tabs[].groups[].pages` undefined).
+    pages: z.array(NavNodeSchema).optional(),
   }),
 );
 
@@ -120,7 +123,7 @@ export const NavigationSchema = z.object({
 });
 
 export type NavGroup = z.output<typeof NavGroupBase> & {
-  pages: NavNode[];
+  pages?: NavNode[];
 };
 export type NavAnchor = z.output<typeof NavAnchorBase> & {
   pages?: NavNode[];

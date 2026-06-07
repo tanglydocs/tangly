@@ -92,6 +92,78 @@ describe("DocsJsonSchema", () => {
   });
 });
 
+// Regression coverage for Mintlify-compat gaps reported in issue #6: real
+// `docs.json` configs that strict parsing rejected. Each shape below is taken
+// straight from Mintlify's published schema (mintlify.com/docs.json).
+describe("Mintlify compat (issue #6)", () => {
+  const base = { name: "Test", navigation: { pages: ["index"] } } as const;
+  const ok = (extra: Record<string, unknown>) =>
+    expect(safeParseDocsJson({ ...base, ...extra }).success).toBe(true);
+
+  test("nav group may omit pages (group nests only other groups)", () => {
+    ok({
+      navigation: {
+        tabs: [
+          {
+            tab: "Guides",
+            groups: [
+              { group: "With pages", pages: ["a"] },
+              { group: "Reference only" },
+              { group: "Nested", groups: [{ group: "Sub", pages: ["b"] }] },
+            ],
+          },
+        ],
+      },
+    });
+  });
+
+  test("a pages-less group resolves without throwing", () => {
+    // Guards resolve-nav's buildSidebar(undefined) path.
+    const cfg = parseDocsJson({
+      ...base,
+      navigation: { groups: [{ group: "Empty" }, { group: "Full", pages: ["a"] }] },
+    });
+    expect(cfg.navigation.groups).toHaveLength(2);
+  });
+
+  test("banner accepts critical tone and color override", () => {
+    ok({ banner: { content: "hi", type: "critical", color: { light: "#fff", dark: "#000" } } });
+  });
+
+  test("errors.404 accepts title + description", () => {
+    ok({ errors: { "404": { redirect: false, title: "Nope", description: "Gone." } } });
+  });
+
+  test("icons.library accepts tabler", () => {
+    ok({ icons: { library: "tabler" } });
+  });
+
+  test("background.image accepts a light/dark pair", () => {
+    ok({ background: { image: { light: "a.png", dark: "b.png" } } });
+  });
+
+  test("styling.codeblocks accepts a { theme } object", () => {
+    ok({ styling: { codeblocks: { theme: "dracula" } } });
+    ok({ styling: { codeblocks: { theme: { light: "github-light", dark: "github-dark" } } } });
+  });
+
+  test("bare font-face expands to heading + body", () => {
+    const cfg = parseDocsJson({ ...base, fonts: { family: "Inter", weight: 500 } });
+    const fonts = cfg.fonts as { heading?: { family?: string }; body?: { family?: string } };
+    expect(fonts.heading?.family).toBe("Inter");
+    expect(fonts.body?.family).toBe("Inter");
+  });
+
+  test("split { heading, body } fonts still parse unchanged", () => {
+    ok({ fonts: { heading: { family: "Lora" }, body: { family: "Inter" } } });
+  });
+
+  test("api.playground.display normalizes to native mode", () => {
+    const cfg = parseDocsJson({ ...base, api: { playground: { display: "none" } } });
+    expect(cfg.api?.playground?.mode).toBe("hide");
+  });
+});
+
 describe("convertMintToDocs", () => {
   test("migrates a basic mint.json", () => {
     const mint: MintJson = {
