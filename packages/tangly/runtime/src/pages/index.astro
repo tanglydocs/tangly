@@ -1,6 +1,10 @@
 ---
 import { manifest } from "virtual:tangly/manifest";
 import { getCollection } from "astro:content";
+import LoadingSplash from "@tanglydocs/theme-ui/LoadingSplash.astro";
+// Pulls the active theme's `--tangly-*` tokens (resolved by the Tangly
+// integration alias) so the splash matches whatever theme is in use.
+import "@tanglydocs/theme/theme.css";
 
 const entries = await getCollection("docs");
 const firstFromNav = manifest.navigation.tabs[0]?.pages?.[0];
@@ -10,6 +14,14 @@ const firstFromRoot =
 const firstFromDisk = entries[0]?.id;
 
 const target = firstFromNav ?? firstFromRoot ?? firstFromDisk ?? "";
+const targetUrl = `${import.meta.env.BASE_URL}${target}`;
+
+const config = manifest.config;
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+const appearanceDefault = config.appearance?.default ?? "system";
 
 export const prerender = true;
 ---
@@ -17,10 +29,25 @@ export const prerender = true;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content={`0; url=${import.meta.env.BASE_URL}${target}`} />
-    <title>{manifest.config.name}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
+    <link rel="canonical" href={targetUrl} />
+    <link rel="icon" href={favicon} />
+    <title>{config.name}</title>
+    {/* Resolve dark mode before paint so dark users never flash a light splash. */}
+    <style is:inline>html{background:#fafaf7}html.dark{background:#0b0b0f}</style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored
+          ? stored === "dark"
+          : appearanceDefault === "dark" || (appearanceDefault === "system" && sys);
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
   </head>
   <body>
-    <p>Loading <a href={`${import.meta.env.BASE_URL}${target}`}>{manifest.config.name}</a>…</p>
+    <LoadingSplash config={config} />
   </body>
 </html>
