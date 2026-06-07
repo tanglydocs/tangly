@@ -100,7 +100,9 @@ describe("Mintlify compat (issue #6)", () => {
   const ok = (extra: Record<string, unknown>) =>
     expect(safeParseDocsJson({ ...base, ...extra }).success).toBe(true);
 
-  test("nav group may omit pages (group nests only other groups)", () => {
+  test("nav group may omit pages; nested groups go inside pages", () => {
+    // Mintlify nests groups as entries inside `pages` (a group has no `groups`
+    // key); `Reference only` exercises the pages-less case.
     ok({
       navigation: {
         tabs: [
@@ -109,7 +111,7 @@ describe("Mintlify compat (issue #6)", () => {
             groups: [
               { group: "With pages", pages: ["a"] },
               { group: "Reference only" },
-              { group: "Nested", groups: [{ group: "Sub", pages: ["b"] }] },
+              { group: "Nested", pages: [{ group: "Sub", pages: ["b"] }] },
             ],
           },
         ],

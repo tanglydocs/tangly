@@ -12,7 +12,7 @@
           { "group": "Getting Started", "pages": ["index", "quickstart"] },
           {
             "group": "Operations",
-            "groups": [
+            "pages": [
               { "group": "Feeding", "pages": ["ops/feeding"] },
               { "group": "Housing", "pages": ["ops/housing"] }
             ]
