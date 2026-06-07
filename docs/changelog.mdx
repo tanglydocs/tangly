@@ -5,6 +5,21 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.1.6" description="8 Jun 26" tags={["feat","docs"]}>
+  ## Highlights
+
+  - **Version provenance in every command.** `tangly check`, `build`, and `migrate` now stamp the running version into their output, and validation errors print a footer naming the version that produced them. This makes the most common upgrade false alarm self-diagnosing: a stale global install (`npm i -g tangly`) shadowing a freshly-updated local one on `PATH`, where `npm list tangly` reports the new version but the typed `tangly` command still runs the old global. The footer points you straight at `tangly --version`.
+  - **Update notifier.** In an interactive terminal, the CLI checks npm at most once every 12 hours and prints a one-line notice when a newer `tangly` is published, with the upgrade command. It is fail-silent (offline or slow registry: nothing prints), never runs in CI or piped output, and opts out with `TANGLY_NO_UPDATE_CHECK` or `NO_UPDATE_NOTIFIER`.
+
+  Prompted by [@quader864](https://github.com/quader864)'s follow-up on [#6](https://github.com/tanglydocs/tangly/issues/6): the reported errors were a stale global binary, not a schema bug. These changes make that obvious next time.
+
+  ## Changes
+
+  ### Features
+  - feat(cli): stamp running version in output + npm update notifier ([#6](https://github.com/tanglydocs/tangly/issues/6), [`0f437cc`](https://github.com/tanglydocs/tangly/commit/0f437ccc5b3714685bd1d1bf5128c236e1b02d63))
+
+</Update>
+
 <Update label="v0.1.5" description="7 Jun 26" tags={["feat","fix","test"]}>
   ## Highlights
 
