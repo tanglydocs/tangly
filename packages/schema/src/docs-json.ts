@@ -19,9 +19,14 @@ const LogoSchema = z
 
 const NavbarLink = z
   .object({
-    label: z.string(),
+    // Optional for Mintlify social-link shorthand (`{ type: "github", href }`).
+    label: z.string().optional(),
     href: z.string(),
     icon: z.unknown().optional(),
+    /** Social discriminator, e.g. "github" | "discord". */
+    type: z.string().optional(),
+    /** Render as the primary CTA (used by some projects, e.g. bun's docs). */
+    primary: z.boolean().optional(),
   })
   .strict();
 
@@ -174,6 +179,8 @@ const ApiSchema = z
         // try-it-out form's "session" toggle, not as a separate auth mode.
         method: z.enum(["bearer", "basic", "key", "none"]).optional(),
         name: z.string().optional(),
+        /** Prefill value for the playground auth input (legacy Mintlify). */
+        default: z.string().optional(),
       })
       .strict()
       .optional(),
@@ -396,6 +403,8 @@ const ContextualSchema = z
         ]),
       )
       .optional(),
+    /** Where the menu renders: `header` (top-of-page) or `toc`. Default: header. */
+    display: z.enum(["header", "toc"]).optional(),
   })
   .strict()
   .optional();
@@ -442,6 +451,10 @@ const ThumbnailsSchema = z
      * per-page generated cards. Absolute URL or root-relative path.
      */
     image: z.string().optional(),
+    /** Mintlify: render generated thumbnails in `light` or `dark` mode. */
+    appearance: z.enum(["light", "dark"]).optional(),
+    /** Mintlify: font family for generated thumbnail text. */
+    fonts: z.object({ family: z.string().optional() }).loose().optional(),
   })
   .strict()
   .optional();

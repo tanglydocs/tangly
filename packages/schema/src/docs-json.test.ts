@@ -166,6 +166,37 @@ describe("Mintlify compat (issue #6)", () => {
   });
 });
 
+// Gaps surfaced by a wider GitHub corpus (see fixtures/mintlify/*). Each shape
+// is taken from a real published config that previously failed strict parsing.
+describe("Mintlify compat (corpus expansion)", () => {
+  const base = { name: "Test", navigation: { pages: ["index"] } } as const;
+  const ok = (extra: Record<string, unknown>) =>
+    expect(safeParseDocsJson({ ...base, ...extra }).success).toBe(true);
+
+  test("navbar link: social shorthand (type, no label) + primary CTA", () => {
+    ok({
+      navbar: {
+        links: [
+          { type: "github", href: "https://github.com/x" },
+          { label: "Support", href: "/support", primary: true },
+        ],
+      },
+    });
+  });
+
+  test("api.auth.default (playground prefill)", () => {
+    ok({ api: { auth: { method: "key", name: "x-api-key", default: "demo-key" } } });
+  });
+
+  test("contextual.display", () => {
+    ok({ contextual: { options: ["copy"], display: "toc" } });
+  });
+
+  test("thumbnails.appearance + fonts", () => {
+    ok({ thumbnails: { appearance: "dark", fonts: { family: "Open Sans" } } });
+  });
+});
+
 describe("convertMintToDocs", () => {
   test("migrates a basic mint.json", () => {
     const mint: MintJson = {

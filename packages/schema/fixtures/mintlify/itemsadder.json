@@ -1,0 +1,507 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ItemsAdder",
+  "colors": {
+    "primary": "#8d41b6",
+    "light": "#8d41b6",
+    "dark": "#8d41b6"
+  },
+  "background": {
+    "color": {
+      "dark": "#1d1d1d"
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "seo": {
+    "metatags": {
+      "title": "ItemsAdder Wiki",
+      "description": "ItemsAdder is a Minecraft plugin that allows you to add custom items, blocks, and more to your server. This wiki provides documentation, tutorials, and resources for using ItemsAdder effectively.",
+      "keywords": "ItemsAdder, Minecraft, plugin, custom items, custom blocks, wiki"
+    }
+  },
+  "favicon": "/assets/logo.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Wiki",
+        "groups": [
+          {
+            "group": "Information",
+            "pages": [
+              "index",
+              {
+                "group": "Frequently asked questions",
+                "icon": "circle-question",
+                "pages": [
+                  "faq/plugin-doesnt-work",
+                  "faq/identify-why-textures-are-not-shown",
+                  "faq/itemsadder-v4",
+                  "faq/modelengine-vs-itemsadder",
+                  "faq/how-to-download-spigot",
+                  "faq/geyser",
+                  "faq/removing-default-content",
+                  "faq/turkish-computer-errors",
+                  "faq/fill-thirst-mana-bar",
+                  "faq/i-cant-see-emoji-guis-huds-etc.",
+                  "faq/rectangle-character",
+                  "faq/recipes-book-problems",
+                  "faq/player-is-using-a-different-protocol-version",
+                  "faq/kick-flight-on-join",
+                  "faq/glitched-blocks",
+                  "faq/i-removed-blocks-but-keep-saying-that-i-used-all-the-ids",
+                  "faq/i-cant-find-any-mineral-ore",
+                  "faq/block-particles-not-playing",
+                  {
+                    "group": "Bungeecord / Velocity",
+                    "icon": "network-wired",
+                    "pages": [
+                      "faq/bungeecord-velocity/remove-pack-on-server-change",
+                      "faq/bungeecord-velocity/single-resourcepack-bungeecord",
+                      "faq/bungeecord-velocity/single-resourcepack-multiple-server"
+                    ]
+                  },
+                  "faq/cant-extract-the-resourcepack-file",
+                  "faq/slabs-stairs-tridents-elytra-etc.",
+                  "faq/failed-to-load-required-shader-programs",
+                  "faq/armors-textures-not-working-with-shaders-mod",
+                  "faq/armors-animation-and-emission-not-working",
+                  "faq/leather-armor-texture-overwritten",
+                  "faq/armor-glow-outline-bug",
+                  "faq/broken-emote-textures",
+                  "faq/emotes-with-more-joins",
+                  "faq/common-errors",
+                  "faq/jukeboxes-do-not-play-on-join-or-teleport",
+                  "faq/placed-heads-texture-glitched",
+                  "faq/i-see-crisp-textures-far-away",
+                  "faq/cant-write-in-chat-and-cant-move",
+                  "faq/cant-place-itemframe-on-furniture",
+                  "faq/i-cant-remove-furnitures-and-vehicles",
+                  "faq/liquids-issues",
+                  "faq/citizens-npc-doesnt-rotate-head",
+                  "faq/armors-not-working-packsquash"
+                ]
+              },
+              {
+                "group": "Compatibility with other plugins",
+                "icon": "square-check",
+                "pages": [
+                  "compatibility-with-other-plugins/README",
+                  "compatibility-with-other-plugins/not-compatible",
+                  {
+                    "group": "Compatible",
+                    "icon": "check",
+                    "pages": [
+                      "compatibility-with-other-plugins/compatible/cosmeticscore",
+                      "compatibility-with-other-plugins/compatible/rpgmoney",
+                      "compatibility-with-other-plugins/compatible/rpgbank",
+                      "compatibility-with-other-plugins/compatible/epicbackpacks",
+                      "compatibility-with-other-plugins/compatible/wailat",
+                      "compatibility-with-other-plugins/compatible/griefpreventionstickfix",
+                      "compatibility-with-other-plugins/compatible/worldguard-flags",
+                      "compatibility-with-other-plugins/compatible/worldedit",
+                      "compatibility-with-other-plugins/compatible/skinsrestorer",
+                      "compatibility-with-other-plugins/compatible/customcrafting",
+                      "compatibility-with-other-plugins/compatible/craftenhance",
+                      "compatibility-with-other-plugins/compatible/citizens",
+                      "compatibility-with-other-plugins/compatible/bossshop",
+                      "compatibility-with-other-plugins/compatible/spartan-anti-cheat",
+                      "compatibility-with-other-plugins/compatible/hmccosmetics",
+                      "compatibility-with-other-plugins/compatible/rpg-chest-premium",
+                      "compatibility-with-other-plugins/compatible/cluescrolls",
+                      "compatibility-with-other-plugins/compatible/recipe-control",
+                      "compatibility-with-other-plugins/compatible/interactionvisualizer",
+                      "compatibility-with-other-plugins/compatible/additionsplus",
+                      {
+                        "group": "MMOItems",
+                        "pages": [
+                          "compatibility-with-other-plugins/compatible/mmoitems/README",
+                          "compatibility-with-other-plugins/compatible/mmoitems/fix-blocks-problem"
+                        ]
+                      },
+                      "compatibility-with-other-plugins/compatible/executableitems",
+                      "compatibility-with-other-plugins/compatible/executableblocks",
+                      "compatibility-with-other-plugins/compatible/itemframeshops",
+                      "compatibility-with-other-plugins/compatible/authme",
+                      "compatibility-with-other-plugins/compatible/slimefun4",
+                      "compatibility-with-other-plugins/compatible/modelengine",
+                      "compatibility-with-other-plugins/compatible/rpginventory",
+                      "compatibility-with-other-plugins/compatible/deluxemenu",
+                      "compatibility-with-other-plugins/compatible/trmenu",
+                      "compatibility-with-other-plugins/compatible/cmi",
+                      "compatibility-with-other-plugins/compatible/holographic-displays",
+                      "compatibility-with-other-plugins/compatible/decentholograms",
+                      "compatibility-with-other-plugins/compatible/nova",
+                      "compatibility-with-other-plugins/compatible/space",
+                      "compatibility-with-other-plugins/compatible/advancedoregen",
+                      "compatibility-with-other-plugins/compatible/realisticworldgenerator",
+                      "compatibility-with-other-plugins/compatible/hyperstones",
+                      "compatibility-with-other-plugins/compatible/mythicmobs",
+                      "compatibility-with-other-plugins/compatible/ecoenchants",
+                      "compatibility-with-other-plugins/compatible/excellentenchants",
+                      "compatibility-with-other-plugins/compatible/advancedenchantments",
+                      "compatibility-with-other-plugins/compatible/betonquest",
+                      "compatibility-with-other-plugins/compatible/chatcontrol-red",
+                      "compatibility-with-other-plugins/compatible/interactivechat",
+                      "compatibility-with-other-plugins/compatible/banitem",
+                      "compatibility-with-other-plugins/compatible/animatedscoreboard",
+                      "compatibility-with-other-plugins/compatible/scoreboard",
+                      "compatibility-with-other-plugins/compatible/bentobox",
+                      "compatibility-with-other-plugins/compatible/ecomobs",
+                      "compatibility-with-other-plugins/compatible/ecoarmor",
+                      "compatibility-with-other-plugins/compatible/ecoitems",
+                      "compatibility-with-other-plugins/compatible/reforges",
+                      "compatibility-with-other-plugins/compatible/talismans",
+                      "compatibility-with-other-plugins/compatible/stattrackers",
+                      "compatibility-with-other-plugins/compatible/graves",
+                      "compatibility-with-other-plugins/compatible/fancywaystones",
+                      "compatibility-with-other-plugins/compatible/shopgui+",
+                      "compatibility-with-other-plugins/compatible/tab",
+                      "compatibility-with-other-plugins/compatible/mimic",
+                      "compatibility-with-other-plugins/compatible/dailyshop",
+                      "compatibility-with-other-plugins/compatible/itembridge",
+                      "compatibility-with-other-plugins/compatible/ouroboros-mines",
+                      "compatibility-with-other-plugins/compatible/iris",
+                      "compatibility-with-other-plugins/compatible/dimensionsaddons",
+                      "compatibility-with-other-plugins/compatible/ore-regenerator",
+                      "compatibility-with-other-plugins/compatible/ore-regenerator-1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Contribute",
+                "icon": "pen-to-square",
+                "pages": [
+                  "contribute/edit-the-english-wiki",
+                  "contribute/translate-this-wiki",
+                  "contribute/preview-wiki-changes"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Plugin usage",
+            "pages": [
+              "plugin-usage/first-install",
+              {
+                "group": "Beginners",
+                "icon": "hand-wave",
+                "pages": [
+                  "plugin-usage/beginners/video-tutorials",
+                  "plugin-usage/beginners/files-editor",
+                  "plugin-usage/beginners/configs-and-resourcepack",
+                  "plugin-usage/beginners/fast-resourcepack-tips",
+                  "plugin-usage/beginners/sword",
+                  "plugin-usage/beginners/my-first-block",
+                  "plugin-usage/beginners/my-first-bow"
+                ]
+              },
+              {
+                "group": "Resourcepack Hosting",
+                "icon": "file-image",
+                "pages": [
+                  "plugin-usage/resourcepack-hosting/resourcepack-self-hosting",
+                  "plugin-usage/resourcepack-hosting/lobfile-hosting",
+                  "plugin-usage/resourcepack-hosting/resourcepack-on-dropbox",
+                  "plugin-usage/resourcepack-hosting/google-drive",
+                  "plugin-usage/resourcepack-hosting/onedrive",
+                  "plugin-usage/resourcepack-hosting/no-host"
+                ]
+              },
+              {
+                "group": "Adding Content",
+                "icon": "file-plus",
+                "pages": [
+                  {
+                    "group": "Item Properties",
+                    "pages": [
+                      "plugin-usage/adding-content/item-properties/basic",
+                      "plugin-usage/adding-content/item-properties/permission",
+                      "plugin-usage/adding-content/item-properties/resource",
+                      {
+                        "group": "Events",
+                        "icon": "arrow-progress",
+                        "pages": [
+                          "plugin-usage/adding-content/item-properties/events/README",
+                          "plugin-usage/adding-content/item-properties/events/events-list"
+                        ]
+                      },
+                      {
+                        "group": "Actions",
+                        "icon": "bolt",
+                        "pages": [
+                          "plugin-usage/adding-content/item-properties/actions/README",
+                          "plugin-usage/adding-content/item-properties/actions/actions"
+                        ]
+                      },
+                      {
+                        "group": "Behaviours",
+                        "icon": "person-running-fast",
+                        "pages": [
+                          "plugin-usage/adding-content/item-properties/behaviours/README",
+                          "plugin-usage/adding-content/item-properties/behaviours/behaviours-list"
+                        ]
+                      },
+                      "plugin-usage/adding-content/item-properties/templates-and-variants"
+                    ]
+                  },
+                  "plugin-usage/adding-content/consumable",
+                  "plugin-usage/adding-content/block",
+                  {
+                    "group": "Block - Advanced",
+                    "icon": "cube",
+                    "pages": [
+                      "plugin-usage/adding-content/advanced-block-properties/block-2d-icon",
+                      "plugin-usage/adding-content/advanced-block-properties/directional-blocks",
+                      "plugin-usage/adding-content/advanced-block-properties/transparent-block",
+                      "plugin-usage/adding-content/advanced-block-properties/enabling-custom-blocks-sounds",
+                      "plugin-usage/adding-content/advanced-block-properties/enable-disable-custom-blocks-in-worlds",
+                      "plugin-usage/adding-content/advanced-block-properties/manual-editing-blockstates"
+                    ]
+                  },
+                  "plugin-usage/adding-content/bow",
+                  "plugin-usage/adding-content/crossbow",
+                  "plugin-usage/adding-content/fishing-rod-shield-bundle",
+                  {
+                    "group": "Furniture - Simple",
+                    "icon": "lamp-floor",
+                    "pages": [
+                      "plugin-usage/adding-content/furniture/README",
+                      "plugin-usage/adding-content/furniture/furniture-2d-icon",
+                      "plugin-usage/adding-content/furniture/furniture-size",
+                      "plugin-usage/adding-content/furniture/furniture-execute-actions",
+                      "plugin-usage/adding-content/furniture/transparent-furniture",
+                      "plugin-usage/adding-content/furniture/furniture-permissions"
+                    ]
+                  },
+                  "plugin-usage/adding-content/furniture-complex",
+                  "plugin-usage/adding-content/fuel",
+                  "plugin-usage/adding-content/armors",
+                  {
+                    "group": "Armors (old)",
+                    "icon": "helmet-battle",
+                    "pages": [
+                      "plugin-usage/adding-content/armors-old/simple-armor",
+                      "plugin-usage/adding-content/armors-old/textured-armor"
+                    ]
+                  },
+                  "plugin-usage/adding-content/crafting",
+                  "plugin-usage/adding-content/cooking",
+                  "plugin-usage/adding-content/anvil-repair",
+                  "plugin-usage/adding-content/loots",
+                  "plugin-usage/adding-content/worlds-populators",
+                  "plugin-usage/adding-content/trees-and-trees-populators",
+                  "plugin-usage/adding-content/surface-populators",
+                  "plugin-usage/adding-content/cave-decorators",
+                  "plugin-usage/adding-content/font-images",
+                  "plugin-usage/adding-content/font-images-advanced",
+                  "plugin-usage/adding-content/ranks-prefixes",
+                  "plugin-usage/adding-content/emojis",
+                  "plugin-usage/adding-content/adding-sounds",
+                  "plugin-usage/adding-content/jukebox-disc",
+                  "plugin-usage/adding-content/music-disc",
+                  "plugin-usage/adding-content/item-tooltip",
+                  {
+                    "group": "HUDs",
+                    "icon": "crosshairs-simple",
+                    "pages": [
+                      "plugin-usage/adding-content/huds/README",
+                      "plugin-usage/adding-content/huds/frames-hud",
+                      "plugin-usage/adding-content/huds/status-hud",
+                      "plugin-usage/adding-content/huds/custom-hud-advanced",
+                      "plugin-usage/adding-content/huds/trigger-value-change"
+                    ]
+                  },
+                  "plugin-usage/adding-content/guis",
+                  "plugin-usage/adding-content/colored-models",
+                  {
+                    "group": "Fonts",
+                    "icon": "font",
+                    "pages": [
+                      "plugin-usage/adding-content/fonts/method-2",
+                      "plugin-usage/adding-content/fonts/method-1"
+                    ]
+                  },
+                  {
+                    "group": "Player Emotes",
+                    "pages": [
+                      "plugin-usage/adding-content/player-emotes/README",
+                      "plugin-usage/adding-content/player-emotes/animations",
+                      "plugin-usage/adding-content/player-emotes/advanced-properties",
+                      "plugin-usage/adding-content/player-emotes/particles",
+                      "plugin-usage/adding-content/player-emotes/sounds",
+                      {
+                        "group": "Spawning",
+                        "pages": [
+                          "plugin-usage/adding-content/player-emotes/spawning/command",
+                          "plugin-usage/adding-content/player-emotes/spawning/citizens",
+                          "plugin-usage/adding-content/player-emotes/spawning/mythicmobs"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Entities",
+                    "pages": [
+                      "plugin-usage/adding-content/entities/introduction",
+                      "plugin-usage/adding-content/entities/advanced-method",
+                      "plugin-usage/adding-content/entities/animations",
+                      "plugin-usage/adding-content/entities/mount",
+                      "plugin-usage/adding-content/entities/hitbox",
+                      "plugin-usage/adding-content/entities/head",
+                      "plugin-usage/adding-content/entities/hands-equipment",
+                      "plugin-usage/adding-content/entities/sounds",
+                      "plugin-usage/adding-content/entities/particles",
+                      "plugin-usage/adding-content/entities/advanced-settings",
+                      "plugin-usage/adding-content/entities/spawn-egg",
+                      "plugin-usage/adding-content/entities/entity-random-spawn",
+                      "plugin-usage/adding-content/entities/events-and-actions",
+                      {
+                        "group": "Entity Goals",
+                        "pages": [
+                          "plugin-usage/adding-content/entities/entity-goals/README",
+                          "plugin-usage/adding-content/entities/entity-goals/entity-goals-list"
+                        ]
+                      },
+                      "plugin-usage/adding-content/entities/custom-skin",
+                      "plugin-usage/adding-content/entities/citizens",
+                      "plugin-usage/adding-content/entities/mythicmobs"
+                    ]
+                  },
+                  "plugin-usage/adding-content/animated-titles",
+                  "plugin-usage/adding-content/custom-item-nbt",
+                  "plugin-usage/adding-content/animated-3d-items",
+                  {
+                    "group": "Other Items Examples",
+                    "icon": "sword",
+                    "pages": [
+                      "plugin-usage/adding-content/other-items-examples/magic-wand",
+                      "plugin-usage/adding-content/other-items-examples/bundle",
+                      "plugin-usage/adding-content/other-items-examples/custom-arrows"
+                    ]
+                  }
+                ]
+              },
+              "plugin-usage/languages",
+              {
+                "group": "Commands",
+                "icon": "square-terminal",
+                "pages": [
+                  "plugin-usage/commands/README",
+                  "plugin-usage/commands/iaconfig",
+                  "plugin-usage/commands/iarename",
+                  "plugin-usage/commands/iaimage"
+                ]
+              },
+              "plugin-usage/permissions",
+              "plugin-usage/merge-resourcepacks",
+              "plugin-usage/recipes-menu",
+              "plugin-usage/resourcepack-prompt-message",
+              "plugin-usage/text-effects",
+              "plugin-usage/text-formatting",
+              {
+                "group": "Scripting",
+                "icon": "code",
+                "pages": [
+                  "scripting/README",
+                  "scripting/constructs",
+                  "scripting/examples"
+                ]
+              },
+              "items-updater"
+            ]
+          },
+          {
+            "group": "Other",
+            "pages": [
+              "other/resourcepack-protection",
+              "other/custom-player-stats",
+              "other/hide-scoreboard-numbers",
+              "other/loading-screen",
+              "other/bulk-colorize-images",
+              "other/videos-by-users",
+              "other/minecraft-hosting"
+            ]
+          },
+          {
+            "group": "HELP",
+            "pages": [
+              "help/tos"
+            ]
+          },
+          {
+            "group": "Developers",
+            "pages": [
+              {
+                "group": "Java API",
+                "icon": "terminal",
+                "pages": [
+                  "developers/java-api/examples",
+                  "developers/java-api/events",
+                  "developers/java-api/old-api",
+                  "developers/java-api/huds-guis-images-and-more"
+                ]
+              },
+              {
+                "group": "Skript API",
+                "icon": "square-terminal",
+                "pages": [
+                  "developers/skript-api/simple",
+                  "developers/skript-api/expert-users-1"
+                ]
+              },
+              "developers/denizen-api",
+              "developers/branding"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/assets/logo.png",
+    "dark": "/assets/logo.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Donate",
+        "href": "https://donate.devs.beer/",
+        "icon": "heart"
+      },
+      {
+        "label": "Addons",
+        "href": "https://addon.devs.beer/"
+      },
+      {
+        "label": "More Plugins",
+        "href": "https://plugins.devs.beer/"
+      },
+      {
+        "label": "Discord",
+        "href": "https://discord.gg/4dfnpUK",
+        "icon": "discord"
+      }
+    ]
+  },
+  "integrations": {
+    "cookies": {
+      "key": "itemsadder-wiki",
+      "value": "itemsadder-wiki"
+    },
+    "telemetry": {
+      "enabled": false
+    },
+    "osano": {
+      "scriptSource": "https://cmp.osano.com/2sUB2dqwqdkks/8dqwd-dwd86£-4a9b/osano.js"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": false
+    }
+  }
+}

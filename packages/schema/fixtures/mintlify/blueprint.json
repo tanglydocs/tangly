@@ -1,0 +1,693 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "Concrete",
+  "description": "Institutional-grade DeFi vault infrastructure. Deposit once, earn automated risk-adjusted yield across multiple chains.",
+  "colors": {
+    "primary": "#f2e28a",
+    "light": "#7c6c44",
+    "dark": "#0c0c08"
+  },
+  "favicon": "https://media.brand.dev/48744ac6-4d04-4ac2-9417-9d19605ea71e.png",
+  "icons": {
+    "library": "lucide"
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "assistant",
+      "mcp",
+      "add-mcp"
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "how-it-works",
+              "key-concepts"
+            ]
+          },
+          {
+            "group": "Earn Vaults",
+            "pages": [
+              "vaults/overview",
+              "vaults/depositing",
+              "vaults/withdrawals",
+              "vaults/vault-shares",
+              "vaults/nav-and-erate"
+            ]
+          },
+          {
+            "group": "Ecosystem",
+            "pages": [
+              "ecosystem/overview",
+              "ecosystem/supported-chains",
+              "ecosystem/integrations"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "security/overview",
+              "security/audits",
+              "security/monitoring"
+            ]
+          },
+          {
+            "group": "Enterprise",
+            "pages": [
+              "enterprise/overview",
+              "enterprise/assetcx",
+              "enterprise/vault-setup"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Metrics",
+            "pages": [
+              "api-reference/metrics/get-metrics"
+            ]
+          },
+          {
+            "group": "Strategy",
+            "pages": [
+              "api-reference/strategy/get-strategy"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": [
+              "api-reference/vault/get-vault-performance",
+              "api-reference/vault/get-all-vault-performance",
+              "api-reference/vault/get-all-vaults-tvl"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Vaults",
+        "groups": [
+          {
+            "group": "Earn concepts",
+            "pages": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "concepts/earn/vaults/address-whitelist",
+                  "concepts/earn/vaults/deprecation-concept",
+                  "concepts/earn/vaults/dynamic-apy-concept",
+                  "concepts/earn/vaults/multi-address",
+                  "concepts/earn/vaults/permissioned-access-concept",
+                  "concepts/earn/vaults/versions"
+                ]
+              },
+              {
+                "group": "Depositing",
+                "pages": [
+                  "concepts/earn/deposits/disable-concept"
+                ]
+              },
+              {
+                "group": "Withdrawing",
+                "pages": [
+                  "concepts/earn/withdrawals/cancellation",
+                  "concepts/earn/withdrawals/caps-concept",
+                  "concepts/earn/withdrawals/disable-concept",
+                  "concepts/earn/withdrawals/epoch-cycle-concept",
+                  "concepts/earn/withdrawals/overflow-concept",
+                  "concepts/earn/withdrawals/queue-and-delay",
+                  "concepts/earn/withdrawals/queue-position-concept",
+                  "concepts/earn/withdrawals/rc-config-concept"
+                ]
+              },
+              {
+                "group": "Rewards",
+                "pages": [
+                  "concepts/earn/rewards/display"
+                ]
+              },
+              {
+                "group": "Cross-chain",
+                "pages": [
+                  "concepts/earn/cross-chain/bridge-eta",
+                  "concepts/earn/cross-chain/layerzero-messaging",
+                  "concepts/earn/cross-chain/pre-deposit-claim"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Ethereum",
+            "expanded": false,
+            "pages": [
+              {
+                "group": "WBTC Vault",
+                "expanded": false,
+                "pages": [
+                  "public/isolated/isolated-wbtc/overview",
+                  "public/isolated/isolated-wbtc/withdrawing"
+                ]
+              },
+              {
+                "group": "Concrete DeFi USDT",
+                "expanded": false,
+                "pages": [
+                  "public/concrete/defi-finance-usdt/overview",
+                  "public/concrete/defi-finance-usdt/withdrawing"
+                ]
+              },
+              {
+                "group": "WeETH Vault",
+                "expanded": false,
+                "pages": [
+                  "public/concrete/delta-weeth/overview",
+                  "public/concrete/delta-weeth/withdrawing"
+                ]
+              },
+              {
+                "group": "frxUSD+",
+                "expanded": false,
+                "pages": [
+                  "public/frax/frxusd/overview",
+                  "public/frax/frxusd/withdrawing"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Deprecated vaults",
+            "expanded": false,
+            "pages": [
+              {
+                "group": "Arbitrum",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "USDai DEX & MM",
+                    "expanded": false,
+                    "pages": [
+                      "public/usdai/susdai-hidden-o7810bf18729nmhiw'jdew/overview"
+                    ]
+                  },
+                  {
+                    "group": "Arbitrum Drip Vault",
+                    "expanded": false,
+                    "pages": [
+                      "public/isolated/isolated-arbitrum/overview"
+                    ]
+                  },
+                  {
+                    "group": "Theo USDC Arbitrum",
+                    "expanded": false,
+                    "pages": [
+                      "public/theo/theo-usdc-arbitrum/overview",
+                      "public/theo/theo-usdc-arbitrum/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Theo thBILL Arbitrum",
+                    "expanded": false,
+                    "pages": [
+                      "public/theo/theo-thbill-arbitrum/overview",
+                      "public/theo/theo-thbill-arbitrum/withdrawing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Berachain",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Berachain Stables",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/stables/overview"
+                    ]
+                  },
+                  {
+                    "group": "Berachain Ethereum",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/ethereum/overview"
+                    ]
+                  },
+                  {
+                    "group": "Berachain Bitcoin",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/bitcoin/overview",
+                      "public/berachain/bitcoin/depositing"
+                    ]
+                  },
+                  {
+                    "group": "Berachain BERA",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/bera/overview"
+                    ]
+                  },
+                  {
+                    "group": "Berabaddies Earn",
+                    "expanded": false,
+                    "pages": [
+                      "public/berabaddies/earn/overview",
+                      "public/berabaddies/earn/depositing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Ethereum",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Morpho Bitcoin",
+                    "expanded": false,
+                    "pages": [
+                      "public/morpho/btc/overview"
+                    ]
+                  },
+                  {
+                    "group": "Morpho Ethereum",
+                    "expanded": false,
+                    "pages": [
+                      "public/morpho/eth/overview"
+                    ]
+                  },
+                  {
+                    "group": "Morpho USD",
+                    "expanded": false,
+                    "pages": [
+                      "public/morpho/usd/overview"
+                    ]
+                  },
+                  {
+                    "group": "Corn Bitcoin",
+                    "expanded": false,
+                    "pages": [
+                      "public/corn/btc/overview",
+                      "public/corn/btc/depositing"
+                    ]
+                  },
+                  {
+                    "group": "Corn Stables",
+                    "expanded": false,
+                    "pages": [
+                      "public/corn/usdt/overview",
+                      "public/corn/usdt/depositing"
+                    ]
+                  },
+                  {
+                    "group": "Movement Bitcoin",
+                    "expanded": false,
+                    "pages": [
+                      "public/movement/btc/overview",
+                      "public/movement/btc/depositing",
+                      "public/movement/btc/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Movement Ethereum",
+                    "expanded": false,
+                    "pages": [
+                      "public/movement/eth/overview",
+                      "public/movement/eth/depositing",
+                      "public/movement/eth/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Movement Stables",
+                    "expanded": false,
+                    "pages": [
+                      "public/movement/stables/overview",
+                      "public/movement/stables/depositing",
+                      "public/movement/stables/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Bitcoin Bera",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/lombard/overview",
+                      "public/berachain/lombard/depositing",
+                      "public/berachain/lombard/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Ethena Bera",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/ethena/overview",
+                      "public/berachain/ethena/depositing",
+                      "public/berachain/ethena/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Dinero Bera",
+                    "expanded": false,
+                    "pages": [
+                      "public/berachain/dinero/overview",
+                      "public/berachain/dinero/depositing",
+                      "public/berachain/dinero/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Stable Pre-Deposit",
+                    "expanded": false,
+                    "pages": [
+                      "public/isolated/isolated-stable/overview",
+                      "public/isolated/isolated-stable/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Theo USDC",
+                    "expanded": false,
+                    "pages": [
+                      "public/theo/theo-usdc/overview",
+                      "public/theo/theo-usdc/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "sEIGEN",
+                    "expanded": false,
+                    "pages": [
+                      "public/seigen/seigen-vault/overview"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Katana",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Katana AUSD",
+                    "expanded": false,
+                    "pages": [
+                      "public/katana/ausd/overview",
+                      "public/katana/ausd/depositing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Morph",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Morph BGB",
+                    "expanded": false,
+                    "pages": [
+                      "public/morph/bgb/overview"
+                    ]
+                  },
+                  {
+                    "group": "Morph AUSD",
+                    "expanded": false,
+                    "pages": [
+                      "public/morph/ausd/overview"
+                    ]
+                  },
+                  {
+                    "group": "Morph Ethena",
+                    "expanded": false,
+                    "pages": [
+                      "public/morph/ethena/overview"
+                    ]
+                  },
+                  {
+                    "group": "Morph Majors",
+                    "expanded": false,
+                    "pages": [
+                      "public/morph/majors/overview",
+                      "public/morph/majors/depositing"
+                    ]
+                  },
+                  {
+                    "group": "Morph weETH",
+                    "expanded": false,
+                    "pages": [
+                      "public/morph/weeth/overview",
+                      "public/morph/weeth/depositing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Stable",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Stable",
+                    "expanded": false,
+                    "pages": [
+                      "public/stable/usdt/overview",
+                      "public/stable/usdt/withdrawing"
+                    ]
+                  },
+                  {
+                    "group": "Theo thBILL Stable",
+                    "expanded": false,
+                    "pages": [
+                      "public/theo/theo-thbill-stable/overview",
+                      "public/theo/theo-thbill-stable/withdrawing"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "SDK",
+            "pages": [
+              "public/sdk/integrations",
+              "public/sdk/overview",
+              "public/sdk/versioning"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Backend API",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "public/api/index"
+            ]
+          },
+          {
+            "group": "Earn APY",
+            "openapi": {
+              "source": "public/api/specs/earn-apy.json",
+              "directory": "api/earn-apy"
+            }
+          },
+          {
+            "group": "Price Oracle",
+            "openapi": {
+              "source": "public/api/specs/price-oracle-v2.json",
+              "directory": "api/price-oracle-v2"
+            }
+          }
+        ]
+      },
+      {
+        "tab": "Smart Contracts",
+        "groups": [
+          {
+            "group": "Core",
+            "pages": [
+              {
+                "group": "Base",
+                "pages": [
+                  "public/contracts/base/sc-contractidprimitive",
+                  "public/contracts/base/sc-upgradeablevault"
+                ]
+              },
+              {
+                "group": "Factory",
+                "pages": [
+                  "public/contracts/factory/sc-concretefactory",
+                  "public/contracts/factory/sc-vaultproxy"
+                ]
+              },
+              {
+                "group": "Module",
+                "pages": [
+                  "public/contracts/module/sc-allocatemodule"
+                ]
+              },
+              {
+                "group": "Vault",
+                "pages": [
+                  "public/contracts/vault/sc-concreteasyncvaultimpl",
+                  "public/contracts/vault/sc-concretebridgedasyncvaultimpl",
+                  "public/contracts/vault/sc-concretebridgedstandardvaultimpl",
+                  "public/contracts/vault/sc-concretepredepositvaultimpl",
+                  "public/contracts/vault/sc-concretestandardvaultimpl"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Interfaces",
+            "pages": [
+              "public/contracts/core/sc-iallocatemodule",
+              "public/contracts/core/sc-iasyncaccounting",
+              "public/contracts/core/sc-ibaseloopingstrategy",
+              "public/contracts/core/sc-ibasestrategy",
+              "public/contracts/core/sc-iconcreteasyncvaultimpl",
+              "public/contracts/core/sc-iconcretebridgedasyncvaultimpl",
+              "public/contracts/core/sc-iconcretebridgedstandardvaultimpl",
+              "public/contracts/core/sc-iconcretefactory",
+              "public/contracts/core/sc-iconcretepredepositvaultimpl",
+              "public/contracts/core/sc-iconcretestandardvaultimpl",
+              "public/contracts/core/sc-iconcretetokenizedvault",
+              "public/contracts/core/sc-icontractid",
+              "public/contracts/core/sc-idefaultenforcedvaultconfiguration",
+              "public/contracts/core/sc-ifeesplitter",
+              "public/contracts/core/sc-iflashmodule",
+              "public/contracts/core/sc-ihook",
+              "public/contracts/core/sc-ihurdlerateoracle",
+              "public/contracts/core/sc-ilendermodule",
+              "public/contracts/core/sc-ilenderstaging",
+              "public/contracts/core/sc-iloopingprimitive",
+              "public/contracts/core/sc-ipositionhelperbase",
+              "public/contracts/core/sc-ipredepostvaultoapp",
+              "public/contracts/core/sc-istrategytemplate",
+              "public/contracts/core/sc-iswapmodule",
+              "public/contracts/core/sc-iuniswapv4",
+              "public/contracts/core/sc-iupgradeablevault",
+              "public/contracts/core/sc-iuserdepositcaphook",
+              "public/contracts/core/sc-ivaultproxy"
+            ]
+          },
+          {
+            "group": "Oracle",
+            "pages": [
+              "public/contracts/hurdle-rate/sc-aprratehurdleoracle",
+              "public/contracts/hurdle-rate/sc-apyratehurdleoracle",
+              "public/contracts/hurdle-rate/sc-offchainhurdlerateoracle"
+            ]
+          },
+          {
+            "group": "Periphery",
+            "pages": [
+              {
+                "group": "Auxiliary",
+                "pages": [
+                  "public/contracts/auxiliary/sc-feeaccountant",
+                  "public/contracts/auxiliary/sc-flashmoduleaavev3",
+                  "public/contracts/auxiliary/sc-lendermoduleaavev3",
+                  "public/contracts/auxiliary/sc-swapmoduleuniv3",
+                  "public/contracts/auxiliary/sc-swapmoduleuniv4andvaultdeposit",
+                  "public/contracts/auxiliary/sc-twowayfeesplitter"
+                ]
+              },
+              {
+                "group": "Factory",
+                "pages": [
+                  "public/contracts/factory/sc-peripheryfactory"
+                ]
+              },
+              {
+                "group": "Hooks",
+                "pages": [
+                  "public/contracts/hooks/sc-depositlockhook",
+                  "public/contracts/hooks/sc-depositlockwithfeehook",
+                  "public/contracts/hooks/sc-hookcontainer",
+                  "public/contracts/hooks/sc-userdepositcaphook",
+                  "public/contracts/hooks/sc-whitelistuserdeposithook"
+                ]
+              },
+              {
+                "group": "Lenders",
+                "pages": [
+                  "public/contracts/lenders/sc-aavev3lenderadapter"
+                ]
+              },
+              {
+                "group": "Position Helper",
+                "pages": [
+                  "public/contracts/position-helper/sc-positionhelperaavev3",
+                  "public/contracts/position-helper/sc-positionhelperbase",
+                  "public/contracts/position-helper/sc-positionhelpermorpho"
+                ]
+              },
+              {
+                "group": "Predeposit",
+                "pages": [
+                  "public/contracts/predeposit/sc-predepostvaultoapp",
+                  "public/contracts/predeposit/sc-sharedistributor"
+                ]
+              },
+              {
+                "group": "Strategies",
+                "pages": [
+                  "public/contracts/strategies/sc-baseloopingstrategy",
+                  "public/contracts/strategies/sc-basestrategy",
+                  "public/contracts/strategies/sc-concretestandardloopingstrategy",
+                  "public/contracts/strategies/sc-loopingprimitive",
+                  "public/contracts/strategies/sc-multisigstrategy",
+                  "public/contracts/strategies/sc-simplestrategy"
+                ]
+              },
+              {
+                "group": "Traits",
+                "pages": [
+                  "public/contracts/traits/sc-assettraits",
+                  "public/contracts/traits/sc-lendertraits"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Launch App",
+        "href": "https://app.concrete.xyz/earn"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Start Earning",
+      "href": "https://app.concrete.xyz/earn"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/ConcreteXYZ"
+    }
+  }
+}

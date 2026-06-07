@@ -1,0 +1,176 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "SolvaPay Documentation",
+  "colors": {
+    "primary": "#3a3a3a",
+    "light": "#4f4f4f",
+    "dark": "#2b2b2b"
+  },
+  "fonts": {
+    "family": "Inter"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "icon": "rocket",
+            "pages": [
+              "index",
+              "get-started/choose-your-path",
+              "get-started/create-account",
+              "get-started/create-product",
+              "get-started/test-in-sandbox",
+              "get-started/go-live"
+            ]
+          },
+          {
+            "group": "Guides",
+            "icon": "compass",
+            "pages": [
+              "guides/use-agent-skill",
+              "guides/monetize-mcp-server-no-code",
+              "guides/monetize-mcp-server-with-sdk",
+              "guides/add-paywall-to-api-or-app",
+              "guides/add-inline-chat-checkout-react",
+              "guides/manage-account-with-admin-mcp",
+              "guides/handle-webhooks",
+              "mcp-server/testing-auth-and-paywall"
+            ]
+          },
+          {
+            "group": "MCP Pay",
+            "icon": "credit-card",
+            "pages": [
+              "mcp-pay/overview",
+              "mcp-pay/quick-start",
+              "mcp-pay/create-hosted-mcp-pay-product",
+              "mcp-pay/authentication",
+              "mcp-pay/hosted-pages",
+              "mcp-pay/best-practices"
+            ]
+          },
+          {
+            "group": "Plans and billing",
+            "icon": "tags",
+            "pages": [
+              "plans/overview",
+              "plans/billing"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "bell",
+            "pages": [
+              "webhooks"
+            ]
+          },
+          {
+            "group": "Admin MCP Server",
+            "icon": "server",
+            "pages": [
+              "mcp-server/getting-started",
+              "mcp-server/installation",
+              "mcp-server/tools",
+              "mcp-server/examples",
+              "mcp-server/faq"
+            ]
+          },
+          {
+            "group": "Changelog",
+            "icon": "clock-rotate-left",
+            "pages": [
+              "changelog/2026-04-14"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "TypeScript SDK",
+            "icon": "code",
+            "pages": [
+              "sdks/typescript/intro",
+              "sdks/typescript/setup/cli",
+              "sdks/typescript/setup/installation",
+              "sdks/typescript/setup/quick-start",
+              "sdks/typescript/setup/core-concepts",
+              "sdks/typescript/guides/express",
+              "sdks/typescript/guides/nextjs",
+              "sdks/typescript/guides/react",
+              "sdks/typescript/guides/supabase-edge",
+              "sdks/typescript/guides/mcp",
+              "sdks/typescript/guides/mcp-app",
+              "sdks/typescript/guides/custom-auth",
+              "sdks/typescript/guides/usage-events",
+              "sdks/typescript/guides/purchase-management",
+              "sdks/typescript/guides/webhooks",
+              "sdks/typescript/guides/examples"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "icon": "square-terminal",
+        "openapi": [
+          "api-reference/openapi.json"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@solvapay.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "https://app.solvapay.com"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/get-started",
+      "destination": "/"
+    },
+    {
+      "source": "/get-started/index",
+      "destination": "/"
+    }
+  ],
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://solvapay.com",
+      "github": "https://github.com/solvapay",
+      "linkedin": "https://linkedin.com/company/solvapay"
+    }
+  }
+}

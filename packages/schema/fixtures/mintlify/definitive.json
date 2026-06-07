@@ -1,0 +1,103 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Definitive Flash API",
+  "theme": "mint",
+  "colors": {
+    "primary": "#ffc517",
+    "light": "#ffc517",
+    "dark": "#ffc517"
+  },
+  "api": {
+    "openapi": "https://ddp.definitive.fi/v2/flash/openapi.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "auth": {
+      "method": "key",
+      "name": "x-definitive-api-key",
+      "default": "dpka_b8f185b6_0653_49ff_b683_048ec821a2b8"
+    },
+    "examples": {
+      "autogenerate": true,
+      "prefill": true,
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ]
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "cursor"
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "getting-started",
+              "monetizing-your-integration"
+            ]
+          },
+          {
+            "group": "How Flash Works",
+            "pages": [
+              "evm-overview",
+              "solana-overview",
+              "placing-orders",
+              "non-custodial",
+              "security",
+              "faq"
+            ]
+          },
+          {
+            "group": "Specifications",
+            "pages": [
+              "supported-chains",
+              "rate-limits",
+              "order-statuses",
+              "error-codes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "AI Integration",
+        "groups": [
+          {
+            "group": "Agents",
+            "pages": [
+              "for-agents"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "APIs",
+        "groups": [
+          {
+            "group": "Flash",
+            "openapi": "https://ddp.definitive.fi/v2/flash/openapi.json",
+            "pages": [
+              "POST /quote",
+              "POST /order",
+              "GET /orders",
+              "GET /orders/{orderId}",
+              "POST /orders/{orderId}/cancel"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

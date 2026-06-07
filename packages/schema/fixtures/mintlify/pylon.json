@@ -1,0 +1,183 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "Pylon",
+  "description": "The realtime backend framework. Schema, policies, functions, live queries, auth — one binary.",
+  "colors": {
+    "primary": "#8B5CF6",
+    "light": "#A78BFA",
+    "dark": "#7C3AED"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "background": {
+    "color": {
+      "dark": "#0A0A0C",
+      "light": "#FFFFFF"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation",
+              "cloud"
+            ]
+          },
+          {
+            "group": "Core concepts",
+            "pages": [
+              "concepts/entities",
+              "concepts/policies",
+              "concepts/functions",
+              "concepts/live-queries",
+              "concepts/reactive-queries",
+              "concepts/optimistic-updates",
+              "concepts/search"
+            ]
+          },
+          {
+            "group": "SSR",
+            "pages": [
+              "ssr/overview",
+              "ssr/link",
+              "ssr/image",
+              "ssr/styling"
+            ]
+          },
+          {
+            "group": "Auth",
+            "pages": [
+              "auth/overview",
+              "auth/magic-codes",
+              "auth/password",
+              "auth/oauth",
+              "auth/sessions",
+              "auth/trusted-mint",
+              "auth/rbac",
+              "auth/api-keys",
+              "auth/organizations",
+              "auth/sso",
+              "auth/passkeys",
+              "auth/totp",
+              "auth/trusted-devices",
+              "auth/jwt",
+              "auth/captcha",
+              "auth/phone",
+              "auth/siwe",
+              "auth/billing",
+              "auth/email-verification",
+              "auth/account",
+              "auth/scim",
+              "auth/oidc-provider"
+            ]
+          },
+          {
+            "group": "Plugins",
+            "pages": [
+              "plugins/overview",
+              "plugins/stripe",
+              "plugins/feature-flags",
+              "plugins/webhooks",
+              "plugins/security",
+              "plugins/data",
+              "plugins/search-ai",
+              "plugins/integrations",
+              "plugins/writing-your-own"
+            ]
+          },
+          {
+            "group": "Clients",
+            "pages": [
+              "clients/overview",
+              "clients/typescript",
+              "clients/react",
+              "clients/react-native",
+              "clients/next",
+              "clients/swift",
+              "clients/sync",
+              "clients/loro"
+            ]
+          },
+          {
+            "group": "Operations",
+            "pages": [
+              "operations/deploy",
+              "operations/vercel",
+              "operations/cli",
+              "operations/agent-handoff",
+              "operations/sst",
+              "operations/sizing",
+              "operations/scaling",
+              "operations/token-rotation",
+              "operations/incident",
+              "operations/workers-costs"
+            ]
+          },
+          {
+            "group": "Compare",
+            "pages": [
+              "compare/overview",
+              "compare/convex",
+              "compare/supabase",
+              "compare/firebase",
+              "compare/colyseus",
+              "compare/playroom",
+              "compare/nakama"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Examples",
+          "href": "https://github.com/pylonsync/pylon/tree/main/examples",
+          "icon": "code"
+        },
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/pylonsync/pylon",
+          "icon": "github"
+        },
+        {
+          "anchor": "Changelog",
+          "href": "https://github.com/pylonsync/pylon/releases",
+          "icon": "timeline"
+        }
+      ]
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/pylonsync/pylon"
+      },
+      {
+        "label": "Cloud",
+        "href": "https://cloud.pylonsync.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "/quickstart"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/pylonsync/pylon"
+    }
+  }
+}

@@ -39,6 +39,51 @@ const SOURCES = [
   },
   // 180KB config — `metadata.timestamp` boolean, broad API/contextual usage.
   { name: "portkey", url: "https://raw.githubusercontent.com/Portkey-AI/docs-core/main/docs.json" },
+  // Broader corpus from GitHub code search — diverse themes + real-world shapes.
+  // Two are regression anchors for compat gaps they exposed:
+  //   bun        → navbar.links[].primary
+  //   definitive → api.auth.default
+  { name: "bun", url: "https://raw.githubusercontent.com/oven-sh/bun/main/docs/docs.json" },
+  { name: "definitive", url: "https://raw.githubusercontent.com/DefinitiveCo/docs/main/docs.json" },
+  { name: "ngrok", url: "https://raw.githubusercontent.com/ngrok/ngrok-docs/main/docs.json" },
+  {
+    name: "cobo",
+    url: "https://raw.githubusercontent.com/CoboGlobal/developer-site/master/docs.json",
+  },
+  {
+    name: "hyperswitch",
+    url: "https://raw.githubusercontent.com/juspay/hyperswitch/main/api-reference/docs.json",
+  },
+  // almond theme, OpenAPI-heavy (~15 specs).
+  { name: "liara", url: "https://raw.githubusercontent.com/liara-cloud/openapi/main/docs.json" },
+  {
+    name: "blueprint",
+    url: "https://raw.githubusercontent.com/Blueprint-Finance/docs/main/docs.json",
+  }, // luma theme
+  { name: "phiki", url: "https://raw.githubusercontent.com/phikiphp/phiki/2.x/docs/docs.json" }, // willow theme
+  {
+    name: "argus",
+    url: "https://raw.githubusercontent.com/Argus-Labs/world-engine/main/docs/docs.json",
+  }, // maple theme
+  {
+    name: "pylon",
+    url: "https://raw.githubusercontent.com/pylonsync/pylon/main/apps/docs/docs.json",
+  },
+  {
+    name: "tracecat",
+    url: "https://raw.githubusercontent.com/TracecatHQ/tracecat/main/docs/docs.json",
+  }, // aspen theme
+  { name: "heyaikeedo", url: "https://raw.githubusercontent.com/heyaikeedo/docs/main/docs.json" },
+  {
+    name: "neutron",
+    url: "https://raw.githubusercontent.com/neutron-org/neutron-docs/main/docs.json",
+  },
+  {
+    name: "abstract",
+    url: "https://raw.githubusercontent.com/Abstract-Foundation/abstract-docs/main/docs.json",
+  },
+  { name: "solvapay", url: "https://raw.githubusercontent.com/solvapay/docs/main/docs.json" },
+  { name: "itemsadder", url: "https://raw.githubusercontent.com/ItemsAdder/wiki/main/docs.json" },
 ] as const;
 
 mkdirSync(outDir, { recursive: true });

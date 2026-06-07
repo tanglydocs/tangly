@@ -1,0 +1,81 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "willow",
+  "name": "Phiki",
+  "colors": {
+    "light": "#ffffff",
+    "dark": "#000000",
+    "primary": "#000000"
+  },
+  "favicon": "favicon.png",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Quick start",
+        "pages": [
+          "overview",
+          "quick-start-guide",
+          "upgrade-2.0"
+        ]
+      },
+      {
+        "group": "Usage",
+        "pages": [
+          "installation",
+          "highlighting-code",
+          "multi-themes",
+          "caching"
+        ]
+      },
+      {
+        "group": "Extending",
+        "pages": [
+          "custom-grammars",
+          "custom-themes",
+          "custom-extensions"
+        ]
+      },
+      {
+        "group": "Advanced",
+        "pages": [
+          {
+            "group": "Transformers",
+            "pages": [
+              "transformers",
+              "add-classes-transformer"
+            ]
+          },
+          "decorations"
+        ]
+      },
+      {
+        "group": "Integrations",
+        "pages": [
+          "commonmark",
+          "laravel",
+          "statamic"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "available-grammars-and-themes",
+          "textmate-grammars",
+          "websites-using-phiki"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "primary": {
+      "label": "Support via GitHub",
+      "href": "https://github.com/sponsors/ryangjchandler",
+      "type": "button"
+    }
+  },
+  "seo": {
+    "metatags": {
+      "og:image": "https://github.com/phikiphp/phiki/raw/2.x/art/banner.png"
+    }
+  }
+}

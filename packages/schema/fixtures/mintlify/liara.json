@@ -1,0 +1,290 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "Liara OpenAPI Docs",
+  "favicon": {
+    "dark": "/logo.png",
+    "light": "/logo.png"
+  },
+  "logo": {
+    "light": "/logo.png",
+    "dark": "/logo.png"
+  },
+  "colors": {
+    "primary": "#009689",
+    "light": "#00BBA7",
+    "dark": "#009689"
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://docs.liara.ir",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://liara.ir/blog",
+          "icon": "newspaper"
+        }
+      ]
+    },
+    "products": [
+      {
+        "product": "PaaS",
+        "icon": "cloud",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/paas"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/paas.yaml",
+              "directory": "pass"
+            }
+          }
+        ]
+      },
+      {
+        "product": "DBaaS",
+        "icon": "database",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/dbaas"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/dbaas.yaml",
+              "directory": "dbass"
+            }
+          }
+        ]
+      },
+      {
+        "product": "Object Storage",
+        "icon": "bucket",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/object-storage"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/object-storage.yaml",
+              "directory": "object-storage"
+            }
+          }
+        ]
+      },
+      {
+        "product": "DNS",
+        "icon": "globe",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/dns"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "openapi": {
+              "source": "spec/dns.yaml",
+              "directory": "dns"
+            }
+          }
+        ]
+      },
+      {
+        "product": "Mail",
+        "icon": "envelope",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/mail"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/mail.yaml",
+              "directory": "mail"
+            }
+          }
+        ]
+      },
+      {
+        "product": "File Browser",
+        "icon": "folder",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/file-browser"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/file-browser.yaml",
+              "directory": "file-browser"
+            }
+          }
+        ]
+      },
+      {
+        "product": "IaaS",
+        "icon": "server",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/iaas"
+            ]
+          },
+          {
+            "group": "API Endpoints",
+            "icon": "file-code",
+            "openapi": {
+              "source": "spec/Iaas.yaml",
+              "directory": "iaas"
+            }
+          }
+        ]
+      },
+      {
+        "product": "AI",
+        "icon": "brain",
+        "groups": [
+          {
+            "group": "Introduction",
+            "icon": "rocket",
+            "pages": [
+              "pages/ai"
+            ]
+          },
+          {
+            "group": "Chat Completions",
+            "icon": "comments",
+            "openapi": {
+              "source": "spec/ai-chat-completions.yaml",
+              "directory": "ai-chat-completions"
+            }
+          },
+          {
+            "group": "Image Generation",
+            "icon": "image",
+            "openapi": {
+              "source": "spec/ai-image-generation.yaml",
+              "directory": "ai-image-generation"
+            }
+          },
+          {
+            "group": "Embeddings",
+            "icon": "vector-square",
+            "openapi": {
+              "source": "spec/ai-embeddings.yaml",
+              "directory": "ai-embeddings"
+            }
+          },
+          {
+            "group": "Workspaces",
+            "icon": "building",
+            "openapi": {
+              "source": "spec/ai-workspaces.yaml",
+              "directory": "ai-workspaces"
+            }
+          },
+          {
+            "group": "API Keys",
+            "icon": "key",
+            "openapi": {
+              "source": "spec/ai-keys.yaml",
+              "directory": "ai-keys"
+            }
+          },
+          {
+            "group": "Models",
+            "icon": "cubes",
+            "openapi": {
+              "source": "spec/ai-models.yaml",
+              "directory": "ai-models"
+            }
+          },
+          {
+            "group": "Logs",
+            "icon": "scroll",
+            "openapi": {
+              "source": "spec/ai-logs.yaml",
+              "directory": "ai-logs"
+            }
+          },
+          {
+            "group": "Playground",
+            "icon": "gamepad",
+            "openapi": {
+              "source": "spec/ai-playground.yaml",
+              "directory": "ai-playground"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "chatgpt",
+      "perplexity"
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:info@liara.ir"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Console",
+      "href": "https://console.liara.ir"
+    }
+  },
+  "footer": {
+    "socials": {
+      "website": "https://liara.ir",
+      "github": "https://github.com/liara-cloud",
+      "linkedin": "https://linkedin.com/company/liara-cloud",
+      "x": "https://x.com/liara_cloud"
+    }
+  }
+}
