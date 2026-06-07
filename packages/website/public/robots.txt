@@ -1,0 +1,7 @@
+# tangly.dev — open-source documentation framework
+# https://tangly.dev
+
+User-agent: *
+Allow: /
+
+Sitemap: https://tangly.dev/sitemap-index.xml

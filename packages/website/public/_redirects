@@ -1,0 +1,2 @@
+# Conventional /sitemap.xml -> Astro's generated sitemap index.
+/sitemap.xml  /sitemap-index.xml  301
