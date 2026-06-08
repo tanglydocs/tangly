@@ -1,20 +1,12 @@
 # Examples
 
-Local-only test corpora live here; most are gitignored.
+Local-only test corpora and theme demo sites live here. Everything in this folder is
+gitignored; each developer wires up their own.
 
-## Setting up `opennem`
+The theme demo projects (`demo-tang`, `demo-pith`, `demo-pip`, `demo-readable`,
+`demo-geist`, `demo-starter`) are rendered by the dev servers (see the taskmux tasks) for
+visual iteration on each theme.
 
-The Open Electricity (Opennem) docs are our primary parity-testing corpus.
-
-```sh
-# Symlink for local iteration:
-ln -s ~/Projects/Opennem/opennem/docs ./opennem
-
-# Or clone fresh:
-git clone https://github.com/opennem/opennem.git /tmp/opennem
-ln -s /tmp/opennem/docs ./opennem
-```
-
-The path `examples/opennem` is gitignored. Each developer wires their own.
-
-`packages/schema/fixtures/opennem-docs.json` is a vendored snapshot of the corpus's `docs.json` for CI tests — that's the authoritative test artifact, not the symlink.
+For schema parity, vendored real-world `docs.json` snapshots live in
+`packages/schema/fixtures/` and are parsed directly by CI. Those fixtures, not any local
+corpus, are the authoritative test artifacts.

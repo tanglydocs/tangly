@@ -7,14 +7,7 @@ import { isPathSafe, resolveJsonPointer } from "./ref-resolve.js";
 
 describe("DocsJsonSchema", () => {
   test("parses Opennem docs.json", () => {
-    const path = resolve(import.meta.dirname, "../../../examples/opennem/docs.json");
-    let raw: string;
-    try {
-      raw = readFileSync(path, "utf8");
-    } catch {
-      // fall back to bundled fixture path used in CI
-      raw = readFileSync(resolve(import.meta.dirname, "../fixtures/opennem-docs.json"), "utf8");
-    }
+    const raw = readFileSync(resolve(import.meta.dirname, "../fixtures/opennem-docs.json"), "utf8");
     const result = safeParseDocsJson(JSON.parse(raw));
     if (!result.success) {
       console.error(result.error.format());

@@ -43,7 +43,6 @@ playwright-report/
 test-results/
 
 # examples — large external corpora live here untracked
-examples/opennem/
 examples/squirrelscan/
 
 # release
