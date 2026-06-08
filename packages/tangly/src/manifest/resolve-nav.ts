@@ -1,6 +1,7 @@
 import {
   type DocsJson,
   type Frontmatter,
+  type NavAnchor,
   type NavGroup,
   type NavNode,
   type NavTab,
@@ -257,6 +258,30 @@ function slugifyTab(s: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+function groupToItem(
+  g: NavGroup,
+  ctx: SidebarBuildCtx,
+  warnings: ManifestWarning[],
+  collected: Set<string>,
+): SidebarItem {
+  const groupCtx: SidebarBuildCtx = {
+    ...ctx,
+    inheritedTemplate: g.template ?? ctx.inheritedTemplate,
+  };
+  const children = buildSidebar(g.pages, groupCtx, warnings, collected);
+  const item: SidebarItem = { title: g.group, slug: "", isGroup: true, children };
+  if (typeof g.icon === "string") item.icon = g.icon;
+  if (g.tag) item.tag = g.tag;
+  if (g.expanded) item.expanded = true;
+  const groupSpec = openApiSource(g.openapi);
+  if (groupSpec) {
+    item.openapi = groupSpec;
+    const dir = openApiDirectory(g.openapi);
+    if (dir) item.openapiDirectory = dir;
+  }
+  return item;
+}
+
 export function resolveNavigation(opts: ResolveOptions): ResolveResult {
   const warnings: ManifestWarning[] = [];
   const navSlugs = new Set<string>();
@@ -267,62 +292,61 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
   const nav = opts.config.navigation;
   const baseCtx: SidebarBuildCtx = { ...opts, navTemplates };
 
-  if (Array.isArray(nav.tabs)) {
-    for (const t of nav.tabs) {
-      tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
+  // Process one nav container — the top-level navigation, or a default
+  // version/language variant. Handles tabs, anchors-as-nav, groups, and pages.
+  const applyContainer = (c: {
+    tabs?: NavTab[];
+    anchors?: NavAnchor[];
+    groups?: NavGroup[];
+    pages?: NavNode[];
+  }): void => {
+    if (Array.isArray(c.tabs)) {
+      for (const t of c.tabs) tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
     }
-  }
-  // Anchors-as-nav: a top-level anchor can wrap whole tabs (e.g. a single
-  // "Documentation" anchor holding every tab) or carry its own groups/pages.
-  // Surface nested tabs as tabs; an anchor holding groups/pages directly
-  // becomes a tab named after the anchor. (Pure-link anchors → buildAnchors.)
-  if (Array.isArray(nav.anchors)) {
-    for (const a of nav.anchors) {
-      if (Array.isArray(a.tabs)) {
-        for (const t of a.tabs) tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
-      }
-      if (Array.isArray(a.groups) || Array.isArray(a.pages)) {
-        const anchorTab: NavTab = {
-          tab: a.anchor,
-          ...(typeof a.icon === "string" ? { icon: a.icon } : {}),
-          ...(Array.isArray(a.groups) ? { groups: a.groups } : {}),
-          ...(Array.isArray(a.pages) ? { pages: a.pages } : {}),
-        };
-        tabs.push(tabFromNavTab(anchorTab, baseCtx, warnings, navSlugs));
+    // Anchors-as-nav: an anchor can wrap whole tabs (e.g. a single
+    // "Documentation" anchor holding every tab) or carry its own groups/pages
+    // (then it becomes a tab named after the anchor). Pure-link anchors are
+    // surfaced by buildAnchors instead.
+    if (Array.isArray(c.anchors)) {
+      for (const a of c.anchors) {
+        if (Array.isArray(a.tabs)) {
+          for (const t of a.tabs) tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
+        }
+        if (Array.isArray(a.groups) || Array.isArray(a.pages)) {
+          const anchorTab: NavTab = {
+            tab: a.anchor,
+            ...(typeof a.icon === "string" ? { icon: a.icon } : {}),
+            ...(Array.isArray(a.groups) ? { groups: a.groups } : {}),
+            ...(Array.isArray(a.pages) ? { pages: a.pages } : {}),
+          };
+          tabs.push(tabFromNavTab(anchorTab, baseCtx, warnings, navSlugs));
+        }
       }
     }
-  }
-  if (Array.isArray(nav.groups)) {
-    const collected = new Set<string>();
-    for (const g of nav.groups) {
-      const groupCtx: SidebarBuildCtx = {
-        ...baseCtx,
-        inheritedTemplate: g.template ?? baseCtx.inheritedTemplate,
-      };
-      const children = buildSidebar(g.pages, groupCtx, warnings, collected);
-      const item: SidebarItem = {
-        title: g.group,
-        slug: "",
-        isGroup: true,
-        children,
-      };
-      if (typeof g.icon === "string") item.icon = g.icon;
-      if (g.tag) item.tag = g.tag;
-      if (g.expanded) item.expanded = true;
-      const groupSpec = openApiSource(g.openapi);
-      if (groupSpec) {
-        item.openapi = groupSpec;
-        const dir = openApiDirectory(g.openapi);
-        if (dir) item.openapiDirectory = dir;
-      }
-      rootSidebar.push(item);
+    if (Array.isArray(c.groups)) {
+      const collected = new Set<string>();
+      for (const g of c.groups) rootSidebar.push(groupToItem(g, baseCtx, warnings, collected));
+      for (const s of collected) navSlugs.add(s);
     }
-    for (const s of collected) navSlugs.add(s);
-  }
-  if (Array.isArray(nav.pages)) {
-    const collected = new Set<string>();
-    rootSidebar.push(...buildSidebar(nav.pages, baseCtx, warnings, collected));
-    for (const s of collected) navSlugs.add(s);
+    if (Array.isArray(c.pages)) {
+      const collected = new Set<string>();
+      rootSidebar.push(...buildSidebar(c.pages, baseCtx, warnings, collected));
+      for (const s of collected) navSlugs.add(s);
+    }
+  };
+
+  applyContainer(nav);
+
+  // versions / languages: render the default variant's nav inline. The switcher
+  // UI is a separate feature; rendering the default keeps a site from being
+  // entirely orphaned when its whole nav lives under a variant (e.g. a project
+  // whose nav sits under navigation.languages[0]). Default = the entry flagged
+  // `default: true`, else the first.
+  for (const variants of [nav.versions, nav.languages]) {
+    if (Array.isArray(variants) && variants.length > 0) {
+      const def = variants.find((v) => (v as { default?: boolean }).default) ?? variants[0];
+      if (def) applyContainer(def);
+    }
   }
 
   const navigation: ResolvedNavigation = {
