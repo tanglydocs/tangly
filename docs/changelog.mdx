@@ -5,6 +5,34 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.1.7" description="8 Jun 26" tags={["feat","fix","refactor"]}>
+  ## Highlights
+
+  - **Refined code highlighting out of the box.** The default Shiki theme is now Vitesse (`vitesse-light` / `vitesse-dark`), replacing `github-light` / `github-dark`. It reads warmer and more editorial, and the dark background blends with the ink page surface instead of sitting on a mismatched slab. Any [bundled Shiki theme](https://shiki.style/themes) still works via [`code.theme`](/reference/schema#code).
+  - **Branded loading splash.** The root route now shows a full-page splash with your logo (or the site name) over an accent-coloured loader, adopting the active theme's colours and fonts, in place of the old bare "Loading..." text. It works across every theme with no per-theme code.
+  - **Independent, changed-only releases.** Releases now publish only the packages whose source actually changed, at independent versions. This is the first release cut that way: `schema`, `theme-ui`, and `tangly` ship at 0.1.7 while the five leaf themes stay at 0.1.6 and pick up the new shared code through caret ranges.
+
+  Accessibility: secondary ("muted") text now meets WCAG AA contrast in both light and dark.
+
+  ## Changes
+
+  ### Features
+  - feat(runtime): default code highlighting to vitesse ([`a474da0`](https://github.com/tanglydocs/tangly/commit/a474da02ac2d2a0444f6749f56a81ae40bad6ee0))
+  - feat(theme-ui): branded full-page loading splash ([`21f5297`](https://github.com/tanglydocs/tangly/commit/21f5297c84fc159d0ac4b2c45ffd639f7cabe697))
+  - feat(website): robots.txt, OG card, non-redirecting sitemap ([`e38ca9f`](https://github.com/tanglydocs/tangly/commit/e38ca9f532680fea4a4b28092427a2e0e27277bc))
+
+  ### Fixes
+  - fix(theme-ui): raise muted text contrast to WCAG AA ([`a7d9cf3`](https://github.com/tanglydocs/tangly/commit/a7d9cf37794cf2a6df72d9e918502256649c1f1e))
+  - fix(website): a11y label-in-name + alt text, CSP, video demo ([`19ae33b`](https://github.com/tanglydocs/tangly/commit/19ae33bd5af55f9fc2e4c0b5634ebaea30f4f4d0))
+
+  ### Refactors
+  - refactor(schema): host resolveSite to break the theme-ui / tangly cycle ([`6c6945d`](https://github.com/tanglydocs/tangly/commit/6c6945d900626cece1c957a890dd387245233c94))
+
+  ### Build
+  - build(release): publish only changed packages at independent versions ([`4ed8f7c`](https://github.com/tanglydocs/tangly/commit/4ed8f7c0242efbb99df37f760f0d2128570a7827))
+
+</Update>
+
 <Update label="v0.1.6" description="8 Jun 26" tags={["feat","docs"]}>
   ## Highlights
 
