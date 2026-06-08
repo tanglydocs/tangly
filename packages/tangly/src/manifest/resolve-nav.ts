@@ -337,13 +337,17 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
 
   applyContainer(nav);
 
-  // versions / languages: render the default variant's nav inline. The switcher
-  // UI is a separate feature; rendering the default keeps a site from being
-  // entirely orphaned when its whole nav lives under a variant (e.g. a project
-  // whose nav sits under navigation.languages[0]). Default = the entry flagged
-  // `default: true`, else the first.
-  for (const variants of [nav.versions, nav.languages]) {
-    if (Array.isArray(variants) && variants.length > 0) {
+  // versions / languages: when the nav lives entirely under a variant family
+  // (no top-level containers produced anything), render the default variant so
+  // the site isn't orphaned — e.g. a project whose whole nav sits under
+  // navigation.languages[0]. Prefer versions, then languages; never both, which
+  // would concatenate into a doubled sidebar. The switcher UI is a separate
+  // feature. Default = the entry flagged `default: true`, else the first.
+  if (tabs.length === 0 && rootSidebar.length === 0) {
+    const variants =
+      (Array.isArray(nav.versions) && nav.versions.length > 0 ? nav.versions : undefined) ??
+      (Array.isArray(nav.languages) && nav.languages.length > 0 ? nav.languages : undefined);
+    if (variants) {
       const def = variants.find((v) => (v as { default?: boolean }).default) ?? variants[0];
       if (def) applyContainer(def);
     }
