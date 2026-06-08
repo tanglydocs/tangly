@@ -182,7 +182,7 @@ Top-level fields (most common):
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
-| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors + dropdowns render. `versions`/`languages` parse but aren't rendered yet (groups flattened into one sidebar, no switcher). |
+| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors + dropdowns render, including top-level anchors-as-nav (a `navigation.anchors[]` entry wrapping whole tabs/groups). `versions`/`languages` parse but aren't rendered yet (groups flattened into one sidebar, no switcher). |
 | `navbar` | `links[]`, `primary` (button or github) |
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
@@ -254,7 +254,7 @@ Full reference: `docs/guides/authoring/openapi.mdx`.
 
 ## Components (built-in MDX, no import)
 
-All 33 ship Mintlify-compatible names and render unmodified:
+All 34 ship Mintlify-compatible names and render unmodified:
 
 - Callouts: `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger`, `Update`
 - Cards: `Card`, `CardGroup`, `Columns`
@@ -264,7 +264,7 @@ All 33 ship Mintlify-compatible names and render unmodified:
 - Layout: `Frame`, `Accordion` + `AccordionGroup`, `Expandable`
 - API: `ParamField`, `ResponseField`, `RequestExample` (overrides panel tabs by language), `ResponseExample`, `OpenApiEndpoint` (split layout: docs left, sticky playground panel right at xl+), `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
 - Media: `Embed` (cross-page block reuse), `Video` (YouTube/Vimeo/mp4 with lazy iframe), `LightboxImage` (auto-wraps every inline `<img>`)
-- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`
+- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`, `Link` (`href` anchor; internal links get the base prefix, external open in a new tab)
 
 Full prop reference per family: `docs/reference/components/{callouts,cards,code,tabs-and-steps,layout,api,media,text}.mdx`.
 

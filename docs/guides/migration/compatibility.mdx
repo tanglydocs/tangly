@@ -22,7 +22,7 @@ Every Mintlify-shipped top-level field is supported.
 | `logo` | ✅ | Identical. String + `{ light, dark, href }` both supported. |
 | `favicon` | ✅ | String + `{ light, dark }`. |
 | `colors` | ✅ | `primary`, `light`, `dark`, `background`, `anchors` all match. |
-| `navigation` | ⚠️ | Tabs, groups, anchors, dropdowns render with identical recursion. `versions` / `languages` parse (schema-accepted) but aren't rendered yet: their groups are flattened into one sidebar, so a migrated multi-version project shows every version's groups at once instead of a switcher. |
+| `navigation` | ⚠️ | Tabs, groups, dropdowns, and anchors render with identical recursion. Top-level anchors-as-nav (a `navigation.anchors[]` entry that wraps whole `tabs`/`groups`) resolve too. `versions` / `languages` parse (schema-accepted) but aren't rendered yet: their groups are flattened into one sidebar, so a migrated multi-version project shows every version's groups at once instead of a switcher. |
 | `navbar` | ✅ | `links` + `primary` (button + github variants). |
 | `footer` | ✅ | `socials`, `links`. Tangly adds `lastUpdated`, `editUrl`, `repo`. |
 | `redirects` | ✅ | `[{ source, destination, permanent? }]`. |
@@ -122,6 +122,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 |---|---|---|
 | `<Icon>` | ✅ | Lucide. FA aliases for 100+ common Mintlify names, with a PascalCase fallback to any Lucide icon. See [Icons](/reference/schema). |
 | `<Tooltip>` | ✅ | Identical. |
+| `<Link>` | ✅ | `href` anchor; internal links get the base prefix, external open in a new tab. |
 | `<Badge>` | ✅ | Tangly extra. |
 | `<Kbd>` | ✅ | Tangly extra. Auto Cmd→Ctrl on non-mac. |
 | `<Expandable>` | ✅ | Identical. |
