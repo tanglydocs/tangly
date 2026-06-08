@@ -3,22 +3,10 @@ import { Search } from "lucide-astro";
 
 const rows = [
   {
-    label: "Fast dev server",
-    title: "Astro 6 + Vite. HMR under 250ms.",
-    body: 'Cold start under 2s on a hundred pages. <code class="font-mono text-sm text-ink">tangly dev</code> boots fast and stays out of the way.',
-    demo: "fastdev",
-  },
-  {
     label: "Built for agents",
     title: "Every page, also raw Markdown.",
     body: 'Append <code class="font-mono text-sm text-ink">.md</code> to any URL or send <code class="font-mono text-sm text-ink">Accept: text/markdown</code>. About 10× fewer tokens. <code class="font-mono text-sm text-ink">/llms.txt</code> and <code class="font-mono text-sm text-ink">/llms-full.txt</code> ship by default.',
     demo: "md",
-  },
-  {
-    label: "Social cards",
-    title: "Every page unfurls.",
-    body: "A branded 1200×630 Open Graph image per page, generated from its title, theme, and your colors. Links unfurl in Slack, iMessage, and X instead of rendering blank. Previews self-reference and stay out of search.",
-    demo: "og",
   },
   {
     label: "Search",
@@ -27,28 +15,40 @@ const rows = [
     demo: "search",
   },
   {
+    label: "Social cards",
+    title: "Every page unfurls.",
+    body: "A branded 1200×630 Open Graph image per page, generated from its title, theme, and your colors. Links unfurl in Slack, iMessage, and X instead of rendering blank. Previews self-reference and stay out of search.",
+    demo: "og",
+  },
+  {
+    label: "Custom components",
+    title: "Drop an .astro, use it.",
+    body: 'Put a component into <code class="font-mono text-sm text-ink">components/</code>. Use it from MDX. Hot reloads. No registration.',
+    demo: "custom",
+  },
+  {
     label: "Drafts",
     title: "Frontmatter is the CMS.",
     body: 'Mark a page <code class="font-mono text-sm text-ink">draft: true</code>. Hidden in production, visible in <code class="font-mono text-sm text-ink">tangly dev</code>. Ship preview builds with <code class="font-mono text-sm text-ink">--include-drafts</code>.',
     demo: "drafts",
   },
   {
-    label: "Custom components",
-    title: "Drop a .tsx, use it.",
-    body: 'Put a component into <code class="font-mono text-sm text-ink">components/</code>. Use it from MDX. Hot reloads. No registration.',
-    demo: "custom",
-  },
-  {
-    label: "Subpath hosting",
-    title: "Mount under any path.",
-    body: 'Build with <code class="font-mono text-sm text-ink">--base /docs/</code>. All asset paths rewrite. Works behind Caddy, nginx, or a Cloudflare Worker.',
-    demo: "subpath",
+    label: "Readable errors",
+    title: "Config errors you can read.",
+    body: 'When <code class="font-mono text-sm text-ink">docs.json</code> is wrong, <code class="font-mono text-sm text-ink">tangly check</code> names the key, the line, the reason, and the fix. Did-you-mean for typos, rename hints for Mintlify fields.',
+    demo: "configerrors",
   },
   {
     label: "Migrate",
     title: "From Mintlify, in a minute.",
     body: '<code class="font-mono text-sm text-ink">tangly migrate</code> reads <code class="font-mono text-sm text-ink">mint.json</code> and emits a Tangly-shaped <code class="font-mono text-sm text-ink">docs.json</code>. MDX stays untouched.',
     demo: "migrate",
+  },
+  {
+    label: "Subpath hosting",
+    title: "Mount under any path.",
+    body: 'Build with <code class="font-mono text-sm text-ink">--base /docs/</code>. All asset paths rewrite. Works behind Caddy, nginx, or a Cloudflare Worker.',
+    demo: "subpath",
   },
   {
     label: "Eject",
@@ -61,6 +61,12 @@ const rows = [
     title: "Drop a workflow. Done.",
     body: "A 14-line GitHub Actions workflow ships your docs to GitHub Pages on every push. Bun caches resolve in seconds. The Tangly monorepo deploys itself this way.",
     demo: "ci",
+  },
+  {
+    label: "Fast dev",
+    title: "Astro 6 + Vite. HMR under 250ms.",
+    body: 'Cold start under 2s on a hundred pages. <code class="font-mono text-sm text-ink">tangly dev</code> boots fast and stays out of the way.',
+    demo: "fastdev",
   },
 ];
 ---
@@ -153,19 +159,19 @@ const rows = [
                     style="background: rgba(234,88,12,0.05);"
                   >
                     <div class="flex-1 font-sans text-[13px] font-medium text-ink">
-                      OpenAPI <span style="background: rgba(234,88,12,0.20); padding: 0 2px;">— rendered references, schemas, try-it</span>
+                      OpenAPI <span style="background: rgba(234,88,12,0.20); padding: 0 2px;">rendered references, schemas, try-it</span>
                     </div>
                     <div class="font-mono text-[11px] text-mute">/api</div>
                   </div>
                   <div class="flex items-center gap-3 px-4 py-2.5">
                     <div class="flex-1 font-sans text-[13px] text-line-dark">
-                      Migrating from Mintlify <span class="text-mute">— OpenAPI compat notes</span>
+                      Migrating from Mintlify <span class="text-mute">· OpenAPI compat notes</span>
                     </div>
                     <div class="font-mono text-[11px] text-mute">/migrate</div>
                   </div>
                   <div class="flex items-center gap-3 px-4 py-2.5">
                     <div class="flex-1 font-sans text-[13px] text-line-dark">
-                      docs.json reference <span class="text-mute">— openapi field</span>
+                      docs.json reference <span class="text-mute">· openapi field</span>
                     </div>
                     <div class="font-mono text-[11px] text-mute">/reference/docs-json</div>
                   </div>
@@ -181,15 +187,27 @@ const rows = [
                 <div class="text-mute">---</div>
               </div>
             )}
+            {row.demo === "configerrors" && (
+              <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[12.5px] leading-[21px]">
+                <div><span class="text-tang-600">$</span> <span class="text-paper">tangly check</span></div>
+                <div class="text-mute">✗ docs.json: 2 problems</div>
+                <div><span class="text-tang-300">  theme</span> <span class="text-mute">· line 3</span></div>
+                <div class="text-mute">    "mintlify" is not a known theme</div>
+                <div class="text-mute">    → did you mean <span class="text-tang-300">"mint"</span>?</div>
+                <div><span class="text-tang-300">  navigation.tabs[1].pages</span> <span class="text-mute">· line 24</span></div>
+                <div class="text-mute">    expected array, got string</div>
+              </div>
+            )}
             {row.demo === "custom" && (
               <pre class="m-0 max-w-[520px] overflow-x-auto whitespace-pre rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px] text-paper"
-              ><span class="text-mute">// components/PriceTable.tsx</span>
-<span class="text-tang-700">export default</span> <span class="text-tang-300">function</span> PriceTable({`{ tiers }`}) {`{`}
-  <span class="text-tang-700">return</span> {`<`}<span class="text-tang-300">table</span>{`>`} ... {`</`}<span class="text-tang-300">table</span>{`>`}
-{`}`}
+              ><span class="text-mute">// components/Pricing.astro</span>
+<span class="text-tang-700">---</span>
+<span class="text-tang-300">const</span> {`{ tiers } = Astro.props;`}
+<span class="text-tang-700">---</span>
+{`<ul>{tiers.map((t) => <li>{t.name}</li>)}</ul>`}
 
 <span class="text-mute">// pricing.mdx</span>
-<span class="text-tang-300">{`<PriceTable tiers={tiers} />`}</span></pre>
+<span class="text-tang-300">{`<Pricing tiers={tiers} />`}</span></pre>
             )}
             {row.demo === "subpath" && (
               <div class="flex max-w-[520px] flex-col gap-1 rounded-[10px] bg-ink px-4 py-4 font-mono text-[13px] leading-[22px]">

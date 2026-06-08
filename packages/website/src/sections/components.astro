@@ -20,7 +20,7 @@ import CodeGroup from "@tanglydocs/theme-ui/components/CodeGroup.astro";
 import FileTree from "@tanglydocs/theme-ui/components/FileTree.astro";
 import Snippet from "@tanglydocs/theme-ui/components/Snippet.astro";
 import LightboxImage from "@tanglydocs/theme-ui/components/LightboxImage.astro";
-// Embed needs Tangly's manifest virtual module — render a static placeholder.
+// Embed needs Tangly's manifest virtual module, render a static placeholder.
 import ParamField from "@tanglydocs/theme-ui/components/ParamField.astro";
 import ResponseField from "@tanglydocs/theme-ui/components/ResponseField.astro";
 import RequestExample from "@tanglydocs/theme-ui/components/RequestExample.astro";
@@ -32,6 +32,13 @@ import Tooltip from "@tanglydocs/theme-ui/components/Tooltip.astro";
 import GlossaryTerm from "@tanglydocs/theme-ui/components/GlossaryTerm.astro";
 import Expandable from "@tanglydocs/theme-ui/components/Expandable.astro";
 import PackageManager from "@tanglydocs/theme-ui/components/PackageManager.astro";
+import { Code } from "astro:components";
+
+// Real Shiki render for the rendering block (not a screenshot).
+const codeSample = `export async function search(q: string) {
+  const index = await load("/pagefind");
+  return index.search(q);
+}`;
 
 const groups: Array<{ label: string; count: number; tiles: string[] }> = [
   { label: "Callouts", count: 7, tiles: ["Note", "Tip", "Warning", "Danger", "Info", "Check", "Update"] },
@@ -58,7 +65,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
     </h2>
     <p class="max-w-[560px] font-sans text-[15px] leading-6 text-mute">
       Drop a tag in MDX. Every theme ships every component. Render here uses
-      the real <code class="font-mono text-[14px] text-ink">@tanglydocs/theme-ui</code> package — not screenshots.
+      the real <code class="font-mono text-[14px] text-ink">@tanglydocs/theme-ui</code> package, not screenshots.
     </p>
   </div>
 
@@ -85,7 +92,7 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                   &lt;{tag}&gt;
                 </div>
                 <div class="ws-render">
-                  {tag === "Note" && <Note>Heads up — worth a read.</Note>}
+                  {tag === "Note" && <Note>Heads up, worth a read.</Note>}
                   {tag === "Tip" && <Tip>Quick win. Try this.</Tip>}
                   {tag === "Warning" && <Warning>Mind the gap.</Warning>}
                   {tag === "Danger" && <Danger>Don't ship this.</Danger>}
@@ -217,6 +224,55 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
                       <pre class="!my-0 language-json"><code>{`{ "id": "d_47" }`}</code></pre>
                     </ResponseExample>
                   )}
+                  {tag === "OpenApiEndpoint" && (
+                    <div class="flex flex-col gap-1.5 rounded-lg border border-line-light bg-paper p-3">
+                      <div class="flex items-center gap-2">
+                        <span class="rounded bg-ink/[0.06] px-1.5 py-px font-mono text-[10px] font-semibold text-ink">GET</span>
+                        <span class="font-mono text-[11px] text-ink">/v1/domains</span>
+                      </div>
+                      <div class="font-sans text-[11px] leading-4 text-mute">Endpoint page, generated from your spec.</div>
+                      <div class="w-fit rounded border border-tang-600/40 px-2 py-px font-mono text-[10px] text-tang-700">Try it</div>
+                    </div>
+                  )}
+                  {tag === "OpenApiRedoc" && (
+                    <div class="flex flex-col gap-1.5 rounded-lg border border-line-light bg-paper p-3">
+                      <div class="flex items-center justify-between">
+                        <span class="rounded bg-ink/[0.06] px-1.5 py-px font-mono text-[10px] font-semibold text-ink">POST</span>
+                        <span class="font-mono text-[9px] uppercase tracking-[0.08em] text-mute">Redoc</span>
+                      </div>
+                      <span class="font-mono text-[11px] text-ink">/v1/orders</span>
+                      <div class="flex flex-col gap-1 pt-0.5">
+                        <div class="h-1 w-full rounded-full bg-line-light"></div>
+                        <div class="h-1 w-2/3 rounded-full bg-line-light"></div>
+                      </div>
+                    </div>
+                  )}
+                  {tag === "OpenApiScalar" && (
+                    <div class="flex flex-col gap-1.5 rounded-lg border border-line-light bg-paper p-3">
+                      <div class="flex items-center justify-between">
+                        <span class="rounded bg-ink/[0.06] px-1.5 py-px font-mono text-[10px] font-semibold text-ink">GET</span>
+                        <span class="font-mono text-[9px] uppercase tracking-[0.08em] text-mute">Scalar</span>
+                      </div>
+                      <span class="font-mono text-[11px] text-ink">/v1/usage</span>
+                      <div class="flex flex-col gap-1 pt-0.5">
+                        <div class="h-1 w-full rounded-full bg-line-light"></div>
+                        <div class="h-1 w-1/2 rounded-full bg-line-light"></div>
+                      </div>
+                    </div>
+                  )}
+                  {tag === "OpenApiStoplight" && (
+                    <div class="flex flex-col gap-1.5 rounded-lg border border-line-light bg-paper p-3">
+                      <div class="flex items-center justify-between">
+                        <span class="rounded bg-ink/[0.06] px-1.5 py-px font-mono text-[10px] font-semibold text-ink">DELETE</span>
+                        <span class="font-mono text-[9px] uppercase tracking-[0.08em] text-mute">Stoplight</span>
+                      </div>
+                      <span class="font-mono text-[11px] text-ink">/v1/keys/{`{id}`}</span>
+                      <div class="flex flex-col gap-1 pt-0.5">
+                        <div class="h-1 w-full rounded-full bg-line-light"></div>
+                        <div class="h-1 w-3/4 rounded-full bg-line-light"></div>
+                      </div>
+                    </div>
+                  )}
                   {tag === "Badge" && (
                     <p class="!my-0 flex flex-wrap items-center gap-2">
                       <Badge variant="accent">v0.1</Badge>
@@ -263,6 +319,79 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
       ))
     }
   </div>
+
+  <div class="ws-render-block mt-10 rounded-xl border border-line-light bg-paper p-8">
+    <div class="flex items-center gap-3">
+      <div class="font-mono text-[11px] uppercase tracking-[0.06em] text-tang-700">Rendering</div>
+      <div class="h-px flex-1 bg-line-light"></div>
+      <div class="font-mono text-[11px] text-mute">code · math · diagrams</div>
+    </div>
+    <p class="mt-3 max-w-[600px] font-sans text-[15px] leading-6 text-mute">
+      Not components. Markdown syntax, wired by default. Shiki highlighting with line
+      highlights, diffs, and titles. KaTeX math. Mermaid diagrams. Every page, every theme.
+    </p>
+
+    <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
+      <div class="flex flex-col gap-2">
+        <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">Code · Shiki</div>
+        <div class="overflow-hidden rounded-lg border border-line-light">
+          <div class="flex items-center gap-1.5 border-b border-line-light bg-paper px-3 py-1.5">
+            <span class="h-2 w-2 rounded-full bg-line-light"></span>
+            <span class="font-mono text-[10px] text-mute">search.ts</span>
+          </div>
+          <Code code={codeSample} lang="ts" theme="github-light" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">Diagrams · Mermaid</div>
+        <div class="flex flex-1 items-center justify-center rounded-lg border border-line-light bg-paper p-4">
+          <svg viewBox="0 0 220 140" class="w-full max-w-[220px]" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mermaid flow: docs.json to tangly build to dist and llms.txt">
+            <defs>
+              <marker id="ws-arrow" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+                <path d="M0 0 L6 3 L0 6 Z" fill="#EA580C" />
+              </marker>
+            </defs>
+            <rect x="68" y="6" width="84" height="26" rx="6" fill="#FAFAF7" stroke="#E6E4DE" />
+            <text x="110" y="23" text-anchor="middle" font-family="monospace" font-size="11" fill="#0B0B0F">docs.json</text>
+            <path d="M110 32 L110 52" stroke="#EA580C" stroke-width="1.5" marker-end="url(#ws-arrow)" />
+            <rect x="60" y="54" width="100" height="26" rx="6" fill="#FAFAF7" stroke="#E6E4DE" />
+            <text x="110" y="71" text-anchor="middle" font-family="monospace" font-size="11" fill="#0B0B0F">tangly build</text>
+            <path d="M90 80 L54 104" stroke="#EA580C" stroke-width="1.5" marker-end="url(#ws-arrow)" />
+            <path d="M130 80 L166 104" stroke="#EA580C" stroke-width="1.5" marker-end="url(#ws-arrow)" />
+            <rect x="14" y="106" width="64" height="26" rx="6" fill="#FAFAF7" stroke="#E6E4DE" />
+            <text x="46" y="123" text-anchor="middle" font-family="monospace" font-size="11" fill="#0B0B0F">dist/</text>
+            <rect x="140" y="106" width="72" height="26" rx="6" fill="#FAFAF7" stroke="#E6E4DE" />
+            <text x="176" y="123" text-anchor="middle" font-family="monospace" font-size="10" fill="#0B0B0F">llms.txt</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="font-mono text-[10px] uppercase tracking-[0.06em] text-mute">Math · KaTeX</div>
+        <div
+          class="flex flex-1 items-center justify-center rounded-lg border border-line-light bg-paper p-4 text-ink"
+          style="font-family: 'Source Serif 4', Georgia, serif;"
+        >
+          <span class="relative mr-2 text-[34px] leading-none">∑
+            <span class="absolute -top-0.5 left-0 text-[10px] not-italic">∞</span>
+            <span class="absolute -bottom-2 left-0 text-[10px] italic">n=1</span>
+          </span>
+          <div class="flex flex-col items-center text-[16px] italic">
+            <span>1</span>
+            <span class="my-0.5 h-px w-full bg-ink"></span>
+            <span>n²</span>
+          </div>
+          <span class="mx-2 text-[18px]">=</span>
+          <div class="flex flex-col items-center text-[16px] italic">
+            <span>π²</span>
+            <span class="my-0.5 h-px w-full bg-ink"></span>
+            <span>6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </section>
 
@@ -287,5 +416,14 @@ const groups: Array<{ label: string; count: number; tiles: string[] }> = [
   .ws-components :global(.tangly-update) {
     margin: 0;
     padding: 0.75rem 0.875rem;
+  }
+  /* Compact the real Shiki <Code> render inside the rendering block. */
+  .ws-render-block :global(.astro-code) {
+    margin: 0;
+    padding: 0.7rem 0.85rem;
+    font-size: 12px;
+    line-height: 1.55;
+    border-radius: 0;
+    overflow-x: auto;
   }
 </style>
