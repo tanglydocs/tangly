@@ -18,9 +18,14 @@ const docs = defineCollection({
       "**/*.{md,mdx}",
       "!**/_*.{md,mdx}",
       // Project meta files Mintlify auto-ignores (keep in sync with
-      // IGNORED_META_MD in src/manifest/scan-pages.ts). AGENTS.md is
-      // intentionally not ignored — Mintlify renders it.
-      "!**/{README,readme,LICENSE,license,CHANGELOG,changelog,CONTRIBUTING,contributing}.md",
+      // IGNORED_META_MD in src/manifest/scan-pages.ts, which matches
+      // case-insensitively). picomatch is case-sensitive, so spell each letter
+      // as a [Xx] class to catch any casing (README/readme/Readme/...).
+      // AGENTS.md is intentionally not ignored — Mintlify renders it.
+      "!**/[Rr][Ee][Aa][Dd][Mm][Ee].md",
+      "!**/[Ll][Ii][Cc][Ee][Nn][Ss][Ee].md",
+      "!**/[Cc][Hh][Aa][Nn][Gg][Ee][Ll][Oo][Gg].md",
+      "!**/[Cc][Oo][Nn][Tt][Rr][Ii][Bb][Uu][Tt][Ii][Nn][Gg].md",
       "!**/node_modules/**",
       "!**/.astro/**",
       "!**/.tangly/**",
