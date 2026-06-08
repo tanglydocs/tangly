@@ -32,9 +32,15 @@ const docs = defineCollection({
       "!**/.next/**",
       "!**/.git/**",
       "!**/dist/**",
+      // Root-level reserved dirs — keep in sync with SKIP_DIRS_AT_ROOT in
+      // src/manifest/scan-pages.ts (root-only, so nested reference/components/
+      // etc. stay valid doc paths).
       "!snippets/**",
       "!components/**",
       "!templates/**",
+      "!public/**",
+      "!static/**",
+      "!assets/**",
     ],
   }),
 });
