@@ -1,9 +1,25 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration } from "astro";
 import { buildComponentShadowAliases } from "./component-shadow.js";
 import { buildTemplateAliases } from "./template-resolver.js";
 import { buildThemeStylesAlias, buildUserThemeAliases } from "./theme-resolver.js";
 import { tanglyVitePlugin } from "./vite-plugin.js";
+
+// The tangly package version, read from our own package.json (dist/plugin/
+// integration.js sits two levels below the package root). Surfaced to the
+// runtime as `import.meta.env.TANGLY_VERSION` so the head fragment can emit a
+// `<meta name="generator" content="Tangly vX.Y.Z">` tag — lets you identify
+// the framework + version of a built site over plain HTTP (curl + grep).
+const TANGLY_VERSION: string = (() => {
+  try {
+    const pkgPath = resolve(dirname(fileURLToPath(import.meta.url)), "../../package.json");
+    return (JSON.parse(readFileSync(pkgPath, "utf8")) as { version?: string }).version ?? "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+})();
 
 export interface TanglyIntegrationOptions {
   /** Absolute path to the user's docs project root. */
@@ -44,6 +60,9 @@ export function tanglyIntegration(opts: TanglyIntegrationOptions): AstroIntegrat
         updateConfig({
           vite: {
             plugins: [tanglyVitePlugin(opts)] as never,
+            define: {
+              "import.meta.env.TANGLY_VERSION": JSON.stringify(TANGLY_VERSION),
+            },
             server: {
               fs: {
                 allow: [userRoot],

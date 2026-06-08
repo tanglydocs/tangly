@@ -106,7 +106,14 @@ const twitterCard = ogImage || hasMetaOgImage ? "summary_large_image" : "summary
 function metaProp(key: string): boolean {
   return key.startsWith("og:") || key.startsWith("fb:") || key.startsWith("article:");
 }
+
+// Identify the framework + version of a built site over plain HTTP (curl the
+// page, grep `<meta name="generator">`). Injected by the tangly integration
+// as a Vite define; falls back to a version-less tag if absent.
+const tanglyVersion = import.meta.env.TANGLY_VERSION as string | undefined;
+const generator = tanglyVersion ? `Tangly v${tanglyVersion}` : "Tangly";
 ---
+<meta name="generator" content={generator} />
 {robotsNoindex && <meta name="robots" content="noindex, nofollow" />}
 {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 <meta property="og:title" content={ogTitle} />

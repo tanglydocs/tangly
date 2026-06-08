@@ -5,6 +5,13 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.2.1" description="Unreleased" tags={["feat"]}>
+  ## Changes
+
+  ### Features
+  - feat(theme-ui): emit a `<meta name="generator" content="Tangly vX.Y.Z">` tag in every page head, so the framework and version of a built site can be identified over plain HTTP (`curl` the page and grep `name="generator"`). The version is injected by the Tangly integration as `import.meta.env.TANGLY_VERSION`.
+</Update>
+
 <Update label="v0.2.0" description="8 Jun 26" tags={["feat","fix","test"]}>
   ## Highlights
 
