@@ -36,4 +36,11 @@ describe("resolveJsonRefs", () => {
     writeFileSync(`${TMP}/b.json`, JSON.stringify({ $ref: "./a.json" }));
     expect(() => resolveJsonRefs({ $ref: "./a.json" }, TMP)).toThrow(/cycle/);
   });
+
+  test("throws when a pointer's final segment is missing", () => {
+    writeFileSync(`${TMP}/data.json`, JSON.stringify({ items: {} }));
+    expect(() => resolveJsonRefs({ x: { $ref: "./data.json#/items/missing" } }, TMP)).toThrow(
+      /did not resolve/,
+    );
+  });
 });

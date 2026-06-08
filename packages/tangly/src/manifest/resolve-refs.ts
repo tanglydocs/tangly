@@ -68,5 +68,10 @@ function resolvePointer(doc: unknown, pointer: string): unknown {
     }
     cur = (cur as Record<string, unknown>)[p];
   }
+  // A missing final segment leaves `cur` undefined; report it at the ref site
+  // rather than inlining undefined and failing schema validation far away.
+  if (cur === undefined) {
+    throw new Error(`docs.json $ref pointer "#${pointer}" did not resolve.`);
+  }
   return cur;
 }
