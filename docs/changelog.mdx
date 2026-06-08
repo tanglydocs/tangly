@@ -5,6 +5,40 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.2.0" description="8 Jun 26" tags={["feat","fix","test"]}>
+  ## Highlights
+
+  This release is a broad compatibility-hardening pass: we ported six real-world Mintlify documentation sites (an OpenAPI reference, a legacy `mint.json` project, a multi-tab developer portal, a Mermaid/snippets-heavy site, and the official Mintlify docs) and closed every parity gap they surfaced.
+
+  - **OpenAPI with zero wiring.** A root `openapi.json` / `openapi.yaml` / `openapi.yml` is now auto-discovered, so pages with `openapi: "METHOD path"` frontmatter render the full split-layout playground without any `api.openapi` config. ([`ce13ae4`](https://github.com/tanglydocs/tangly/commit/ce13ae445138be88ac957132a4ce9d3cb58b53d3))
+  - **Anchors-as-navigation.** A top-level `navigation.anchors[]` entry that wraps whole `tabs`/`groups` now resolves. Sites whose entire sidebar lives under an anchor previously rendered with an empty sidebar; now every page is reachable. ([`652d7fb`](https://github.com/tanglydocs/tangly/commit/652d7fbbde2d0340b2ea537f63c2b2794ede9aec))
+  - **Split your `docs.json` across files.** JSON `$ref` includes (`{ "$ref": "./redirects.json" }`, per-language nav files) resolve before validation, with `#/pointer` fragments, nested refs, and cycle detection. ([`0074c72`](https://github.com/tanglydocs/tangly/commit/0074c72ceb94eef2114f56a82b0383421d35846c))
+  - **Full-bleed landing pages.** The `custom` and `frame` page modes now drop the sidebar and render edge-to-edge; `center` drops the sidebar too. Default/wide/api pages are unchanged. ([`969a723`](https://github.com/tanglydocs/tangly/commit/969a723c51b351d57b167ec8c50110cc908d0332))
+  - **Real home pages.** A root `index.mdx` renders at `/` (not just a redirect splash), with draft visibility honored and `/` + `/index` canonicalized so they don't compete as duplicate content. ([`738f6b4`](https://github.com/tanglydocs/tangly/commit/738f6b49a535c05d4378aa78f3b34f3582023f60))
+  - **Reusable snippet imports + a `Link` component.** `import` of an `/snippets/*` Markdown file now resolves against your project root, and `Link` (with `href`) is a built-in. Broader Font Awesome icon coverage rounds it out.
+
+  ## Changes
+
+  ### Features
+  - feat(manifest): auto-discover root OpenAPI spec ([`ce13ae4`](https://github.com/tanglydocs/tangly/commit/ce13ae445138be88ac957132a4ce9d3cb58b53d3))
+  - feat(manifest): resolve top-level anchors as navigation containers ([`652d7fb`](https://github.com/tanglydocs/tangly/commit/652d7fbbde2d0340b2ea537f63c2b2794ede9aec))
+  - feat(manifest): resolve `docs.json` `$ref` includes ([`0074c72`](https://github.com/tanglydocs/tangly/commit/0074c72ceb94eef2114f56a82b0383421d35846c))
+  - feat(manifest): render the default version/language nav variant ([`b13500c`](https://github.com/tanglydocs/tangly/commit/b13500c436d334024f48dcbbea6a20bfa5c82d0c))
+  - feat(theme-ui): full-bleed landing layout for `custom`/`frame` modes ([`969a723`](https://github.com/tanglydocs/tangly/commit/969a723c51b351d57b167ec8c50110cc908d0332))
+  - feat(theme-ui): add `Link` component ([`e62d557`](https://github.com/tanglydocs/tangly/commit/e62d557b11e7e78bab5752720812a0851786296f))
+  - feat(plugin): resolve `/snippets/` imports against the project root ([`8a9d3b7`](https://github.com/tanglydocs/tangly/commit/8a9d3b702ea407b0da57a6008a5e2b122117e24c))
+
+  ### Fixes
+  - fix(runtime): render the root index page at the site root ([`738f6b4`](https://github.com/tanglydocs/tangly/commit/738f6b49a535c05d4378aa78f3b34f3582023f60)), gate it on draft visibility ([`fa1eb21`](https://github.com/tanglydocs/tangly/commit/fa1eb213798cd0638388b07ce7e4eded5ef182e4)), and canonicalize `/` + `/index` ([`5e40d0f`](https://github.com/tanglydocs/tangly/commit/5e40d0fa0bc28a01b7254092c935a941cbbf8fb9))
+  - fix(manifest): exclude project meta files from page discovery ([`da213f8`](https://github.com/tanglydocs/tangly/commit/da213f8e374b646363793d83d6d939ced66d6f11)), case-insensitively ([`1e902e5`](https://github.com/tanglydocs/tangly/commit/1e902e5f68d95f81809a5d67262930274def26f1)), plus root `public`/`static`/`assets` ([`fe2f9b4`](https://github.com/tanglydocs/tangly/commit/fe2f9b497be6e6191b8b176abf49129bfc563345))
+  - fix(manifest): render only one default nav variant ([`b2d44be`](https://github.com/tanglydocs/tangly/commit/b2d44be1e5ff48b5eefe5541e439a3e5a28e64d2)) and error on an unresolved `$ref` pointer ([`b49fed4`](https://github.com/tanglydocs/tangly/commit/b49fed498e7a88efe5ff21ce184c0a1ca6c01bd5))
+  - fix(theme-ui): expand Font Awesome to Lucide icon aliases ([`bdfe738`](https://github.com/tanglydocs/tangly/commit/bdfe7382f7dbff85c74cc3e6f84d0faf852f6b6d), [`00f653e`](https://github.com/tanglydocs/tangly/commit/00f653e6261b65961e39ba3333168e7c953f2893), [`866214e`](https://github.com/tanglydocs/tangly/commit/866214ee8d7a9e8ca9dffc8f62ddfffc41c37c03), [`e5f7e22`](https://github.com/tanglydocs/tangly/commit/e5f7e22546e166bfc74e9d171deef1c44c8a0fb7))
+
+  ### Tests
+  - test(manifest): cover meta-file exclusion + OpenAPI auto-discovery ([`4dedaac`](https://github.com/tanglydocs/tangly/commit/4dedaac43903941e7626c22c845db77bcaed650c)), anchors-as-nav ([`504ac69`](https://github.com/tanglydocs/tangly/commit/504ac6999b7b392939015d7af790613b11e983e1)), `$ref` resolution ([`af8e8b2`](https://github.com/tanglydocs/tangly/commit/af8e8b2eab1ed89373b35d4c844e6e85ac5e2607)), and the draft-home invariant ([`1c1a588`](https://github.com/tanglydocs/tangly/commit/1c1a58802dfe892445e3d5ab94b822e7044eb4cf))
+
+</Update>
+
 <Update label="v0.1.7" description="8 Jun 26" tags={["feat","fix","refactor"]}>
   ## Highlights
 
