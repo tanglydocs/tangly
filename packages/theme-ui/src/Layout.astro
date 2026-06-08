@@ -96,7 +96,7 @@ const bannerType = banner?.type ?? "info";
     <title>{pageTitle}</title>
     {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={withBase(favicon)} />
-    <link rel="alternate" type="text/markdown" href={withBase(`/${page.slug}.md`)} />
+    <link rel="alternate" type="text/markdown" href={withBase(`/${page.slug || "index"}.md`)} />
     <Seo config={config} page={page} pageTitle={pageTitle} pageDescription={pageDescription} />
     <meta name="color-scheme" content="light dark" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

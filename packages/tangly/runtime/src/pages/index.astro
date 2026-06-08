@@ -2,6 +2,7 @@
 import { manifest } from "virtual:tangly/manifest";
 import { getCollection } from "astro:content";
 import LoadingSplash from "@tanglydocs/theme-ui/LoadingSplash.astro";
+import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
 // Pulls the active theme's `--tangly-*` tokens (resolved by the Tangly
 // integration alias) so the splash matches whatever theme is in use.
 import "@tanglydocs/theme/theme.css";
@@ -14,7 +15,9 @@ const firstFromRoot =
 const firstFromDisk = entries[0]?.id;
 
 const target = firstFromNav ?? firstFromRoot ?? firstFromDisk ?? "";
-const targetUrl = `${import.meta.env.BASE_URL}${target}`;
+// Join base + slug via withBase so a `--base /docs` deploy resolves to
+// `/docs/<target>` (raw `BASE_URL + target` drops the separating slash).
+const targetUrl = withBase(`/${target}`) ?? `/${target}`;
 
 const config = manifest.config;
 const favicon =
@@ -32,6 +35,9 @@ export const prerender = true;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
     <link rel="canonical" href={targetUrl} />
+    {/* Agents fetching the bare root get the markdown twin of the redirect
+        target, so they don't have to follow the meta-refresh to discover it. */}
+    {target && <link rel="alternate" type="text/markdown" href={`${targetUrl}.md`} />}
     <link rel="icon" href={favicon} />
     <title>{config.name}</title>
     {/* Resolve dark mode before paint so dark users never flash a light splash. */}
