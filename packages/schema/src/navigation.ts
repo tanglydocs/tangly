@@ -97,6 +97,10 @@ export const NavAnchorSchema: z.ZodType<NavAnchor> = z.lazy(() =>
   NavAnchorBase.extend({
     pages: z.array(NavNodeSchema).optional(),
     groups: z.array(NavGroupSchema).optional(),
+    // A top-level anchor can wrap whole tabs (anchors-as-nav, e.g. a single
+    // "Documentation" anchor holding every tab). Preserve them so the resolver
+    // can surface the nested tabs instead of stripping them.
+    tabs: z.array(NavTabSchema).optional(),
   }),
 );
 
@@ -167,6 +171,7 @@ export type NavGroup = z.output<typeof NavGroupBase> & {
 export type NavAnchor = z.output<typeof NavAnchorBase> & {
   pages?: NavNode[];
   groups?: NavGroup[];
+  tabs?: NavTab[];
 };
 export type NavDropdown = z.output<typeof NavDropdownBase> & {
   pages?: NavNode[];

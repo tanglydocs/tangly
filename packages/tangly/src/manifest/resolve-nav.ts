@@ -167,7 +167,14 @@ function buildSidebar(
 }
 
 function buildAnchors(config: DocsJson): ResolvedAnchor[] {
-  const anchors = config.navigation.global?.anchors ?? [];
+  // Global anchors plus any top-level `navigation.anchors` that are pure
+  // external links (href, no nested nav — the container anchors become tabs in
+  // resolveNavigation, so they're excluded here).
+  const global = config.navigation.global?.anchors ?? [];
+  const topLevelLinks = (config.navigation.anchors ?? []).filter(
+    (a) => a.href && !a.tabs && !a.groups && !a.pages,
+  );
+  const anchors = [...global, ...topLevelLinks];
   return anchors
     .filter((a): a is typeof a & { href: string } => Boolean(a.href))
     .map((a) => {
@@ -263,6 +270,26 @@ export function resolveNavigation(opts: ResolveOptions): ResolveResult {
   if (Array.isArray(nav.tabs)) {
     for (const t of nav.tabs) {
       tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
+    }
+  }
+  // Anchors-as-nav: a top-level anchor can wrap whole tabs (e.g. a single
+  // "Documentation" anchor holding every tab) or carry its own groups/pages.
+  // Surface nested tabs as tabs; an anchor holding groups/pages directly
+  // becomes a tab named after the anchor. (Pure-link anchors → buildAnchors.)
+  if (Array.isArray(nav.anchors)) {
+    for (const a of nav.anchors) {
+      if (Array.isArray(a.tabs)) {
+        for (const t of a.tabs) tabs.push(tabFromNavTab(t, baseCtx, warnings, navSlugs));
+      }
+      if (Array.isArray(a.groups) || Array.isArray(a.pages)) {
+        const anchorTab: NavTab = {
+          tab: a.anchor,
+          ...(typeof a.icon === "string" ? { icon: a.icon } : {}),
+          ...(Array.isArray(a.groups) ? { groups: a.groups } : {}),
+          ...(Array.isArray(a.pages) ? { pages: a.pages } : {}),
+        };
+        tabs.push(tabFromNavTab(anchorTab, baseCtx, warnings, navSlugs));
+      }
     }
   }
   if (Array.isArray(nav.groups)) {
