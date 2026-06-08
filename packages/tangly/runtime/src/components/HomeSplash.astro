@@ -1,0 +1,59 @@
+---
+import { manifest } from "virtual:tangly/manifest";
+import { getCollection } from "astro:content";
+import LoadingSplash from "@tanglydocs/theme-ui/LoadingSplash.astro";
+import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
+// Pulls the active theme's `--tangly-*` tokens (resolved by the Tangly
+// integration alias) so the splash matches whatever theme is in use.
+import "@tanglydocs/theme/theme.css";
+
+// Loading splash shown at `/` when the project has no root `index` page.
+// Redirects to the first navigable page; agents get the markdown twin.
+const config = manifest.config;
+const entries = await getCollection("docs");
+const firstFromNav = manifest.navigation.tabs[0]?.pages?.[0];
+const firstFromRoot =
+  manifest.navigation.rootSidebar.find((i) => !i.isGroup && i.slug)?.slug ??
+  manifest.navigation.rootSidebar[0]?.children?.find((c) => !c.isGroup && c.slug)?.slug;
+const firstFromDisk = entries[0]?.id;
+
+const target = firstFromNav ?? firstFromRoot ?? firstFromDisk ?? "";
+// Join base + slug via withBase so a `--base /docs` deploy resolves to
+// `/docs/<target>` (raw `BASE_URL + target` drops the separating slash).
+const targetUrl = withBase(`/${target}`) ?? `/${target}`;
+
+const favicon =
+  typeof config.favicon === "string"
+    ? config.favicon
+    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
+const appearanceDefault = config.appearance?.default ?? "system";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
+    <link rel="canonical" href={targetUrl} />
+    {/* Agents fetching the bare root get the markdown twin of the redirect
+        target, so they don't have to follow the meta-refresh to discover it. */}
+    {target && <link rel="alternate" type="text/markdown" href={`${targetUrl}.md`} />}
+    <link rel="icon" href={favicon} />
+    <title>{config.name}</title>
+    {/* Resolve dark mode before paint so dark users never flash a light splash. */}
+    <style is:inline>html{background:#fafaf7}html.dark{background:#0b0b0f}</style>
+    <script is:inline define:vars={{ appearanceDefault }}>
+      try {
+        const stored = localStorage.getItem("tangly-theme");
+        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored
+          ? stored === "dark"
+          : appearanceDefault === "dark" || (appearanceDefault === "system" && sys);
+        if (dark) document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <LoadingSplash config={config} />
+  </body>
+</html>

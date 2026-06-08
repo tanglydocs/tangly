@@ -1,59 +1,76 @@
 ---
+import { getCollection, render } from "astro:content";
 import { manifest } from "virtual:tangly/manifest";
-import { getCollection } from "astro:content";
-import LoadingSplash from "@tanglydocs/theme-ui/LoadingSplash.astro";
-import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
-// Pulls the active theme's `--tangly-*` tokens (resolved by the Tangly
-// integration alias) so the splash matches whatever theme is in use.
-import "@tanglydocs/theme/theme.css";
-
-const entries = await getCollection("docs");
-const firstFromNav = manifest.navigation.tabs[0]?.pages?.[0];
-const firstFromRoot =
-  manifest.navigation.rootSidebar.find((i) => !i.isGroup && i.slug)?.slug ??
-  manifest.navigation.rootSidebar[0]?.children?.find((c) => !c.isGroup && c.slug)?.slug;
-const firstFromDisk = entries[0]?.id;
-
-const target = firstFromNav ?? firstFromRoot ?? firstFromDisk ?? "";
-// Join base + slug via withBase so a `--base /docs` deploy resolves to
-// `/docs/<target>` (raw `BASE_URL + target` drops the separating slash).
-const targetUrl = withBase(`/${target}`) ?? `/${target}`;
-
-const config = manifest.config;
-const favicon =
-  typeof config.favicon === "string"
-    ? config.favicon
-    : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
-const appearanceDefault = config.appearance?.default ?? "system";
+import Layout from "@tanglydocs/theme-ui/Layout.astro";
+import PageShell from "@tanglydocs/theme-ui/PageShell.astro";
+import type { PageEntry } from "tangly";
+import HomeSplash from "../components/HomeSplash.astro";
+import { mdxComponents } from "../lib/mdx-components.ts";
 
 export const prerender = true;
+
+const entries = await getCollection("docs");
+
+// Mintlify parity: a root `index` page (index.mdx / index.md) is the site
+// home and renders at `/`. Astro's glob loader ids it as "index" (only a
+// nested `foo/index.mdx` collapses to `foo`). When that page exists we render
+// it in full at `/`; otherwise we fall back to <HomeSplash>, which redirects
+// to the first navigable page.
+const homeEntry = entries.find((e) => e.id === "index" || e.id === "");
+
+function humanizeSlug(slug: string): string {
+  const last = slug.split("/").pop() ?? slug;
+  return last.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+let Content: Awaited<ReturnType<typeof render>>["Content"] | null = null;
+let homePage: PageEntry | null = null;
+let homeTitle = "";
+let homeDesc: string | undefined;
+if (homeEntry) {
+  ({ Content } = await render(homeEntry));
+  const pageMeta = manifest.pages.find(([s]) => s === homeEntry.id);
+  const basePage: PageEntry = (pageMeta?.[1] as PageEntry) ?? {
+    slug: homeEntry.id,
+    file: "",
+    frontmatter: {},
+    breadcrumbs: [],
+    sidebar: manifest.navigation.rootSidebar,
+    draft: false,
+  };
+  homeTitle =
+    homeEntry.data?.title ?? basePage.frontmatter.title ?? humanizeSlug(homeEntry.id || "index");
+  homeDesc = homeEntry.data?.description ?? basePage.frontmatter.description;
+  // The home page is typically an orphan (index.mdx is rarely listed in nav),
+  // so its own sidebar is empty. Mintlify shows the first tab's nav on `/`, so
+  // fall back to the first tab's sidebar (then rootSidebar) to match.
+  const firstTab = manifest.navigation.tabs[0];
+  const homeSidebar =
+    basePage.sidebar.length > 0
+      ? basePage.sidebar
+      : (firstTab?.sidebar ?? manifest.navigation.rootSidebar);
+  homePage = {
+    ...basePage,
+    sidebar: homeSidebar,
+    frontmatter: { ...basePage.frontmatter, title: homeTitle, description: homeDesc },
+  };
+}
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
-    <link rel="canonical" href={targetUrl} />
-    {/* Agents fetching the bare root get the markdown twin of the redirect
-        target, so they don't have to follow the meta-refresh to discover it. */}
-    {target && <link rel="alternate" type="text/markdown" href={`${targetUrl}.md`} />}
-    <link rel="icon" href={favicon} />
-    <title>{config.name}</title>
-    {/* Resolve dark mode before paint so dark users never flash a light splash. */}
-    <style is:inline>html{background:#fafaf7}html.dark{background:#0b0b0f}</style>
-    <script is:inline define:vars={{ appearanceDefault }}>
-      try {
-        const stored = localStorage.getItem("tangly-theme");
-        const sys = matchMedia("(prefers-color-scheme: dark)").matches;
-        const dark = stored
-          ? stored === "dark"
-          : appearanceDefault === "dark" || (appearanceDefault === "system" && sys);
-        if (dark) document.documentElement.classList.add("dark");
-      } catch {}
-    </script>
-  </head>
-  <body>
-    <LoadingSplash config={config} />
-  </body>
-</html>
+{
+  homePage ? (
+    <Layout
+      config={manifest.config}
+      page={homePage}
+      navigation={manifest.navigation}
+      pageTitle={homeTitle}
+      pageDescription={homeDesc}
+    >
+      <PageShell page={homePage} config={manifest.config}>
+        {Content ? <Content components={mdxComponents} /> : null}
+      </PageShell>
+    </Layout>
+  ) : (
+    <HomeSplash />
+  )
+}
