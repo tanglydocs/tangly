@@ -65,6 +65,7 @@ bun x tangly init --from ./existing-docs
 
 ```
 docs.json              # config (required, project root)
+index.mdx              # optional site home — renders at / (Mintlify parity)
 introduction.mdx       # any *.mdx at any depth = a page
 guides/
   getting-started.mdx
@@ -76,6 +77,9 @@ public/                # passthrough static assets
 ```
 
 Every `.mdx` is a page; the route is its path relative to the project root, slugified.
+
+- **Home page:** a root `index.mdx`/`index.md` renders at `/` (needn't be in nav; inherits the first tab's sidebar). No root index → `/` is a splash that redirects to the first nav page. A nested `foo/index.mdx` collapses to slug `foo`.
+- **Auto-ignored (never pages), matching Mintlify:** `README.md`, `LICENSE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`; `_*`-prefixed files; root `snippets/`, `components/`, `templates/`, `public/`, `static/`, `assets/`. `AGENTS.md` **is** rendered (Mintlify renders it too).
 
 ## CLI reference
 

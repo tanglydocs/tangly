@@ -120,7 +120,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 
 | Component | Tangly | Notes |
 |---|---|---|
-| `<Icon>` | ✅ | Lucide. FA aliases for ~96 common Mintlify names. See [Icons](/reference/schema). |
+| `<Icon>` | ✅ | Lucide. FA aliases for 100+ common Mintlify names, with a PascalCase fallback to any Lucide icon. See [Icons](/reference/schema). |
 | `<Tooltip>` | ✅ | Identical. |
 | `<Badge>` | ✅ | Tangly extra. |
 | `<Kbd>` | ✅ | Tangly extra. Auto Cmd→Ctrl on non-mac. |
@@ -171,6 +171,16 @@ Mintlify uses `<latex>…</latex>`. Tangly accepts both the `latex` tag (rewritt
 #### `tangly migrate` doesn't auto-rewrite themes
 
 Migration validates `docs.json` and updates `$schema`. It does **not** auto-pick a Tangly theme. Run it, see the notice, decide for yourself. If you want it auto-picked, that's a one-line `sed`.
+
+#### Reserved files and the home page
+
+Tangly matches Mintlify here:
+
+- A root `index.mdx` is the site home and renders at `/`. It doesn't need to appear in `navigation`.
+- `README.md`, `LICENSE.md`, `CHANGELOG.md`, and `CONTRIBUTING.md` are auto-ignored (never pages).
+- `AGENTS.md` **is** rendered as a page, same as Mintlify.
+
+See [Page anatomy → Files that aren't pages](/guides/authoring/pages) for the full list.
 
 #### Search engine: Pagefind, not Mintlify's
 
