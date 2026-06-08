@@ -52,9 +52,11 @@ Renders an icon by name. Resolution order:
 
 1. Inline brand glyph (GitHub, Twitter/X, LinkedIn, YouTube, Slack, Discord)
 2. Lucide registry, direct match (`Rocket`, `Code`, …)
-3. Font Awesome / Mintlify alias map (`circle-check` → `CircleCheck`, `cog` → `Settings`, `search` → `Search`, …)
-4. PascalCase fallback (`my-icon` → `MyIcon`)
+3. Font Awesome / Mintlify alias map (`magnifying-glass` → `Search`, `gear` → `Settings`, `xmark` → `X`, `angle-down` → `ChevronDown`, …)
+4. PascalCase fallback (`arrow-right` → `ArrowRight`, `my-icon` → `MyIcon`)
 5. Fallback to `CircleHelp` (with a console warning)
+
+Together, the alias map and the PascalCase fallback cover roughly **880 Font Awesome names** — Font Awesome 6 renames, directional families (`angle-*`/`caret-*` → `Chevron*`), and nearest-glyph picks — so most Mintlify icon names render unchanged after migrating. Names with no Lucide equivalent (brand-specific glyphs, digits, animals, niche objects) fall back to the help-circle. The alias map lives in [`fa-to-lucide.ts`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-ui/src/components/fa-to-lucide.ts).
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

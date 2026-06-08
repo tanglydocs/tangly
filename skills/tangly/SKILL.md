@@ -19,7 +19,7 @@ compatibility: Designed for Claude Code and other agent-skills clients. Requires
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 metadata:
   author: tanglydocs
-  version: 0.1.7
+  version: 0.2.0
   category: documentation
   tags: tangly, documentation, docs, mintlify, mdx, astro, static-site, site-generator, docs-as-code, openapi
   homepage: https://tangly.dev
@@ -264,7 +264,7 @@ All 34 ship Mintlify-compatible names and render unmodified:
 - Layout: `Frame`, `Accordion` + `AccordionGroup`, `Expandable`
 - API: `ParamField`, `ResponseField`, `RequestExample` (overrides panel tabs by language), `ResponseExample`, `OpenApiEndpoint` (split layout: docs left, sticky playground panel right at xl+), `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
 - Media: `Embed` (cross-page block reuse), `Video` (YouTube/Vimeo/mp4 with lazy iframe), `LightboxImage` (auto-wraps every inline `<img>`)
-- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`, `Link` (`href` anchor; internal links get the base prefix, external open in a new tab)
+- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (renders Lucide; comprehensive Font Awesome name coverage — ~880 FA names resolve, via auto-PascalCase plus a curated `fa-to-lucide` alias map for v6 renames/families/nearest-glyph; unmapped names fall back to a help-circle + console warn; brand glyphs inline), `Tooltip`, `GlossaryTerm`, `Link` (`href` anchor; internal links get the base prefix, external open in a new tab)
 
 Full prop reference per family: `docs/reference/components/{callouts,cards,code,tabs-and-steps,layout,api,media,text}.mdx`.
 
