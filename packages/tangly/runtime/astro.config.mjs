@@ -1,5 +1,6 @@
 // @ts-check
 import mdx from "@astrojs/mdx";
+import preact from "@astrojs/preact";
 import rehypeShiki from "@shikijs/rehype";
 import {
   transformerMetaHighlight,
@@ -20,6 +21,7 @@ import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkH1Warn from "./src/lib/remark-h1-warn.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
+import remarkSnippetIslands from "./src/lib/remark-snippet-islands.mjs";
 import {
   transformerTanglyAnnotations,
   transformerTanglyChrome,
@@ -113,9 +115,16 @@ export default defineConfig({
   ...(adapter ? { adapter } : {}),
   integrations: [
     tanglyIntegration({ userRoot, configFile, includeDrafts }),
+    // Preact with `compat` aliases react/react-dom → preact/compat so
+    // Mintlify-style `/snippets/*.jsx` React components (hooks, className)
+    // render as Astro islands. Zero client JS ships unless a page actually
+    // hydrates one (the remark-snippet-islands plugin auto-adds the
+    // `client:visible` directive at snippet call sites).
+    preact({ compat: true }),
     mdx({
       remarkPlugins: [
         remarkMintlifyCompat,
+        remarkSnippetIslands,
         remarkH1Warn,
         remarkExplicitIds,
         remarkMermaid,

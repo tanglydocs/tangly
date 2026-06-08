@@ -194,11 +194,26 @@ function manifestToPayload(m: Manifest, excludedSlugs: string[]): ManifestPayloa
   };
 }
 
+/**
+ * React hooks Mintlify exposes as globals inside `/snippets/*.jsx` (the
+ * snippets call `useState`/`useEffect`/… without importing them). We prepend
+ * this import so they compile under the preact/compat renderer.
+ */
+const SNIPPET_REACT_BANNER =
+  'import React, { useState, useEffect, useMemo, useRef, useCallback, useReducer, useContext, useLayoutEffect, useImperativeHandle } from "react";\n';
+
+/** True when `child` resolves to a path inside `dir`. */
+function isInsideDir(child: string, dir: string): boolean {
+  const rel = relative(dir, child);
+  return rel !== "" && !rel.startsWith("..") && !isAbsolute(rel);
+}
+
 export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
   const userRoot = resolve(opts.userRoot);
   const configFile = opts.configFile ?? "docs.json";
   const configPath = resolve(userRoot, configFile);
   const includeDrafts = opts.includeDrafts ?? false;
+  const snippetsDir = resolve(userRoot, "snippets");
 
   let manifest: Manifest | null = null;
   let server: ViteDevServer | null = null;
@@ -229,10 +244,33 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     transform(code, id) {
+      const cleanId = id.split("?")[0] ?? id;
+
+      // Mintlify `/snippets/*.{jsx,tsx}` snippets reference React hooks as
+      // globals (no import statement). Prepend the standard hook import so
+      // they compile under the preact/compat renderer. Skip files that
+      // already import react/preact themselves — the author owns those.
+      if (
+        (cleanId.endsWith(".jsx") || cleanId.endsWith(".tsx")) &&
+        isInsideDir(cleanId, snippetsDir)
+      ) {
+        if (/\bfrom\s+["'](?:react|preact)(?:\/[\w-]+)?["']/.test(code)) return null;
+        return { code: SNIPPET_REACT_BANNER + code, map: null };
+      }
+
+      // Tailwind v4 only scans the sources listed in the theme's CSS entry,
+      // and the user's project root isn't among them. Append an @source for
+      // the snippets dir so utility classes used inside .jsx snippets emit.
+      if (cleanId.endsWith(".css") && /@import\s+["']tailwindcss["']/.test(code)) {
+        const glob = `${snippetsDir.replace(/\\/g, "/")}/**/*.{jsx,tsx,mdx}`;
+        if (code.includes(glob)) return null;
+        return { code: `${code}\n@source "${glob}";\n`, map: null };
+      }
+
       // Pre-process MDX quirks (raw LaTeX blocks, ../images/foo refs)
       // before MDX parses JSX or Astro's asset pipeline tries to resolve
       // relative image paths.
-      if (!id.endsWith(".mdx") && !id.endsWith(".md")) return null;
+      if (!cleanId.endsWith(".mdx") && !cleanId.endsWith(".md")) return null;
 
       let out = code;
       let changed = false;
@@ -290,9 +328,9 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       // Mintlify snippet imports use a project-root-absolute path
       // (`import { X } from "/snippets/foo.mdx"`). Vite would resolve that
       // against the runtime root, not the user's project, and 500. Map it to
-      // the user's snippets dir so .md/.mdx snippets resolve and render.
-      // (.jsx/.tsx component snippets resolve too but need a UI integration to
-      // render — see migration/compatibility docs.)
+      // the user's snippets dir. .md/.mdx snippets render as content;
+      // .jsx/.tsx render as preact/compat islands (hook import injected in
+      // `transform`, `client:visible` injected by remark-snippet-islands).
       if (id.startsWith("/snippets/")) {
         return resolve(userRoot, id.slice(1));
       }

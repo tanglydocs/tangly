@@ -189,7 +189,11 @@ A `docs.json` can split across files via JSON `$ref` — `{ "$ref": "./redirects
 
 #### Snippet imports
 
-`import { X } from "/snippets/foo.mdx"` resolves to `<project>/snippets/foo.mdx`. Markdown/MDX snippets render. Two caveats: a snippet that itself uses MDX components doesn't yet inherit the global component set (those components render undefined), and `.jsx`/`.tsx` component snippets resolve but need a UI-framework integration to render (see [What's not in Tangly yet](#whats-not-in-tangly-yet)).
+`import { X } from "/snippets/foo.mdx"` resolves to `<project>/snippets/foo.mdx`. Markdown/MDX snippets render as content.
+
+`.jsx`/`.tsx` snippets render as interactive [Preact](https://preactjs.com) islands, so Mintlify-style React snippets work unmodified. Hooks (`useState`, `useEffect`, …) are injected as globals the way Mintlify exposes them, and a `client:visible` directive is auto-attached at each call site so the component hydrates when scrolled into view (write an explicit `client:load`/`client:idle` to override). `react`/`react-dom` alias to `preact/compat`, so most React components render as-is. A page with no JSX snippet ships zero extra client JS.
+
+One caveat remains: a snippet that itself uses MDX components doesn't yet inherit the global component set (those components render undefined). See [What's not in Tangly yet](#whats-not-in-tangly-yet).
 
 #### Search engine: Pagefind, not Mintlify's
 
@@ -205,7 +209,6 @@ These are on the v0.3 roadmap:
 
 - **Snippet disk resolution.** `<Snippet file="..." />` reading from `snippets/`.
 - **Snippet component injection.** An imported MDX snippet that uses MDX components doesn't yet inherit the global component set, so those components render undefined.
-- **JSX/React snippet components.** `import { X } from "/snippets/X.jsx"` resolves, but Tangly renders MDX + its built-in components, not arbitrary user React islands. Use an MDX snippet, [`<Embed>`](/reference/components/media), or a `<Video>`/`<iframe>` instead.
 - **Version / language switching.** `navigation.versions` and `navigation.languages` parse but don't render a switcher yet; their groups are flattened into one sidebar. Single-version projects are unaffected.
 - **OG thumbnail generation.** Auto-render social previews.
 - **API playground proxy.** Same shape as Mintlify's, server-side.
