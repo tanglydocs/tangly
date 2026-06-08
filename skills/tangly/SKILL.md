@@ -208,7 +208,7 @@ description: How invoicing works
 icon: receipt
 tag: New
 draft: false
-mode: wide                # default | wide | center | custom
+mode: wide                # default | wide | center | custom | frame | api (custom/frame = full-bleed, no sidebar)
 template: custom-page      # path or name in templates/
 openapi: openapi.json#/paths/~1users/get
 keywords: [billing, invoices]
@@ -388,6 +388,9 @@ Five strategies (host the docs at `/docs` on an existing site): build-into-publi
 - **Drafts** — hidden in `build` unless `TANGLY_INCLUDE_DRAFTS=1`. Visible in `dev`.
 - **Vite pinning** — root `package.json` pins Vite via `overrides` because Tailwind v4 pulls a newer Vite that conflicts with Astro's bundled version.
 - **`tangly` is a CLI; `@tanglydocs/schema` is private** — the npm org `@tangly` was unavailable, so workspace pkgs use `@tanglydocs`.
+- **`docs.json` `$ref`** — a config can split across files (`{ "$ref": "./redirects.json" }`, per-language nav files). Refs resolve relative to the referencing file (with `#/pointer` fragments) before validation.
+- **Snippet imports** — `import { X } from "/snippets/foo.mdx"` resolves to `<project>/snippets/foo.mdx`. MD/MDX snippets render; a snippet using MDX components doesn't yet inherit the global set, and `.jsx`/`.tsx` component snippets need a UI integration.
+- **OpenAPI auto-discovery** — if no `api.openapi`/tab spec is set, a root `openapi.{json,yaml,yml}` is auto-used for `openapi: "METHOD path"` pages.
 
 ## Reference (in-repo)
 

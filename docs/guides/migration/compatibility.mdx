@@ -25,7 +25,7 @@ Every Mintlify-shipped top-level field is supported.
 | `navigation` | ⚠️ | Tabs, groups, dropdowns, and anchors render with identical recursion. Top-level anchors-as-nav (a `navigation.anchors[]` entry that wraps whole `tabs`/`groups`) resolve too. `versions` / `languages` parse (schema-accepted) but aren't rendered yet: their groups are flattened into one sidebar, so a migrated multi-version project shows every version's groups at once instead of a switcher. |
 | `navbar` | ✅ | `links` + `primary` (button + github variants). |
 | `footer` | ✅ | `socials`, `links`. Tangly adds `lastUpdated`, `editUrl`, `repo`. |
-| `redirects` | ✅ | `[{ source, destination, permanent? }]`. |
+| `redirects` | ✅ | `[{ source, destination, permanent? }]`. A `{ "$ref": "./redirects.json" }` external file works too (see `$ref` below). |
 | `seo` | ✅ | `metatags`, `indexing` (`all` / `navigable`). |
 | `analytics` | ✅ | All twelve providers Mintlify supports + same shape. |
 | `api` | ✅ | `baseUrl`, `auth`, `playground`, `openapi`, `viewer`. Tangly adds `asyncapi`, `mdx`. |
@@ -144,7 +144,7 @@ Every Mintlify-shipped frontmatter field is supported.
 | `api` | ✅ | Companion-MDX for hand-curated API pages. |
 | `keywords` | ✅ | Identical. |
 | `noindex` | ✅ | Identical. |
-| `mode` | ✅ | `default`, `wide`, `center`, `custom`. |
+| `mode` | ✅ | `default`, `wide`, `center`, `custom`, `frame`, `api`. `custom`/`frame` are full-bleed (no sidebar, edge-to-edge); `center` drops the sidebar. |
 | `seo` | ✅ | `title`, `description`, `ogImage`. |
 
 Tangly adds: `draft`, `template`, `aiContext`, `lastUpdated`, `readingTime`, `editUrl`, `glossary`. See [Frontmatter](/reference/schema/frontmatter).
@@ -183,6 +183,14 @@ Tangly matches Mintlify here:
 
 See [Page anatomy → Files that aren't pages](/guides/authoring/pages) for the full list.
 
+#### Config splitting with `$ref`
+
+A `docs.json` can split across files via JSON `$ref` — `{ "$ref": "./redirects.json" }`, per-language nav files, etc. Tangly resolves refs (relative to the referencing file, with `#/pointer` fragments and nested refs) before validation, so a multi-file config loads as one document.
+
+#### Snippet imports
+
+`import { X } from "/snippets/foo.mdx"` resolves to `<project>/snippets/foo.mdx`. Markdown/MDX snippets render. Two caveats: a snippet that itself uses MDX components doesn't yet inherit the global component set (those components render undefined), and `.jsx`/`.tsx` component snippets resolve but need a UI-framework integration to render (see [What's not in Tangly yet](#whats-not-in-tangly-yet)).
+
 #### Search engine: Pagefind, not Mintlify's
 
 Tangly bundles [Pagefind](https://pagefind.app). Mintlify uses a different indexer. Behavior is similar (Cmd-K modal, fuzzy match) but the index file format and tuning knobs differ. Practical impact: zero for readers; for advanced search customization (boost rules, exact-match weighting), you'd configure Pagefind directly via custom build hooks.
@@ -196,7 +204,8 @@ Mintlify's `api.playground.proxy: true` proxies try-it-out through their edge to
 These are on the v0.3 roadmap:
 
 - **Snippet disk resolution.** `<Snippet file="..." />` reading from `snippets/`.
-- **JSX/React snippet components.** Importing a live component via `import { X } from "/snippets/X.jsx"` and rendering `<X />`. Tangly renders MDX + its built-in components, not arbitrary user React islands. Use an MDX snippet, [`<Embed>`](/reference/components/media), or a `<Video>`/`<iframe>` instead.
+- **Snippet component injection.** An imported MDX snippet that uses MDX components doesn't yet inherit the global component set, so those components render undefined.
+- **JSX/React snippet components.** `import { X } from "/snippets/X.jsx"` resolves, but Tangly renders MDX + its built-in components, not arbitrary user React islands. Use an MDX snippet, [`<Embed>`](/reference/components/media), or a `<Video>`/`<iframe>` instead.
 - **Version / language switching.** `navigation.versions` and `navigation.languages` parse but don't render a switcher yet; their groups are flattened into one sidebar. Single-version projects are unaffected.
 - **OG thumbnail generation.** Auto-render social previews.
 - **API playground proxy.** Same shape as Mintlify's, server-side.
