@@ -16,6 +16,7 @@ Notable changes per release. Each entry is authored as an [`<Update>`](/referenc
   - **Full-bleed landing pages.** The `custom` and `frame` page modes now drop the sidebar and render edge-to-edge; `center` drops the sidebar too. Default/wide/api pages are unchanged. ([`969a723`](https://github.com/tanglydocs/tangly/commit/969a723c51b351d57b167ec8c50110cc908d0332))
   - **Real home pages.** A root `index.mdx` renders at `/` (not just a redirect splash), with draft visibility honored and `/` + `/index` canonicalized so they don't compete as duplicate content. ([`738f6b4`](https://github.com/tanglydocs/tangly/commit/738f6b49a535c05d4378aa78f3b34f3582023f60))
   - **Reusable snippet imports + a `Link` component.** `import` of an `/snippets/*` Markdown file now resolves against your project root, and `Link` (with `href`) is a built-in. Broader Font Awesome icon coverage rounds it out.
+  - **Live `.jsx`/`.tsx` snippets, and smarter MDX snippets.** A React component snippet imported from `/snippets/*.jsx` renders as an interactive [Preact](https://preactjs.com) island: hooks work as globals the way Mintlify exposes them, `client:visible` is auto-attached so it hydrates, and `react`/`react-dom` alias to `preact/compat`. Pages with no JSX snippet ship zero extra client JS. An imported `.mdx` snippet now inherits the page's component set, so a snippet that uses `Note`/`Card` (or imports another snippet) renders correctly. ([`9cbcfbb`](https://github.com/tanglydocs/tangly/commit/9cbcfbba7742e5063d4729f78ab6225d8fadafbe), [`2e2ed18`](https://github.com/tanglydocs/tangly/commit/2e2ed18d0511b2916d0ec807d0e6952c6e60afd4))
 
   ## Changes
 
@@ -27,6 +28,8 @@ Notable changes per release. Each entry is authored as an [`<Update>`](/referenc
   - feat(theme-ui): full-bleed landing layout for `custom`/`frame` modes ([`969a723`](https://github.com/tanglydocs/tangly/commit/969a723c51b351d57b167ec8c50110cc908d0332))
   - feat(theme-ui): add `Link` component ([`e62d557`](https://github.com/tanglydocs/tangly/commit/e62d557b11e7e78bab5752720812a0851786296f))
   - feat(plugin): resolve `/snippets/` imports against the project root ([`8a9d3b7`](https://github.com/tanglydocs/tangly/commit/8a9d3b702ea407b0da57a6008a5e2b122117e24c))
+  - feat(runtime): render JSX/TSX snippets as preact islands ([`9cbcfbb`](https://github.com/tanglydocs/tangly/commit/9cbcfbba7742e5063d4729f78ab6225d8fadafbe))
+  - feat(runtime): imported MDX snippets inherit the page component set ([`2e2ed18`](https://github.com/tanglydocs/tangly/commit/2e2ed18d0511b2916d0ec807d0e6952c6e60afd4))
 
   ### Fixes
   - fix(runtime): render the root index page at the site root ([`738f6b4`](https://github.com/tanglydocs/tangly/commit/738f6b49a535c05d4378aa78f3b34f3582023f60)), gate it on draft visibility ([`fa1eb21`](https://github.com/tanglydocs/tangly/commit/fa1eb213798cd0638388b07ce7e4eded5ef182e4)), and canonicalize `/` + `/index` ([`5e40d0f`](https://github.com/tanglydocs/tangly/commit/5e40d0fa0bc28a01b7254092c935a941cbbf8fb9))
@@ -36,6 +39,7 @@ Notable changes per release. Each entry is authored as an [`<Update>`](/referenc
 
   ### Tests
   - test(manifest): cover meta-file exclusion + OpenAPI auto-discovery ([`4dedaac`](https://github.com/tanglydocs/tangly/commit/4dedaac43903941e7626c22c845db77bcaed650c)), anchors-as-nav ([`504ac69`](https://github.com/tanglydocs/tangly/commit/504ac6999b7b392939015d7af790613b11e983e1)), `$ref` resolution ([`af8e8b2`](https://github.com/tanglydocs/tangly/commit/af8e8b2eab1ed89373b35d4c844e6e85ac5e2607)), and the draft-home invariant ([`1c1a588`](https://github.com/tanglydocs/tangly/commit/1c1a58802dfe892445e3d5ab94b822e7044eb4cf))
+  - test(runtime): cover snippet island injection + MDX snippet component threading ([`9cbcfbb`](https://github.com/tanglydocs/tangly/commit/9cbcfbba7742e5063d4729f78ab6225d8fadafbe), [`2e2ed18`](https://github.com/tanglydocs/tangly/commit/2e2ed18d0511b2916d0ec807d0e6952c6e60afd4))
 
 </Update>
 
