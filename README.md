@@ -30,19 +30,19 @@
 
 ## Features
 
-- **Fast dev server.** Astro 6 + Vite. HMR under 250ms. Cold start under 2s on a hundred pages.
-- **Host anywhere.** Static builds you drop on Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No runtime.
-- **Built on Astro.** Builds an [Astro](https://astro.build) site you can eject.
-- **Drop-in Mintlify compat.** Point Tangly at an existing `docs.json` + MDX project. No source edits.
-- **Five themes.** `tang`, `pith`, `pip`, `readable`, `geist`. One `theme` field in `docs.json`, no component changes. See [live demos](https://examples.tangly.dev).
-- **38 MDX components** built in: Cards, Tabs, Steps, Accordions, ParamFields, CodeGroups, Mermaid, KaTeX, OpenAPI try-it. No imports.
+- **Self-hosted and open source.** A static site you own, hosted anywhere: Vercel, Cloudflare, Netlify, AWS, GitHub Pages, S3, nginx. No proprietary backend, no monthly bill.
+- **Drop-in Mintlify compatible.** Point Tangly at an existing `docs.json` + MDX project and it renders unchanged. `tangly migrate` converts a `mint.json` in one command. No source edits.
+- **Auto-generated API docs.** Point at an OpenAPI 3.0 / 3.1 spec and get browseable endpoint pages with an interactive try-it panel. Redoc, Scalar, and Stoplight viewers too.
+- **38 MDX components, no imports.** Cards, Tabs, Steps, Accordions, callouts, ParamFields, CodeGroups, and more. Every theme ships every one.
+- **Code, math, and diagrams.** Shiki syntax highlighting with line highlights, diffs, focus, and titles. Mermaid diagrams. KaTeX math. Multi-language CodeGroups and package-manager tabs.
 - **Built for AI agents.** Every page is also served as raw Markdown (`.md` URL or `Accept: text/markdown`). About 10× token reduction. `/llms.txt` and `/llms-full.txt` ship by default.
-- **OpenAPI 3.0 / 3.1.** Point at a spec, get browseable endpoint pages with try-it.
-- **Static output.** `tangly build` emits a folder. No runtime.
-- **Pagefind search built in.** Instant, ⌘K, no Algolia key.
-- **Social cards, generated.** Every page gets a branded 1200×630 Open Graph image built from its title, theme, and your colors. Links unfurl instead of rendering blank. Per-environment URLs mean PR previews self-reference and stay out of search.
-- **Custom themes.** Build them using components from `@tanglydocs/theme-ui`.
-- **One-line migration from Mintlify.** `tangly migrate` reads `mint.json`, emits a Tangly-shaped `docs.json`. MDX stays untouched.
+- **Five themes, or your own.** `tang`, `pith`, `pip`, `readable`, `geist` via one `theme` field. Build custom themes from `@tanglydocs/theme-ui`. See [live demos](https://examples.tangly.dev).
+- **Search built in.** Pagefind, instant, ⌘K. No Algolia key, no third-party request.
+- **Social cards, generated.** Every page gets a branded 1200×630 Open Graph image built from its title, theme, and your colors. Links unfurl instead of rendering blank. Per-environment URLs keep PR previews out of search.
+- **Custom components.** Drop an `.astro` component into `components/` and use it from MDX. Hot-reloads, no registration.
+- **Drafts.** Mark a page `draft: true`. Hidden in production, visible in `tangly dev`, shippable with `--include-drafts`.
+- **Readable config errors.** `tangly check` reports problems key-by-key with line numbers, plain-English reasons, and did-you-mean fixes.
+- **Fast dev, ejectable.** Astro 6 + Vite under the hood: HMR under 250ms, cold start under 2s on a hundred pages. `tangly eject` to a raw Astro project whenever you outgrow the magic.
 
 ## Install
 
