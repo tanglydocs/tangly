@@ -20,6 +20,7 @@ import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkH1Warn from "./src/lib/remark-h1-warn.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
+import recmaSnippetComponents from "./src/lib/recma-snippet-components.mjs";
 import remarkMintlifyCompat from "./src/lib/remark-mintlify-compat.mjs";
 import remarkSnippetIslands from "./src/lib/remark-snippet-islands.mjs";
 import {
@@ -201,6 +202,9 @@ export default defineConfig({
         // Glossary auto-link runs AFTER shiki so code blocks aren't touched.
         ...(glossaryEntries.length > 0 ? [[rehypeGlossary, { entries: glossaryEntries }]] : []),
       ],
+      // Thread the host page's MDX components into imported `.mdx` snippets so
+      // a snippet using <Note>/<Card>/… inherits the global component set.
+      recmaPlugins: [recmaSnippetComponents],
       gfm: true,
       optimize: false,
     }),
