@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
 import { formatJsonSyntaxError, parseDocsJsonOrThrow } from "@tanglydocs/schema";
 import { ConfigError } from "./config-error.js";
@@ -222,6 +222,24 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
         draft: Boolean(p.frontmatter?.draft),
         ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
       });
+    }
+  }
+
+  // Mintlify parity: when no OpenAPI source is configured anywhere, auto-discover
+  // a root `openapi.{json,yaml,yml}` so hand-authored `openapi: METHOD path`
+  // pages can resolve against it (Mintlify auto-detects a root spec the same
+  // way). Top-level `api.openapi` only feeds resolution — page synthesis is
+  // tab/group-level only (see buildOpenApiPages) — so this never duplicates
+  // hand-authored endpoints.
+  const apiCfg = config.api as { openapi?: string | string[] } | undefined;
+  const hasSpec =
+    apiCfg?.openapi !== undefined || navigation.tabs.some((t) => t.openapi !== undefined);
+  if (!hasSpec) {
+    const rootSpec = ["openapi.json", "openapi.yaml", "openapi.yml"].find((f) =>
+      existsSync(resolve(root, f)),
+    );
+    if (rootSpec) {
+      config.api = { ...(config.api as Record<string, unknown>), openapi: rootSpec };
     }
   }
 
