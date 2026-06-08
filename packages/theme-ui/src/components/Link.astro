@@ -1,0 +1,18 @@
+---
+// Mintlify-style `<Link href="...">text</Link>`. Renders a plain anchor so it
+// inherits prose link styling. Internal links (leading-slash, no protocol) get
+// the configured base prefix via withBase; external links open in a new tab.
+import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
+
+interface Props {
+  href?: string;
+  [key: string]: unknown;
+}
+
+const { href = "#", ...rest } = Astro.props as Props;
+const isExternal = /^https?:\/\//.test(href) || href.startsWith("//") || href.startsWith("mailto:");
+const resolved = !isExternal && href.startsWith("/") ? (withBase(href) ?? href) : href;
+const externalAttrs = isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+<a href={resolved} {...externalAttrs} {...rest}><slot /></a>

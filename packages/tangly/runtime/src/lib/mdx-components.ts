@@ -16,6 +16,7 @@ import Icon from "@tanglydocs/theme-ui/components/Icon.astro";
 import Info from "@tanglydocs/theme-ui/components/Info.astro";
 import Kbd from "@tanglydocs/theme-ui/components/Kbd.astro";
 import LightboxImage from "@tanglydocs/theme-ui/components/LightboxImage.astro";
+import Link from "@tanglydocs/theme-ui/components/Link.astro";
 import Note from "@tanglydocs/theme-ui/components/Note.astro";
 import PackageManager from "@tanglydocs/theme-ui/components/PackageManager.astro";
 import ParamField from "@tanglydocs/theme-ui/components/ParamField.astro";
@@ -55,6 +56,7 @@ export const mdxComponents = {
   Icon,
   Info,
   Kbd,
+  Link,
   Note,
   PackageManager,
   ParamField,
