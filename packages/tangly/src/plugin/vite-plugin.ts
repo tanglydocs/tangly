@@ -287,6 +287,15 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
       if (isVirtualId(id)) {
         return `${RESOLVED_PREFIX}${id}`;
       }
+      // Mintlify snippet imports use a project-root-absolute path
+      // (`import { X } from "/snippets/foo.mdx"`). Vite would resolve that
+      // against the runtime root, not the user's project, and 500. Map it to
+      // the user's snippets dir so .md/.mdx snippets resolve and render.
+      // (.jsx/.tsx component snippets resolve too but need a UI integration to
+      // render — see migration/compatibility docs.)
+      if (id.startsWith("/snippets/")) {
+        return resolve(userRoot, id.slice(1));
+      }
       return null;
     },
 
