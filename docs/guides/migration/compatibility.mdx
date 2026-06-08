@@ -101,7 +101,7 @@ Every component Mintlify ships, plus extras Tangly adds.
 | `<ResponseField>` | ✅ | Same shape. |
 | `<RequestExample>` | ✅ | Identical. |
 | `<ResponseExample>` | ✅ | Identical. |
-| `<OpenApiEndpoint>` | ✅ | Tangly's built-in viewer. |
+| `<OpenApiEndpoint>` | ✅ | Tangly's built-in viewer. A root `openapi.{json,yaml,yml}` is auto-discovered when no spec is configured, so `openapi: "METHOD path"` pages render with zero wiring. |
 | `<OpenApiRedoc>` | ✅ | Tangly extra. |
 | `<OpenApiScalar>` | ✅ | Tangly extra. |
 | `<OpenApiStoplight>` | ✅ | Tangly extra. |
@@ -195,6 +195,7 @@ Mintlify's `api.playground.proxy: true` proxies try-it-out through their edge to
 These are on the v0.3 roadmap:
 
 - **Snippet disk resolution.** `<Snippet file="..." />` reading from `snippets/`.
+- **JSX/React snippet components.** Importing a live component via `import { X } from "/snippets/X.jsx"` and rendering `<X />`. Tangly renders MDX + its built-in components, not arbitrary user React islands. Use an MDX snippet, [`<Embed>`](/reference/components/media), or a `<Video>`/`<iframe>` instead.
 - **OG thumbnail generation.** Auto-render social previews.
 - **API playground proxy.** Same shape as Mintlify's, server-side.
 

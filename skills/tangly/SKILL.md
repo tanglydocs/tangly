@@ -231,6 +231,8 @@ aiContext: short hint for AI consumers
 
 Pages with `openapi:` (or `api:` for companion-narrative) frontmatter switch to the **split layout** automatically: docs column on the left, sticky right-rail playground panel on the right (xl+). Single-column fallback below xl.
 
+**Spec resolution:** a page's `openapi: "METHOD path"` resolves against the owning tab's `openapi`, then top-level `api.openapi`. If neither is set, Tangly auto-discovers a root `openapi.json` / `openapi.yaml` / `openapi.yml` and uses it — so hand-authored endpoint pages work with zero `docs.json` wiring. (Top-level/auto-discovered specs only feed resolution; per-endpoint page synthesis is tab/group-level only, so nothing gets duplicated.)
+
 What renders:
 
 - Method bubble + path (color-coded GET/POST/PUT/PATCH/DELETE — matches the sidebar pill)
