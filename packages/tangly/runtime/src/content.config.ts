@@ -17,8 +17,10 @@ const docs = defineCollection({
     pattern: [
       "**/*.{md,mdx}",
       "!**/_*.{md,mdx}",
-      "!**/README.md",
-      "!**/readme.md",
+      // Project meta files Mintlify auto-ignores (keep in sync with
+      // IGNORED_META_MD in src/manifest/scan-pages.ts). AGENTS.md is
+      // intentionally not ignored — Mintlify renders it.
+      "!**/{README,readme,LICENSE,license,CHANGELOG,changelog,CONTRIBUTING,contributing}.md",
       "!**/node_modules/**",
       "!**/.astro/**",
       "!**/.tangly/**",
