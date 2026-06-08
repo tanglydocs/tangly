@@ -19,7 +19,9 @@ const mode = fm.mode ?? "default";
 const showToc = mode === "default";
 const wide = mode === "wide";
 const center = mode === "center";
-const custom = mode === "custom";
+// `frame` is Mintlify's full-bleed landing mode — render it like `custom`: no
+// page chrome (title/breadcrumbs/TOC), the page owns the whole canvas.
+const custom = mode === "custom" || mode === "frame";
 const api = mode === "api";
 
 const breadcrumbs = page.breadcrumbs ?? [];

@@ -47,7 +47,12 @@ const canonicalBase = site.canonicalUrl;
 const robotsNoindex = site.noindex || page.frontmatter.noindex === true;
 
 const slug = page.slug.replace(/\/+$/, "");
-const pagePath = withBase(slug ? `/${slug}` : "/")?.replace(/\/+$/, "") || "/";
+// The root index page is the home: it renders at `/` and is also routable at
+// `/index`. Canonicalize both to `/` so they don't compete as duplicate
+// content. (Only a root index.mdx slugifies to "index"; nested foo/index.mdx
+// collapses to "foo".)
+const isHome = slug === "" || slug === "index";
+const pagePath = withBase(isHome ? "/" : `/${slug}`)?.replace(/\/+$/, "") || "/";
 const canonicalUrl = canonicalBase ? `${canonicalBase}${pagePath}` : "";
 
 /** Absolutize a relative/external path against `base` (or "" if it can't be). */

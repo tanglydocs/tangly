@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PageModeSchema = z.enum(["default", "wide", "center", "custom", "api"]);
+export const PageModeSchema = z.enum(["default", "wide", "center", "custom", "frame", "api"]);
 
 export const FrontmatterSchema = z
   .object({

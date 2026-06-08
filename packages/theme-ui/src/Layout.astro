@@ -45,6 +45,13 @@ const sidebarItems =
         ? (navigation.tabs.find((t) => t.slug === currentTabSlug)?.sidebar ?? [])
         : navigation.rootSidebar);
 
+// Page mode controls the content frame. `custom`/`frame` are full-bleed landing
+// layouts (no sidebar, edge-to-edge); `center` drops the sidebar but stays a
+// centered column. Everything else keeps the docs sidebar grid.
+const pageMode = page.frontmatter.mode ?? "default";
+const noSidebar = pageMode === "custom" || pageMode === "frame" || pageMode === "center";
+const fullBleed = pageMode === "custom" || pageMode === "frame";
+
 // Theme color CSS vars from config.colors
 const colors = config.colors ?? {};
 const bgLight = typeof colors.background === "object" ? colors.background?.light : (typeof colors.background === "string" ? colors.background : undefined);
@@ -137,6 +144,19 @@ const bannerType = banner?.type ?? "info";
       </div>
     )}
     <TopNav config={config} navigation={navigation} currentTabSlug={currentTabSlug} />
+    {noSidebar ? (
+      <div class={`flex-1 w-full ${fullBleed ? "" : "max-w-3xl mx-auto"}`}>
+        <main
+          class={`min-w-0 ${fullBleed ? "" : "px-4 sm:px-6 py-8"}`}
+          data-pagefind-body
+          data-pagefind-meta={`title:${pageTitle}`}
+        >
+          <span data-pagefind-meta={`slug:${page.slug}`} hidden></span>
+          <slot />
+        </main>
+        <Footer config={config} />
+      </div>
+    ) : (
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
       <aside
         id="tangly-sidebar"
@@ -193,6 +213,7 @@ const bannerType = banner?.type ?? "info";
         <Footer config={config} />
       </div>
     </div>
+    )}
 
     <SearchModal config={config} />
 

@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
-import { relative, resolve, sep } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, relative, resolve, sep } from "node:path";
 import { formatJsonSyntaxError, parseDocsJsonOrThrow } from "@tanglydocs/schema";
 import { ConfigError } from "./config-error.js";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
@@ -8,6 +8,7 @@ import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { applyOpenApiOverride } from "../openapi/resolve-source.js";
 import { resolveEditUrl } from "./git-meta.js";
 import { resolveSite } from "../site/resolve-site.js";
+import { resolveJsonRefs } from "./resolve-refs.js";
 import { resolveNavigation } from "./resolve-nav.js";
 import { scanPages } from "./scan-pages.js";
 import { resolveSectionDefaults } from "./section-defaults.js";
@@ -41,6 +42,14 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     // Surface a friendly "not valid JSON" with line/column instead of a raw
     // SyntaxError dump; ConfigError lets the CLI print it verbatim.
     throw new ConfigError(formatJsonSyntaxError(raw, err, { file: configLabel }));
+  }
+  // Resolve Mintlify-style `$ref` splits (redirects.json, per-language navs)
+  // relative to docs.json before validation, so a multi-file config parses as
+  // one document.
+  try {
+    parsed = resolveJsonRefs(parsed, dirname(configPath));
+  } catch (err) {
+    throw new ConfigError((err as Error).message);
   }
   // `parseDocsJsonOrThrow` raises DocsJsonValidationError whose `.message` is the
   // rendered, key-by-key explanation. Re-wrap as ConfigError so callers print it raw.
@@ -222,6 +231,24 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
         draft: Boolean(p.frontmatter?.draft),
         ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
       });
+    }
+  }
+
+  // Mintlify parity: when no OpenAPI source is configured anywhere, auto-discover
+  // a root `openapi.{json,yaml,yml}` so hand-authored `openapi: METHOD path`
+  // pages can resolve against it (Mintlify auto-detects a root spec the same
+  // way). Top-level `api.openapi` only feeds resolution — page synthesis is
+  // tab/group-level only (see buildOpenApiPages) — so this never duplicates
+  // hand-authored endpoints.
+  const apiCfg = config.api as { openapi?: string | string[] } | undefined;
+  const hasSpec =
+    apiCfg?.openapi !== undefined || navigation.tabs.some((t) => t.openapi !== undefined);
+  if (!hasSpec) {
+    const rootSpec = ["openapi.json", "openapi.yaml", "openapi.yml"].find((f) =>
+      existsSync(resolve(root, f)),
+    );
+    if (rootSpec) {
+      config.api = { ...(config.api as Record<string, unknown>), openapi: rootSpec };
     }
   }
 

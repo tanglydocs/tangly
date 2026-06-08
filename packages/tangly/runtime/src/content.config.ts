@@ -17,17 +17,30 @@ const docs = defineCollection({
     pattern: [
       "**/*.{md,mdx}",
       "!**/_*.{md,mdx}",
-      "!**/README.md",
-      "!**/readme.md",
+      // Project meta files Mintlify auto-ignores (keep in sync with
+      // IGNORED_META_MD in src/manifest/scan-pages.ts, which matches
+      // case-insensitively). picomatch is case-sensitive, so spell each letter
+      // as a [Xx] class to catch any casing (README/readme/Readme/...).
+      // AGENTS.md is intentionally not ignored — Mintlify renders it.
+      "!**/[Rr][Ee][Aa][Dd][Mm][Ee].md",
+      "!**/[Ll][Ii][Cc][Ee][Nn][Ss][Ee].md",
+      "!**/[Cc][Hh][Aa][Nn][Gg][Ee][Ll][Oo][Gg].md",
+      "!**/[Cc][Oo][Nn][Tt][Rr][Ii][Bb][Uu][Tt][Ii][Nn][Gg].md",
       "!**/node_modules/**",
       "!**/.astro/**",
       "!**/.tangly/**",
       "!**/.next/**",
       "!**/.git/**",
       "!**/dist/**",
+      // Root-level reserved dirs — keep in sync with SKIP_DIRS_AT_ROOT in
+      // src/manifest/scan-pages.ts (root-only, so nested reference/components/
+      // etc. stay valid doc paths).
       "!snippets/**",
       "!components/**",
       "!templates/**",
+      "!public/**",
+      "!static/**",
+      "!assets/**",
     ],
   }),
 });

@@ -138,6 +138,24 @@ The slug is the path from the project root, no `.mdx`:
 
 The slug is what you reference in [`docs.json#navigation`](/reference/schema) and what you link from other pages.
 
+### The home page
+
+A root `index.mdx` (or `index.md`) is the site home and renders at `/`, the same as Mintlify. It doesn't need to be listed in `docs.json#navigation`; when present it takes over the root URL and inherits the first tab's sidebar. With no root `index` page, `/` shows a brief loading splash that redirects to the first navigable page.
+
+A nested `foo/index.mdx` collapses to the slug `foo` (served at `/foo`).
+
+### Files that aren't pages
+
+Some files are never treated as docs pages, matching Mintlify:
+
+| Excluded | Why |
+|---|---|
+| `README.md`, `LICENSE.md`, `CHANGELOG.md`, `CONTRIBUTING.md` | Project meta, auto-ignored |
+| `_*.mdx` / `_*.md` | Leading underscore marks partials (e.g. `_section.mdx`) |
+| `snippets/`, `components/`, `templates/`, `public/`, `static/`, `assets/` (at the project root) | Reserved directories |
+
+`AGENTS.md` **is** rendered as a page (Mintlify renders it too). `.tanglyignore` controls the static-asset copy step at build time, not page discovery.
+
 ### Validation
 
 `tangly check` runs frontmatter validation against the schema, walks every internal link, and confirms every navigation entry resolves to a real file. Run it before committing:

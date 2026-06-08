@@ -10,6 +10,12 @@ const MD_JSX_RE = /<[A-Z][A-Za-z0-9]*[\s/>]/;
 
 const SKIP_DIRS = new Set(["node_modules", "dist", ".git", ".astro", ".tangly", ".next"]);
 
+// Project meta files Mintlify auto-ignores, so a ported repo doesn't surface
+// them as doc pages. Mirrors Mintlify's documented `.mintignore` set. Note
+// `AGENTS.md` is intentionally NOT here — Mintlify renders it, so we do too.
+// Keep in sync with the glob negations in `runtime/src/content.config.ts`.
+const IGNORED_META_MD = new Set(["readme.md", "license.md", "changelog.md", "contributing.md"]);
+
 // These directories are only skipped at the user-root level. Deeper
 // `components/` or `templates/` directories are legitimate doc paths
 // (e.g. `reference/components/callouts.mdx`).
@@ -86,8 +92,9 @@ async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void>
     if (!isMdx && !isMd) continue;
     // skip files starting with `_` (snippets, _section.mdx, etc.)
     if (entry.name.startsWith("_")) continue;
-    // README files are reserved for the project root, not docs pages.
-    if (entry.name.toLowerCase() === "readme.md") continue;
+    // Project meta files (README/LICENSE/CHANGELOG/CONTRIBUTING.md) are not
+    // docs pages — Mintlify ignores them, so we match for port parity.
+    if (IGNORED_META_MD.has(entry.name.toLowerCase())) continue;
 
     const slug = relative(root, full)
       .replace(/\.(mdx|md)$/, "")

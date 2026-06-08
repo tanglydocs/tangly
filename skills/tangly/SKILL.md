@@ -65,6 +65,7 @@ bun x tangly init --from ./existing-docs
 
 ```
 docs.json              # config (required, project root)
+index.mdx              # optional site home — renders at / (Mintlify parity)
 introduction.mdx       # any *.mdx at any depth = a page
 guides/
   getting-started.mdx
@@ -76,6 +77,9 @@ public/                # passthrough static assets
 ```
 
 Every `.mdx` is a page; the route is its path relative to the project root, slugified.
+
+- **Home page:** a root `index.mdx`/`index.md` renders at `/` (needn't be in nav; inherits the first tab's sidebar). No root index → `/` is a splash that redirects to the first nav page. A nested `foo/index.mdx` collapses to slug `foo`.
+- **Auto-ignored (never pages), matching Mintlify:** `README.md`, `LICENSE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`; `_*`-prefixed files; root `snippets/`, `components/`, `templates/`, `public/`, `static/`, `assets/`. `AGENTS.md` **is** rendered (Mintlify renders it too).
 
 ## CLI reference
 
@@ -178,7 +182,7 @@ Top-level fields (most common):
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
-| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors, dropdowns, versions, languages all supported. |
+| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors + dropdowns render, including top-level anchors-as-nav (a `navigation.anchors[]` entry wrapping whole tabs/groups). `versions`/`languages` parse but aren't rendered yet (groups flattened into one sidebar, no switcher). |
 | `navbar` | `links[]`, `primary` (button or github) |
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
@@ -204,7 +208,7 @@ description: How invoicing works
 icon: receipt
 tag: New
 draft: false
-mode: wide                # default | wide | center | custom
+mode: wide                # default | wide | center | custom | frame | api (custom/frame = full-bleed, no sidebar)
 template: custom-page      # path or name in templates/
 openapi: openapi.json#/paths/~1users/get
 keywords: [billing, invoices]
@@ -227,6 +231,8 @@ aiContext: short hint for AI consumers
 
 Pages with `openapi:` (or `api:` for companion-narrative) frontmatter switch to the **split layout** automatically: docs column on the left, sticky right-rail playground panel on the right (xl+). Single-column fallback below xl.
 
+**Spec resolution:** a page's `openapi: "METHOD path"` resolves against the owning tab's `openapi`, then top-level `api.openapi`. If neither is set, Tangly auto-discovers a root `openapi.json` / `openapi.yaml` / `openapi.yml` and uses it — so hand-authored endpoint pages work with zero `docs.json` wiring. (Top-level/auto-discovered specs only feed resolution; per-endpoint page synthesis is tab/group-level only, so nothing gets duplicated.)
+
 What renders:
 
 - Method bubble + path (color-coded GET/POST/PUT/PATCH/DELETE — matches the sidebar pill)
@@ -248,7 +254,7 @@ Full reference: `docs/guides/authoring/openapi.mdx`.
 
 ## Components (built-in MDX, no import)
 
-All 33 ship Mintlify-compatible names and render unmodified:
+All 34 ship Mintlify-compatible names and render unmodified:
 
 - Callouts: `Note`, `Tip`, `Warning`, `Info`, `Check`, `Danger`, `Update`
 - Cards: `Card`, `CardGroup`, `Columns`
@@ -258,7 +264,7 @@ All 33 ship Mintlify-compatible names and render unmodified:
 - Layout: `Frame`, `Accordion` + `AccordionGroup`, `Expandable`
 - API: `ParamField`, `ResponseField`, `RequestExample` (overrides panel tabs by language), `ResponseExample`, `OpenApiEndpoint` (split layout: docs left, sticky playground panel right at xl+), `OpenApiScalar`, `OpenApiRedoc`, `OpenApiStoplight`
 - Media: `Embed` (cross-page block reuse), `Video` (YouTube/Vimeo/mp4 with lazy iframe), `LightboxImage` (auto-wraps every inline `<img>`)
-- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`
+- Text: `Badge` (status/version chip — `default`/`tip`/`warning`/`error`/`accent`, sizes `small`/`medium`/`large`; aliases `note`→`default`, `success`→`tip`, `caution`→`warning`, `danger`→`error`), `Icon` (Lucide + Font Awesome aliases + brand glyphs), `Tooltip`, `GlossaryTerm`, `Link` (`href` anchor; internal links get the base prefix, external open in a new tab)
 
 Full prop reference per family: `docs/reference/components/{callouts,cards,code,tabs-and-steps,layout,api,media,text}.mdx`.
 
@@ -382,6 +388,9 @@ Five strategies (host the docs at `/docs` on an existing site): build-into-publi
 - **Drafts** — hidden in `build` unless `TANGLY_INCLUDE_DRAFTS=1`. Visible in `dev`.
 - **Vite pinning** — root `package.json` pins Vite via `overrides` because Tailwind v4 pulls a newer Vite that conflicts with Astro's bundled version.
 - **`tangly` is a CLI; `@tanglydocs/schema` is private** — the npm org `@tangly` was unavailable, so workspace pkgs use `@tanglydocs`.
+- **`docs.json` `$ref`** — a config can split across files (`{ "$ref": "./redirects.json" }`, per-language nav files). Refs resolve relative to the referencing file (with `#/pointer` fragments) before validation.
+- **Snippet imports** — `import { X } from "/snippets/foo.mdx"` resolves to `<project>/snippets/foo.mdx`. MD/MDX snippets render; a snippet using MDX components doesn't yet inherit the global set, and `.jsx`/`.tsx` component snippets need a UI integration.
+- **OpenAPI auto-discovery** — if no `api.openapi`/tab spec is set, a root `openapi.{json,yaml,yml}` is auto-used for `openapi: "METHOD path"` pages.
 
 ## Reference (in-repo)
 
