@@ -45,4 +45,14 @@ describe("scanPages", () => {
     expect(slugs).toContain("guides");
     expect(slugs).not.toContain("guides/index");
   });
+
+  // Locks the invariant the home-render draft guard relies on: a root index.mdx
+  // gets slug "index" with its draft flag preserved, so a draft home lands in
+  // excludedSlugs and the / route falls back to the splash in production.
+  test("root index.mdx yields slug 'index' and preserves draft", async () => {
+    write("index.mdx", "---\ntitle: Home\ndraft: true\n---\nbody\n");
+    const home = (await scanPages(TMP)).find((p) => p.slug === "index");
+    expect(home).toBeDefined();
+    expect(home?.frontmatter?.draft).toBe(true);
+  });
 });
