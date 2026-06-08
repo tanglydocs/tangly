@@ -182,7 +182,7 @@ Top-level fields (most common):
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
-| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors, dropdowns, versions, languages all supported. |
+| `navigation` | `tabs[]` → `groups[]` → `pages[]` (recursive groups OK), or top-level `groups[]`/`pages[]`. Anchors + dropdowns render. `versions`/`languages` parse but aren't rendered yet (groups flattened into one sidebar, no switcher). |
 | `navbar` | `links[]`, `primary` (button or github) |
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
