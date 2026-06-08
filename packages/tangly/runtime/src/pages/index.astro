@@ -16,7 +16,12 @@ const entries = await getCollection("docs");
 // nested `foo/index.mdx` collapses to `foo`). When that page exists we render
 // it in full at `/`; otherwise we fall back to <HomeSplash>, which redirects
 // to the first navigable page.
-const homeEntry = entries.find((e) => e.id === "index" || e.id === "");
+// A draft home is excluded in production (its slug is in excludedSlugs when
+// drafts aren't included), so `/` falls back to the splash just like `/index`.
+const excludedSlugs = new Set(manifest.excludedSlugs ?? []);
+const homeEntry = entries.find(
+  (e) => (e.id === "index" || e.id === "") && !excludedSlugs.has(e.id),
+);
 
 function humanizeSlug(slug: string): string {
   const last = slug.split("/").pop() ?? slug;
