@@ -23,16 +23,28 @@ my-docs/
 
 ### What's excluded by default
 
-A baseline list ships with Tangly and is **always applied**. These never end up in `dist/`:
+A baseline list ships with Tangly and is **always applied** — no `!pattern` can re-include these:
 
 - `**/*.md`, `**/*.mdx`: these compile to pages, not raw downloads
 - `**/_*.md`, `**/_*.mdx`: snippets / partials
-- `node_modules/`, `dist/`, `.git/`, `.astro/`, `.tangly/`, `.vercel/`, `.wrangler/`, `.next/`
+- `node_modules/`, `dist/`, `.astro/`, `.tangly/`, `.vercel/`, `.wrangler/`, `.next/`
+- `.git` — directory *or* file (a submodule's gitlink file would leak a local filesystem path)
 - Lockfiles + `package.json` + `tsconfig*.json`
 - `.env`, `.env.*`, `*.log`, `.DS_Store`
 - `docs.json`, `mint.json`: Tangly's own config
 - `.gitignore`, `.tanglyignore`: ignore control files (often reveal private paths)
 - `README.md`: convention
+
+A second list of **overridable defaults** keeps repo plumbing out of `dist/` but can be re-included with a `!pattern` in `.tanglyignore` when you genuinely want one shipped:
+
+- Dotfiles generally (`.github/`, `.editorconfig`, …) — except `.well-known/` and `.nojekyll`, which static hosts actually serve
+- `Makefile`, `wrangler.*`, `vercel.json`, `netlify.toml`: build + deploy config
+- `*.bak`: backup files (`tangly migrate` itself writes `mint.json.bak`)
+
+```
+# .tanglyignore — ship .htaccess despite the dotfile default
+!.htaccess
+```
 
 ### Adding more exclusions
 

@@ -1,6 +1,6 @@
 ---
 title: Deploying
-description: Ship your docs to Vercel, Cloudflare Pages, Netlify, Docker, or any static host.
+description: Ship your docs to Vercel, Cloudflare, Netlify, Docker, or any static host.
 icon: "rocket"
 ---
 
@@ -47,14 +47,45 @@ Or set the same in the Vercel dashboard:
 | Output Directory | `dist` |
 | Install Command | `bun install` |
 
-## Cloudflare Pages
+## Cloudflare Workers (static assets)
+
+Workers with [static assets](https://developers.cloudflare.com/workers/static-assets/) is Cloudflare's current way to host a static site (Pages is in maintenance mode). An assets-only Worker needs no script — just a `wrangler.jsonc`:
+
+```jsonc
+{
+  "name": "my-docs",
+  "compatibility_date": "2026-06-10",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "docs.example.com", "custom_domain": true }]
+}
+```
+
+```bash
+bun x tangly build
+bunx wrangler deploy
+```
+
+Two settings matter:
+
+- **`html_handling: "drop-trailing-slash"`** — Tangly emits directory-style output (`cli/audit/index.html`) but canonical URLs without a trailing slash (`/cli/audit`, Mintlify parity). Cloudflare's default (`auto-trailing-slash`) 307-redirects every page to the slash variant — each URL then contradicts its own canonical. `drop-trailing-slash` serves `/cli/audit` directly and redirects `/cli/audit/` down to it, matching the canonicals.
+- **`not_found_handling: "404-page"`** — serves Tangly's `dist/404.html` (your `404.mdx` if you have one) for unknown routes.
+
+The presence of `wrangler.toml`/`wrangler.jsonc` triggers the `cloudflare` adapter on auto-detect, and the build's copy step excludes `wrangler.*` from `dist/` automatically.
+
+### Cloudflare Pages (maintenance mode)
+
+Existing Pages projects keep working:
 
 ```bash
 bun x tangly build
 bunx wrangler pages deploy ./dist --project-name my-docs
 ```
 
-For a git-connected project, in the Cloudflare dashboard:
+For a git-connected Pages project, in the Cloudflare dashboard:
 
 | Setting | Value |
 | ------- | ----- |
@@ -63,18 +94,8 @@ For a git-connected project, in the Cloudflare dashboard:
 | Build output directory | `dist` |
 | Root directory | `/` (or your subdir) |
 
-A `wrangler.toml` at the project root triggers auto-detect:
-
-```
-name = "my-docs"
-compatibility_date = "2026-04-29"
-
-[site]
-bucket = "./dist"
-```
-
 <Note>
-  Cloudflare Pages today serves the static `dist/` regardless of the `cloudflare` adapter. The adapter signal is preserved for when SSR routes land and Workers becomes the runtime.
+  Cloudflare serves the static `dist/` regardless of the `cloudflare` adapter. The adapter signal is preserved for when SSR routes land and Workers becomes the runtime.
 </Note>
 
 ## Netlify

@@ -5,7 +5,7 @@ description: |
   open-source documentation framework that renders Mintlify projects unmodified.
   Covers initializing a documentation project, validating with `tangly check`,
   authoring docs.json + MDX content, porting an existing Mintlify docs site via
-  `tangly migrate`, and deploying static output to Vercel, Cloudflare Pages,
+  `tangly migrate`, and deploying static output to Vercel, Cloudflare,
   Netlify, or any CDN (including subpath hosting via --base).
 
   Apply when: working in a Tangly documentation repo; building, scaffolding, or
@@ -19,7 +19,7 @@ compatibility: Designed for Claude Code and other agent-skills clients. Requires
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 metadata:
   author: tanglydocs
-  version: 0.2.0
+  version: 0.2.1
   category: documentation
   tags: tangly, documentation, docs, mintlify, mdx, astro, static-site, site-generator, docs-as-code, openapi
   homepage: https://tangly.dev
@@ -121,19 +121,21 @@ Serve `./dist` locally to spot-check the build.
 - `--root <dir>`
 
 ### `tangly check`
-Validate config, navigation refs, links, images, frontmatter. Use in CI.
+Validate config, navigation refs, links, images, frontmatter, and MDX. Use in CI — check passing predicts build passing.
 - `--strict` — warnings become errors (recommended in CI)
 - `--no-links` — skip link checking
 - `--json` — machine-readable output
 - `--include-drafts` — also check drafts
 - `--config <path>`, `--root <dir>`
 
+MDX validation parses every page with the build's parser config: syntax errors (unclosed JSX, malformed expressions) and unbound expression identifiers (literal `{snake_case}` placeholders in prose → prerender `ReferenceError`) report as `file:line:col` errors with a fix hint. `/snippets` files are never scanned (they legitimately take bare `{props}` variables).
+
 Exit non-zero on errors.
 
 ### `tangly migrate [root]`
 Migrate to Tangly. Two paths:
 - `mint.json` present → full conversion via `convertMintToDocs`. Backs up `mint.json` to `mint.json.bak` (or `--keep-source` to leave it).
-- `docs.json` present → validates + updates `$schema` URL to Tangly's. Theme left as-is; emits a notice if it isn't a Tangly theme.
+- `docs.json` present → validates + updates `$schema` URL to Tangly's. A non-Tangly theme (Mintlify alias like `aspen`) is rewritten to `tang` (semantics-preserving — the schema maps aliases to tang anyway). Prompts for `siteUrl` when absent (canonicals + social cards); `--yes` skips the prompt.
 
 Flags: `--yes` (skip prompts), `--keep-source`, `--root`.
 
@@ -296,7 +298,8 @@ What it does:
 1. Reads `mint.json`, runs `convertMintToDocs` → writes `docs.json`.
 2. Renames `mint.json` → `mint.json.bak` (or keeps with `--keep-source`).
 3. Sets `$schema` to `https://tangly.dev/schema/docs.json`.
-4. Surfaces a notice if `theme` isn't one of `TANGLY_THEMES`.
+4. Rewrites a non-Tangly `theme` (Mintlify alias) to `tang`.
+5. Prompts for `siteUrl` when absent (skipped with `--yes`).
 
 Auto-handled at render time (no manual rewrite needed):
 - `<latex>...</latex>` blocks → `$$...$$` before MDX parse.
@@ -329,7 +332,31 @@ Or git-connected via `vercel.json`:
 { "buildCommand": "bun x tangly build", "outputDirectory": "dist", "framework": null }
 ```
 
-### Cloudflare Pages
+### Cloudflare Workers (static assets) — preferred; Pages is in maintenance mode
+
+Assets-only Worker, no script needed. `wrangler.jsonc`:
+
+```jsonc
+{
+  "name": "my-docs",
+  "compatibility_date": "2026-06-10",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "docs.example.com", "custom_domain": true }]
+}
+```
+
+```bash
+bun x tangly build
+bunx wrangler deploy
+```
+
+`html_handling: "drop-trailing-slash"` is REQUIRED: Tangly's output is directory-style (`cli/audit/index.html`) but canonicals are no-slash (`/cli/audit`, Mintlify parity). CF's default `auto-trailing-slash` 307s every URL to the slash variant, contradicting its own canonical. `not_found_handling: "404-page"` serves Tangly's `dist/404.html`.
+
+### Cloudflare Pages (legacy)
 
 ```bash
 bun x tangly build
@@ -381,6 +408,8 @@ Five strategies (host the docs at `/docs` on an existing site): build-into-publi
 
 ## Gotchas
 
+- **Literal `{placeholder}` in prose is a JSX expression** — `{search_term_string}` parses, compiles, then dies at prerender with a `ReferenceError`. Wrap literal placeholders in backticks: `` `{search_term_string}` ``. `tangly check` catches these (file:line:col) before a build; bare URLs containing `{…}` are fine (gfm autolink wins).
+- **Repo files in `dist/`** — the build copies everything at the project root that isn't excluded. Baseline (non-overridable) excludes `.git` (incl. submodule gitlink files), lockfiles, `docs.json`, `.env*`; overridable defaults exclude dotfiles (except `.well-known/`, `.nojekyll`), `Makefile`, `wrangler.*`, `vercel.json`, `netlify.toml`, `*.bak`. Re-include with `!pattern` in `.tanglyignore`; add project-specific exclusions there too.
 - **Frontmatter `title` is the page H1** — don't write `# Title` or `<h1>` in the body. `tangly dev` warns when it finds one. Use `## H2` for top-level sections.
 - **Don't run `oxfmt` on `.mdx` / `.md` / `.astro`** — it mangles them. The repo's `.prettierignore` excludes them; keep it current.
 - **Tailwind content scanner** — theme components must list `@source` in `theme.css`; the consuming project's scanner only auto-detects its own files.

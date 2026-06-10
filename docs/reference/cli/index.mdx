@@ -160,7 +160,7 @@ tangly build --analyze
 
 ## check
 
-Validate config, links, and frontmatter.
+Validate config, links, frontmatter, and MDX.
 
 ```bash
 tangly check [--strict] [--no-links] [--json] [--include-drafts]
@@ -182,6 +182,20 @@ tangly check --json | jq '.errors'
 ```
 
 Exit code is `0` when there are no errors (or no errors+warnings under `--strict`), `1` otherwise.
+
+### MDX validation
+
+Every page is parsed with the same MDX parser configuration the build uses, so `check` passing predicts `build` passing:
+
+- **Syntax errors** (unclosed JSX tags, malformed expressions, bad `import`/`export`) are reported with `file:line:column`.
+- **Unbound expression identifiers** are flagged before they become prerender `ReferenceError`s. The classic case is a literal placeholder in prose — `{search_term_string}` is valid MDX, compiles, and only explodes at render time:
+
+```
+✗ rules/schema/website-search.mdx:5:6 — ReferenceError at build: `search_term_string` is not defined
+      hint: MDX treats {…} as a JSX expression — wrap literal placeholders in backticks
+```
+
+The fix is usually to wrap the placeholder in backticks: `` `{search_term_string}` ``. Identifiers bound by the file's `import`/`export` statements, expression-local declarations and arrow params, MDX-provided names (`props`, `frontmatter`, `components`), and JS globals are all recognized. Files under `/snippets` are never scanned — reusable snippets legitimately take bare `{props}`-style variables from the importing page.
 
 ## migrate
 
@@ -209,7 +223,9 @@ tangly migrate --yes
 tangly migrate --keep-source
 ```
 
-If your `theme:` value isn't a Tangly theme, `migrate` warns but does not change it. You pick the replacement explicitly.
+If your `theme:` value isn't a Tangly theme (a Mintlify alias like `aspen` or `maple`), `migrate` rewrites it to `tang` — the schema maps every alias to `tang` at parse time anyway, so the rewrite only makes the file say what it does. The notice lists the other Tangly themes if you'd rather pick one.
+
+When `docs.json` has no `siteUrl`, `migrate` prompts for your production URL (used for canonical links and social cards). Press Enter to skip; `--yes` skips the prompt entirely.
 
 ## eject
 
