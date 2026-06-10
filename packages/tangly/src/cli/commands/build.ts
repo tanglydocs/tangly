@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { defineCommand } from "citty";
 import pc from "picocolors";
 import { buildBuildReport, writeBuildReport } from "../../build-outputs/build-report.js";
+import { describeBuildError } from "../../check/build-error.js";
 import { copyStaticAssets } from "../../build-outputs/copy-assets.js";
 import { writeBuildOutputs } from "../../build-outputs/index.js";
 import { runPagefind } from "../../build-outputs/run-pagefind.js";
@@ -160,6 +161,9 @@ export const buildCommand = defineCommand({
     // copyStaticAssets, pagefind) reads paths absolute, but other tools
     // invoked later might assume the original cwd.
     const originalCwd = process.cwd();
+    // Captured (not rethrown) so the staging cleanup in `finally` still runs
+    // before we report + exit.
+    let buildError: unknown;
     try {
       process.chdir(stagingDir);
       const { build } = (await import("astro")) as typeof import("astro");
@@ -178,6 +182,8 @@ export const buildCommand = defineCommand({
         rmSync(outDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
       }
       cpSync(stagingOut, outDir, { recursive: true, dereference: true });
+    } catch (err) {
+      buildError = err ?? new Error("Astro build failed");
     } finally {
       try {
         process.chdir(originalCwd);
@@ -197,6 +203,20 @@ export const buildCommand = defineCommand({
           ),
         );
       }
+    }
+
+    if (buildError !== undefined) {
+      // Point at the author's source file, not the prerender chunk stack.
+      console.error("");
+      for (const line of describeBuildError(buildError, manifest)) {
+        console.error(line.startsWith("✗") ? pc.red(line) : pc.yellow(line));
+      }
+      const stack = (buildError as Error).stack;
+      if (stack) {
+        console.error(pc.dim(`\n  ${stack.split("\n").slice(0, 4).join("\n  ")}`));
+      }
+      errorFooter();
+      process.exit(1);
     }
 
     // Snapshot what Astro just emitted so copyStaticAssets can hard-protect
