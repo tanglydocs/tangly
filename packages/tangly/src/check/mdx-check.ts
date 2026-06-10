@@ -216,6 +216,25 @@ function walkForFreeRefs(node: EstreeNode | null | undefined, scope: Scope, refs
     case "TemplateLiteral":
       walk(node.expressions);
       return;
+    case "MetaProperty":
+      // `import.meta.env.X` — `import`/`meta` are keywords, not references.
+      return;
+    case "UnaryExpression":
+      // `typeof undeclared` is legal (returns "undefined", never throws) —
+      // but only for a BARE identifier; `typeof x.y` still throws on x.
+      if (node.operator === "typeof" && (node.argument as EstreeNode)?.type === "Identifier") {
+        return;
+      }
+      walk(node.argument);
+      return;
+    case "ClassExpression":
+    case "ClassDeclaration": {
+      const inner: Scope = { bindings: new Set(), parent: scope };
+      if (node.id) collectPatternNames(node.id as EstreeNode, inner.bindings);
+      walkForFreeRefs(node.superClass as EstreeNode, inner, refs);
+      walkForFreeRefs(node.body as EstreeNode, inner, refs);
+      return;
+    }
     case "BreakStatement":
     case "ContinueStatement":
       return; // labels are not references
@@ -308,10 +327,13 @@ type MdastNode = {
   position?: { start?: { line: number; column: number } };
 };
 
-// Parser parity with the runtime's astro.config: remark-gfm and remark-math
-// register micromark *syntax* extensions, so e.g. `$$…$$` math (the target
-// of the `<latex>` source rewrite) parses as math instead of literal braces
-// hitting the JSX-expression parser.
+// Syntax parity with the runtime's astro.config: of the build's remark
+// plugins, remark-gfm and remark-math are the ones that register micromark
+// *syntax* extensions — they change what parses as a JSX expression (gfm
+// autolinks swallow `{x}` in bare URLs; `$$…$$` math, the target of the
+// `<latex>` source rewrite, parses as math instead of literal braces). The
+// build's other remark plugins transform the tree post-parse and don't
+// affect expression boundaries, so they're not replicated here.
 const processor = createProcessor({ remarkPlugins: [remarkGfm, remarkMath] });
 
 const PLACEHOLDER_HINT =
@@ -328,7 +350,7 @@ const PLACEHOLDER_HINT =
  * (a `title: Use {placeholders}` frontmatter line is NOT an expression).
  */
 function blankFrontmatter(source: string): string {
-  const match = /^---\r?\n[\s\S]*?\r?\n---[ \t]*(\r?\n|$)/.exec(source);
+  const match = /^---\r?\n(?:[\s\S]*?\r?\n)?---[ \t]*(\r?\n|$)/.exec(source);
   if (!match) return source;
   const block = match[0];
   const newlines = block.match(/\r?\n/g)?.length ?? 0;
@@ -337,6 +359,8 @@ function blankFrontmatter(source: string): string {
 
 export function checkMdxSource(source: string, file: string): MdxIssue[] {
   const issues: MdxIssue[] = [];
+  // Known limitation: the `<latex>` rewrite inserts newlines, so reported
+  // line numbers drift for issues BELOW a latex block in the same file.
   const compat = applyMdxSourceCompat(blankFrontmatter(source)).code;
 
   let tree: MdastNode;
@@ -431,8 +455,13 @@ function visit(node: MdastNode, fn: (node: MdastNode) => void): void {
  *  Markdown (no JSX expressions) and are skipped. */
 export function checkManifestMdx(manifest: Manifest): MdxIssue[] {
   const issues: MdxIssue[] = [];
+  const snippetsDir = `${manifest.root.replaceAll("\\", "/").replace(/\/+$/, "")}/snippets/`;
   for (const [, page] of manifest.pages) {
     if (!page.file.endsWith(".mdx")) continue;
+    // Enforce the documented contract explicitly (snippets shouldn't be in
+    // manifest.pages, but a scan change must not start false-positive on
+    // their bare `{props}` references).
+    if (page.file.replaceAll("\\", "/").startsWith(snippetsDir)) continue;
     let source: string;
     try {
       source = readFileSync(page.file, "utf8");

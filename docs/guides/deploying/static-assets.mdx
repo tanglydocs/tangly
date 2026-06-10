@@ -46,6 +46,14 @@ A second list of **overridable defaults** keeps repo plumbing out of `dist/` but
 !.htaccess
 ```
 
+Re-including a file *inside* an excluded directory needs the directory re-included first (standard gitignore semantics — an excluded directory is never descended into):
+
+```
+# .tanglyignore — ship one file from an otherwise-excluded dot-directory
+!.config
+!.config/public-thing.json
+```
+
 ### Adding more exclusions
 
 Two layers, both **additive** to the baseline:

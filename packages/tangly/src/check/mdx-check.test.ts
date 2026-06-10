@@ -59,6 +59,23 @@ describe("checkMdxSource — unbound expression identifiers", () => {
     expect(checkMdxSource(src, "a.mdx")).toEqual([]);
   });
 
+  test("allows import.meta and bare typeof checks", () => {
+    const src = `${FM}{import.meta.env.BASE_URL}\n\n{typeof window !== "undefined" ? "browser" : "ssr"}\n`;
+    expect(checkMdxSource(src, "a.mdx")).toEqual([]);
+  });
+
+  test("typeof on a member expression still flags the unbound object", () => {
+    const src = `${FM}{typeof someGlobal.flag === "boolean" ? "y" : "n"}\n`;
+    const issues = checkMdxSource(src, "a.mdx");
+    expect(issues).toHaveLength(1);
+    expect(issues[0]!.message).toContain("someGlobal");
+  });
+
+  test("handles empty frontmatter blocks", () => {
+    const src = `---\n---\n\nProse with \`{safe}\` only.\n`;
+    expect(checkMdxSource(src, "a.mdx")).toEqual([]);
+  });
+
   test("template literals and member chains resolve against bindings", () => {
     const src = `${FM}export const base = "https://x.dev";\n\n{\`\${base}/docs\`}\n`;
     expect(checkMdxSource(src, "a.mdx")).toEqual([]);
