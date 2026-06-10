@@ -125,6 +125,51 @@ describe("copyStaticAssets", () => {
     expect(existsSync(join(TMP, "out/.tanglyignore"))).toBe(false);
   });
 
+  test("excludes repo internals: .git gitlink file, Makefile, deploy configs, *.bak", async () => {
+    // Submodule checkout: .git is a FILE whose content is an absolute path.
+    writeFileSync(`${TMP}/src/.git`, "gitdir: /Users/someone/internal/path/.git/modules/docs\n");
+    writeFileSync(`${TMP}/src/Makefile`, "build:\n\ttangly build\n");
+    writeFileSync(`${TMP}/src/wrangler.jsonc`, "{}");
+    writeFileSync(`${TMP}/src/vercel.json`, "{}");
+    writeFileSync(`${TMP}/src/netlify.toml`, "");
+    writeFileSync(`${TMP}/src/mint.json.bak`, "{}");
+    const m = fakeManifest(`${TMP}/src`);
+    await copyStaticAssets({ manifest: m, outDir: `${TMP}/out` });
+    expect(existsSync(join(TMP, "out/.git"))).toBe(false);
+    expect(existsSync(join(TMP, "out/Makefile"))).toBe(false);
+    expect(existsSync(join(TMP, "out/wrangler.jsonc"))).toBe(false);
+    expect(existsSync(join(TMP, "out/vercel.json"))).toBe(false);
+    expect(existsSync(join(TMP, "out/netlify.toml"))).toBe(false);
+    expect(existsSync(join(TMP, "out/mint.json.bak"))).toBe(false);
+  });
+
+  test("excludes dotfiles by default but ships .well-known/ and .nojekyll", async () => {
+    mkdirSync(`${TMP}/src/.github/workflows`, { recursive: true });
+    writeFileSync(`${TMP}/src/.github/workflows/ci.yml`, "on: push\n");
+    writeFileSync(`${TMP}/src/.editorconfig`, "root = true\n");
+    mkdirSync(`${TMP}/src/.well-known/acme-challenge`, { recursive: true });
+    writeFileSync(`${TMP}/src/.well-known/security.txt`, "Contact: x\n");
+    writeFileSync(`${TMP}/src/.well-known/acme-challenge/token`, "abc");
+    writeFileSync(`${TMP}/src/.nojekyll`, "");
+    const m = fakeManifest(`${TMP}/src`);
+    await copyStaticAssets({ manifest: m, outDir: `${TMP}/out` });
+    expect(existsSync(join(TMP, "out/.github"))).toBe(false);
+    expect(existsSync(join(TMP, "out/.editorconfig"))).toBe(false);
+    expect(existsSync(join(TMP, "out/.well-known/security.txt"))).toBe(true);
+    expect(existsSync(join(TMP, "out/.well-known/acme-challenge/token"))).toBe(true);
+    expect(existsSync(join(TMP, "out/.nojekyll"))).toBe(true);
+  });
+
+  test("default exclusions (not baseline) can be re-included via .tanglyignore", async () => {
+    writeFileSync(`${TMP}/src/.tanglyignore`, "!.htaccess\n");
+    writeFileSync(`${TMP}/src/.htaccess`, "RewriteEngine On\n");
+    writeFileSync(`${TMP}/src/.editorconfig`, "root = true\n");
+    const m = fakeManifest(`${TMP}/src`);
+    await copyStaticAssets({ manifest: m, outDir: `${TMP}/out` });
+    expect(existsSync(join(TMP, "out/.htaccess"))).toBe(true);
+    expect(existsSync(join(TMP, "out/.editorconfig"))).toBe(false);
+  });
+
   test("baseline cannot be re-included via user negation patterns", async () => {
     // Adversarial .tanglyignore: try to un-ignore baseline-excluded files.
     writeFileSync(

@@ -24,11 +24,14 @@ const BASELINE = [
   ".wrangler/",
   ".next/",
   "dist/",
-  // VCS + dependency manager state.
-  ".git/",
+  // VCS + dependency manager state. No trailing slash: in a submodule
+  // checkout `.git` is a gitlink FILE (whose content leaks an absolute
+  // filesystem path) — the pattern must match both file and directory.
+  ".git",
   "node_modules/",
   // Lockfiles + manifests + ts/build config — not for shipping.
   "bun.lock",
+  "bun.lockb",
   "pnpm-lock.yaml",
   "yarn.lock",
   "package-lock.json",
@@ -49,6 +52,31 @@ const BASELINE = [
   ".tanglyignore",
   // Convention.
   "README.md",
+];
+
+/**
+ * Default ignore — applied before the user's own rules, so a `!pattern`
+ * in `.tanglyignore` (or `.gitignore`) CAN re-include any of these.
+ *
+ * Repo plumbing that routinely sits at a docs root and has no business in
+ * a published site, but where a deliberate opt-back-in is legitimate
+ * (`.htaccess` on Apache hosts, for example).
+ */
+const DEFAULTS = [
+  // Dotfiles generally — CI config, editor state, VCS metadata.
+  ".*",
+  // …except the ones static hosts actually serve.
+  "!.well-known",
+  "!.well-known/**",
+  "!.nojekyll",
+  // Build + deploy tooling config.
+  "Makefile",
+  "makefile",
+  "wrangler.*",
+  "vercel.json",
+  "netlify.toml",
+  // Backup cruft — `tangly migrate` itself writes mint.json.bak.
+  "*.bak",
 ];
 
 export interface BuildIgnoreMatcherOptions {
@@ -76,11 +104,12 @@ export interface IgnoreMatcher {
  *      can't re-include the gitignore control file, and a user
  *      `!node_modules/foo` can't undo the build-noise exclusion.
  *
- *   2. **User layer** — `.gitignore` (root) + `.tanglyignore` (root)
- *      merged into a second `Ignore` instance. Additive between the
- *      two: a `!path` pattern in `.tanglyignore` CAN re-include
- *      something `.gitignore` excluded (intentional escape hatch
- *      for "in git but also in build" cases).
+ *   2. **User layer** — DEFAULTS + `.gitignore` (root) + `.tanglyignore`
+ *      (root) merged into a second `Ignore` instance, in that order.
+ *      Last-match-wins within the instance, so a `!path` pattern in
+ *      `.tanglyignore` CAN re-include something `.gitignore` or the
+ *      DEFAULTS excluded (intentional escape hatch for "in git but
+ *      also in build" cases, or shipping a dotfile like `.htaccess`).
  *
  * Cascading sub-directory `.gitignore` files are not honored — only
  * root-level. Documented limitation.
@@ -88,21 +117,18 @@ export interface IgnoreMatcher {
 export function buildIgnoreMatcher(opts: BuildIgnoreMatcherOptions): IgnoreMatcher {
   const sources: string[] = ["baseline"];
   const baseline: Ignore = ignore().add(BASELINE);
-  const userLayer: Ignore = ignore();
-  let hasUserLayer = false;
+  const userLayer: Ignore = ignore().add(DEFAULTS);
 
   const gitignore = join(opts.userRoot, ".gitignore");
   if (existsSync(gitignore)) {
     userLayer.add(readFileSync(gitignore, "utf8"));
     sources.push(".gitignore");
-    hasUserLayer = true;
   }
 
   const tanglyignore = join(opts.userRoot, ".tanglyignore");
   if (existsSync(tanglyignore)) {
     userLayer.add(readFileSync(tanglyignore, "utf8"));
     sources.push(".tanglyignore");
-    hasUserLayer = true;
   }
 
   function isIgnored(relativePath: string): boolean {
@@ -110,7 +136,7 @@ export function buildIgnoreMatcher(opts: BuildIgnoreMatcherOptions): IgnoreMatch
     if (!normalized) return true;
     // Baseline is the floor — short-circuit so user rules can't unmask it.
     if (baseline.ignores(normalized)) return true;
-    if (hasUserLayer && userLayer.ignores(normalized)) return true;
+    if (userLayer.ignores(normalized)) return true;
     return false;
   }
 
