@@ -64,6 +64,28 @@ describe("describeBuildError", () => {
     expect(lines[0]).toContain("boom at render");
   });
 
+  test("maps chunk names for pages with underscores in the filename", () => {
+    const m = fakeManifest({
+      "api/api_reference": "---\ntitle: X\n---\n\nClean page.\n",
+    });
+    const err = new Error("boom at render");
+    err.stack = `Error: boom at render\n    at /tmp/x/dist/.prerender/chunks/api_reference_xYz789.mjs:31:9`;
+    const lines = describeBuildError(err, m);
+    expect(lines[0]).toContain("api/api_reference.mdx");
+  });
+
+  test("does not misdiagnose fs errors via the MDX scan", () => {
+    // A bad page exists, but the failure is a copy-phase fs error — report
+    // the real error, not the page.
+    const m = fakeManifest({
+      bad: "---\ntitle: X\n---\n\n{some_placeholder}\n",
+    });
+    const err = new Error("ENOSPC: no space left on device, copyfile");
+    const lines = describeBuildError(err, m);
+    expect(lines[0]).toContain("ENOSPC");
+    expect(lines.join("\n")).not.toContain("some_placeholder");
+  });
+
   test("adds the backticks hint for ReferenceErrors", () => {
     const m = fakeManifest({ clean: "---\ntitle: X\n---\n\nClean.\n" });
     const err = new ReferenceError("whatever is not defined");

@@ -188,7 +188,14 @@ function walkForFreeRefs(node: EstreeNode | null | undefined, scope: Scope, refs
     }
     case "BlockStatement": {
       const inner: Scope = { bindings: new Set(), parent: scope };
-      for (const stmt of (node.body as EstreeNode[]) ?? []) {
+      const body = (node.body as EstreeNode[]) ?? [];
+      // Hoist function declarations so earlier statements can reference them.
+      for (const stmt of body) {
+        if (stmt.type === "FunctionDeclaration" && stmt.id) {
+          collectPatternNames(stmt.id as EstreeNode, inner.bindings);
+        }
+      }
+      for (const stmt of body) {
         walkForFreeRefs(stmt, inner, refs);
       }
       return;
@@ -413,7 +420,7 @@ function visit(node: MdastNode, fn: (node: MdastNode) => void): void {
   for (const attr of node.attributes ?? []) {
     fn(attr);
     const value = attr.value as MdastNode | string | null | undefined;
-    if (value && typeof value === "object") fn(value);
+    if (value && typeof value === "object") visit(value, fn);
   }
   for (const child of node.children ?? []) {
     visit(child, fn);
