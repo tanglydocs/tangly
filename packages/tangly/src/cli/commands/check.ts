@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { defineCommand } from "citty";
 import pc from "picocolors";
+import { checkManifestMdx, formatMdxIssue } from "../../check/mdx-check.js";
 import { VERSION } from "../../index.js";
 import { reportConfigError } from "../../manifest/config-error.js";
 import { buildManifest } from "../../manifest/index.js";
@@ -9,7 +10,7 @@ import { errorFooter, notifyUpdate } from "../version-notice.js";
 export const checkCommand = defineCommand({
   meta: {
     name: "check",
-    description: "Validate config + links + frontmatter",
+    description: "Validate config + links + frontmatter + MDX",
   },
   args: {
     strict: {
@@ -81,6 +82,13 @@ export const checkCommand = defineCommand({
       const line = `${w.source ? `${w.source}: ` : ""}${w.message}`;
       if (w.level === "error") errors.push(line);
       else warnings.push(line);
+    }
+
+    // MDX validation: parse every page with the build's parser config and
+    // flag expressions that would throw a ReferenceError at prerender.
+    // Always errors — these are guaranteed `tangly build` failures.
+    for (const issue of checkManifestMdx(manifest)) {
+      errors.push(formatMdxIssue(issue));
     }
 
     if (args.strict) {
