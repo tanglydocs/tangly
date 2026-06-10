@@ -65,7 +65,7 @@ const containerClass = custom
 ) : (
   <div class={showToc ? "grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10" : containerClass}>
     <article class={`min-w-0 ${showToc ? "max-w-[var(--tangly-content-max-width)]" : ""}`}>
-      <div class="flex items-start gap-4 mb-4">
+      <div class="flex items-start gap-4 mb-4" data-pagefind-ignore>
         <div class="flex-1 min-w-0">
           {breadcrumbs.length > 0 && (
             <nav aria-label="Breadcrumb" class="text-xs text-[var(--tangly-color-muted)] flex flex-wrap items-center gap-1.5">
@@ -106,7 +106,7 @@ const containerClass = custom
       </div>
 
       {(showLastUpdated || page.editUrl) && (
-        <div class="mt-12 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--tangly-color-muted)] border-t border-[var(--tangly-color-border)] pt-4">
+        <div class="mt-12 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--tangly-color-muted)] border-t border-[var(--tangly-color-border)] pt-4" data-pagefind-ignore>
           {showLastUpdated && lastUpdatedAbs ? (
             <span class="inline-flex items-center gap-1.5">
               <Icon icon="History" size={12} />
@@ -128,7 +128,7 @@ const containerClass = custom
       )}
 
       {(page.prev || page.next) && (
-        <nav aria-label="Pagination" class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <nav aria-label="Pagination" class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3" data-pagefind-ignore>
           {page.prev ? (
             <a
               href={`${import.meta.env.BASE_URL}${page.prev.slug}`}
@@ -156,7 +156,7 @@ const containerClass = custom
     </article>
 
     {showToc && (
-      <aside class="hidden xl:block">
+      <aside class="hidden xl:block" data-pagefind-ignore>
         <div class="sticky top-[calc(var(--tangly-topnav-height)+1.5rem)]">
           <div class="text-xs font-semibold uppercase tracking-wide text-[var(--tangly-color-muted)] mb-2">
             On this page

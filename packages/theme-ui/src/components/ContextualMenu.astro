@@ -69,7 +69,7 @@ const noIndex = page.frontmatter.noindex === true;
 const mdPath = withBase(`/${page.slug}.md`) ?? `/${page.slug}.md`;
 ---
 {actions.length > 0 && !noIndex && (
-  <div class="tangly-contextual relative inline-block" data-md-path={mdPath}>
+  <div class="tangly-contextual relative inline-block" data-md-path={mdPath} data-pagefind-ignore>
     <button
       type="button"
       class="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-xs font-medium border border-[var(--tangly-color-border)] bg-[var(--tangly-color-bg)] text-[var(--tangly-color-fg)] hover:bg-[var(--tangly-color-bg-elevated)]"

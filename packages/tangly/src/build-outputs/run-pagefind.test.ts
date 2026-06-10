@@ -1,5 +1,6 @@
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { gunzipSync } from "node:zlib";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { Manifest, PageEntry } from "../manifest/types.js";
 import { buildPagefindUrl, runPagefind } from "./run-pagefind.js";
@@ -100,6 +101,28 @@ describe("runPagefind", () => {
 
     // Pagefind output landed.
     expect(existsSync(join(TMP, "out/pagefind/pagefind.js"))).toBe(true);
+  });
+
+  test("data-pagefind-ignore inside the body is excluded from the index", async () => {
+    // Mirrors PageShell: chrome (contextual menu, pagination) renders inside
+    // [data-pagefind-body] but carries data-pagefind-ignore.
+    writeHtml(
+      "intro",
+      "<div data-pagefind-ignore><button>Open in Claude</button><span>ZZCHROMEZZ</span></div>" +
+        "<h1>Welcome</h1><p>Hello world from intro.</p>",
+    );
+    const m = fakeManifest();
+    await runPagefind({ manifest: m, outDir: join(TMP, "out") });
+
+    // Fragments are gzipped JSON — decompress and scan the raw text.
+    const fragmentDir = join(TMP, "out/pagefind/fragment");
+    const fragments = readdirSync(fragmentDir).map((f) =>
+      gunzipSync(readFileSync(join(fragmentDir, f))).toString("utf8"),
+    );
+    const all = fragments.join("\n");
+    expect(all).toContain("Hello world from intro");
+    expect(all).not.toContain("ZZCHROMEZZ");
+    expect(all).not.toContain("Open in Claude");
   });
 
   test("base-prefix URLs still index successfully", async () => {
