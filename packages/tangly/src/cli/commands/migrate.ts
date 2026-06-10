@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { confirm, intro, isCancel, outro } from "@clack/prompts";
+import { confirm, intro, isCancel, outro, text } from "@clack/prompts";
 import {
   convertMintToDocs,
   formatDocsJsonError,
@@ -21,8 +21,11 @@ const TANGLY_SCHEMA_URL = "https://tangly.dev/schema/docs.json";
  *   - Legacy: project has `mint.json` → full conversion via convertMintToDocs.
  *   - Modern: project has `docs.json` → validate + update the `$schema` URL.
  *
- * Theme is left untouched. If the existing `theme` value isn't a Tangly
- * theme we surface a warning prompting the user to pick one explicitly.
+ * A non-Tangly `theme` value (Mintlify's aspen/maple/…) is rewritten to
+ * `tang` — the schema maps those aliases to tang at parse time anyway, so
+ * the rewrite is semantics-preserving and makes the file self-describing.
+ * Missing `siteUrl` is prompted for interactively (skipped with --yes) so
+ * social cards + canonical URLs work without a follow-up `check` round.
  */
 export const migrateCommand = defineCommand({
   meta: {
@@ -97,7 +100,24 @@ async function migrateMintJson(opts: {
   const { mintPath, docsPath, userRoot, yes, keepSource } = opts;
 
   const mint = JSON.parse(readFileSync(mintPath, "utf8")) as Record<string, unknown>;
-  const docs = convertMintToDocs(mint);
+  const docs = convertMintToDocs(mint) as Record<string, unknown>;
+
+  // mint.json has no siteUrl equivalent — prompt (interactive only) so
+  // social cards + canonical URLs work without a follow-up `check` round.
+  if (!docs.siteUrl && !yes) {
+    const answer = await text({
+      message: "Production site URL? (canonical links + social cards — leave empty to skip)",
+      placeholder: "https://docs.example.com",
+      validate: (v) =>
+        v && !/^https?:\/\/\S+$/.test(v.trim()) ? "Must be an absolute http(s) URL" : undefined,
+    });
+    if (isCancel(answer)) {
+      outro(pc.yellow("Migration cancelled."));
+      process.exit(0);
+    }
+    const siteUrl = (answer ?? "").trim().replace(/\/+$/, "");
+    if (siteUrl) docs.siteUrl = siteUrl;
+  }
 
   console.log(pc.dim("\nGenerated docs.json preview:"));
   console.log(JSON.stringify(docs, null, 2).split("\n").slice(0, 30).join("\n"));
@@ -166,17 +186,41 @@ async function migrateExistingDocs(opts: {
     changes.push(`  $schema  ${pc.dim(currentSchema ?? "(none)")} → ${pc.cyan(TANGLY_SCHEMA_URL)}`);
   }
 
-  // 2. theme is left as-is. Tangly themes are an explicit choice; if the
-  //    current value isn't one of TANGLY_THEMES we emit a notice so the
-  //    user picks one themselves before running `tangly dev`.
+  // 2. theme: rewrite non-Tangly values (Mintlify aliases like "aspen") to
+  //    "tang". The schema already maps every alias to tang at parse time,
+  //    so this only makes the file say what it does.
   const currentTheme = updated.theme as string | undefined;
   const isTanglyTheme = currentTheme && (TANGLY_THEMES as readonly string[]).includes(currentTheme);
   if (currentTheme && !isTanglyTheme) {
-    notices.push(`theme is "${currentTheme}" — set it to one of: ${TANGLY_THEMES.join(", ")}`);
+    changes.push(`  theme    ${pc.dim(currentTheme)} → ${pc.cyan("tang")}`);
+    updated.theme = "tang";
+    notices.push(
+      `"${currentTheme}" isn't a Tangly theme — alternatives: ${TANGLY_THEMES.join(", ")}`,
+    );
   } else if (!currentTheme) {
     notices.push(
       `no theme set — defaulting to "tang". Pick explicitly with: ${TANGLY_THEMES.join(", ")}`,
     );
+  }
+
+  // 3. siteUrl: prompt when absent (interactive only). Without it, social
+  //    cards and canonical URLs have no absolute base and `check` warns.
+  if (!updated.siteUrl && !yes) {
+    const answer = await text({
+      message: "Production site URL? (canonical links + social cards — leave empty to skip)",
+      placeholder: "https://docs.example.com",
+      validate: (v) =>
+        v && !/^https?:\/\/\S+$/.test(v.trim()) ? "Must be an absolute http(s) URL" : undefined,
+    });
+    if (isCancel(answer)) {
+      outro(pc.yellow("Migration cancelled."));
+      process.exit(0);
+    }
+    const siteUrl = (answer ?? "").trim().replace(/\/+$/, "");
+    if (siteUrl) {
+      changes.push(`  siteUrl  ${pc.dim("(none)")} → ${pc.cyan(siteUrl)}`);
+      updated.siteUrl = siteUrl;
+    }
   }
 
   if (changes.length === 0 && notices.length === 0) {

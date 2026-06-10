@@ -76,7 +76,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       level: "warn",
       source: opts.configFile ?? "docs.json",
       message:
-        "Social cards are enabled but no site URL is set. Open Graph images need an absolute URL — set `siteUrl` in docs.json (or pass --site-url / TANGLY_SITE_URL). Set `thumbnails.enabled: false` to silence this.",
+        "Social cards are enabled but no site URL is set. Fix: set `siteUrl` in docs.json (or pass --site-url / TANGLY_SITE_URL) so Open Graph images get an absolute URL. (To disable cards instead, set `thumbnails.enabled: false`.)",
     });
   }
 
