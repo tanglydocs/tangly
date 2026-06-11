@@ -107,6 +107,12 @@ jobs:
       - run: bun run build
       - name: tangly init + migrate + build (Mintlify aliases)
         run: bun run scripts/smoke-init.ts
+      # issue #6: project on a different drive than the runtime crashed with
+      # ERR_INVALID_URL_SCHEME. subst-maps a free drive letter to reproduce
+      # cross-drive deterministically; self-skips off Windows.
+      - name: Windows cross-drive build (issue #6)
+        if: runner.os == 'Windows'
+        run: bun run scripts/smoke-winpath.ts
       - name: build own docs
         run: bun run build:docs
       # Catch packaging regressions (missing files, broken workspace rewrites)

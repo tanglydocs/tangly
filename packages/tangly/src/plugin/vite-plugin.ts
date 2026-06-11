@@ -9,6 +9,7 @@ import {
   generateSitemap,
 } from "../build-outputs/index.js";
 import { buildIgnoreMatcher } from "../build-outputs/ignore-matcher.js";
+import { isContentModulesId, rewriteContentModulesDrivePaths } from "./content-modules-winpath.js";
 import { applyMdxSourceCompat } from "./mdx-source-compat.js";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
@@ -245,6 +246,18 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
 
     transform(code, id) {
       const cleanId = id.split("?")[0] ?? id;
+
+      // Windows cross-drive fix (issue #6): when the user's project lives on a
+      // different drive than the runtime (project on `E:\`, global `tangly` on
+      // `C:\`), Astro stores absolute drive-letter paths as the deferred
+      // module `fileName`. `new URL("E:/…", root)` then reads `E:` as a URL
+      // scheme → `ERR_INVALID_URL_SCHEME` → blank page. Rewrite those to
+      // `file://` URLs before vite:import-analysis resolves them. Runs first
+      // because this plugin is `enforce: "pre"`. Inert on POSIX / same-drive.
+      if (isContentModulesId(cleanId)) {
+        const rewritten = rewriteContentModulesDrivePaths(code);
+        return rewritten === code ? null : { code: rewritten, map: null };
+      }
 
       // Mintlify `/snippets/*.{jsx,tsx}` snippets reference React hooks as
       // globals (no import statement). Prepend the standard hook import so
