@@ -5,6 +5,22 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.2.2" description="12 Jun 26" tags={["fix"]}>
+  ## Highlights
+
+  Windows fix for projects that live on a different drive than the installed `tangly` (issue [#6](https://github.com/tanglydocs/tangly/issues/6)).
+
+  - **Cross-drive projects render again.** With your docs on `E:\` and a global `tangly` on `C:\`, pages rendered blank: Astro stored an absolute drive-letter path for each page, and resolving it read the `E:` drive as a URL scheme (`ERR_INVALID_URL_SCHEME`). Those paths are now rewritten to `file://` URLs before resolution, so cross-drive builds and dev servers work. Same-drive Windows and macOS/Linux were never affected. ([`9200ec9`](https://github.com/tanglydocs/tangly/commit/9200ec978a66332a78d7b885cca517d1325f8beb))
+
+  ## Changes
+
+  ### Fixes
+  - fix(plugin): resolve a cross-drive `ERR_INVALID_URL_SCHEME` that blanked pages when the project and the runtime were on different Windows drives ([`9200ec9`](https://github.com/tanglydocs/tangly/commit/9200ec978a66332a78d7b885cca517d1325f8beb))
+
+  ### Tests
+  - test(build): add a `windows-latest` CI gate that `subst`-maps a virtual drive to reproduce the cross-drive case before every release
+</Update>
+
 <Update label="v0.2.1" description="10 Jun 26" tags={["feat", "fix"]}>
   ## Highlights
 
