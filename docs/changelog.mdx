@@ -5,6 +5,26 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.2.3" description="17 Jul 26" tags={["fix"]}>
+  ## Highlights
+
+  SEO fix for the home page of every built site.
+
+  - **Published URLs point at the served route, not `/index`.** A root `index.mdx` renders at `/` but is also routable at `/index`, which redirects. The sitemap, `llms.txt`, and the page-markdown outputs were emitting `/index`, so crawlers saw a redirecting duplicate of the home page. All three now emit `/`, matching the canonical tag. Nested `foo/index.mdx` pages were never affected (they collapse to `foo` during the page scan). ([`5a7ae97`](https://github.com/tanglydocs/tangly/commit/5a7ae97cf3605eb6453edd42ddbe8f82a095b5de))
+
+  ## Changes
+
+  ### Fixes
+  - fix(build): sitemap, `llms.txt`, and page-markdown emit the served route for index pages instead of `/index` ([`5a7ae97`](https://github.com/tanglydocs/tangly/commit/5a7ae97cf3605eb6453edd42ddbe8f82a095b5de))
+  - fix(theme-ui): `Seo.astro` resolves the canonical URL through the shared route helper, so canonical tags and sitemap entries can no longer diverge ([`5a7ae97`](https://github.com/tanglydocs/tangly/commit/5a7ae97cf3605eb6453edd42ddbe8f82a095b5de))
+
+  ### Internal
+  - refactor(schema): add `@tanglydocs/schema/page-path` (`pageRouteForSlug` / `pagePathForSlug`) as the single slug-to-route mapping, shared by the CLI emitters and the themes without importing `tangly`
+
+  ### Tests
+  - test(schema): cover root, nested, and trailing-slash index slugs in `page-path.test.ts`; assert the sitemap emits `/` for the home page
+</Update>
+
 <Update label="v0.2.2" description="12 Jun 26" tags={["fix"]}>
   ## Highlights
 
