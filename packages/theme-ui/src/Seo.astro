@@ -14,6 +14,7 @@
  *   5. logo                       — last-resort fallback (legacy behavior)
  */
 import type { DocsJson } from "@tanglydocs/schema";
+import { pageRouteForSlug } from "@tanglydocs/schema/page-path";
 import { resolveSite } from "@tanglydocs/schema/site";
 import type { PageEntry } from "tangly";
 import { withBase } from "./with-base.ts";
@@ -46,13 +47,13 @@ const ogBase = site.ogUrl;
 const canonicalBase = site.canonicalUrl;
 const robotsNoindex = site.noindex || page.frontmatter.noindex === true;
 
+// Card filenames are slug-keyed (dist/og/<slug>.png), NOT route-keyed — the
+// home card is /og/index.png. Keep this separate from `pagePath` below.
 const slug = page.slug.replace(/\/+$/, "");
-// The root index page is the home: it renders at `/` and is also routable at
-// `/index`. Canonicalize both to `/` so they don't compete as duplicate
-// content. (Only a root index.mdx slugifies to "index"; nested foo/index.mdx
-// collapses to "foo".)
-const isHome = slug === "" || slug === "index";
-const pagePath = withBase(isHome ? "/" : `/${slug}`)?.replace(/\/+$/, "") || "/";
+// Canonicalize to the served route: a root index.mdx renders at `/` but is
+// also routable at `/index`, which must not compete as duplicate content.
+// Shared with the sitemap/llms.txt emitters so published URLs never diverge.
+const pagePath = withBase(pageRouteForSlug(page.slug))?.replace(/\/+$/, "") || "/";
 const canonicalUrl = canonicalBase ? `${canonicalBase}${pagePath}` : "";
 
 /** Absolutize a relative/external path against `base` (or "" if it can't be). */

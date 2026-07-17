@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { pagePathForSlug } from "@tanglydocs/schema";
 import type { Manifest, PageEntry } from "../manifest/index.js";
 
 export interface PageMarkdownOptions {
@@ -43,7 +44,9 @@ export function writePageMarkdown(opts: PageMarkdownOptions): { written: number 
     if (page.frontmatter.noindex) continue;
     const dest = join(opts.outDir, `${page.slug}.md`);
     mkdirSync(dirname(dest), { recursive: true });
-    const urlPath = `${base}/${page.slug}`;
+    // `dest` stays slug-derived (the file lives at `index.md`); the URL
+    // preamble must be the served route, not the file path.
+    const urlPath = pagePathForSlug(page.slug, base);
     writeFileSync(dest, generatePageMarkdown(page, urlPath), "utf8");
     written += 1;
   }

@@ -12,6 +12,25 @@ function fakeManifest(): Manifest {
     sidebar: [],
     draft: false,
   });
+  // Root index.mdx: scan-pages leaves the slug as the bare string "index"
+  // (only a nested foo/index.mdx collapses). It is served at "/".
+  pages.set("index", {
+    slug: "index",
+    file: "/x/index.mdx",
+    frontmatter: { title: "Home", description: "Start here" },
+    breadcrumbs: [],
+    sidebar: [],
+    draft: false,
+  });
+  // Subdirectory cli/index.mdx: already collapsed to "cli", served at "/cli".
+  pages.set("cli", {
+    slug: "cli",
+    file: "/x/cli/index.mdx",
+    frontmatter: { title: "CLI", description: "Commands" },
+    breadcrumbs: [],
+    sidebar: [],
+    draft: false,
+  });
   pages.set("hidden", {
     slug: "hidden",
     file: "/x/hidden.mdx",
@@ -101,6 +120,34 @@ describe("build-outputs", () => {
 
     const llms = generateLlmsTxt({ manifest, outDir: "/tmp", base: "/docs" });
     expect(llms).toContain("- [Introduction](/docs/introduction): Welcome");
+  });
+
+  test("sitemap emits the served route for index pages, never /index", () => {
+    const xml = generateSitemap({
+      manifest,
+      outDir: "/tmp",
+      siteUrl: "https://example.com",
+    });
+    // Root index.mdx → "/", not "/index" (which 307s to "/").
+    expect(xml).toContain("<loc>https://example.com/</loc>");
+    expect(xml).not.toContain("https://example.com/index<");
+    // Subdirectory cli/index.mdx → "/cli", not "/cli/index".
+    expect(xml).toContain("<loc>https://example.com/cli</loc>");
+    expect(xml).not.toContain("/cli/index");
+  });
+
+  test("sitemap index routes honor the base prefix", () => {
+    const xml = generateSitemap({ manifest, outDir: "/tmp", base: "/docs" });
+    expect(xml).toContain("<loc>/docs</loc>");
+    expect(xml).not.toContain("/docs/index");
+    expect(xml).toContain("<loc>/docs/cli</loc>");
+  });
+
+  test("llms.txt links the served route for index pages", () => {
+    const txt = generateLlmsTxt({ manifest, outDir: "/tmp" });
+    expect(txt).toContain("- [Home](/): Start here");
+    expect(txt).not.toContain("](/index)");
+    expect(txt).toContain("- [CLI](/cli): Commands");
   });
 
   test("base of '/' or empty is treated as root", () => {

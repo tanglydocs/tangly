@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { pagePathForSlug } from "@tanglydocs/schema";
 import pc from "picocolors";
 import type { Manifest, PageEntry } from "../manifest/index.js";
 import { writePageMarkdown } from "./page-markdown.js";
@@ -27,7 +28,7 @@ export function generateSitemap(opts: BuildOutputsOptions): string {
   for (const page of opts.manifest.pages.values()) {
     if (page.draft) continue;
     if (page.frontmatter.noindex) continue;
-    const path = `${base}/${page.slug}`;
+    const path = pagePathForSlug(page.slug, base);
     const loc = site ? `${site}${path}` : path;
     urls.push(`  <url><loc>${escapeXml(loc)}</loc></url>`);
   }
@@ -62,7 +63,7 @@ export function generateLlmsTxt(opts: BuildOutputsOptions): string {
     if (page.frontmatter.noindex) continue;
     const title = page.frontmatter.title ?? page.slug;
     const desc = page.frontmatter.description ? `: ${page.frontmatter.description}` : "";
-    lines.push(`- [${title}](${base}/${page.slug})${desc}`);
+    lines.push(`- [${title}](${pagePathForSlug(page.slug, base)})${desc}`);
   }
   lines.push("");
   return lines.join("\n");
@@ -81,7 +82,7 @@ export function generateLlmsFullTxt(opts: BuildOutputsOptions): string {
     const title = page.frontmatter.title ?? page.slug;
     lines.push(`\n---\n\n# ${title}\n`);
     if (page.frontmatter.description) lines.push(`${page.frontmatter.description}\n`);
-    lines.push(`\nURL: ${base}/${page.slug}\n\n`);
+    lines.push(`\nURL: ${pagePathForSlug(page.slug, base)}\n\n`);
     try {
       const raw = readFileSync(page.file, "utf8");
       const body = raw.replace(/^---[\s\S]*?---\n/, "");

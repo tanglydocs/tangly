@@ -18,6 +18,7 @@ export {
 } from "./format-error.js";
 export { generateDocsJsonSchema } from "./json-schema.js";
 export { convertMintToDocs, type MintJson } from "./mint-json.js";
+export { pagePathForSlug, pageRouteForSlug } from "./page-path.js";
 export {
   GlobalNavSchema,
   NavigationSchema,

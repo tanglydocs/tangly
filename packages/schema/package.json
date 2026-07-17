@@ -33,6 +33,10 @@
       "types": "./dist/resolve-site.d.ts",
       "import": "./dist/resolve-site.js"
     },
+    "./page-path": {
+      "types": "./dist/page-path.d.ts",
+      "import": "./dist/page-path.js"
+    },
     "./docs.json": "./dist/docs.json"
   },
   "publishConfig": {
