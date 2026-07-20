@@ -22,8 +22,9 @@ const isRoot = _depth === 0;
         <li>
           {item.isGroup ? (
             <div>
-              <div class="px-2 pt-1 pb-2 text-[13px] font-semibold text-[var(--tangly-color-fg)]">
-                {item.title}
+              <div class="flex items-center gap-2.5 px-2 pt-1 pb-2 text-[13px] font-semibold text-[var(--tangly-color-fg)]">
+                {item.icon ? <Icon icon={item.icon} size={15} /> : null}
+                <span class="flex-1 truncate">{item.title}</span>
               </div>
               <ul class="space-y-0.5">
                 <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
@@ -64,8 +65,9 @@ const isRoot = _depth === 0;
       <li>
         {item.isGroup ? (
           <div class="pt-4">
-            <div class="px-2 pb-1 text-[12px] font-semibold text-[var(--tangly-color-fg)]">
-              {item.title}
+            <div class="flex items-center gap-2.5 px-2 pb-1 text-[12px] font-semibold text-[var(--tangly-color-fg)]">
+              {item.icon ? <Icon icon={item.icon} size={15} /> : null}
+              <span class="flex-1 truncate">{item.title}</span>
             </div>
             <ul class="space-y-0.5">
               <Astro.self items={item.children ?? []} currentSlug={currentSlug} config={config} _depth={_depth + 1} />
