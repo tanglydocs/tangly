@@ -63,8 +63,8 @@ const containerClass = custom
 {custom ? (
   <slot />
 ) : (
-  <div class={showToc ? "grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10" : containerClass}>
-    <article class={`min-w-0 ${showToc ? "max-w-[var(--tangly-content-max-width)]" : ""}`}>
+  <div class={`tangly-page-grid ${showToc ? "grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_var(--tangly-toc-width)] gap-10" : containerClass}`}>
+    <article class={`tangly-article min-w-0 ${showToc ? "max-w-[var(--tangly-content-max-width)]" : ""}`}>
       <div class="flex items-start gap-4 mb-4" data-pagefind-ignore>
         <div class="flex-1 min-w-0">
           {breadcrumbs.length > 0 && (

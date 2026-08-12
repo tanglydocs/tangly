@@ -47,10 +47,13 @@
   --tangly-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Denser than the rest of the family: narrow sidebar, narrow measure. */
-  --tangly-sidebar-width: 15rem;
-  --tangly-content-max-width: 46rem;
-  --tangly-toc-width: 13.5rem;
+  /* Full-bleed shell with a wide, centred measure. Chrome is dense (narrow
+     sidebar, 13px labels) but the reading column gets room: 49rem of text
+     with a fat gutter on each side, rather than a narrow column pinned to
+     the sidebar with dead space before the TOC. See .tangly-article below. */
+  --tangly-sidebar-width: 16rem;
+  --tangly-content-max-width: 49rem;
+  --tangly-toc-width: 18rem;
   --tangly-topnav-row1-height: 3.25rem;
   --tangly-topnav-row2-height: 2.5rem;
   --tangly-topnav-height: calc(
@@ -187,6 +190,36 @@ samp {
 
 .prose-tang table {
   font-size: 0.9375rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Layout — full bleed, centred measure
+ * ------------------------------------------------------------------------- */
+
+/* The shared shell caps at max-w-screen-2xl and centres, which leaves the
+   sidebar floating in from the viewport edge on a wide display. This family
+   runs edge to edge instead. */
+.tangly-shell,
+.tangly-shell-row {
+  max-width: none;
+}
+
+/* The article is capped at --tangly-content-max-width but left-aligned by
+   default, so on a wide screen it hugs the sidebar and dumps the slack
+   between the text and the TOC. Centre it in the column so the slack splits
+   evenly — this is what actually reads as breathing room. */
+.tangly-article {
+  margin-inline: auto;
+}
+
+.tangly-main {
+  padding-block: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .tangly-main {
+    padding-inline: 2rem;
+  }
 }
 
 /* ---------------------------------------------------------------------------
