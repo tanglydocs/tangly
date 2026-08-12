@@ -28,6 +28,7 @@ const SHADOWABLE_COMPONENT_NAMES = [
   "CardGroup",
   "Check",
   "CodeGroup",
+  "CopyPrompt",
   "Columns",
   "Danger",
   "Embed",

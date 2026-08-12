@@ -1,0 +1,172 @@
+---
+// A one-click "hand this to your coding agent" button.
+//
+// The pattern it exists for: don't paste setup instructions at the user, paste
+// a single line that points the agent at a URL it can fetch. The instructions
+// then live at that URL and can change without anyone re-copying.
+//
+// Usage:
+//   <CopyPrompt href="/agent-setup/prompt.md" />
+//   <CopyPrompt text="Fetch https://example.com/setup.md and follow it." />
+//   <CopyPrompt href="..." label="Set up my agent" icons={["/logo/agents/claude-code.png"]} />
+//
+// `href` builds the standard fetch-and-follow sentence; `text` overrides it
+// wholesale. A relative href is resolved against the site origin at click
+// time, because the agent receiving the prompt has no page context — it needs
+// an absolute URL.
+
+export interface Props {
+  /** URL of the instructions the agent should fetch. Relative is fine. */
+  href?: string;
+  /** Full prompt text. Wins over `href` when both are given. */
+  text?: string;
+  /** What the fetched instructions set up, e.g. "squirrelscan". */
+  subject?: string;
+  /** Button label. */
+  label?: string;
+  /** Small vendor marks shown before the label. Image URLs. */
+  icons?: string[];
+  /** Native tooltip. */
+  title?: string;
+}
+
+const {
+  href,
+  text,
+  subject,
+  label = "Copy prompt",
+  icons = [],
+  title,
+} = Astro.props as Props;
+
+if (!href && !text) {
+  throw new Error("<CopyPrompt /> needs an `href` or a `text` prop.");
+}
+
+// Left as a template when it depends on the origin; resolved in the browser.
+const promptTemplate =
+  text ??
+  `Fetch and follow the setup instructions${subject ? ` for ${subject}` : ""} at {{url}}`;
+---
+
+<button
+  type="button"
+  class="tangly-copy-prompt"
+  data-tangly-copy-prompt
+  data-prompt={promptTemplate}
+  data-href={href}
+  title={title}
+>
+  {icons.length > 0 && (
+    <span class="tangly-copy-prompt-icons" aria-hidden="true">
+      {icons.map((src) => (
+        <img src={src} alt="" loading="lazy" decoding="async" />
+      ))}
+    </span>
+  )}
+  <span class="tangly-copy-prompt-label">{label}</span>
+  <span class="tangly-copy-prompt-done" hidden>Copied</span>
+</button>
+
+<style is:global>
+  .tangly-copy-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem 0.4rem 0.5rem;
+    border: 1px solid var(--tangly-color-border, #e5e7eb);
+    border-radius: 9999px;
+    background: var(--tangly-color-bg, #fff);
+    color: var(--tangly-color-fg, #171717);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color 120ms,
+      box-shadow 120ms;
+  }
+
+  /* No icons means no reason for the asymmetric left padding. */
+  .tangly-copy-prompt:not(:has(.tangly-copy-prompt-icons)) {
+    padding-left: 0.9rem;
+  }
+
+  .tangly-copy-prompt:hover {
+    border-color: var(--tangly-color-muted, #737373);
+  }
+
+  .tangly-copy-prompt:focus-visible {
+    outline: 2px solid var(--tangly-color-primary, #000);
+    outline-offset: 2px;
+  }
+
+  .tangly-copy-prompt-icons {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .tangly-copy-prompt-icons img {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    object-fit: contain;
+    background: var(--tangly-color-bg, #fff);
+    /* Overlap into a stack, so a row of marks reads as one affordance
+       rather than a row of competing logos. */
+    margin-right: -0.4rem;
+    padding: 0.1rem;
+    box-shadow: 0 0 0 1px var(--tangly-color-border, #e5e7eb);
+  }
+
+  .tangly-copy-prompt-icons img:last-child {
+    margin-right: 0.4rem;
+  }
+
+  .tangly-copy-prompt-done {
+    color: var(--tangly-color-primary, #16a34a);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    if (window.__tanglyCopyPrompt) return;
+    window.__tanglyCopyPrompt = true;
+
+    document.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest("[data-tangly-copy-prompt]");
+      if (!button) return;
+
+      const template = button.getAttribute("data-prompt") ?? "";
+      const href = button.getAttribute("data-href");
+      // The agent has no page context, so a relative href has to become
+      // absolute before it goes on the clipboard.
+      const url = href ? new URL(href, window.location.origin).href : "";
+      const prompt = template.replace("{{url}}", url);
+
+      const label = button.querySelector(".tangly-copy-prompt-label");
+      const done = button.querySelector(".tangly-copy-prompt-done");
+
+      try {
+        await navigator.clipboard.writeText(prompt);
+      } catch {
+        // Clipboard denied (insecure context, or the user said no). Fall back
+        // to a prompt() the user can copy out of by hand rather than failing
+        // silently — a button that does nothing is worse than an ugly dialog.
+        window.prompt("Copy this prompt:", prompt);
+        return;
+      }
+
+      if (label && done) {
+        label.hidden = true;
+        done.hidden = false;
+        setTimeout(() => {
+          label.hidden = false;
+          done.hidden = true;
+        }, 1600);
+      }
+    });
+  })();
+</script>

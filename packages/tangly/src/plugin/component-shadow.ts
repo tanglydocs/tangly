@@ -9,6 +9,7 @@ const COMPONENT_NAMES = [
   "CardGroup",
   "Check",
   "CodeGroup",
+  "CopyPrompt",
   "Columns",
   "Danger",
   "Embed",

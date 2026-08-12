@@ -4,6 +4,7 @@
 export { default as Card } from "./Card.astro";
 export { default as CardGroup } from "./CardGroup.astro";
 export { default as CodeGroup } from "./CodeGroup.astro";
+export { default as CopyPrompt } from "./CopyPrompt.astro";
 export { default as FileTree } from "./FileTree.astro";
 export { default as Frame } from "./Frame.astro";
 export { default as Kbd } from "./Kbd.astro";
