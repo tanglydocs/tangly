@@ -1,0 +1,103 @@
+{
+  "$schema": "../../packages/schema/dist/docs.json",
+  "name": "Nimbus",
+  "description": "Stream, transform, and land events at the edge. Nimbus is durable ingestion with SQL in the middle.",
+  "theme": "cirrus",
+  "colors": {
+    "primary": "#F6821F",
+    "light": "#FBAD41",
+    "dark": "#D9700F"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
+  "appearance": {
+    "default": "system",
+    "readingProgress": true
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/deploy-from-git",
+              "guides/custom-domains",
+              "guides/environment-variables",
+              "guides/edge-functions",
+              "guides/monitoring"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Reference",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/deployments",
+              "api-reference/projects",
+              "api-reference/domains"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "Clients",
+            "pages": [
+              "sdks/cli",
+              "sdks/node",
+              "sdks/go",
+              "sdks/python"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Sign in",
+        "href": "https://halo.example.com/login"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Start deploying",
+      "href": "https://halo.example.com/signup"
+    }
+  },
+  "footer": {
+    "lastUpdated": true,
+    "socials": {
+      "github": "https://github.com/example/halo",
+      "x": "https://x.com/halo"
+    }
+  },
+  "banner": {
+    "id": "halo-v1",
+    "type": "info",
+    "dismissible": true,
+    "content": "Halo v1 is live \u2014 read the <a href=\"/introduction\">launch notes</a>."
+  }
+}

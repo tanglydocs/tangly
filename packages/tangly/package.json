@@ -79,6 +79,7 @@
     "@shikijs/twoslash": "^4.0.2",
     "@tailwindcss/vite": "^4.2.4",
     "@tanglydocs/schema": "workspace:*",
+    "@tanglydocs/theme-cirrus": "workspace:*",
     "@tanglydocs/theme-geist": "workspace:*",
     "@tanglydocs/theme-pip": "workspace:*",
     "@tanglydocs/theme-pith": "workspace:*",

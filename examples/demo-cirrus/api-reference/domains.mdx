@@ -1,0 +1,74 @@
+---
+title: Domains
+description: Manage custom domains, certificates, and aliases.
+icon: globe
+---
+
+The domain endpoints attach a custom hostname to a project, surface DNS instructions, and report cert status.
+
+## Add a domain
+
+```http
+POST /v1/projects/{project_id}/domains
+```
+
+<ParamField body="hostname" type="string" required>
+  Fully qualified domain. Wildcards allowed: `*.example.com`.
+</ParamField>
+
+<ParamField body="redirect_to" type="string">
+  Optional. If set, this domain serves a 308 to the given hostname.
+</ParamField>
+
+### Response
+
+<ResponseField name="hostname" type="string" />
+<ResponseField name="status" type="string">
+  `pending`, `verifying`, `active`, `error`.
+</ResponseField>
+<ResponseField name="dns" type="object">
+  Records you need to set. `{ type, name, value }[]`.
+</ResponseField>
+<ResponseField name="tls" type="object">
+  `{ status, expires_at, issuer }`. Halo auto-renews 30 days before expiry.
+</ResponseField>
+
+<RequestExample>
+```bash
+curl https://api.halo.app/v1/projects/prj_abc123/domains \
+  -H "Authorization: Bearer $HALO_TOKEN" \
+  -d '{ "hostname": "my-app.com" }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "hostname": "my-app.com",
+  "status": "pending",
+  "dns": [
+    { "type": "A", "name": "@", "value": "76.76.21.21" },
+    { "type": "AAAA", "name": "@", "value": "2606:4700:4400::6810:1518" }
+  ],
+  "tls": { "status": "pending", "expires_at": null, "issuer": null }
+}
+```
+</ResponseExample>
+
+## List domains
+
+```http
+GET /v1/projects/{project_id}/domains
+```
+
+## Delete a domain
+
+```http
+DELETE /v1/projects/{project_id}/domains/{hostname}
+```
+
+Releases the hostname and revokes the cert. The domain is detached from production within 5 seconds at the edge.
+
+<Warning>
+  Deleting a domain serving production traffic causes immediate 502 responses for that hostname. Set up the replacement first.
+</Warning>

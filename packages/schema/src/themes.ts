@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const TANGLY_THEMES = ["tang", "pith", "pip", "readable", "geist"] as const;
+export const TANGLY_THEMES = ["tang", "pith", "pip", "readable", "geist", "cirrus"] as const;
 
 /**
  * docs.json `theme` accepts canonical Tangly theme names. Unknown values
@@ -22,5 +22,6 @@ export function resolveTheme(theme: Theme | string | undefined): ResolvedTheme {
   if (theme === "pip") return "pip";
   if (theme === "readable") return "readable";
   if (theme === "geist") return "geist";
+  if (theme === "cirrus") return "cirrus";
   return "tang";
 }
