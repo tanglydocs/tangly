@@ -26,9 +26,13 @@
   --tangly-color-muted: #737373;
   --tangly-color-border: #e5e5e5;
 
-  /* Link colour is deliberately separate from the CTA accent: the same
-     orange at text size on white sits under WCAG AA, so links darken. */
-  --cirrus-link: #b45309;
+  /* Links derive from the accent rather than restating it, so a project that
+     sets its own `colors.primary` gets matching links. Derivation, not a
+     literal: a mid-tone accent at text size sits under WCAG AA on white, so
+     the link tone is darkened. Layout.astro injects `--tangly-color-primary`
+     as an inline style on <html> — the same element `:root` matches — so this
+     substitution picks up the project's colour, not the theme default. */
+  --cirrus-link: color-mix(in oklab, var(--tangly-color-primary) 76%, #000);
   --cirrus-link-underline: color-mix(in oklab, var(--cirrus-link) 35%, transparent);
 
   /* Callout tint — CF's asides are a flat wash + full hairline, not a bar. */
@@ -67,7 +71,8 @@
   --tangly-color-muted: #a3a3a3;
   --tangly-color-border: #2a2a2a;
 
-  --cirrus-link: #fbad41;
+  /* Inverted on dark: lighten the accent instead of darkening it. */
+  --cirrus-link: color-mix(in oklab, var(--tangly-color-primary) 72%, #fff);
   --cirrus-link-underline: color-mix(in oklab, var(--cirrus-link) 35%, transparent);
 
   --cirrus-note-bg: rgba(42, 93, 176, 0.12);
