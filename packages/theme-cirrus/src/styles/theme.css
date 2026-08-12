@@ -216,6 +216,20 @@ samp {
   padding-block: 2rem;
 }
 
+/* One left edge for every label in the chrome. Each of these sits on a
+   different inset by default because the hit targets carry their own
+   padding: the logo has none (16px), sidebar links have px-2 on top of the
+   aside's px-4 (24px), and nav tabs have px-3 on top of the row's px-4
+   (28px). Pad the containers so the TEXT lands on 24px in all three, and let
+   the hover/active fills keep bleeding outward from it. */
+.tangly-nav-brand {
+  padding-left: 1.5rem;
+}
+
+.tangly-tabs-nav {
+  padding-left: 0.75rem;
+}
+
 @media (min-width: 1024px) {
   .tangly-main {
     padding-inline: 2rem;

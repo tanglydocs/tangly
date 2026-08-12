@@ -32,7 +32,7 @@ const primary = config.navbar?.primary;
 <header class="tangly-topnav sticky top-0 z-30">
   {/* Row 1: logo column (mirrors sidebar) · controls column (mirrors main) */}
   <div class="tangly-shell-row w-full max-w-screen-2xl mx-auto flex items-stretch h-[var(--tangly-topnav-row1-height,3.75rem)]">
-    <div class="flex items-center gap-3 px-4 lg:w-[var(--tangly-sidebar-width)] shrink-0">
+    <div class="tangly-nav-brand flex items-center gap-3 px-4 lg:w-[var(--tangly-sidebar-width)] shrink-0">
       <button
         type="button"
         class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
@@ -132,7 +132,7 @@ const primary = config.navbar?.primary;
     <div class="border-t border-[var(--tangly-color-border)]">
       <div class="tangly-shell-row w-full max-w-screen-2xl mx-auto flex items-stretch">
         <nav
-          class="hidden md:flex items-center gap-1 px-4 h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
+          class="tangly-tabs-nav hidden md:flex items-center gap-1 px-4 h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
           aria-label="Sections"
         >
           {tabs.map((t) => (
