@@ -94,9 +94,15 @@ const banner = config.banner as
   | undefined;
 const bannerId = banner ? (banner.id ?? "default") : "";
 const bannerType = banner?.type ?? "info";
+
+// Reveal-on-hover for the floating Copy button is a pure CSS concern, but the
+// setting lives in docs.json — stamp it on <html> so code.css can select it.
+const codeblocks = config.styling?.codeblocks;
+const copyOnHover =
+  codeblocks && typeof codeblocks === "object" && codeblocks.copyButton === "hover";
 ---
 <!DOCTYPE html>
-<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+<html lang="en" data-copy={copyOnHover ? "hover" : undefined} style={`${styleAttr}; ${darkStyleVar}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
