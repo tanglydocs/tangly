@@ -46,6 +46,7 @@ const PUBLISHABLE: readonly PkgDef[] = [
   { key: "theme-pip", dir: "packages/theme-pip", name: "@tanglydocs/theme-pip" },
   { key: "theme-readable", dir: "packages/theme-readable", name: "@tanglydocs/theme-readable" },
   { key: "theme-geist", dir: "packages/theme-geist", name: "@tanglydocs/theme-geist" },
+  { key: "theme-cirrus", dir: "packages/theme-cirrus", name: "@tanglydocs/theme-cirrus" },
   { key: "tangly", dir: "packages/tangly", name: "tangly" },
 ];
 
