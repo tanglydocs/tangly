@@ -327,7 +327,7 @@ One of `href` or `text` is required; the build fails if both are missing.
 
 Copies: `Fetch and follow the setup instructions for my-tool at https://your-site.dev/agent-setup/prompt.md`
 
-A relative `href` is resolved against the site origin in the browser, at click time, not at build. The agent receiving the prompt has no page context, so it needs an absolute URL.
+A relative `href` picks up the site's configured base at build, then resolves against the current document in the browser at click time. The agent receiving the prompt has no page context, so it needs an absolute URL.
 
 ### Custom text
 

@@ -11,9 +11,11 @@
 //   <CopyPrompt href="..." label="Set up my agent" icons={["/logo/agents/claude-code.png"]} />
 //
 // `href` builds the standard fetch-and-follow sentence; `text` overrides it
-// wholesale. A relative href is resolved against the site origin at click
-// time, because the agent receiving the prompt has no page context — it needs
-// an absolute URL.
+// wholesale. A relative href picks up the configured base at build (withBase)
+// and is resolved against the current document at click time, because the
+// agent receiving the prompt has no page context — it needs an absolute URL.
+
+import { withBase } from "../with-base.ts";
 
 export interface Props {
   /** URL of the instructions the agent should fetch. Relative is fine. */
@@ -54,7 +56,7 @@ const promptTemplate =
   class="tangly-copy-prompt"
   data-tangly-copy-prompt
   data-prompt={promptTemplate}
-  data-href={href}
+  data-href={withBase(href)}
   title={title}
 >
   {icons.length > 0 && (
@@ -143,8 +145,10 @@ const promptTemplate =
       const href = button.getAttribute("data-href");
       // The agent has no page context, so a relative href has to become
       // absolute before it goes on the clipboard.
-      const url = href ? new URL(href, window.location.origin).href : "";
-      const prompt = template.replace("{{url}}", url);
+      const url = href ? new URL(href, window.location.href).href : "";
+      // Replacer function, not a string: a literal would let `$&`, `$'` and
+      // friends in the URL act as substitution patterns and mangle it.
+      const prompt = template.replace("{{url}}", () => url);
 
       const label = button.querySelector(".tangly-copy-prompt-label");
       const done = button.querySelector(".tangly-copy-prompt-done");

@@ -184,7 +184,13 @@ export function transformerTanglyChrome(opts = {}) {
             });
           }
 
-          if (headerChildren.length === 0) continue;
+          // Bar mode has nothing to add without a title, a lang or a button, so
+          // it leaves the <pre> alone. Bare mode suppresses title and lang by
+          // design, so `headerChildren` is empty whenever copy is off — and
+          // skipping there would strip the figure (and its border, background
+          // and annotation pairing) from every block on a
+          // `chrome: "bare", copyButton: false` site.
+          if (headerChildren.length === 0 && !bare) continue;
 
           // In bare mode headerChildren holds only the Copy button, and it
           // becomes a direct child of the figure — CSS floats it over the

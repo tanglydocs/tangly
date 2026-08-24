@@ -109,8 +109,12 @@ const primary = config.navbar?.primary;
       {primary && primary.type === "button" && (
         <a
           href={withBase(primary.href)}
-          class="tangly-cta inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium text-white shrink-0 hover:opacity-90"
-          style="background: var(--tangly-color-primary); color: #fff"
+          class="tangly-cta inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium shrink-0 hover:opacity-90"
+          {/* White reads fine on a dark or saturated primary and is the
+              default, but a light accent (cirrus's orange is 2.6:1 against
+              white) needs dark text to clear WCAG AA. Themes opt in with
+              --tangly-color-primary-fg. */}
+          style="background: var(--tangly-color-primary); color: var(--tangly-color-primary-fg, #fff)"
         >
           {primary.label}
         </a>

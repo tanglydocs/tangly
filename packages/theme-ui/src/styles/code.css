@@ -206,8 +206,10 @@
   }
 }
 
-/* Inside a CodeGroup the group's own chrome owns the copy affordance; a
-   floating one would duplicate it (mirrors the header rule above). */
+/* Inside a CodeGroup the per-block affordance is hidden, matching what the
+   header rule above already does to the bar-chrome Copy button. Note the group
+   does not currently provide a replacement, so a grouped block has no copy
+   button in either chrome — same gap, not a new one. */
 .tangly-code-group .tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
   display: none;
 }

@@ -19,6 +19,9 @@
   --tangly-color-primary: #f6821f;
   --tangly-color-primary-light: #fbad41;
   --tangly-color-primary-dark: #d9700f;
+  /* White on this orange is 2.6:1, under WCAG AA. Solid CTAs take near-black
+     text instead; the shared shell reads this token and falls back to white. */
+  --tangly-color-primary-fg: #1c1917;
 
   --tangly-color-bg: #fcfcfc;
   --tangly-color-bg-elevated: #f5f5f5;
@@ -67,6 +70,7 @@
   --tangly-color-primary: #f6821f;
   --tangly-color-primary-light: #fbad41;
   --tangly-color-primary-dark: #d9700f;
+  --tangly-color-primary-fg: #1c1917;
 
   --tangly-color-bg: #0f0f0f;
   --tangly-color-bg-elevated: #191919;
