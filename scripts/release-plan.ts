@@ -22,6 +22,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { PUBLISHABLE } from "./publishable-packages.ts";
 
 const repoRoot = resolve(import.meta.dirname, "..");
 
@@ -29,26 +30,6 @@ const repoRoot = resolve(import.meta.dirname, "..");
 // Baseline for any package not yet independently tagged. Valid until that package
 // gets its first `<key>@<version>` tag.
 const BOOTSTRAP_BASELINE = "v0.1.6";
-
-// Publishable packages in TOPOLOGICAL order (deps before dependents) — also the
-// npm publish order. Private packages (website, template-starter) are excluded:
-// never scanned, never published, never cascade into core.
-interface PkgDef {
-  key: string;
-  dir: string;
-  name: string;
-}
-const PUBLISHABLE: readonly PkgDef[] = [
-  { key: "schema", dir: "packages/schema", name: "@tanglydocs/schema" },
-  { key: "theme-ui", dir: "packages/theme-ui", name: "@tanglydocs/theme-ui" },
-  { key: "theme-tang", dir: "packages/theme-tang", name: "@tanglydocs/theme-tang" },
-  { key: "theme-pith", dir: "packages/theme-pith", name: "@tanglydocs/theme-pith" },
-  { key: "theme-pip", dir: "packages/theme-pip", name: "@tanglydocs/theme-pip" },
-  { key: "theme-readable", dir: "packages/theme-readable", name: "@tanglydocs/theme-readable" },
-  { key: "theme-geist", dir: "packages/theme-geist", name: "@tanglydocs/theme-geist" },
-  { key: "theme-cirrus", dir: "packages/theme-cirrus", name: "@tanglydocs/theme-cirrus" },
-  { key: "tangly", dir: "packages/tangly", name: "tangly" },
-];
 
 // Cascade graph = what CONSUMERS install. devDependencies never reach consumers,
 // so a devDep edge must not trigger a republish cascade. This keeps the graph
