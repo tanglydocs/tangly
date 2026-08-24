@@ -5,6 +5,34 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.3.0" description="25 Aug 26" tags={["feat"]}>
+  ## Highlights
+
+  A sixth theme, a quieter code block, and a component for handing setup instructions to a coding agent.
+
+  - **Cirrus, the infrastructure-docs theme.** `{ "theme": "cirrus" }` gets you the Cloudflare/Fastly register: full-bleed shell with a wide centred measure, dense type, hairline rules under headings, one warm accent. Built for reference material you scan rather than prose you read start to finish. Links derive from `--tangly-color-primary` with `color-mix` instead of restating it, so setting `colors.primary` recolors links to match rather than leaving them orange. ([#15](https://github.com/tanglydocs/tangly/pull/15))
+  - **Bare code blocks.** `styling.codeblocks.chrome: "bare"` drops the caption bar and floats the Copy button over the top-right of the block, which reads better for one-liners where the header was taller than the code it labelled. Pair it with `copyButton: "hover"` to reveal the button on hover or keyboard focus; touch devices always see it. A single fence overrides the site default in either direction with a `bare` or `bar` meta flag. ([#15](https://github.com/tanglydocs/tangly/pull/15))
+  - **`<CopyPrompt />`.** A button that copies one line pointing a coding agent at a URL of setup instructions, rather than pasting the instructions at the reader. The instructions then live at that URL and can change without anyone re-copying. A relative `href` resolves against the site origin in the browser at click time, because the agent receiving the prompt has no page context. ([#15](https://github.com/tanglydocs/tangly/pull/15))
+
+  ## Changes
+
+  ### Features
+  - feat(theme-cirrus): add cirrus theme, a dense infra-docs aesthetic, with a full-bleed shell and a wide centred measure ([#15](https://github.com/tanglydocs/tangly/pull/15))
+  - feat(runtime): `styling.codeblocks.chrome` (`"bar"` | `"bare"`) plus per-fence `bare` / `bar` meta flags ([#15](https://github.com/tanglydocs/tangly/pull/15))
+  - feat(theme-ui): `<CopyPrompt />` component for agent onboarding ([#15](https://github.com/tanglydocs/tangly/pull/15))
+
+  ### Fixes
+  - fix(schema): `styling.codeblocks.copyButton` was read by the runtime but missing from the strict schema object, so setting it failed validation
+  - fix(runtime): `astro.config.mjs` reads code-block settings from `styling.codeblocks`, the schema'd Mintlify-compatible location, not only the older top-level `code` key. A valid `styling.codeblocks` used to be silently ignored
+  - fix(theme-cirrus): align nav, tabs and sidebar labels to one left edge
+
+  ### Internal
+  - build(release): register `@tanglydocs/theme-cirrus` in the release planner. The `PUBLISHABLE` list is hand-maintained, so a new package was invisible to it and a release would have published `tangly` depending on a version that was never pushed to npm
+
+  ### Docs
+  - docs: `/guides/themes/cirrus`, the `styling.codeblocks` object form in the schema reference, and `<CopyPrompt />` plus a code-block chrome section in the components reference
+</Update>
+
 <Update label="v0.2.4" description="20 Jul 26" tags={["feat"]}>
   ## Highlights
 
