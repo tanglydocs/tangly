@@ -56,3 +56,10 @@ cwd = "packages/website"
 host = "@"
 auto_start = false
 restart_policy = "on-failure"
+
+[tasks.cirrus]
+command = "../../packages/tangly/bin/tangly.js dev --no-open --port $PORT"
+cwd = "examples/demo-cirrus"
+host = "cirrus"
+auto_start = false
+restart_policy = "on-failure"

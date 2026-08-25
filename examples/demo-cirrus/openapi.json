@@ -1,0 +1,111 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Halo API",
+    "version": "1.0.0",
+    "description": "REST API for managing Halo projects, deployments, and domains."
+  },
+  "servers": [
+    { "url": "https://api.halo.app/v1" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Deployment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "dpl_x7k2qz" },
+          "url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["queued", "building", "ready", "error"] },
+          "target": { "type": "string", "enum": ["production", "preview"] },
+          "created_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "url", "status", "target", "created_at"]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "prj_abc123" },
+          "name": { "type": "string" },
+          "framework": { "type": "string" },
+          "default_url": { "type": "string", "format": "uri" }
+        },
+        "required": ["id", "name", "default_url"]
+      }
+    }
+  },
+  "security": [{ "bearer": [] }],
+  "paths": {
+    "/deployments": {
+      "post": {
+        "summary": "Create deployment",
+        "operationId": "createDeployment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project_id": { "type": "string" },
+                  "files": { "type": "object", "additionalProperties": { "type": "string" } },
+                  "target": { "type": "string", "enum": ["production", "preview"], "default": "preview" }
+                },
+                "required": ["project_id", "files"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Deployment queued",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Deployment" } }
+            }
+          }
+        }
+      }
+    },
+    "/deployments/{id}": {
+      "get": {
+        "summary": "Get deployment",
+        "operationId": "getDeployment",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deployment",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Deployment" } }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "summary": "List projects",
+        "operationId": "listProjects",
+        "responses": {
+          "200": {
+            "description": "Projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Project" } },
+                    "next_cursor": { "type": "string", "nullable": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -94,9 +94,15 @@ const banner = config.banner as
   | undefined;
 const bannerId = banner ? (banner.id ?? "default") : "";
 const bannerType = banner?.type ?? "info";
+
+// Reveal-on-hover for the floating Copy button is a pure CSS concern, but the
+// setting lives in docs.json — stamp it on <html> so code.css can select it.
+const codeblocks = config.styling?.codeblocks;
+const copyOnHover =
+  codeblocks && typeof codeblocks === "object" && codeblocks.copyButton === "hover";
 ---
 <!DOCTYPE html>
-<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+<html lang="en" data-copy={copyOnHover ? "hover" : undefined} style={`${styleAttr}; ${darkStyleVar}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -157,7 +163,7 @@ const bannerType = banner?.type ?? "info";
         <Footer config={config} />
       </div>
     ) : (
-    <div class="flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
+    <div class="tangly-shell flex-1 grid grid-cols-1 lg:grid-cols-[var(--tangly-sidebar-width)_minmax(0,1fr)] w-full max-w-screen-2xl mx-auto">
       <aside
         id="tangly-sidebar"
         class="hidden lg:block sticky top-[var(--tangly-topnav-height)] h-[calc(100vh-var(--tangly-topnav-height))] overflow-y-auto tangly-scroll border-r border-[var(--tangly-color-border)] px-4 pt-6 pb-20 self-start"
@@ -198,7 +204,7 @@ const bannerType = banner?.type ?? "info";
         })();
       </script>
       <main
-        class="min-w-0 px-4 sm:px-6 lg:px-10 py-8"
+        class="tangly-main min-w-0 px-4 sm:px-6 lg:px-10 py-8"
         data-pagefind-body
         data-pagefind-meta={`title:${pageTitle}`}
       >

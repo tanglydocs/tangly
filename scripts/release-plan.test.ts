@@ -74,6 +74,7 @@ const PROD: Record<string, string[]> = {
   "theme-pip": ["theme-ui"],
   "theme-readable": ["theme-ui"],
   "theme-geist": ["theme-ui"],
+  "theme-cirrus": ["theme-ui"],
   tangly: [
     "schema",
     "theme-ui",
@@ -82,6 +83,7 @@ const PROD: Record<string, string[]> = {
     "theme-pip",
     "theme-readable",
     "theme-geist",
+    "theme-cirrus",
   ],
 };
 const ORDER = Object.keys(PROD);

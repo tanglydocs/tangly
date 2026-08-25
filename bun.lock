@@ -37,14 +37,14 @@
     },
     "packages/schema": {
       "name": "@tanglydocs/schema",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "dependencies": {
         "zod": "^4.3.6",
       },
     },
     "packages/tangly": {
       "name": "tangly",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "bin": {
         "tangly": "./bin/tangly.js",
       },
@@ -62,6 +62,7 @@
         "@shikijs/twoslash": "^4.0.2",
         "@tailwindcss/vite": "^4.2.4",
         "@tanglydocs/schema": "workspace:*",
+        "@tanglydocs/theme-cirrus": "workspace:*",
         "@tanglydocs/theme-geist": "workspace:*",
         "@tanglydocs/theme-pip": "workspace:*",
         "@tanglydocs/theme-pith": "workspace:*",
@@ -107,6 +108,17 @@
     "packages/template-starter": {
       "name": "@tanglydocs/template-starter",
       "version": "0.0.0",
+    },
+    "packages/theme-cirrus": {
+      "name": "@tanglydocs/theme-cirrus",
+      "version": "0.1.0",
+      "dependencies": {
+        "@tanglydocs/theme-ui": "workspace:*",
+        "tailwindcss": "^4.2.4",
+      },
+      "devDependencies": {
+        "@types/node": "^25.6.0",
+      },
     },
     "packages/theme-geist": {
       "name": "@tanglydocs/theme-geist",
@@ -165,7 +177,7 @@
     },
     "packages/theme-ui": {
       "name": "@tanglydocs/theme-ui",
-      "version": "0.2.0",
+      "version": "0.2.2",
       "dependencies": {
         "@astrojs/mdx": "^5.0.4",
         "@scalar/api-reference": "^1.53.1",
@@ -956,6 +968,8 @@
     "@tanglydocs/schema": ["@tanglydocs/schema@workspace:packages/schema"],
 
     "@tanglydocs/template-starter": ["@tanglydocs/template-starter@workspace:packages/template-starter"],
+
+    "@tanglydocs/theme-cirrus": ["@tanglydocs/theme-cirrus@workspace:packages/theme-cirrus"],
 
     "@tanglydocs/theme-geist": ["@tanglydocs/theme-geist@workspace:packages/theme-geist"],
 

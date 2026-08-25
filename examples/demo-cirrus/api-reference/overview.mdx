@@ -1,0 +1,68 @@
+---
+title: API overview
+description: REST endpoints to manage projects, deployments, domains, and environment variables.
+icon: terminal
+---
+
+The Halo REST API is the same surface the CLI and dashboard use. Base URL:
+
+```
+https://api.halo.app/v1
+```
+
+## Authentication
+
+Bearer token, scoped per token. Generate one at `halo.example.com/account/tokens`.
+
+```bash
+curl https://api.halo.app/v1/projects \
+  -H "Authorization: Bearer $HALO_TOKEN"
+```
+
+Tokens carry one of three scopes:
+
+| Scope | Permissions |
+|-------|-------------|
+| `read` | List + get on every resource |
+| `deploy` | `read` + create deployments + alias |
+| `admin` | Everything, including team membership |
+
+## Rate limits
+
+- **Per token**: 100 req/s, 5000 req/min.
+- **Per IP (unauthenticated)**: 10 req/s.
+- Burst budget: 30s.
+
+Rate-limit state is exposed in response headers:
+
+```
+X-RateLimit-Limit: 6000
+X-RateLimit-Remaining: 5982
+X-RateLimit-Reset: 1714521600
+```
+
+## Errors
+
+All errors return JSON:
+
+```json
+{
+  "error": {
+    "code": "deployment_not_found",
+    "message": "No deployment with id dpl_x7k2qz",
+    "doc_url": "https://halo.example.com/docs/errors#deployment_not_found"
+  }
+}
+```
+
+Status codes are conventional: `4xx` for client errors, `5xx` for ours.
+
+## Pagination
+
+List endpoints paginate via cursor:
+
+```
+GET /v1/deployments?limit=50&cursor=eyJpZCI6...
+```
+
+Responses include `next_cursor` (or `null` at the end).

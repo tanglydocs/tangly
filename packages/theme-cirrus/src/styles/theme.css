@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 only auto-scans files relative to the CSS entrypoint's
+ * project. Components live in `@tanglydocs/theme-ui`, the runtime in
+ * `tangly/runtime/`, and CLI helpers in `tangly/src/` — list them all.
+ */
+@source "../**/*.{astro,ts,tsx,mdx}";
+@source "../../../theme-ui/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/runtime/src/**/*.{astro,ts,tsx,mdx}";
+@source "../../../tangly/src/**/*.{astro,ts,tsx,mdx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Cirrus — dense infrastructure-docs aesthetic (Cloudflare/Fastly family).
+     Neutral grayscale chrome, one warm accent, hairlines everywhere, and
+     noticeably tighter type than the other themes. */
+  --tangly-color-primary: #f6821f;
+  --tangly-color-primary-light: #fbad41;
+  --tangly-color-primary-dark: #d9700f;
+  /* White on this orange is 2.6:1, under WCAG AA. Solid CTAs take near-black
+     text instead; the shared shell reads this token and falls back to white. */
+  --tangly-color-primary-fg: #1c1917;
+
+  --tangly-color-bg: #fcfcfc;
+  --tangly-color-bg-elevated: #f5f5f5;
+  --tangly-color-fg: #171717;
+  --tangly-color-muted: #737373;
+  --tangly-color-border: #e5e5e5;
+
+  /* Links derive from the accent rather than restating it, so a project that
+     sets its own `colors.primary` gets matching links. Derivation, not a
+     literal: a mid-tone accent at text size sits under WCAG AA on white, so
+     the link tone is darkened. Layout.astro injects `--tangly-color-primary`
+     as an inline style on <html> — the same element `:root` matches — so this
+     substitution picks up the project's colour, not the theme default. */
+  --cirrus-link: color-mix(in oklab, var(--tangly-color-primary) 76%, #000);
+  --cirrus-link-underline: color-mix(in oklab, var(--cirrus-link) 35%, transparent);
+
+  /* Callout tint — CF's asides are a flat wash + full hairline, not a bar. */
+  --cirrus-note-bg: #eff4fb;
+  --cirrus-note-border: rgba(42, 93, 176, 0.25);
+
+  --tangly-radius: 0.5rem;
+  --tangly-radius-sm: 0.25rem;
+  --tangly-radius-lg: 0.5rem;
+
+  --tangly-font-heading: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tangly-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tangly-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Full-bleed shell with a wide, centred measure. Chrome is dense (narrow
+     sidebar, 13px labels) but the reading column gets room: 49rem of text
+     with a fat gutter on each side, rather than a narrow column pinned to
+     the sidebar with dead space before the TOC. See .tangly-article below. */
+  --tangly-sidebar-width: 16rem;
+  --tangly-content-max-width: 49rem;
+  --tangly-toc-width: 18rem;
+  --tangly-topnav-row1-height: 3.25rem;
+  --tangly-topnav-row2-height: 2.5rem;
+  --tangly-topnav-height: calc(
+    var(--tangly-topnav-row1-height) + var(--tangly-topnav-row2-height) + 1px
+  );
+
+  color-scheme: light;
+}
+
+.dark {
+  --tangly-color-primary: #f6821f;
+  --tangly-color-primary-light: #fbad41;
+  --tangly-color-primary-dark: #d9700f;
+  --tangly-color-primary-fg: #1c1917;
+
+  --tangly-color-bg: #0f0f0f;
+  --tangly-color-bg-elevated: #191919;
+  --tangly-color-fg: #fafafa;
+  --tangly-color-muted: #a3a3a3;
+  --tangly-color-border: #2a2a2a;
+
+  /* Inverted on dark: lighten the accent instead of darkening it. */
+  --cirrus-link: color-mix(in oklab, var(--tangly-color-primary) 72%, #fff);
+  --cirrus-link-underline: color-mix(in oklab, var(--cirrus-link) 35%, transparent);
+
+  --cirrus-note-bg: rgba(42, 93, 176, 0.12);
+  --cirrus-note-border: rgba(96, 150, 224, 0.3);
+
+  color-scheme: dark;
+}
+
+html {
+  font-family: var(--tangly-font-body);
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--tangly-color-bg);
+  color: var(--tangly-color-fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--tangly-font-heading);
+  font-weight: 600;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--tangly-font-mono);
+}
+
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+::selection {
+  background: color-mix(in oklab, var(--tangly-color-primary) 25%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+ * Prose density — the single biggest tell of this family. Headings step down
+ * in small increments, body leading is 1.5 not 1.65, and h2 carries a rule.
+ * ------------------------------------------------------------------------- */
+
+.prose-tang {
+  line-height: 1.55;
+}
+
+.prose-tang p,
+.prose-tang li {
+  line-height: 1.55;
+}
+
+.prose-tang h1 {
+  font-size: 2.1875rem; /* 35px */
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.prose-tang h2 {
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-top: 2.5em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--tangly-color-border);
+}
+
+.prose-tang h3 {
+  font-size: 1.0625rem;
+  letter-spacing: -0.005em;
+  margin-top: 2em;
+}
+
+.prose-tang h4 {
+  font-size: 0.95rem;
+}
+
+/* Links: accent-coloured with a soft underline that solidifies on hover. */
+.prose-tang :where(p, li, td, th, h2, h3, h4, h5, h6) a {
+  color: var(--cirrus-link);
+  text-decoration: underline;
+  text-decoration-color: var(--cirrus-link-underline);
+  text-underline-offset: 2px;
+  border-bottom: 0;
+}
+.prose-tang :where(p, li, td, th, h2, h3, h4, h5, h6) a:hover {
+  text-decoration-color: currentColor;
+  border-bottom: 0;
+}
+
+/* Inline code: hairline chip rather than a filled pill. */
+.prose-tang :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--tangly-color-border);
+  border-radius: var(--tangly-radius-sm);
+  background: var(--tangly-color-bg-elevated);
+}
+
+.prose-tang table {
+  font-size: 0.9375rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Layout — full bleed, centred measure
+ * ------------------------------------------------------------------------- */
+
+/* The shared shell caps at max-w-screen-2xl and centres, which leaves the
+   sidebar floating in from the viewport edge on a wide display. This family
+   runs edge to edge instead. */
+.tangly-shell,
+.tangly-shell-row {
+  max-width: none;
+}
+
+/* The article is capped at --tangly-content-max-width but left-aligned by
+   default, so on a wide screen it hugs the sidebar and dumps the slack
+   between the text and the TOC. Centre it in the column so the slack splits
+   evenly — this is what actually reads as breathing room. */
+.tangly-article {
+  margin-inline: auto;
+}
+
+.tangly-main {
+  padding-block: 2rem;
+}
+
+/* One left edge for every label in the chrome. Each of these sits on a
+   different inset by default because the hit targets carry their own
+   padding: the logo has none (16px), sidebar links have px-2 on top of the
+   aside's px-4 (24px), and nav tabs have px-3 on top of the row's px-4
+   (28px). Pad the containers so the TEXT lands on 24px in all three, and let
+   the hover/active fills keep bleeding outward from it. */
+.tangly-nav-brand {
+  padding-left: 1.5rem;
+}
+
+.tangly-tabs-nav {
+  padding-left: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .tangly-main {
+    padding-inline: 2rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Chrome
+ * ------------------------------------------------------------------------- */
+
+/* Topnav — flat, opaque, hairline. No frosting: this family reads as solid. */
+.tangly-topnav {
+  background: var(--tangly-color-bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid var(--tangly-color-border);
+}
+
+/* Sidebar — 13px, muted by default, subtle gray fill when active. */
+.tangly-sidebar {
+  border-right: 1px solid var(--tangly-color-border);
+}
+
+.tangly-side-link {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--tangly-color-muted);
+  border-radius: var(--tangly-radius-sm);
+}
+
+.tangly-side-link:hover {
+  color: var(--tangly-color-fg);
+  background: var(--tangly-color-bg-elevated);
+}
+
+.tangly-side-link[data-active="true"] {
+  color: var(--tangly-color-fg);
+  background: var(--tangly-color-bg-elevated);
+  font-weight: 500;
+}
+
+/* TOC — same 13px scale, accent marker on the active entry. */
+.tangly-toc {
+  font-size: 0.8125rem;
+}
+
+.tangly-toc-link {
+  color: var(--tangly-color-muted);
+}
+
+.tangly-toc-link[data-active="true"] {
+  color: var(--tangly-color-fg);
+  border-left-color: var(--tangly-color-primary);
+  font-weight: 500;
+}
+
+/* Callouts — flat tint plus a full hairline, not a heavy left bar. */
+.tangly-callout {
+  border-left-width: 1px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--tangly-radius);
+}
+
+/* Cards / code frames — hairline boxes, modest radius. */
+.tangly-card,
+.tangly-code-figure,
+.tangly-code-group {
+  border-radius: var(--tangly-radius);
+}
+
+/* Pill CTA — the one fully rounded thing in an otherwise square-ish theme. */
+.tangly-cta {
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+/* Minimal scrollbars in the scroll panes. */
+.tangly-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tangly-color-border) transparent;
+}
+.tangly-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.tangly-scroll::-webkit-scrollbar-thumb {
+  background: var(--tangly-color-border);
+  border-radius: 3px;
+}
+.tangly-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}

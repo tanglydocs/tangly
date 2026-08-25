@@ -50,6 +50,10 @@ const META_FLAG_TOKENS = new Set([
   "annotate",
   "diff",
   "twoslash",
+  // Chrome variant flags — must be listed here or parseMetaTitle would take
+  // them for a bare filename token and render "bare" as the figure title.
+  "bare",
+  "bar",
 ]);
 
 function parseMetaTitle(meta) {
@@ -83,11 +87,22 @@ function metaHas(meta, flag) {
  * Wrap each pre.shiki in a figure with title + lang label + copy button.
  * Runs as a single shiki transformer to avoid plugin-order issues.
  *
+ * Two chrome variants:
+ *   "bar"  (default) — figcaption above the code carrying the filename, the
+ *                      language label, and the Copy button.
+ *   "bare"           — no figcaption at all; Copy floats over the top-right
+ *                      of the code. Reads better for one-liners, where the
+ *                      header bar is taller than the code it labels.
+ *
+ * Site default comes from `styling.codeblocks.chrome`; a fence overrides it
+ * with a `bare` or `bar` meta flag.
+ *
  * Defensive: never throws — if the AST shape is unexpected, leaves the
  * fragment alone.
  */
 export function transformerTanglyChrome(opts = {}) {
   const copyButtonDefault = opts.copyButton !== false;
+  const chromeDefault = opts.chrome === "bare" ? "bare" : "bar";
   return {
     name: "tangly:chrome",
     root(root) {
@@ -97,6 +112,8 @@ export function transformerTanglyChrome(opts = {}) {
         const title = parseMetaTitle(meta);
         const noCopy = metaHas(meta, "noCopy");
         const showCopy = copyButtonDefault && !noCopy;
+        // A fence flag wins over the site default, in either direction.
+        const bare = metaHas(meta, "bare") || (chromeDefault === "bare" && !metaHas(meta, "bar"));
 
         const children = root?.children ?? [];
         for (let i = 0; i < children.length; i++) {
@@ -109,7 +126,7 @@ export function transformerTanglyChrome(opts = {}) {
           if (lang) props["data-language"] = lang;
 
           const headerChildren = [];
-          if (title) {
+          if (title && !bare) {
             headerChildren.push({
               type: "element",
               tagName: "div",
@@ -128,7 +145,7 @@ export function transformerTanglyChrome(opts = {}) {
               ],
             });
           }
-          if (lang) {
+          if (lang && !bare) {
             headerChildren.push({
               type: "element",
               tagName: "span",
@@ -167,7 +184,28 @@ export function transformerTanglyChrome(opts = {}) {
             });
           }
 
-          if (headerChildren.length === 0) continue;
+          // Bar mode has nothing to add without a title, a lang or a button, so
+          // it leaves the <pre> alone. Bare mode suppresses title and lang by
+          // design, so `headerChildren` is empty whenever copy is off — and
+          // skipping there would strip the figure (and its border, background
+          // and annotation pairing) from every block on a
+          // `chrome: "bare", copyButton: false` site.
+          if (headerChildren.length === 0 && !bare) continue;
+
+          // In bare mode headerChildren holds only the Copy button, and it
+          // becomes a direct child of the figure — CSS floats it over the
+          // code. No figcaption is emitted at all.
+          const figureChildren = bare
+            ? [node, ...headerChildren]
+            : [
+                {
+                  type: "element",
+                  tagName: "figcaption",
+                  properties: { className: ["tangly-code-header"] },
+                  children: headerChildren,
+                },
+                node,
+              ];
 
           children[i] = {
             type: "element",
@@ -175,16 +213,9 @@ export function transformerTanglyChrome(opts = {}) {
             properties: {
               className: ["tangly-code-figure"],
               "data-tangly-code": "true",
+              "data-chrome": bare ? "bare" : "bar",
             },
-            children: [
-              {
-                type: "element",
-                tagName: "figcaption",
-                properties: { className: ["tangly-code-header"] },
-                children: headerChildren,
-              },
-              node,
-            ],
+            children: figureChildren,
           };
         }
       } catch {

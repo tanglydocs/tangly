@@ -1,6 +1,6 @@
 ---
 title: Code
-description: CodeGroup, PackageManager, Snippet, FileTree, Kbd. Components for code, files, and keys.
+description: CodeGroup, PackageManager, Snippet, FileTree, Kbd, CopyPrompt. Components for code, files, and keys.
 icon: "code-2"
 ---
 
@@ -12,6 +12,7 @@ icon: "code-2"
 | [`<Snippet>`](#snippet) | Reuse content across pages |
 | [`<FileTree>`](#filetree) | Render a directory tree from a Markdown list |
 | [`<Kbd>`](#kbd) | Keyboard chord, with auto Cmd→Ctrl on non-Mac |
+| [`<CopyPrompt>`](#copyprompt) | One-click "hand these instructions to my coding agent" button |
 
 ## CodeGroup
 
@@ -300,6 +301,78 @@ On Linux and Windows the same chord renders as `Ctrl + K`.
 ```
 
 <Kbd>Shift</Kbd>+<Kbd>Tab</Kbd>
+
+## CopyPrompt
+
+A button that copies a ready-to-paste prompt for a coding agent.
+
+The pattern it exists for: instead of pasting a wall of setup instructions at the reader, paste one line that points their agent at a URL it can fetch. The instructions then live at that URL and can change without anyone re-copying.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `href` | `string` | — | URL of the instructions the agent should fetch. Relative is fine. |
+| `text` | `string` | — | Full prompt text. Wins over `href` when both are given. |
+| `subject` | `string` | — | What the instructions set up, e.g. `"squirrelscan"`. Used in the generated sentence. |
+| `label` | `string` | `"Copy prompt"` | Button label. |
+| `icons` | `string[]` | `[]` | Small vendor marks shown before the label. Image URLs. |
+| `title` | `string` | — | Native tooltip. |
+
+One of `href` or `text` is required; the build fails if both are missing.
+
+### From a URL
+
+```mdx
+<CopyPrompt href="/agent-setup/prompt.md" subject="my-tool" />
+```
+
+Copies: `Fetch and follow the setup instructions for my-tool at https://your-site.dev/agent-setup/prompt.md`
+
+A relative `href` picks up the site's configured base at build, then resolves against the current document in the browser at click time. The agent receiving the prompt has no page context, so it needs an absolute URL.
+
+### Custom text
+
+```mdx
+<CopyPrompt text="Install the CLI with `brew install my-tool`, then run `my-tool init`." />
+```
+
+### With vendor marks
+
+```mdx
+<CopyPrompt
+  href="/agent-setup/prompt.md"
+  subject="my-tool"
+  label="Set up my agent"
+  icons={["/logo/agents/claude-code.png", "/logo/agents/codex.png"]}
+/>
+```
+
+## Code block chrome
+
+Code blocks render with a caption bar carrying the filename, the language label, and the Copy button. Set `styling.codeblocks` in `docs.json` to change that site-wide:
+
+```json docs.json
+{
+  "styling": {
+    "codeblocks": {
+      "chrome": "bare",
+      "copyButton": "hover"
+    }
+  }
+}
+```
+
+| Key | Values | Default | Description |
+|---|---|---|---|
+| `chrome` | `"bar"` \| `"bare"` | `"bar"` | `bare` drops the caption and floats the Copy button over the top-right of the block. |
+| `copyButton` | `true` \| `false` \| `"always"` \| `"hover"` | `true` | `false` removes the button. `"hover"` (bare chrome only) reveals it on hover or keyboard focus; touch devices always see it. |
+
+A single fence overrides `chrome` either way with a `bare` or `bar` meta flag:
+
+````mdx
+```ts bare
+const x = 1;
+```
+````
 
 ## Source
 

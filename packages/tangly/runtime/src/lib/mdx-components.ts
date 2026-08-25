@@ -5,6 +5,7 @@ import Card from "@tanglydocs/theme-ui/components/Card.astro";
 import CardGroup from "@tanglydocs/theme-ui/components/CardGroup.astro";
 import Check from "@tanglydocs/theme-ui/components/Check.astro";
 import CodeGroup from "@tanglydocs/theme-ui/components/CodeGroup.astro";
+import CopyPrompt from "@tanglydocs/theme-ui/components/CopyPrompt.astro";
 import Columns from "@tanglydocs/theme-ui/components/Columns.astro";
 import Danger from "@tanglydocs/theme-ui/components/Danger.astro";
 import Embed from "@tanglydocs/theme-ui/components/Embed.astro";
@@ -46,6 +47,7 @@ export const mdxComponents = {
   CardGroup,
   Check,
   CodeGroup,
+  CopyPrompt,
   Columns,
   Danger,
   Embed,

@@ -14,7 +14,7 @@
 import type { DocsJson } from "@tanglydocs/schema";
 
 /** Resolved theme aliases collapse to these five card families. */
-export type CardTheme = "tang" | "pith" | "pip" | "readable" | "geist";
+export type CardTheme = "tang" | "pith" | "pip" | "readable" | "geist" | "cirrus";
 
 export interface CardStyle {
   /** Card background (hex). */
@@ -79,6 +79,14 @@ const STYLE_BY_THEME: Record<CardTheme, CardStyle> = {
     titleFamily: "Inter",
     treatment: "hairline",
   },
+  cirrus: {
+    bg: "#FCFCFC",
+    fg: "#171717",
+    mute: "#737373",
+    accent: "#F6821F",
+    titleFamily: "Inter",
+    treatment: "bar",
+  },
 };
 
 const THEME_ALIASES: Record<string, CardTheme> = {
@@ -87,6 +95,7 @@ const THEME_ALIASES: Record<string, CardTheme> = {
   pip: "pip",
   readable: "readable",
   geist: "geist",
+  cirrus: "cirrus",
   // Mintlify theme aliases all map to tang (mirrors resolveTheme()).
   mint: "tang",
   maple: "tang",

@@ -1,0 +1,106 @@
+---
+title: Cirrus
+description: Dense infrastructure-docs aesthetic. Cloudflare / Fastly family. Full-bleed shell, hairline rules, one warm accent.
+icon: "cloud"
+---
+
+## Cirrus
+
+Cirrus is the infrastructure-docs register: Cloudflare, Fastly, Akamai, Vercel's platform docs. Neutral grayscale chrome, a single warm accent doing all the work, hairlines separating everything, and type noticeably tighter than the other themes.
+
+It is built for reference material you scan rather than prose you read start to finish.
+
+### When to use it
+
+- API, platform, or infrastructure docs with a lot of pages and a deep sidebar.
+- Reference-heavy content: tables, parameter lists, config keys.
+- Anywhere density beats airiness, and the reader is looking something up.
+
+If your content is long-form narrative, [pith](/guides/themes/pith) or [readable](/guides/themes/readable) give it more room. If you want the same grayscale restraint without the density, [geist](/guides/themes/geist) is the calmer sibling.
+
+### Set it
+
+```json
+{ "theme": "cirrus" }
+```
+
+### Token table
+
+From [`packages/theme-cirrus/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-cirrus/src/styles/theme.css):
+
+#### Colors: light
+
+| Token | Value |
+|---|---|
+| `--tangly-color-primary` | `#f6821f` (warm accent) |
+| `--tangly-color-primary-light` | `#fbad41` |
+| `--tangly-color-primary-dark` | `#d9700f` |
+| `--tangly-color-bg` | `#fcfcfc` |
+| `--tangly-color-bg-elevated` | `#f5f5f5` |
+| `--tangly-color-fg` | `#171717` |
+| `--tangly-color-muted` | `#737373` |
+| `--tangly-color-border` | `#e5e5e5` |
+
+#### Colors: dark
+
+Same accent, inverted ground: `#0f0f0f` background, `#fafafa` foreground, `#2a2a2a` borders. The accent does not change between modes, so a project's brand color reads the same on both.
+
+#### Typography
+
+| Token | Value |
+|---|---|
+| `--tangly-font-heading` | `Inter` → system-ui → sans-serif |
+| `--tangly-font-body` | `Inter` |
+| `--tangly-font-mono` | `JetBrains Mono` → ui-monospace → Menlo |
+
+#### Layout
+
+| Token | Value | Notes |
+|---|---|---|
+| `--tangly-sidebar-width` | `16rem` | Dense, 13px labels. |
+| `--tangly-content-max-width` | `49rem` | Wider measure than tang's 48rem, and centred. |
+| `--tangly-toc-width` | `18rem` | Wide TOC rail: deep pages get readable headings. |
+| `--tangly-topnav-row1-height` | `3.25rem` | |
+| `--tangly-topnav-row2-height` | `2.5rem` | |
+| `--tangly-radius` | `0.5rem` | |
+
+### What makes cirrus different
+
+- **Full-bleed shell, centred measure.** The other themes cap the whole shell and centre it, which leaves the sidebar floating in from the edge on a wide display. Cirrus pins the chrome to the viewport edges and centres the reading column inside what's left.
+- **Links derive from the accent.** `--cirrus-link` is `color-mix`ed from `--tangly-color-primary` rather than hardcoded, and darkened for contrast, so setting `colors.primary` in `docs.json` recolors links to match instead of leaving them orange.
+- **Density.** Body leading is 1.55, not 1.65. Headings step down in small increments and `h2` carries a hairline rule. Tables render at 15px.
+- **Hairline chips, not pills.** Inline code is a bordered chip on the elevated surface rather than a filled pill.
+
+### Pairs well with bare code blocks
+
+Cirrus was designed alongside the bare code-block chrome. Drop the caption bar and float the copy button on hover:
+
+```json
+{
+  "theme": "cirrus",
+  "styling": {
+    "codeblocks": { "chrome": "bare", "copyButton": "hover" }
+  }
+}
+```
+
+See [code blocks](/reference/components/code) for the full set of options.
+
+### Customizing
+
+Cirrus's accent is a Cloudflare-family orange. Swap it for your own and the links, selection, and CTAs follow:
+
+```json
+{
+  "theme": "cirrus",
+  "colors": {
+    "primary": "#2563eb",
+    "light":   "#60a5fa",
+    "dark":    "#1d4ed8"
+  }
+}
+```
+
+### Source
+
+[`packages/theme-cirrus/src/styles/theme.css`](https://github.com/tanglydocs/tangly/blob/main/packages/theme-cirrus/src/styles/theme.css)

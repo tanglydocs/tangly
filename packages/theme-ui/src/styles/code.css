@@ -157,6 +157,63 @@
   right: 0.5rem;
 }
 
+/* ---------------------------------------------------------------------------
+ * Bare chrome — no header bar, Copy floats over the code.
+ * ------------------------------------------------------------------------- */
+
+/* Leave room so a long first line can't run under the button. */
+.tangly-code-figure[data-chrome="bare"] > pre {
+  padding-right: 3.25rem;
+}
+
+.tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
+  /* Sits on the code, so it needs its own surface to stay legible against
+     whatever the syntax theme paints underneath. */
+  background: color-mix(in oklab, var(--tangly-color-bg, #fff) 88%, transparent);
+  border-color: var(--tangly-color-border, #e5e7eb);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Label is redundant when the button floats — glyph only, still labelled for
+   assistive tech via aria-label on the button. */
+.tangly-code-figure[data-chrome="bare"] > .tangly-code-copy .tangly-code-copy-idle,
+.tangly-code-figure[data-chrome="bare"] > .tangly-code-copy .tangly-code-copy-done {
+  font-size: 0;
+  gap: 0;
+}
+.tangly-code-figure[data-chrome="bare"] > .tangly-code-copy .tangly-code-copy-idle::before,
+.tangly-code-figure[data-chrome="bare"] > .tangly-code-copy .tangly-code-copy-done::before {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+/* Reveal-on-hover. Opt in with `styling.codeblocks.copyButton: "hover"`,
+   which stamps data-copy="hover" on <html>. Keyboard users get it via
+   :focus-within, and anyone who can't hover (touch, or a
+   prefers-reduced-motion-style coarse pointer) keeps it permanently. */
+:root[data-copy="hover"] .tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+:root[data-copy="hover"] .tangly-code-figure[data-chrome="bare"]:hover > .tangly-code-copy,
+:root[data-copy="hover"] .tangly-code-figure[data-chrome="bare"]:focus-within > .tangly-code-copy {
+  opacity: 1;
+}
+@media (hover: none) {
+  :root[data-copy="hover"] .tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
+    opacity: 1;
+  }
+}
+
+/* Inside a CodeGroup the per-block affordance is hidden, matching what the
+   header rule above already does to the bar-chrome Copy button. Note the group
+   does not currently provide a replacement, so a grouped block has no copy
+   button in either chrome — same gap, not a new one. */
+.tangly-code-group .tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
+  display: none;
+}
+
 /* Shiki notation transformer styles. */
 
 /* Line highlight (`{1,3-5}` and `[!code highlight]`). */

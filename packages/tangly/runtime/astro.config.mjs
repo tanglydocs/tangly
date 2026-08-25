@@ -45,15 +45,25 @@ if (!userRoot) {
 const configFile = process.env.TANGLY_CONFIG_FILE ?? "docs.json";
 const baseUrl = process.env.TANGLY_BASE ?? "/";
 
-// Pull `code` settings (theme, copyButton) from docs.json so the user can
-// override defaults without touching astro.config. Errors are non-fatal —
-// the manifest pipeline surfaces config issues via `tangly check`.
+// Pull code-block settings (theme, chrome, copyButton) from docs.json so the
+// user can override defaults without touching astro.config. Errors are
+// non-fatal — the manifest pipeline surfaces config issues via `tangly check`.
+//
+// `styling.codeblocks` is the schema'd, Mintlify-compatible location and wins;
+// the top-level `code` key is the older spelling this file used to read
+// exclusively, which meant a valid `styling.codeblocks` was silently ignored.
+// Mintlify also allows `styling.codeblocks` to be the string "system"/"dark",
+// which carries no options — treat that as empty.
 let codeConfig = {};
 try {
   const docsPath = resolve(userRoot, configFile);
   if (existsSync(docsPath)) {
     const parsed = JSON.parse(readFileSync(docsPath, "utf8"));
-    codeConfig = parsed?.code ?? {};
+    const blocks = parsed?.styling?.codeblocks;
+    codeConfig = {
+      ...parsed?.code,
+      ...(blocks && typeof blocks === "object" ? blocks : null),
+    };
   }
 } catch {
   /* swallow */
@@ -63,7 +73,10 @@ const codeThemes =
   typeof codeConfig.theme === "string"
     ? { light: codeConfig.theme, dark: codeConfig.theme }
     : (codeConfig.theme ?? { light: "vitesse-light", dark: "vitesse-dark" });
+// copyButton: false removes it; "always" | "hover" | true keep it. "hover"
+// only changes *when* it shows, so it still counts as enabled here.
 const codeCopyButton = codeConfig.copyButton !== false;
+const codeChrome = codeConfig.chrome === "bare" ? "bare" : "bar";
 
 // Load glossary entries once at config-load. Errors are non-fatal —
 // a missing or malformed glossary file disables the feature for this
@@ -192,7 +205,7 @@ export default defineConfig({
               transformerNotationHighlight(),
               transformerMetaHighlight(),
               transformerTanglyAnnotations(),
-              transformerTanglyChrome({ copyButton: codeCopyButton }),
+              transformerTanglyChrome({ copyButton: codeCopyButton, chrome: codeChrome }),
             ],
           },
         ],

@@ -18,19 +18,11 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { PUBLISHABLE_DIRS } from "./publishable-packages.ts";
 
 const repoRoot = resolve(import.meta.dirname, "..");
 
-const workspacePkgs = [
-  "packages/schema",
-  "packages/theme-ui",
-  "packages/theme-tang",
-  "packages/theme-pith",
-  "packages/theme-pip",
-  "packages/theme-readable",
-  "packages/theme-geist",
-  "packages/tangly",
-] as const;
+const workspacePkgs = PUBLISHABLE_DIRS;
 
 const work = mkdtempSync(join(tmpdir(), "tangly-tarball-"));
 const stage = join(work, "stage"); // tmp copy of pkgs with workspace:* rewritten

@@ -321,6 +321,20 @@ const StylingSchema = z
             theme: z
               .union([z.string(), z.object({ light: z.string(), dark: z.string() }).strict()])
               .optional(),
+            /**
+             * Header treatment. "bar" (default) puts the filename, language
+             * label and Copy button in a caption above the code; "bare"
+             * drops the caption and floats Copy over the top-right. A fence
+             * overrides either way with a `bare` / `bar` meta flag.
+             */
+            chrome: z.enum(["bar", "bare"]).optional(),
+            /**
+             * `false` removes the Copy button; "hover" (bare chrome only)
+             * reveals it on hover or keyboard focus. Touch devices always
+             * see it. Was read by the runtime but missing from this strict
+             * object, so setting it used to fail validation.
+             */
+            copyButton: z.union([z.boolean(), z.enum(["always", "hover"])]).optional(),
           })
           .strict(),
       ])

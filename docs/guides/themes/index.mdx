@@ -1,14 +1,14 @@
 ---
 title: Themes overview
-description: Tangly ships five themes. One token swap, no component changes. Pick one or roll your own.
+description: Tangly ships six themes. One token swap, no component changes. Pick one or roll your own.
 icon: "palette"
 ---
 
 ## Themes
 
-Tangly ships five themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`). What differs is colors, typography, layout dimensions, and chrome.
+Tangly ships six themes out of the box. They share the same component shell (`@tanglydocs/theme-ui`). What differs is colors, typography, layout dimensions, and chrome.
 
-### The five built-ins
+### The six built-ins
 
 <CardGroup cols={2}>
   <Card title="Tang" icon="flame" href="/guides/themes/tang">
@@ -25,6 +25,9 @@ Tangly ships five themes out of the box. They share the same component shell (`@
   </Card>
   <Card title="Geist" icon="square-asterisk" href="/guides/themes/geist">
     Dev-tool aesthetic. Vercel / Linear / Stripe family. Hairline borders, near-black CTAs.
+  </Card>
+  <Card title="Cirrus" icon="cloud" href="/guides/themes/cirrus">
+    Infrastructure docs. Cloudflare / Fastly family. Full-bleed shell, dense type, one warm accent.
   </Card>
 </CardGroup>
 
@@ -62,10 +65,11 @@ Reload the dev server (`tangly dev`) to see it. No other changes required. Compo
 | A 4–5 page README replacement | **Pip** |
 | A book, essay collection, or long manuscript | **Readable** |
 | A dev-tool with grayscale + restraint | **Geist** |
+| An API or platform reference you scan, not read | **Cirrus** |
 
 ### How themes work
 
-Each theme is a separate package: `@tanglydocs/theme-tang`, `@tanglydocs/theme-pith`, `@tanglydocs/theme-pip`, `@tanglydocs/theme-readable`, `@tanglydocs/theme-geist`.
+Each theme is a separate package: `@tanglydocs/theme-tang`, `@tanglydocs/theme-pith`, `@tanglydocs/theme-pip`, `@tanglydocs/theme-readable`, `@tanglydocs/theme-geist`, `@tanglydocs/theme-cirrus`.
 
 Inside each package: a single `theme.css` file with the token table (colors, fonts, layout dimensions). Components are shared and consume the tokens at render.
 

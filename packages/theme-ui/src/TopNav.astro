@@ -31,8 +31,8 @@ const primary = config.navbar?.primary;
 
 <header class="tangly-topnav sticky top-0 z-30">
   {/* Row 1: logo column (mirrors sidebar) · controls column (mirrors main) */}
-  <div class="w-full max-w-screen-2xl mx-auto flex items-stretch h-[var(--tangly-topnav-row1-height,3.75rem)]">
-    <div class="flex items-center gap-3 px-4 lg:w-[var(--tangly-sidebar-width)] shrink-0">
+  <div class="tangly-shell-row w-full max-w-screen-2xl mx-auto flex items-stretch h-[var(--tangly-topnav-row1-height,3.75rem)]">
+    <div class="tangly-nav-brand flex items-center gap-3 px-4 lg:w-[var(--tangly-sidebar-width)] shrink-0">
       <button
         type="button"
         class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[var(--tangly-color-bg-elevated)]"
@@ -109,8 +109,12 @@ const primary = config.navbar?.primary;
       {primary && primary.type === "button" && (
         <a
           href={withBase(primary.href)}
-          class="inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium text-white shrink-0 hover:opacity-90"
-          style="background: var(--tangly-color-primary); color: #fff"
+          class="tangly-cta inline-flex items-center h-9 px-3.5 rounded-md text-sm font-medium shrink-0 hover:opacity-90"
+          {/* White reads fine on a dark or saturated primary and is the
+              default, but a light accent (cirrus's orange is 2.6:1 against
+              white) needs dark text to clear WCAG AA. Themes opt in with
+              --tangly-color-primary-fg. */}
+          style="background: var(--tangly-color-primary); color: var(--tangly-color-primary-fg, #fff)"
         >
           {primary.label}
         </a>
@@ -130,9 +134,9 @@ const primary = config.navbar?.primary;
   {/* Row 2: tabs (only when there are 2+) — aligned to logo column */}
   {tabs.length > 1 && (
     <div class="border-t border-[var(--tangly-color-border)]">
-      <div class="w-full max-w-screen-2xl mx-auto flex items-stretch">
+      <div class="tangly-shell-row w-full max-w-screen-2xl mx-auto flex items-stretch">
         <nav
-          class="hidden md:flex items-center gap-1 px-4 h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
+          class="tangly-tabs-nav hidden md:flex items-center gap-1 px-4 h-[var(--tangly-topnav-row2-height,2.5rem)] overflow-x-auto tangly-scroll"
           aria-label="Sections"
         >
           {tabs.map((t) => (

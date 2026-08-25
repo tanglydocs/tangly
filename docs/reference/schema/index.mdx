@@ -379,7 +379,25 @@ Subtle layout flags.
 | Field | Type | Description |
 |---|---|---|
 | `eyebrows` | `"section" \| "breadcrumbs"` | Heading eyebrow style |
-| `codeblocks` | `"system" \| "dark"` | Force code blocks to always use dark theme regardless of page mode |
+| `codeblocks` | `"system" \| "dark"` \| object | Force code blocks to always use dark theme regardless of page mode, or pass an object for finer control |
+
+The object form takes three keys:
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `theme` | `string \| { light, dark }` | `vitesse-light` / `vitesse-dark` | Shiki theme name, or a light/dark pair |
+| `chrome` | `"bar" \| "bare"` | `"bar"` | `bare` drops the caption bar and floats the Copy button over the code. A fence overrides it with a `bare` or `bar` meta flag |
+| `copyButton` | `boolean \| "always" \| "hover"` | `true` | `false` removes the button; `"hover"` (bare chrome only) reveals it on hover or keyboard focus |
+
+```json docs.json
+{
+  "styling": {
+    "codeblocks": { "chrome": "bare", "copyButton": "hover" }
+  }
+}
+```
+
+See [code block chrome](/reference/components/code#code-block-chrome) for what each variant looks like.
 
 ## `integrations`
 
