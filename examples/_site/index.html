@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tangly examples — six themes, six demos</title>
+    <meta name="description" content="Live demos of every Tangly theme. Each is a real Tangly project rendering its own docs.json + MDX." />
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+      :root {
+        --ink: #0b0b0f;
+        --paper: #fafaf7;
+        --mute: #6b6b70;
+        --line: #e6e4de;
+        --tang-500: #f97316;
+        --tang-600: #ea580c;
+        --tang-700: #c2410c;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font: 400 15px/1.5 "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 88px 32px 96px; }
+      .eyebrow {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--tang-700);
+        margin: 0 0 14px;
+      }
+      h1 {
+        font-size: 56px;
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+        font-weight: 800;
+        margin: 0;
+      }
+      h1 .accent {
+        background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .lede {
+        max-width: 560px;
+        margin: 18px 0 0;
+        color: var(--mute);
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      .lede code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 13.5px;
+        color: var(--ink);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 18px;
+        margin-top: 56px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+      }
+      .card:hover { border-color: var(--tang-600); transform: translateY(-1px); }
+      .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .card-head .name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--tang-600); }
+      .badge {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 9.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--mute);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 1px 7px;
+      }
+      .card-body { padding: 22px 18px 26px; flex: 1; }
+      .demo-name {
+        font-size: 19px;
+        line-height: 1.25;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin: 0 0 6px;
+      }
+      .demo-desc {
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--mute);
+        margin: 0;
+      }
+      .card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border-top: 1px solid var(--line);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--mute);
+      }
+      .card-foot .open { color: var(--ink); font-weight: 500; }
+      .card-foot .open .arrow { color: var(--tang-600); }
+      footer {
+        margin-top: 88px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--mute);
+      }
+      footer ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; }
+      footer a:hover { color: var(--ink); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="eyebrow">Examples</p>
+      <h1><span>Six themes.</span> <span class="accent">Same Markdown.</span></h1>
+      <p class="lede">
+        Each demo below is a real Tangly project — its own <code>docs.json</code> +
+        MDX, rendered by the same CLI you'd run locally. Pick a register, swap a
+        one-line theme value.
+      </p>
+
+      <div class="grid">
+        <a class="card" href="/tang/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Tang</div>
+            <div class="badge">default</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">Cipher</p>
+            <p class="demo-desc">Encrypt anything in three lines of code. — Mintlify-Mint inspired sidebar, on-page TOC, monospace headings.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme tang</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+
+        <a class="card" href="/pith/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Pith</div>
+            <div class="badge">editorial</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">On Craft</p>
+            <p class="demo-desc">A handbook of small ideas about making things. — Serif headings, cream surface, generous measure.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme pith</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+
+        <a class="card" href="/pip/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Pip</div>
+            <div class="badge">minimal</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">Sprig</p>
+            <p class="demo-desc">A tiny CLI for tagging your shell history. — No sidebar. Single-column reading mode.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme pip</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+
+        <a class="card" href="/readable/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Readable</div>
+            <div class="badge">book-like</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">The Long Wait</p>
+            <p class="demo-desc">A short novel in three chapters. — Narrow column, large body type, drop caps.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme readable</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+
+        <a class="card" href="/geist/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Geist</div>
+            <div class="badge">developer</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">Halo</p>
+            <p class="demo-desc">Ship apps to the edge in 30 seconds. — Vercel/Linear register. Ink ground, thin rules, dense type scale.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme geist</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+
+        <a class="card" href="/starter/">
+          <div class="card-head">
+            <div class="name"><span class="dot"></span> Starter</div>
+            <div class="badge">scaffold</div>
+          </div>
+          <div class="card-body">
+            <p class="demo-name">Tangly Starter</p>
+            <p class="demo-desc">Three sections, three pages, no opinions. The fastest way to start typing.</p>
+          </div>
+          <div class="card-foot"><span>tangly init --theme starter</span><span class="open">Open <span class="arrow">→</span></span></div>
+        </a>
+      </div>
+
+      <footer>
+        <span>tangly · MIT · examples.tangly.dev</span>
+        <ul>
+          <li><a href="https://tangly.dev">tangly.dev</a></li>
+          <li><a href="https://docs.tangly.dev">Docs</a></li>
+          <li><a href="https://github.com/tanglydocs/tangly">GitHub</a></li>
+        </ul>
+      </footer>
+    </div>
+  </body>
+</html>
