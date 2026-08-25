@@ -1,6 +1,6 @@
 {
   "name": "@tanglydocs/theme-cirrus",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Cirrus Tangly theme. Dense infrastructure-docs aesthetic (Cloudflare/Fastly family). Compact 13px sidebar, tight leading, hairline rules under headings, orange links with soft underlines, pill CTAs. UI shell from @tanglydocs/theme-ui.",
   "keywords": [
     "docs",
