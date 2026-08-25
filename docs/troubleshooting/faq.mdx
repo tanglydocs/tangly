@@ -78,7 +78,7 @@ The biggest variable is your content's MDX complexity. Pages with lots of compon
 
 #### "Will Tangly do incremental builds?"
 
-Astro 6 has incremental builds; Tangly inherits them. So yes, between full rebuilds, dev-server edits are sub-second. For CI builds, "incremental" depends on your CI provider's caching. Most pipelines cache `node_modules` but not `.astro/`. Caching `.astro/` between CI runs gives a 5–10× speedup.
+Astro 7 has incremental builds; Tangly inherits them. So yes, between full rebuilds, dev-server edits are sub-second. For CI builds, "incremental" depends on your CI provider's caching. Most pipelines cache `node_modules` but not `.astro/`. Caching `.astro/` between CI runs gives a 5–10× speedup.
 
 ### Authoring
 
