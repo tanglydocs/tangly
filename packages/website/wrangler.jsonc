@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tangly-docs",
+  "account_id": "0605766fb0a185558e614a85f2a86a80",
   "compatibility_date": "2026-05-02",
   "assets": {
     "directory": "./dist",

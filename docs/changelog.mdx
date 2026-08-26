@@ -5,6 +5,31 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.4.0" description="25 Aug 26" tags={["feat", "fix"]}>
+  ## Highlights
+
+  Tangly runs on Astro 7.
+
+  - **Astro 7 and Vite 8.** The runtime moves to Astro 7, `@astrojs/mdx` 7, and the current Cloudflare, Node, Vercel and Preact adapters. Nothing changes in your project: `docs.json` and your MDX are untouched, and `tangly eject` now hands you an Astro 7 app. ([#17](https://github.com/tanglydocs/tangly/pull/17))
+  - **The upgrade fixes a silent-failure mode you may already have hit.** If your project pinned Astro 7 itself (a root `overrides` entry, a monorepo that hoists it, anything that wins over Tangly's own range), every code block on your site rendered as an unstyled `<pre>`: no syntax highlighting, no copy button, no annotations. Astro 7 deprecated `remarkPlugins`/`rehypePlugins` on `mdx({...})` and stopped running them, and nothing failed: the build exited 0, `tangly check --strict` passed, every page was written. The plugin pipeline now lives on `markdown.processor`, which MDX inherits.
+  - **A release gate so it cannot happen again.** Both tarball smokes build a project with a fenced code block and assert the output really contains a highlighted `tangly-code-figure`. A pipeline that stops running now fails the release instead of shipping unstyled docs.
+
+  ## Changes
+
+  ### Features
+  - feat(runtime): support Astro 7, `@astrojs/mdx` 7 and Vite 8 ([#17](https://github.com/tanglydocs/tangly/pull/17))
+
+  ### Fixes
+  - fix(runtime): move the remark/rehype pipeline to `markdown.processor`, so code highlighting and code-block chrome survive on Astro 7
+  - fix(build): pin `@types/hast`. Astro 7 pulled a second copy, and hast's nominal types made `hastscript`'s `Child` reject an `ElementContent` from the other copy
+
+  ### Tests
+  - test(build): both tarball smokes assert the built HTML contains a highlighted code figure
+
+  ### Docs
+  - docs: Astro 6 → 7 across the introduction, architecture overview and FAQ
+</Update>
+
 <Update label="v0.3.0" description="25 Aug 26" tags={["feat"]}>
   ## Highlights
 

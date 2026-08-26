@@ -152,7 +152,11 @@ step("tangly --version");
 run(tanglyBin, ["--version"], { cwd: installDir });
 
 mkdirSync(projectDir, { recursive: true });
-writeFileSync(join(projectDir, "introduction.md"), "---\ntitle: Introduction\n---\n\n# Hello\n");
+// The fence is load-bearing: it is what proves the markdown pipeline ran.
+writeFileSync(
+  join(projectDir, "introduction.md"),
+  "---\ntitle: Introduction\n---\n\n# Hello\n\n```bash\necho hello\n```\n",
+);
 
 step("tangly init --from <projectDir> project");
 run(tanglyBin, ["init", "--from", projectDir, projectDir], { cwd: installDir });
@@ -166,6 +170,32 @@ run(tanglyBin, ["build", "--out", "dist", "--root", projectDir], {
 const indexHtml = join(projectDir, "dist", "index.html");
 if (!existsSync(indexHtml)) fail(`build did not produce ${indexHtml}`);
 log(`  ✓ ${indexHtml}`);
+
+// A silently-skipped markdown pipeline still builds, still exits 0, and still
+// writes every page — it just emits bare <pre> with no highlighting and no
+// copy button. Astro 7 did exactly that when the plugins stayed on `mdx()`
+// instead of `markdown.processor`. The fixture above has one fence, so at
+// least one built page must carry the chrome. Scan them all: which route the
+// fence lands on depends on how `init` scaffolds the home page.
+const pages: string[] = [];
+for (const stack = [join(projectDir, "dist")]; stack.length > 0; ) {
+  for (const entry of readdirSync(stack.pop()!, { withFileTypes: true })) {
+    const full = join(entry.parentPath, entry.name);
+    if (entry.isDirectory()) stack.push(full);
+    else if (entry.name.endsWith(".html")) pages.push(full);
+  }
+}
+const highlighted = pages.filter((f) => {
+  const html = readFileSync(f, "utf8");
+  return html.includes("tangly-code-figure") && html.includes('class="shiki');
+});
+if (highlighted.length === 0) {
+  fail(
+    `no highlighted code figure in ${pages.length} built page(s) — the remark/rehype pipeline did not run.\n` +
+      "  Check `markdown.processor` in runtime/astro.config.mjs.",
+  );
+}
+log(`  ✓ code chrome present (${highlighted.length}/${pages.length} pages)`);
 
 log(`\n✓ tarball-flat smoke passed (${work})`);
 
