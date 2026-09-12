@@ -14,9 +14,16 @@
  *   5. logo                       — last-resort fallback (legacy behavior)
  */
 import type { DocsJson } from "@tanglydocs/schema";
+import {
+  type AuthorInput,
+  buildJsonLd,
+  type NavCrumb,
+  serializeJsonLd,
+} from "@tanglydocs/schema/json-ld";
 import { pageRouteForSlug } from "@tanglydocs/schema/page-path";
 import { resolveSite } from "@tanglydocs/schema/site";
 import type { PageEntry } from "tangly";
+import { resolveJsonLdContext } from "./json-ld-context.ts";
 import { withBase } from "./with-base.ts";
 
 export interface Props {
@@ -113,6 +120,51 @@ function metaProp(key: string): boolean {
 // as a Vite define; falls back to a version-less tag if absent.
 const tanglyVersion = import.meta.env.TANGLY_VERSION as string | undefined;
 const generator = tanglyVersion ? `Tangly v${tanglyVersion}` : "Tangly";
+
+// --- JSON-LD ---------------------------------------------------------------
+// Built here rather than per theme so every theme's Layout gets it from the
+// one <Seo> include they all already render.
+const ldContext = resolveJsonLdContext({
+  config,
+  ...(import.meta.env.DEV ? { devOrigin: Astro.url.origin } : {}),
+});
+
+// Crumbs resolve against the canonical origin, matching og:url.
+const navCrumbs: NavCrumb[] = (page.navPath ?? []).map((crumb) => ({
+  name: crumb.title,
+  ...(crumb.slug
+    ? {
+        url: `${canonicalBase}${withBase(pageRouteForSlug(crumb.slug))?.replace(/\/+$/, "") || "/"}`,
+      }
+    : {}),
+}));
+
+const jsonLd =
+  ldContext.enabled && page.frontmatter.jsonld !== false
+    ? buildJsonLd({
+        site: ldContext.site,
+        page: {
+          url: canonicalUrl,
+          title: ogTitle,
+          ...(ogDesc ? { description: ogDesc } : {}),
+          ...(ogImage ? { image: ogImage } : {}),
+          ...(typeof page.frontmatter.schemaType === "string"
+            ? { schemaType: page.frontmatter.schemaType }
+            : {}),
+          ...(page.frontmatter.author ? { author: page.frontmatter.author as AuthorInput } : {}),
+          ...(page.hasBody === false ? { hasBody: false } : {}),
+        },
+        navPath: navCrumbs,
+        dates: {
+          ...(page.datePublished ? { published: page.datePublished } : {}),
+          ...(page.dateModified ? { modified: page.dateModified } : {}),
+        },
+      })
+    : null;
+
+// Pretty in dev so the graph is readable in view-source while authoring;
+// minified in build so it costs as little as possible on the wire.
+const jsonLdText = jsonLd ? serializeJsonLd(jsonLd, { pretty: import.meta.env.DEV }) : "";
 ---
 <meta name="generator" content={generator} />
 {robotsNoindex && <meta name="robots" content="noindex, nofollow" />}
@@ -148,3 +200,4 @@ const generator = tanglyVersion ? `Tangly v${tanglyVersion}` : "Tangly";
   })}
 {metadata &&
   Object.entries(metadata).map(([key, value]) => <meta name={key} content={value} />)}
+{jsonLdText && <script type="application/ld+json" is:inline set:html={jsonLdText} />}

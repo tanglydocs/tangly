@@ -76,9 +76,13 @@ const googleFontsHref = `https://fonts.googleapis.com/css2?family=${googleFamili
 
 const appearanceDefault = config.appearance?.default ?? "system";
 const darkStyleVar = bgDark ? `--tangly-color-bg-dark: ${bgDark};` : "";
+// One source for the document language and the JSON-LD `inLanguage`, so the
+// two can never disagree.
+const locale = (config.seo as { locale?: string } | undefined)?.locale ?? "en";
+
 ---
 <!DOCTYPE html>
-<html lang="en" style={`${styleAttr}; ${darkStyleVar}`}>
+<html lang={locale} style={`${styleAttr}; ${darkStyleVar}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
