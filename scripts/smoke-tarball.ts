@@ -150,7 +150,10 @@ run(tanglyBin, ["init", "--from", projectDir, projectDir], { cwd: installDir });
 step("tangly build --out dist");
 run(tanglyBin, ["build", "--out", "dist", "--root", projectDir], {
   cwd: projectDir,
-  env: { TANGLY_USER_ROOT: projectDir },
+  // The scaffold has no `siteUrl`, and structured data needs an absolute
+  // origin to hang every `@id` off — supply one so the assertion below
+  // exercises the real output rather than the no-origin opt-out.
+  env: { TANGLY_USER_ROOT: projectDir, TANGLY_SITE_URL: "https://smoke.example.com" },
 });
 
 const indexHtml = join(projectDir, "dist", "index.html");
@@ -182,6 +185,39 @@ if (highlighted.length === 0) {
   );
 }
 log(`  ✓ code chrome present (${highlighted.length}/${pages.length} pages)`);
+
+// Structured data ships on every built page. A theme that stops rendering the
+// shared <Seo> head fragment, or a graph that loses its site nodes, is
+// invisible in a passing build otherwise: the pages still render.
+const SMOKE_SITE = "https://smoke.example.com";
+const LD_RE = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+let ldPages = 0;
+for (const f of pages) {
+  const blocks = [...readFileSync(f, "utf8").matchAll(LD_RE)].map((m) => m[1]);
+  if (blocks.length !== 1) {
+    fail(`expected exactly 1 ld+json block in ${f}, found ${blocks.length}`);
+  }
+  let graph: { "@graph"?: { "@id": string; "@type": string }[] };
+  try {
+    graph = JSON.parse(blocks[0]!);
+  } catch (e) {
+    fail(`ld+json in ${f} does not parse — ${(e as Error).message}`);
+    throw e;
+  }
+  const nodes = graph["@graph"];
+  if (!Array.isArray(nodes)) fail(`ld+json in ${f} has no @graph array`);
+  const types = new Set(nodes!.map((n) => n["@type"]));
+  for (const required of ["Organization", "WebSite"]) {
+    if (!types.has(required)) fail(`ld+json in ${f} is missing a ${required} node`);
+  }
+  for (const n of nodes!) {
+    if (!n["@id"].startsWith(SMOKE_SITE)) {
+      fail(`ld+json @id in ${f} is not absolute against the site URL — ${n["@id"]}`);
+    }
+  }
+  ldPages += 1;
+}
+log(`  ✓ structured data present (${ldPages}/${pages.length} pages)`);
 
 log(`\n✓ tarball smoke passed (${work})`);
 

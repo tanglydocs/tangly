@@ -33,8 +33,16 @@ export interface PageEntry {
   file: string;
   /** Validated frontmatter. */
   frontmatter: Frontmatter;
-  /** Breadcrumb trail. */
+  /** Breadcrumb trail rendered in the page eyebrow. */
   breadcrumbs: { title: string; slug?: string }[];
+  /**
+   * Full navigation trail to this page — tab, then each enclosing group —
+   * excluding Home and the page itself. `slug` is set only for entries that
+   * are navigable pages in their own right; a pure grouping header has none.
+   * Feeds the JSON-LD `BreadcrumbList`, which needs every intermediate item
+   * to resolve to a real URL.
+   */
+  navPath?: { title: string; slug?: string }[];
   /** Sidebar tree relevant to the page (already trimmed to this tab/version). */
   sidebar: SidebarItem[];
   /** Tab this page belongs to (if any). */
@@ -53,6 +61,22 @@ export interface PageEntry {
   hidden?: boolean;
   /** ISO timestamp of last git commit touching this file. */
   lastUpdated?: string;
+  /**
+   * ISO date for structured-data `datePublished` — frontmatter
+   * `datePublished`, else the first git commit that added the source file.
+   */
+  datePublished?: string;
+  /**
+   * ISO date for structured-data `dateModified` — frontmatter `dateModified`,
+   * else the resolved `lastUpdated`. Never the build timestamp.
+   */
+  dateModified?: string;
+  /**
+   * False when the source file has no body below its frontmatter (an index
+   * stub, a nav-only placeholder). Such pages get a plain `WebPage` in
+   * structured data with no article node.
+   */
+  hasBody?: boolean;
   /** Auto-computed reading time in minutes. */
   readingTime?: number;
   /** Resolved edit-on-source URL for this page. */

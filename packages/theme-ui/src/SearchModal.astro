@@ -148,24 +148,36 @@ const placeholder = config.search?.prompt ?? "Search docs…";
     if (results) results.classList.remove("hidden");
   }
 
-  function open() {
+  function open(prefill?: string) {
     if (!dialog) return;
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
     if (input) {
-      input.value = "";
+      input.value = prefill ?? "";
       input.focus();
     }
     showEmpty("Type to search…");
     activeIndex = 0;
+    if (prefill) void runQuery(prefill);
   }
 
   function close() {
     dialog?.close();
   }
 
-  document.addEventListener("tangly:open-search", open);
+  document.addEventListener("tangly:open-search", () => open());
   closeBtn?.addEventListener("click", close);
+
+  // `?q=` opens the modal with the query already run. Pagefind is a
+  // browser-side index with no results route of its own, so this is the
+  // site's only addressable search entry point — and it is what the
+  // JSON-LD SearchAction target points at.
+  (() => {
+    try {
+      const q = new URLSearchParams(location.search).get("q");
+      if (q && q.trim()) open(q);
+    } catch {}
+  })();
 
   // Esc closes via dialog's native behavior; nothing extra needed.
 

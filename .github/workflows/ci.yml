@@ -115,6 +115,12 @@ jobs:
         run: bun run scripts/smoke-winpath.ts
       - name: build own docs
         run: bun run build:docs
+      # Structured data is invisible in a passing build: every page still
+      # renders with a broken graph. Assert it on the real output — one
+      # ld+json block per page, every @id absolute and declared exactly once,
+      # no reference pointing outside its own graph.
+      - name: check JSON-LD on the built docs
+        run: bun run scripts/check-jsonld.ts docs/dist
       # Catch packaging regressions (missing files, broken workspace rewrites)
       # without actually publishing. release.yml reuses the same logic.
       - name: npm pack dry run (all 8 packages)

@@ -2,6 +2,8 @@
 import { manifest } from "virtual:tangly/manifest";
 import { getCollection } from "astro:content";
 import LoadingSplash from "@tanglydocs/theme-ui/LoadingSplash.astro";
+import { resolveJsonLdContext } from "@tanglydocs/theme-ui/json-ld-context.ts";
+import { buildSiteJsonLd, serializeJsonLd } from "@tanglydocs/schema/json-ld";
 import { withBase } from "@tanglydocs/theme-ui/with-base.ts";
 // Pulls the active theme's `--tangly-*` tokens (resolved by the Tangly
 // integration alias) so the splash matches whatever theme is in use.
@@ -27,6 +29,18 @@ const favicon =
     ? config.favicon
     : (config.favicon?.light ?? config.favicon?.dark ?? "/favicon.ico");
 const appearanceDefault = config.appearance?.default ?? "system";
+
+// This file is a redirect stub, not a page: its canonical points elsewhere, so
+// it declares no WebPage of its own. It still carries the Organization and
+// WebSite nodes, because the site root is the most valuable place a crawler
+// can find them — and they are byte-identical to the ones every real page
+// emits, since both sides resolve them through `resolveJsonLdContext`.
+const ldContext = resolveJsonLdContext({
+  config,
+  ...(import.meta.env.DEV ? { devOrigin: Astro.url.origin } : {}),
+});
+const siteGraph = ldContext.enabled ? buildSiteJsonLd(ldContext.site) : null;
+const jsonLdText = siteGraph ? serializeJsonLd(siteGraph, { pretty: import.meta.env.DEV }) : "";
 ---
 
 <html lang="en">
@@ -40,6 +54,7 @@ const appearanceDefault = config.appearance?.default ?? "system";
     {target && <link rel="alternate" type="text/markdown" href={`${targetUrl}.md`} />}
     <link rel="icon" href={favicon} />
     <title>{config.name}</title>
+    {jsonLdText && <script type="application/ld+json" is:inline set:html={jsonLdText} />}
     {/* Resolve dark mode before paint so dark users never flash a light splash. */}
     <style is:inline>html{background:#fafaf7}html.dark{background:#0b0b0f}</style>
     <script is:inline define:vars={{ appearanceDefault }}>

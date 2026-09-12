@@ -121,6 +121,35 @@ glossary: false
   - `ogImage: string`: custom Open Graph image URL.
 </ParamField>
 
+<ParamField path="jsonld" type="boolean" default="true">
+  Set `false` to drop the [JSON-LD structured data](/guides/seo/structured-data) script from this page.
+</ParamField>
+
+<ParamField path="schemaType" type="string">
+  Override the structured-data article `@type`. Defaults to `TechArticle`, or `Article` under a nav group named Blog, Changelog, Release notes, News or Updates.
+</ParamField>
+
+<ParamField path="author" type="string | object">
+  Page author, as a name or `{ name, url }`. Emits a `Person` node in the structured data and references it as the article's author in place of the publishing organization.
+</ParamField>
+
+<ParamField path="datePublished" type="string">
+  ISO 8601 date overriding the git-derived first-commit date. Quote it, or YAML parses a bare `2026-01-15` into a timestamp at midnight UTC.
+</ParamField>
+
+<ParamField path="dateModified" type="string">
+  ISO 8601 date overriding the git-derived last-commit date. `lastUpdated: false` suppresses this too unless you set it explicitly.
+</ParamField>
+
+```md
+---
+title: Migrating from Mintlify
+author: Ada Lovelace
+schemaType: HowTo
+datePublished: "2026-01-15"
+---
+```
+
 ### Custom fields
 
 `FrontmatterSchema` uses `passthrough()`. Unknown fields are preserved and forwarded to the active template via `frontmatter`. This is how custom landing-page templates consume `hero`, `cta`, `headline`, etc.

@@ -5,6 +5,34 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.5.0" description="13 Sep 26" tags={["feat", "fix"]}>
+  ## Highlights
+
+  Every page ships JSON-LD structured data.
+
+  - **One entity, not one per page.** Each page now carries a single `<script type="application/ld+json">` holding an `@graph`: `Organization`, `WebSite`, `WebPage`, `BreadcrumbList`, and a `TechArticle` for pages with a body. The site-level nodes carry the same `@id` on every page and are *referenced* by the page-level nodes rather than restated, so a crawler reconciles a sixty-page site to one publisher instead of sixty. ([#18](https://github.com/tanglydocs/tangly/issues/18))
+  - **Nothing to configure.** An existing project gets a correct graph from its `name`, `siteUrl` and `logo`. New optional fields: root `sameAs` for your other homes (social profiles, GitHub, the marketing site), and `seo.organization.{name,url,logo,sameAs}`, `seo.jsonld`, `seo.locale`. Per page: `jsonld`, `schemaType`, `author`, `datePublished`, `dateModified`. Every one is optional and additive, so a `docs.json` copied from Mintlify parses unchanged.
+  - **Dates come from git, never the build clock.** `dateModified` is the last commit touching the page's source, `datePublished` the commit that added it, both read in one `git log` pass per build. A nightly rebuild no longer claims every page changed last night. Outside a git repository the dates are simply omitted.
+  - **Emitted once, in the shared head fragment**, so all six themes get it without changes. `tangly dev` pretty-prints the graph so you can read it in view-source; `tangly build` minifies it.
+
+  ## Changes
+
+  ### Features
+  - feat(schema): `buildJsonLd` graph builder, root `sameAs`, `seo.{jsonld,locale,organization}`, and the five new frontmatter fields ([#18](https://github.com/tanglydocs/tangly/issues/18))
+  - feat(runtime): emit the JSON-LD graph from the shared `<Seo>` head fragment, and the site-level nodes from the redirect stub served at `/`
+  - feat(manifest): resolve the nav trail, the first-commit date and a body check per page at build time
+  - feat(theme-ui): `?q=` opens the search modal with the query already run, which is what the `SearchAction` target points at
+  - feat(theme-ui): `seo.locale` drives `<html lang>` as well as `inLanguage`, so the two cannot disagree
+
+  ### Fixes
+  - fix(schema): accept an unquoted YAML date in `lastUpdated`, `datePublished` and `dateModified`. YAML parses a bare `2026-01-02` into a `Date`, which the string-only schema rejected, failing the page's whole frontmatter rather than the one field
+  - fix(manifest): resolve symlinks before keying git metadata by path. A project reached through a symlink (macOS `/tmp`, a symlinked checkout) silently lost every last-updated date
+
+  ### Tests
+  - test(schema): 35 cases over the graph builder, covering defaults, overrides, opt-out, breadcrumbs, dates present and absent, a missing logo, and the `</script` escape
+  - test(build): both tarball smokes assert one parseable ld+json block per built page with absolute `@id`s; CI validates the built docs site end to end
+</Update>
+
 <Update label="v0.4.0" description="25 Aug 26" tags={["feat", "fix"]}>
   ## Highlights
 

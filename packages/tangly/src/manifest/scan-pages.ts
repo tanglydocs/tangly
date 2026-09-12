@@ -1,4 +1,4 @@
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync, realpathSync, statSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 import { type Frontmatter, safeParseFrontmatter } from "@tanglydocs/schema";
@@ -45,6 +45,8 @@ export interface PageOnDisk {
   content: string;
   /** ISO timestamp from git log (most recent commit touching this file). */
   lastUpdated?: string;
+  /** ISO timestamp from git log (first commit that added this file). */
+  created?: string;
   /** Estimated reading time in minutes. */
   readingTime?: number;
 }
@@ -56,14 +58,29 @@ export async function scanPages(root: string): Promise<PageOnDisk[]> {
   // Decorate with git meta + reading time. Git lookups key off paths
   // relative to the repo root (not the docs root) so monorepos work.
   const { meta: gitMeta, repoRoot } = loadGitMeta({ root });
-  const lookupBase = repoRoot ?? root;
+  // `git rev-parse --show-toplevel` reports the real path, while the scanned
+  // file paths keep whatever the caller passed in. When the project sits
+  // behind a symlink (macOS `/tmp` → `/private/tmp`, a symlinked checkout)
+  // the two disagree and every relative key comes out as `../../…`, silently
+  // dropping the dates for the whole site. Resolve both sides first.
+  const lookupBase = realPath(repoRoot ?? root);
   for (const p of pages) {
-    const rel = relative(lookupBase, p.file).split(sep).join("/");
+    const rel = relative(lookupBase, realPath(p.file)).split(sep).join("/");
     const m = gitMeta.get(rel);
     if (m?.lastUpdated) p.lastUpdated = m.lastUpdated;
+    if (m?.created) p.created = m.created;
     p.readingTime = computeReadingTime(p.content);
   }
   return pages;
+}
+
+/** `realpathSync`, falling back to the input when the path cannot be resolved. */
+function realPath(p: string): string {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
 }
 
 async function walk(root: string, dir: string, out: PageOnDisk[]): Promise<void> {
