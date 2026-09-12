@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
-import { formatJsonSyntaxError, parseDocsJsonOrThrow } from "@tanglydocs/schema";
+import { formatJsonSyntaxError, pageRouteForSlug, parseDocsJsonOrThrow } from "@tanglydocs/schema";
 import { ConfigError } from "./config-error.js";
 import { loadCollections, serializeCollections } from "../content/load-collections.js";
 import { extractBlocks } from "../embed/extract-blocks.js";
@@ -156,6 +156,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     const breadcrumbs = buildBreadcrumbs(navigation, slug, tab);
     const sidebar = pickSidebar(navigation, slug, tab);
     const { prev, next } = computePrevNext(sidebar, slug);
+    const navPath = buildNavPath(sidebar, slug, tab);
 
     // Extract block IDs from the MDX body so <Embed page="..." block="..." />
     // can resolve targets at SSR time.
@@ -171,6 +172,16 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     } else {
       lastUpdated = disk.lastUpdated;
     }
+
+    // Structured-data dates. `dateModified` layers an explicit frontmatter
+    // override on top of the already-resolved `lastUpdated`, so hiding the
+    // footer stamp with `lastUpdated: false` also keeps the date out of the
+    // page's JSON-LD — a reader who suppressed the date did not ask for it to
+    // be published in machine-readable form instead.
+    const fmDatePublished = typeof fm.datePublished === "string" ? fm.datePublished : undefined;
+    const fmDateModified = typeof fm.dateModified === "string" ? fm.dateModified : undefined;
+    const datePublished = fmDatePublished ?? disk.created;
+    const dateModified = fmDateModified ?? lastUpdated;
 
     // Reading time: page frontmatter wins.
     let readingTime: number | undefined;
@@ -200,12 +211,16 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       file: disk.file,
       frontmatter: fm,
       breadcrumbs,
+      ...(navPath.length > 0 ? { navPath } : {}),
       sidebar,
       tab: tab ? { slug: tab.slug, title: tab.title } : undefined,
       prev,
       next,
       draft: isDraft,
+      hasBody: disk.content.trim() !== "",
       ...(lastUpdated ? { lastUpdated } : {}),
+      ...(datePublished ? { datePublished } : {}),
+      ...(dateModified ? { dateModified } : {}),
       ...(typeof readingTime === "number" ? { readingTime } : {}),
       ...(editUrl ? { editUrl } : {}),
       ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
@@ -352,6 +367,80 @@ function buildBreadcrumbs(
     crumbs.push({ title: tab.title });
   }
   return crumbs;
+}
+
+/**
+ * The page a nav group stands for, if it has one.
+ *
+ * A Mintlify-style group is a title with a page list — usually just a heading
+ * with no page of its own. But a group whose pages sit under a shared index
+ * (`guides/themes/index` alongside `guides/themes/tang`, …) does have a
+ * landing page, and that is the URL its breadcrumb entry should point at.
+ *
+ * Detected structurally rather than guessed: the landing page is the one
+ * descendant whose route every other descendant route sits beneath. A group
+ * with no such page returns undefined and stays a bare title.
+ */
+function groupLandingSlug(item: SidebarItem): string | undefined {
+  if (item.slug) return item.slug;
+  const pages = flattenSidebar(item.children ?? []).filter((i) => !i.isGroup && i.slug);
+  if (pages.length < 2) return undefined;
+  for (const candidate of pages) {
+    const route = pageRouteForSlug(candidate.slug);
+    if (route === "/") continue;
+    const coversRest = pages.every(
+      (other) => other === candidate || pageRouteForSlug(other.slug).startsWith(`${route}/`),
+    );
+    if (coversRest) return candidate.slug;
+  }
+  return undefined;
+}
+
+/**
+ * The full navigation trail to a page: the tab, then every enclosing sidebar
+ * group, outermost first. Excludes Home and the page itself — the consumer
+ * (the JSON-LD BreadcrumbList) supplies both ends.
+ *
+ * A group with no landing page of its own carries a title and no slug. It is
+ * kept here so a caller that only renders names can still show it; the
+ * breadcrumb builder drops the slugless entries, because a Google ListItem
+ * before the last one must resolve to a real URL and inventing one for a pure
+ * heading would publish a link that does not exist.
+ */
+export function buildNavPath(
+  sidebar: SidebarItem[],
+  slug: string,
+  tab: { slug: string; title: string } | undefined,
+): { title: string; slug?: string }[] {
+  const path: { title: string; slug?: string }[] = [];
+  if (tab) path.push({ title: tab.title });
+
+  const walk = (items: SidebarItem[], trail: { title: string; slug?: string }[]): boolean => {
+    for (const item of items) {
+      if (!item.isGroup && item.slug === slug) {
+        path.push(...trail);
+        return true;
+      }
+      if (item.children && item.children.length > 0) {
+        // A group whose own landing page IS this page is the page, not an
+        // ancestor of it: push the trail without the group itself.
+        const landing = groupLandingSlug(item);
+        if (
+          item.slug === slug ||
+          (landing && pageRouteForSlug(landing) === pageRouteForSlug(slug))
+        ) {
+          path.push(...trail);
+          return true;
+        }
+        const next = [...trail, { title: item.title, ...(landing ? { slug: landing } : {}) }];
+        if (walk(item.children, next)) return true;
+      }
+    }
+    return false;
+  };
+
+  walk(sidebar, []);
+  return path;
 }
 
 function flattenSidebar(items: SidebarItem[]): SidebarItem[] {

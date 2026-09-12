@@ -8,6 +8,8 @@ interface GitMetaOptions {
 interface GitMeta {
   /** ISO timestamp of last commit touching the file. */
   lastUpdated: string | undefined;
+  /** ISO timestamp of the first commit that added or modified the file. */
+  created: string | undefined;
 }
 
 /**
@@ -58,8 +60,13 @@ export function loadGitMeta(opts: GitMetaOptions): {
         continue;
       }
       if (!line || !currentDate) continue;
-      // Newest commit wins; first encounter is the most recent.
-      if (!meta.has(line)) meta.set(line, { lastUpdated: currentDate });
+      // `git log` walks newest → oldest, so the FIRST time a path appears is
+      // its most recent commit and the LAST time is its oldest — which, under
+      // `--diff-filter=AM`, is the commit that introduced it. One pass gives
+      // both dates: set `lastUpdated` once, overwrite `created` every time.
+      const existing = meta.get(line);
+      if (existing) existing.created = currentDate;
+      else meta.set(line, { lastUpdated: currentDate, created: currentDate });
     }
   } catch {
     /* swallow */
