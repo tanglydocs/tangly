@@ -3,6 +3,16 @@
   "name": "Tangly",
   "description": "Self-hosted, open-source documentation framework.",
   "siteUrl": "https://docs.tangly.dev",
+  "sameAs": [
+    "https://github.com/tanglydocs",
+    "https://www.npmjs.com/package/tangly"
+  ],
+  "seo": {
+    "organization": {
+      "name": "Tangly",
+      "url": "https://tangly.dev"
+    }
+  },
   "theme": "tang",
   "colors": {
     "primary": "#EA580C",
@@ -174,6 +184,12 @@
               "guides/themes/cirrus",
               "guides/themes/aliases",
               "guides/themes/customizing"
+            ]
+          },
+          {
+            "group": "SEO",
+            "pages": [
+              "guides/seo/structured-data"
             ]
           },
           {

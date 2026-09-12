@@ -1,0 +1,169 @@
+---
+title: Structured data
+description: Every page ships a JSON-LD graph. One Organization, one WebSite, referenced by @id from every page.
+icon: "braces"
+---
+
+## Structured data
+
+Every page Tangly builds carries a single `<script type="application/ld+json">` in its `<head>`: one `@graph` describing the publisher, the site, the page, its breadcrumb trail, and the article on it.
+
+The point is not the tags. It is that the site resolves to **one entity**. The `Organization` and `WebSite` nodes carry the same `@id` on every page and are *referenced* by the page-level nodes rather than restated, so a crawler building an entity map reconciles sixty pages to one publisher instead of sixty.
+
+You get this with no configuration. Everything below is an override.
+
+<Note>
+  Structured data needs an absolute origin to hang every `@id` off. Set `siteUrl` in `docs.json` (or pass `--site-url` / `TANGLY_SITE_URL`, or deploy to a platform Tangly detects). Without one, no graph is emitted at all: a graph of relative identifiers is worse than none.
+</Note>
+
+### The emitted graph
+
+```json
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://example.com#organization" },
+    { "@type": "WebSite", "@id": "https://docs.example.com/#website" },
+    { "@type": "BreadcrumbList", "@id": "https://docs.example.com/guides/themes#breadcrumb" },
+    { "@type": "WebPage", "@id": "https://docs.example.com/guides/themes" },
+    { "@type": "TechArticle", "@id": "https://docs.example.com/guides/themes#article" }
+  ]
+}
+```
+
+| Node | `@id` | Notes |
+|---|---|---|
+| `Organization` | `<org url>#organization` | name, url, `logo` as a nested `ImageObject`, `sameAs`. Identical on every page. |
+| `WebSite` | `<site root>/#website` | `publisher` references the Organization. Carries `inLanguage` and a `SearchAction`. Identical on every page. |
+| `WebPage` | the page's canonical URL | `isPartOf` the WebSite, `breadcrumb` the BreadcrumbList, plus the dates. |
+| `TechArticle` | `<page url>#article` | `mainEntityOfPage`, `author`, `publisher` and `about` all reference nodes already in the graph. |
+| `BreadcrumbList` | `<page url>#breadcrumb` | Home first, the current page last. |
+| `Person` | the author's URL, or a site-scoped slug | Only when a page sets `author` in frontmatter. |
+
+URLs are absolute throughout. The graph is pretty-printed in `tangly dev` so you can read it in view-source, and minified in `tangly build`.
+
+### Configuration
+
+Every field is optional.
+
+```json docs.json
+{
+  "name": "Example",
+  "siteUrl": "https://docs.example.com",
+  "sameAs": [
+    "https://github.com/example",
+    "https://x.com/example",
+    "https://www.linkedin.com/company/example",
+    "https://example.com"
+  ],
+  "seo": {
+    "jsonld": true,
+    "locale": "en",
+    "organization": {
+      "name": "Example",
+      "url": "https://example.com",
+      "logo": "/images/logo.png",
+      "sameAs": ["https://github.com/example"]
+    }
+  }
+}
+```
+
+<ParamField path="sameAs" type="string[]">
+  The publisher's other homes: social profiles, the main marketing site, the GitHub org. This is the list that lets a crawler tie your docs site to the same entity as everything else you publish. Lands on `Organization.sameAs`.
+</ParamField>
+
+<ParamField path="seo.jsonld" type="boolean" default="true">
+  Set `false` to emit no structured data anywhere on the site.
+</ParamField>
+
+<ParamField path="seo.locale" type="string" default="en">
+  A BCP-47 language tag. Sets `inLanguage` on the site and page nodes, and the `<html lang>` attribute, so the two cannot disagree.
+</ParamField>
+
+<ParamField path="seo.organization.name" type="string">
+  Defaults to the root `name`.
+</ParamField>
+
+<ParamField path="seo.organization.url" type="string">
+  The organization's home. Defaults to the site origin. Override it so a docs subdomain points at your main site: that is what makes `docs.example.com` and `example.com` one entity rather than two.
+</ParamField>
+
+<ParamField path="seo.organization.logo" type="string">
+  Absolute URL or root-relative path. Defaults to `logo.light`.
+</ParamField>
+
+<ParamField path="seo.organization.sameAs" type="string[]">
+  **Replaces** the root `sameAs` rather than merging with it. Use this when the organization is a different entity from the docs site and needs its own profile list.
+</ParamField>
+
+### Per-page frontmatter
+
+```md
+---
+title: Migrating from Mintlify
+author: Ada Lovelace
+schemaType: HowTo
+datePublished: "2026-01-15"
+dateModified: "2026-04-02"
+---
+```
+
+<ParamField path="jsonld" type="boolean" default="true">
+  Set `false` to drop the script from this page only.
+</ParamField>
+
+<ParamField path="schemaType" type="string">
+  Overrides the article `@type`. Defaults to `TechArticle`, or `Article` for a page under a nav group named Blog, Changelog, Release notes, News or Updates.
+</ParamField>
+
+<ParamField path="author" type="string | object">
+  A name, or `{ name, url }`. Emits a `Person` node and references it as the article's author in place of the organization. An author with a URL is keyed off that URL, so the same person across pages and sites reconciles to one entity.
+</ParamField>
+
+<ParamField path="datePublished" type="string">
+  ISO 8601. Overrides the git-derived date. Quote it, or YAML will hand you a timestamp at midnight UTC.
+</ParamField>
+
+<ParamField path="dateModified" type="string">
+  ISO 8601. Overrides the git-derived date.
+</ParamField>
+
+### Dates come from git
+
+`dateModified` is the last commit that touched the page's source file, and `datePublished` is the commit that added it. Both are read once per build from a single `git log` pass, not once per page.
+
+It is never the build timestamp. A site rebuilt nightly with no content changes would otherwise tell every crawler that all of its pages changed last night, which is how a docs site trains search engines to stop trusting its dates.
+
+Resolution order, highest first:
+
+1. Frontmatter `datePublished` / `dateModified`.
+2. Frontmatter `lastUpdated` (for the modified date only), which the page footer already uses.
+3. Git.
+4. Omitted. A project outside a git repository simply ships no dates.
+
+<Note>
+  `lastUpdated: false` hides the footer stamp **and** keeps the date out of the graph. If you suppressed the date for readers, publishing it in machine-readable form instead would be a strange thing for us to do. Set `dateModified` explicitly if you want one but not the other.
+</Note>
+
+### Breadcrumbs
+
+The trail follows the navigation: Home, then the tab, then each enclosing group, then the page.
+
+A group only appears when it has a landing page of its own, detected structurally: a group whose pages all sit under a shared index (`guides/themes/index` alongside `guides/themes/tang`) uses that index. A group that is just a heading over a flat page list is dropped from the trail rather than given an invented URL, because Google treats a breadcrumb item before the last one with no URL as an error, and linking to a page that does not exist is worse than a shorter trail.
+
+### Verifying it
+
+Build the site and read one page:
+
+```bash
+tangly build --out dist
+```
+
+Paste a page's graph into the [Schema.org validator](https://validator.schema.org/) or [Google's Rich Results Test](https://search.google.com/test/rich-results). Both should report no errors, with Breadcrumbs and Article detected.
+
+The invariant worth checking yourself is that every `@id` referenced in a page's graph is declared in that same graph, and that the Organization and WebSite nodes are identical across pages. A graph that points at an `@id` nobody declares is the failure mode that looks fine in a validator and still leaves a crawler with nothing to reconcile.
+
+### Mintlify compatibility
+
+Nothing here breaks a Mintlify project. Every field is optional and additive: a `docs.json` copied from Mintlify parses unchanged and gets a correct graph from the defaults.
