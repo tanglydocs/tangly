@@ -37,6 +37,10 @@
       "types": "./dist/page-path.d.ts",
       "import": "./dist/page-path.js"
     },
+    "./json-ld": {
+      "types": "./dist/json-ld.d.ts",
+      "import": "./dist/json-ld.js"
+    },
     "./docs.json": "./dist/docs.json"
   },
   "publishConfig": {

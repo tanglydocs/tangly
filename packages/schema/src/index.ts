@@ -16,6 +16,25 @@ export {
   formatJsonSyntaxError,
   parseDocsJsonOrThrow,
 } from "./format-error.js";
+export {
+  type AuthorInput,
+  buildJsonLd,
+  type BuildJsonLdInput,
+  danglingRefs,
+  declaredIds,
+  type JsonLdDates,
+  type JsonLdGraph,
+  type JsonLdNode,
+  type JsonLdPage,
+  type JsonLdRef,
+  type JsonLdSite,
+  type NavCrumb,
+  type OrganizationConfig,
+  type ResolvedOrganization,
+  resolveOrganization,
+  type ResolveOrganizationInput,
+  serializeJsonLd,
+} from "./json-ld.js";
 export { generateDocsJsonSchema } from "./json-schema.js";
 export { convertMintToDocs, type MintJson } from "./mint-json.js";
 export { pagePathForSlug, pageRouteForSlug } from "./page-path.js";

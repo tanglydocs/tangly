@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 import { parseDocsJson, safeParseDocsJson } from "./docs-json.js";
+import { safeParseFrontmatter } from "./frontmatter.js";
+import { generateDocsJsonSchema } from "./json-schema.js";
 import { convertMintToDocs, type MintJson } from "./mint-json.js";
 import { isPathSafe, resolveJsonPointer } from "./ref-resolve.js";
 
@@ -368,5 +370,95 @@ describe("ref-resolve", () => {
     const doc = { a: { b: { c: 42 } } };
     expect(resolveJsonPointer(doc, "#/a/b/c")).toBe(42);
     expect(resolveJsonPointer(doc, "#/a")).toEqual({ b: { c: 42 } });
+  });
+});
+
+describe("structured data config (issue #18)", () => {
+  const base = { name: "T", navigation: { pages: ["x"] } };
+
+  test("accepts root sameAs", () => {
+    const r = safeParseDocsJson({
+      ...base,
+      sameAs: ["https://github.com/t", "https://x.com/t"],
+    });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.sameAs).toEqual(["https://github.com/t", "https://x.com/t"]);
+  });
+
+  test("rejects a non-array sameAs", () => {
+    expect(safeParseDocsJson({ ...base, sameAs: "https://github.com/t" }).success).toBe(false);
+  });
+
+  test("accepts the full seo block", () => {
+    const r = safeParseDocsJson({
+      ...base,
+      seo: {
+        indexing: "all",
+        jsonld: true,
+        locale: "en-GB",
+        organization: {
+          name: "T Inc",
+          url: "https://t.example",
+          logo: "/logo/icon.png",
+          sameAs: ["https://x.com/t"],
+        },
+      },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  test("every structured-data field is optional (Mintlify configs still parse)", () => {
+    const r = safeParseDocsJson({ ...base, seo: { metatags: { "og:image": "/a.png" } } });
+    expect(r.success).toBe(true);
+  });
+
+  test("rejects an unknown key inside seo.organization", () => {
+    expect(safeParseDocsJson({ ...base, seo: { organization: { nmae: "typo" } } }).success).toBe(
+      false,
+    );
+  });
+
+  test("the generated JSON schema publishes the new fields", () => {
+    const schema = generateDocsJsonSchema() as {
+      properties: Record<string, { properties?: Record<string, unknown> }>;
+    };
+    expect(schema.properties.sameAs).toBeDefined();
+    const seo = schema.properties.seo?.properties ?? {};
+    expect(seo.jsonld).toBeDefined();
+    expect(seo.locale).toBeDefined();
+    expect(seo.organization).toBeDefined();
+  });
+});
+
+describe("structured data frontmatter (issue #18)", () => {
+  test("accepts jsonld, schemaType, author and the date overrides", () => {
+    const r = safeParseFrontmatter({
+      title: "P",
+      jsonld: false,
+      schemaType: "HowTo",
+      author: { name: "Ada", url: "https://ada.example" },
+      datePublished: "2026-01-02",
+      dateModified: "2026-03-04",
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.jsonld).toBe(false);
+      expect(r.data.schemaType).toBe("HowTo");
+      expect(r.data.author).toEqual({ name: "Ada", url: "https://ada.example" });
+    }
+  });
+
+  test("accepts a bare string author", () => {
+    const r = safeParseFrontmatter({ title: "P", author: "Ada Lovelace" });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.author).toBe("Ada Lovelace");
+  });
+
+  test("rejects an author object with no name", () => {
+    expect(safeParseFrontmatter({ title: "P", author: { url: "https://a" } }).success).toBe(false);
+  });
+
+  test("rejects a non-boolean jsonld", () => {
+    expect(safeParseFrontmatter({ title: "P", jsonld: "no" }).success).toBe(false);
   });
 });

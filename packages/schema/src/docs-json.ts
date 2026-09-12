@@ -92,10 +92,39 @@ const RedirectSchema = z
   })
   .strict();
 
+/**
+ * Publisher identity for the JSON-LD `Organization` node. Every field
+ * defaults, so a project that sets none still gets a correct node.
+ */
+const OrganizationSchema = z
+  .object({
+    /** Defaults to the root `name`. */
+    name: z.string().optional(),
+    /**
+     * The organization's home. Defaults to the site origin; override so a
+     * docs subdomain points at the main marketing site instead.
+     */
+    url: z.string().optional(),
+    /** Absolute URL or root-relative path. Defaults to `logo.light`. */
+    logo: z.string().optional(),
+    /** Overrides (does not merge with) the root `sameAs`. */
+    sameAs: z.array(z.string()).optional(),
+  })
+  .strict()
+  .optional();
+
 const SeoSchema = z
   .object({
     metatags: z.record(z.string(), z.string()).optional(),
     indexing: z.enum(["all", "navigable"]).optional(),
+    /** Emit JSON-LD structured data on every page. Default: true. */
+    jsonld: z.boolean().optional(),
+    /**
+     * BCP-47 language tag for `inLanguage` and the `<html lang>` attribute.
+     * Default: "en".
+     */
+    locale: z.string().optional(),
+    organization: OrganizationSchema,
   })
   .strict()
   .optional();
@@ -480,6 +509,13 @@ export const DocsJsonSchema = z
     name: z.string().min(1),
     description: z.string().optional(),
     siteUrl: z.string().url().optional(),
+    /**
+     * The publisher's other homes — social profiles, the main marketing site,
+     * the GitHub org. Feeds the JSON-LD `Organization.sameAs`, which is what
+     * lets a crawler reconcile the docs site to the same entity as everything
+     * else you publish. `seo.organization.sameAs` overrides it.
+     */
+    sameAs: z.array(z.string()).optional(),
     colors: ColorsSchema.optional(),
     logo: LogoSchema,
     favicon: z.union([z.string(), z.object({ light: z.string(), dark: z.string() })]).optional(),
