@@ -110,7 +110,7 @@ Production static build.
 - `--env <production|preview>` / `TANGLY_ENV` — `preview` emits `robots:noindex` + canonical→prod
 - `--analyze` — write a build-size report to `dist/_tangly/`
 
-Outputs: prerendered HTML, per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `og/<slug>.png` social cards, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
+Outputs: prerendered HTML (each page carrying a JSON-LD `@graph` in `<head>` — see [Structured data](#structured-data-json-ld)), per-page `<slug>.md` (raw source for AI agents — `.md` URL suffix or `Accept: text/markdown`), `og/<slug>.png` social cards, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, Pagefind index under `_pagefind/`.
 
 Site URL resolves per build: `--site-url`/`TANGLY_SITE_URL` > platform auto-detect (Vercel/Netlify/Cloudflare Pages) > docs.json `siteUrl`. `og:image` uses the deploy host, canonical uses prod; previews go noindex. `tangly dev` uses the live request origin.
 
@@ -180,7 +180,8 @@ Top-level fields (most common):
 | Field | Purpose |
 | --- | --- |
 | `name` (req) | Project name shown in navbar |
-| `siteUrl` | Absolute site URL (e.g. `https://docs.example.com`). Enables canonical tags + auto social cards. |
+| `siteUrl` | Absolute site URL (e.g. `https://docs.example.com`). Enables canonical tags + auto social cards + JSON-LD. |
+| `sameAs` | `string[]` — the publisher's other homes (social profiles, GitHub org, marketing site). Feeds the JSON-LD `Organization.sameAs`. |
 | `theme` | `tang` (default), `pith`, `pip`, `readable`, `geist`. Mintlify aliases (mint/maple/palm/willow/linden/almond/aspen/luma/sequoia) tolerated, fall through to `tang`. |
 | `colors` | `primary`, `light`, `dark` (hex) |
 | `favicon` | string or `{ light, dark }` |
@@ -188,7 +189,7 @@ Top-level fields (most common):
 | `navbar` | `links[]`, `primary` (button or github) |
 | `footer` | `socials`, `links[]`, `lastUpdated`, `editUrl` (`{path}` template), `repo` (auto-derives `editUrl`) |
 | `banner` | `id`, `type`, `dismissible`, `content` |
-| `seo` | `metatags`, `indexing` (`all` \| `navigable`) |
+| `seo` | `metatags`, `indexing` (`all` \| `navigable`), `jsonld` (bool, default true), `locale` (BCP-47, default `en` — drives `inLanguage` + `<html lang>`), `organization.{name,url,logo,sameAs}` (all default: root `name`, site origin, `logo.light`, root `sameAs`) |
 | `thumbnails` | Auto social cards (OG images): `enabled`, `background`, `accent`, `image`. On by default once `siteUrl` set; prerendered to `/og/<slug>.png`. Per-page override via frontmatter `seo.ogImage`. |
 | `redirects` | `[{ source, destination, permanent? }]` |
 | `appearance` | default mode, reading time, reading progress |
@@ -224,10 +225,25 @@ seo:
   description: ...
   ogImage: /og/billing.png
 aiContext: short hint for AI consumers
+jsonld: false             # opt this page out of structured data
+schemaType: HowTo         # override the article @type (default TechArticle)
+author: Ada Lovelace      # or { name, url } — emits a Person node
+datePublished: "2026-01-15"   # quote it — bare YAML dates become a midnight-UTC timestamp. Else: first git commit
+dateModified: "2026-04-02"    # else last git commit; `lastUpdated: false` suppresses this too
 ---
 ```
 
 `title` is technically optional — falls back to humanized slug at render time. `check` warns on missing.
+
+## Structured data (JSON-LD)
+
+Every page emits one `<script type="application/ld+json">` holding a single `@graph`: `Organization`, `WebSite`, `WebPage`, `BreadcrumbList`, and `TechArticle` for pages with a body. The `Organization` and `WebSite` nodes carry the same `@id` on every page and are *referenced* by the page-level nodes rather than restated, so the site resolves to one entity instead of one per URL.
+
+Defaults cover a project with no extra config: organization name from `name`, url from the site origin, logo from `logo.light`, `sameAs` from root `sameAs`, and dates from git (last/first commit touching the page's source — never the build timestamp; omitted outside a repo). Absolute URLs throughout, pretty-printed in `dev`, minified in `build`.
+
+Requires an absolute origin (`siteUrl`, `--site-url`/`TANGLY_SITE_URL`, platform auto-detect, or the dev request origin) — without one nothing is emitted, since every `@id` would be relative. Opt out site-wide with `seo.jsonld: false`, per page with frontmatter `jsonld: false`. The redirect stub served at `/` when there's no root index carries only the two site nodes (its canonical points elsewhere).
+
+Full guide: `docs/guides/seo/structured-data.mdx`.
 
 ## OpenAPI endpoint pages
 
