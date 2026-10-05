@@ -4,6 +4,7 @@ import { pagePathForSlug } from "@tanglydocs/schema";
 import pc from "picocolors";
 import type { Manifest, PageEntry } from "../manifest/index.js";
 import { writePageMarkdown } from "./page-markdown.js";
+import { collectPageRoutes, rewriteBodyLinks } from "./rewrite-body-links.js";
 
 export interface BuildOutputsOptions {
   manifest: Manifest;
@@ -71,6 +72,7 @@ export function generateLlmsTxt(opts: BuildOutputsOptions): string {
 
 export function generateLlmsFullTxt(opts: BuildOutputsOptions): string {
   const base = normalizeBase(opts.base);
+  const pageRoutes = collectPageRoutes(opts.manifest);
   const lines: string[] = [];
   const cfg = opts.manifest.config;
   lines.push(`# ${cfg.name}\n`);
@@ -86,7 +88,7 @@ export function generateLlmsFullTxt(opts: BuildOutputsOptions): string {
     try {
       const raw = readFileSync(page.file, "utf8");
       const body = raw.replace(/^---[\s\S]*?---\n/, "");
-      lines.push(body);
+      lines.push(rewriteBodyLinks(body, base, pageRoutes));
     } catch {
       // skip unreadable
     }
