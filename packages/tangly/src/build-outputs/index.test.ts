@@ -1,5 +1,8 @@
-import { describe, expect, test } from "vitest";
-import { generateLlmsTxt, generateRobots, generateSitemap } from "./index.js";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, describe, expect, test } from "vitest";
+import { generateLlmsFullTxt, generateLlmsTxt, generateRobots, generateSitemap } from "./index.js";
 import type { Manifest, PageEntry } from "../manifest/types.js";
 
 function fakeManifest(): Manifest {
@@ -155,5 +158,61 @@ describe("build-outputs", () => {
     expect(root).toContain("- [Introduction](/introduction): Welcome");
     const empty = generateLlmsTxt({ manifest, outDir: "/tmp", base: "" });
     expect(empty).toContain("- [Introduction](/introduction): Welcome");
+  });
+});
+
+describe("generateLlmsFullTxt base-path link rewriting", () => {
+  // Regression for the bug where sitemap/canonical/llms.txt honored --base
+  // but the raw MDX body pushed into llms-full.txt (and <slug>.md, see
+  // page-markdown.test.ts) did not: an internal link survived unprefixed,
+  // 404ing once the site is mounted under a subpath.
+  let dir: string;
+
+  afterEach(() => {
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  function manifestWithBody(body: string): Manifest {
+    dir = mkdtempSync(join(tmpdir(), "tangly-llms-full-"));
+    const file = join(dir, "introduction.mdx");
+    writeFileSync(file, `---\ntitle: Introduction\n---\n${body}`, "utf8");
+    const pages = new Map<string, PageEntry>();
+    pages.set("introduction", {
+      slug: "introduction",
+      file,
+      frontmatter: { title: "Introduction" },
+      breadcrumbs: [],
+      sidebar: [],
+      draft: false,
+    });
+    pages.set("reference/components", {
+      slug: "reference/components",
+      file: join(dir, "reference-components.mdx"),
+      frontmatter: { title: "Components" },
+      breadcrumbs: [],
+      sidebar: [],
+      draft: false,
+    });
+    return {
+      config: { name: "Test Docs", navigation: {} },
+      pages,
+      navigation: { tabs: [], anchors: [], rootSidebar: [] },
+      orphans: [],
+      warnings: [],
+      root: dir,
+    };
+  }
+
+  test("prefixes internal links in the page body", () => {
+    const m = manifestWithBody("See [components](/reference/components) for more.");
+    const txt = generateLlmsFullTxt({ manifest: m, outDir: "/tmp", base: "/docs" });
+    expect(txt).toContain("[components](/docs/reference/components)");
+    expect(txt).not.toContain("](/reference/components)");
+  });
+
+  test("leaves a non-page path (e.g. a literal API endpoint) alone", () => {
+    const m = manifestWithBody("`GET /api/v1/domains` returns a list.");
+    const txt = generateLlmsFullTxt({ manifest: m, outDir: "/tmp", base: "/docs" });
+    expect(txt).toContain("`GET /api/v1/domains`");
   });
 });
