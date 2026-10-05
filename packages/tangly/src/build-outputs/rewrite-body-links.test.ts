@@ -78,6 +78,13 @@ describe("rewriteBodyLinks", () => {
     expect(rewriteBodyLinks(body, "/docs", routes)).toBe("[Home](/docs/)");
   });
 
+  test("prefixes a link to another page's .md twin", () => {
+    const body = '<Card href="/reference/components.md">Components</Card>';
+    expect(rewriteBodyLinks(body, "/docs", routes)).toBe(
+      '<Card href="/docs/reference/components.md">Components</Card>',
+    );
+  });
+
   test("leaves literal API endpoints alone (not a known page)", () => {
     const body = "`GET /api/v1/domains` returns a list. See [docs](/api/v1/domains).";
     expect(rewriteBodyLinks(body, "/docs", routes)).toBe(body);

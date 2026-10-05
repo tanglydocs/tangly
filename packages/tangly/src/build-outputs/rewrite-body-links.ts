@@ -28,10 +28,12 @@ export function collectPageRoutes(manifest: Manifest): Set<string> {
  *
  * `pageRoutes` allowlists the rewrite to known pages (see
  * `collectPageRoutes`) — a blind `/` → `/docs/` prefix would also mangle
- * literal API paths (`/api/v1/domains`) that aren't site pages at all.
- * Already-prefixed, external, protocol-relative, and anchor-only targets
- * are left alone, so re-running (or a page that already wrote its own
- * absolute links) is a no-op.
+ * literal API paths (`/api/v1/domains`) that aren't site pages at all. A
+ * target ending in `.md` (an explicit link to another page's agent-markdown
+ * twin, e.g. `/guides/foo.md`) is allowlisted the same way, against its
+ * `.md`-stripped route. Already-prefixed, external, protocol-relative, and
+ * anchor-only targets are left alone, so re-running (or a page that already
+ * wrote its own absolute links) is a no-op.
  */
 export function rewriteBodyLinks(body: string, base: string, pageRoutes: Set<string>): string {
   if (!base) return body;
@@ -40,7 +42,8 @@ export function rewriteBodyLinks(body: string, base: string, pageRoutes: Set<str
     if (!path.startsWith("/") || path.startsWith("//")) return null;
     if (path === base || path.startsWith(`${base}/`)) return null;
     const pathname = path.split(/[#?]/)[0] ?? "";
-    const route = pathname.replace(/\/+$/, "") || "/";
+    const bare = pathname.endsWith(".md") ? pathname.slice(0, -3) : pathname;
+    const route = bare.replace(/\/+$/, "") || "/";
     if (!pageRoutes.has(route)) return null;
     return `${base}${path}`;
   };
