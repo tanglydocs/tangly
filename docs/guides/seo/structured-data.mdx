@@ -22,7 +22,7 @@ You get this with no configuration. Everything below is an override.
 {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "Organization", "@id": "https://example.com#organization" },
+    { "@type": "Organization", "@id": "https://example.com/#organization" },
     { "@type": "WebSite", "@id": "https://docs.example.com/#website" },
     { "@type": "BreadcrumbList", "@id": "https://docs.example.com/guides/themes#breadcrumb" },
     { "@type": "WebPage", "@id": "https://docs.example.com/guides/themes" },
@@ -33,10 +33,10 @@ You get this with no configuration. Everything below is an override.
 
 | Node | `@id` | Notes |
 |---|---|---|
-| `Organization` | `<org url>#organization` | name, url, `logo` as a nested `ImageObject`, `sameAs`. Identical on every page. |
+| `Organization` | `<org url>/#organization` | name, url, `logo` as an absolute URL, `sameAs`. Identical on every page. The `/#` form matches `WebSite`, and is the identifier a site's own pages use for it. |
 | `WebSite` | `<site root>/#website` | `publisher` references the Organization. Carries `inLanguage` and a `SearchAction`. Identical on every page. |
 | `WebPage` | the page's canonical URL | `isPartOf` the WebSite, `breadcrumb` the BreadcrumbList, plus the dates. |
-| `TechArticle` | `<page url>#article` | `mainEntityOfPage`, `author`, `publisher` and `about` all reference nodes already in the graph. |
+| `TechArticle` | `<page url>#article` | `mainEntityOfPage` and `about` reference nodes already in the graph. `author` and `publisher` carry the node's `@id` plus its `@type` and `name` (and the publisher's `logo`), so a validator reads them without resolving references. `image` is the page's social image, else the logo. `datePublished` is always present when any date is known. |
 | `BreadcrumbList` | `<page url>#breadcrumb` | Home first, the current page last. |
 | `Person` | the author's URL, or a site-scoped slug | Only when a page sets `author` in frontmatter. |
 
@@ -90,7 +90,7 @@ Every field is optional.
 </ParamField>
 
 <ParamField path="seo.organization.logo" type="string">
-  Absolute URL or root-relative path. Defaults to `logo.light`.
+  Absolute URL or root-relative path. Defaults to `logo.light`, then `logo.dark`. A `data:` URI is never published: a crawler cannot fetch an inline image, so it is skipped for the next candidate, and the logo is left out when none of them is a real file.
 </ParamField>
 
 <ParamField path="seo.organization.sameAs" type="string[]">
@@ -129,7 +129,7 @@ dateModified: "2026-04-02"
   ISO 8601. Overrides the git-derived date.
 </ParamField>
 
-### Dates come from git
+### Where dates come from
 
 `dateModified` is the last commit that touched the page's source file, and `datePublished` is the commit that added it. Both are read once per build from a single `git log` pass, not once per page.
 
@@ -140,7 +140,7 @@ Resolution order, highest first:
 1. Frontmatter `datePublished` / `dateModified`.
 2. Frontmatter `lastUpdated` (for the modified date only), which the page footer already uses.
 3. Git.
-4. Omitted. A project outside a git repository simply ships no dates.
+4. The source file's own times: the earlier of its birth and modification time for `datePublished`, its modification time for `dateModified`. An OpenAPI endpoint page uses its spec file. This is what dates a project kept outside git (an export, a vendored folder), so its articles are not published undated.
 
 <Note>
   `lastUpdated: false` hides the footer stamp **and** keeps the date out of the graph. If you suppressed the date for readers, publishing it in machine-readable form instead would be a strange thing for us to do. Set `dateModified` explicitly if you want one but not the other.

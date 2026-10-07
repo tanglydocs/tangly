@@ -55,8 +55,12 @@ export interface ResolveOrganizationInput {
   organization?: OrganizationConfig;
   /** docs.json root `sameAs`. */
   sameAs?: string[];
-  /** `logo.light` (or the string form / `logo.dark`) from docs.json. */
-  logo?: string;
+  /**
+   * The site logo from docs.json, in order of preference: `logo.light` (or
+   * the string form), then `logo.dark`. The first one that resolves to a
+   * fetchable URL is used.
+   */
+  logo?: string | readonly string[];
   /** Absolutize a root-relative asset path against the deploy base + origin. */
   absolutize: (path: string) => string;
 }
@@ -64,14 +68,22 @@ export interface ResolveOrganizationInput {
 /**
  * Resolve the Organization node's fields from config, defaulting every one so
  * a project that adds no configuration at all still gets a correct node:
- * name → root `name`, url → the site root, logo → `logo.light` made absolute,
- * sameAs → root `sameAs`.
+ * name → root `name`, url → the site root, logo → `logo.light` (else
+ * `logo.dark`) made absolute, sameAs → root `sameAs`.
+ *
+ * The logo must be something a crawler can fetch. A `data:` URI is not — it
+ * is an inline image, and absolutizing one produces a nonsense path under the
+ * site root — so a data URI is skipped in favour of the next candidate, and
+ * the logo is omitted when no candidate is a real file.
  */
 export function resolveOrganization(input: ResolveOrganizationInput): ResolvedOrganization {
   const org = input.organization ?? {};
   const url = stripTrailingSlash(org.url ?? input.siteRoot);
-  const logoSource = org.logo ?? input.logo;
-  const logo = logoSource ? input.absolutize(logoSource) : undefined;
+  const siteLogos = typeof input.logo === "string" ? [input.logo] : (input.logo ?? []);
+  const logo = [org.logo, ...siteLogos]
+    .filter((candidate): candidate is string => isFetchableAsset(candidate))
+    .map((candidate) => input.absolutize(candidate))
+    .find((absolute) => /^https?:\/\//i.test(absolute));
   // `seo.organization.sameAs` overrides root `sameAs` outright rather than
   // merging — a project that scopes the organization to a different site
   // (a docs subdomain pointing at the marketing domain) needs to be able to
@@ -156,7 +168,7 @@ const EDITORIAL_GROUP = /^(blog|changelog|release notes|releases|news|updates)$/
  */
 function siteNodes(site: JsonLdSite): JsonLdNode[] {
   const siteRoot = stripTrailingSlash(site.siteRoot);
-  const orgId = `${site.organization.url}#organization`;
+  const orgId = organizationId(site.organization);
 
   const organization: JsonLdNode = {
     "@type": "Organization",
@@ -164,13 +176,10 @@ function siteNodes(site: JsonLdSite): JsonLdNode[] {
     name: site.organization.name,
     url: site.organization.url,
   };
-  if (site.organization.logo) {
-    organization.logo = {
-      "@type": "ImageObject",
-      "@id": `${site.organization.url}#logo`,
-      url: site.organization.logo,
-    };
-  }
+  // A plain URL rather than an ImageObject: both are valid schema.org, but a
+  // string is the form every validator accepts, and the logo needs no
+  // identity of its own.
+  if (site.organization.logo) organization.logo = site.organization.logo;
   if (site.organization.sameAs && site.organization.sameAs.length > 0) {
     organization.sameAs = site.organization.sameAs;
   }
@@ -225,7 +234,7 @@ export function buildJsonLd(input: BuildJsonLdInput): JsonLdGraph | null {
 
   const siteRoot = stripTrailingSlash(site.siteRoot);
   const pageUrl = page.url;
-  const orgId = `${site.organization.url}#organization`;
+  const orgId = organizationId(site.organization);
   const websiteId = `${siteRoot}/#website`;
   const breadcrumbId = `${pageUrl}#breadcrumb`;
   const articleId = `${pageUrl}#article`;
@@ -271,6 +280,7 @@ export function buildJsonLd(input: BuildJsonLdInput): JsonLdGraph | null {
   // --- Person (frontmatter author) ----------------------------------------
   const author = normalizeAuthor(page.author);
   let authorId: string | undefined;
+  let authorSummary: JsonLdNode | undefined;
   if (author) {
     // A stable `@id` per author so the same byline across pages reconciles to
     // one entity: their own URL when they have one, otherwise a site-scoped
@@ -278,10 +288,9 @@ export function buildJsonLd(input: BuildJsonLdInput): JsonLdGraph | null {
     authorId = author.url
       ? `${stripTrailingSlash(author.url)}#person`
       : `${siteRoot}/#person-${slugifyName(author.name)}`;
+    authorSummary = { "@type": "Person", "@id": authorId, name: author.name };
     graph.push({
-      "@type": "Person",
-      "@id": authorId,
-      name: author.name,
+      ...authorSummary,
       ...(author.url ? { url: author.url } : {}),
     });
   }
@@ -304,22 +313,39 @@ export function buildJsonLd(input: BuildJsonLdInput): JsonLdGraph | null {
   // --- Article ------------------------------------------------------------
   // A page with no body of its own (an index stub, an error page) is a
   // WebPage and nothing more: there is no article to describe.
+  //
+  // Author and publisher are written as summaries — `@type`, `@id`, `name`
+  // (and the publisher's logo) — rather than bare `{ "@id" }` references.
+  // The `@id` still ties them to the full nodes above, so the entity map is
+  // unchanged; the inline name is what Article validators (Google's Rich
+  // Results among them) read without resolving references across the graph.
   if (page.hasBody !== false) {
+    const publisher: JsonLdNode = {
+      "@type": "Organization",
+      "@id": orgId,
+      name: site.organization.name,
+      ...(site.organization.logo ? { logo: site.organization.logo } : {}),
+    };
     const article: JsonLdNode = {
       "@type": page.schemaType ?? deriveArticleType(navPath),
       "@id": articleId,
       headline: page.title,
       isPartOf: ref(pageUrl),
       mainEntityOfPage: ref(pageUrl),
-      author: ref(authorId ?? orgId),
-      publisher: ref(orgId),
+      author: authorSummary ?? publisher,
+      publisher,
       about: ref(orgId),
       inLanguage: site.locale,
     };
     if (page.description) article.description = page.description;
-    if (dates.published) article.datePublished = dates.published;
+    // An article always carries `datePublished`: when only the modified date
+    // is known, the page was published no later than that.
+    const published = dates.published ?? dates.modified;
+    if (published) article.datePublished = published;
     if (dates.modified) article.dateModified = dates.modified;
-    if (page.image) article.image = page.image;
+    // The page's own social image, else the publisher's logo.
+    const image = page.image ?? site.organization.logo;
+    if (image) article.image = image;
     graph.push(article);
   }
 
@@ -379,6 +405,25 @@ export function danglingRefs(graph: JsonLdGraph): string[] {
 
 function ref(id: string): JsonLdRef {
   return { "@id": id };
+}
+
+/**
+ * The Organization's `@id`: its URL with `/#organization`. The slash form
+ * matches the WebSite's `/#website`, and it is the IRI the rest of the web
+ * uses for a site-root organization — so a docs site published under the
+ * company's own domain names the same entity as the company's main site,
+ * instead of a near-identical one (`https://host#organization` and
+ * `https://host/#organization` are different identifiers).
+ */
+function organizationId(organization: ResolvedOrganization): string {
+  return `${stripTrailingSlash(organization.url)}/#organization`;
+}
+
+/** A logo path a crawler could fetch: anything but empty or a `data:` URI. */
+function isFetchableAsset(value: string | undefined): boolean {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  return trimmed !== "" && !/^data:/i.test(trimmed);
 }
 
 function deriveArticleType(navPath: NavCrumb[]): string {

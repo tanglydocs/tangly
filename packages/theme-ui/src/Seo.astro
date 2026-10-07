@@ -63,9 +63,15 @@ const slug = page.slug.replace(/\/+$/, "");
 const pagePath = withBase(pageRouteForSlug(page.slug))?.replace(/\/+$/, "") || "/";
 const canonicalUrl = canonicalBase ? `${canonicalBase}${pagePath}` : "";
 
-/** Absolutize a relative/external path against `base` (or "" if it can't be). */
+/** A `data:` URI is never a usable og:image — crawlers fetch a URL. */
+function isDataUri(value: string | undefined): boolean {
+  return typeof value === "string" && /^data:/i.test(value.trim());
+}
+
+/** Absolutize a relative/external path against `base` (or "" if it can't be).
+ * A `data:` URI resolves to "", so the precedence chain below falls past it. */
 function abs(base: string, path: string | undefined): string {
-  if (!path) return "";
+  if (!path || isDataUri(path)) return "";
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   if (!base) return "";
   // Normalize to a root-relative path so withBase() prefixes it correctly
@@ -84,29 +90,39 @@ const thumbnails = config.thumbnails as
 const metatags = (config.seo as { metatags?: Record<string, string> } | undefined)?.metatags;
 const metadata = config.metadata as Record<string, string> | undefined;
 
-const hasMetaOgImage = Boolean(metatags && "og:image" in metatags);
+// A data: override is dropped below, so it must not suppress our own image.
+const hasMetaOgImage = Boolean(
+  metatags && "og:image" in metatags && !isDataUri(metatags["og:image"]),
+);
 
 // Auto cards run when enabled, a siteUrl exists, the page is indexable, and no
 // single static image is configured (a static image opts out of generation).
-const cardsEnabled = thumbnails?.enabled !== false && !thumbnails?.image;
+// A data: static image is skipped below, so it does not opt out of cards
+// (og/[...slug].png.ts applies the same rule, so the card exists).
+const cardsEnabled =
+  thumbnails?.enabled !== false && !(thumbnails?.image && !isDataUri(thumbnails.image));
 const generatedCard =
   cardsEnabled && ogBase && !page.frontmatter.noindex
     ? abs(ogBase, `/og/${slug || "index"}.png`)
     : "";
 
+// First candidate that resolves wins, so one that cannot (a data: URI) falls
+// through to the next rather than leaving the page without an image.
 let ogImage = "";
 let isGenerated = false;
-if (hasMetaOgImage) {
-  ogImage = ""; // metatags loop emits it
-} else if (fmSeo?.ogImage) {
-  ogImage = abs(ogBase, fmSeo.ogImage);
-} else if (thumbnails?.image) {
-  ogImage = abs(ogBase, thumbnails.image);
-} else if (generatedCard) {
-  ogImage = generatedCard;
-  isGenerated = true;
-} else if (logoLight) {
-  ogImage = abs(ogBase, logoLight);
+if (!hasMetaOgImage) {
+  const fmImage = abs(ogBase, fmSeo?.ogImage);
+  const staticImage = abs(ogBase, thumbnails?.image);
+  if (fmImage) {
+    ogImage = fmImage;
+  } else if (staticImage) {
+    ogImage = staticImage;
+  } else if (generatedCard) {
+    ogImage = generatedCard;
+    isGenerated = true;
+  } else {
+    ogImage = abs(ogBase, logoLight);
+  }
 }
 
 const twitterCard = ogImage || hasMetaOgImage ? "summary_large_image" : "summary";
@@ -189,9 +205,11 @@ const jsonLdText = jsonLd ? serializeJsonLd(jsonLd, { pretty: import.meta.env.DE
 {ogImage && <meta name="twitter:image" content={ogImage} />}
 {metatags &&
   Object.entries(metatags).map(([key, value]) => {
+    const isImage = key === "og:image" || key === "twitter:image";
+    // An inline image cannot unfurl anywhere: drop it rather than ship it.
+    if (isImage && isDataUri(value)) return null;
     // Absolutize image overrides so they unfurl (crawlers reject relative URLs).
-    const content =
-      key === "og:image" || key === "twitter:image" ? abs(ogBase, value) || value : value;
+    const content = isImage ? abs(ogBase, value) || value : value;
     return metaProp(key) ? (
       <meta property={key} content={content} />
     ) : (

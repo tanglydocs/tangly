@@ -62,8 +62,13 @@ export function resolveJsonLdContext(input: ResolveJsonLdContextInput): JsonLdCo
       }
     | undefined;
 
+  // Every configured logo, light first: resolveOrganization takes the first
+  // one a crawler can fetch, so a `data:` light logo falls through to a dark
+  // logo file rather than leaving the Organization without one.
   const logo = config.logo;
-  const logoLight = typeof logo === "string" ? logo : (logo?.light ?? logo?.dark);
+  const logos = (typeof logo === "string" ? [logo] : [logo?.light, logo?.dark]).filter(
+    (value): value is string => typeof value === "string",
+  );
   const rootSameAs = (config as { sameAs?: string[] }).sameAs;
 
   const organization = resolveOrganization({
@@ -71,7 +76,7 @@ export function resolveJsonLdContext(input: ResolveJsonLdContextInput): JsonLdCo
     siteRoot,
     ...(seo?.organization ? { organization: seo.organization } : {}),
     ...(Array.isArray(rootSameAs) ? { sameAs: rootSameAs } : {}),
-    ...(logoLight ? { logo: logoLight } : {}),
+    logo: logos,
     absolutize,
   });
 

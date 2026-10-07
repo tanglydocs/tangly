@@ -10,6 +10,7 @@
  * back to the site name otherwise; an accent-coloured dot pulse sits beneath.
  */
 import type { DocsJson } from "@tanglydocs/schema";
+import { withBase } from "./with-base.ts";
 
 export interface Props {
   config: DocsJson;
@@ -17,7 +18,9 @@ export interface Props {
 
 const { config } = Astro.props as Props;
 
-// Mirror TopNav's logo resolution (raw URLs; static middleware serves them).
+// Mirror TopNav's logo resolution. A root-relative logo goes through
+// withBase like every other internal asset, so it still resolves when the
+// site is mounted under a base path (`--base /docs`).
 const logoLight =
   typeof config.logo === "string" ? config.logo : (config.logo?.light ?? config.logo?.dark);
 const logoDark =
@@ -29,8 +32,8 @@ const hasLogo = Boolean(logoLight || logoDark);
   <div class="tangly-splash-inner">
     {hasLogo ? (
       <span class="tangly-splash-logo">
-        {logoLight && <img src={logoLight} alt={config.name} class="tangly-splash-logo-light" />}
-        {logoDark && <img src={logoDark} alt={config.name} class="tangly-splash-logo-dark" />}
+        {logoLight && <img src={withBase(logoLight)} alt={config.name} class="tangly-splash-logo-light" />}
+        {logoDark && <img src={withBase(logoDark)} alt={config.name} class="tangly-splash-logo-dark" />}
       </span>
     ) : (
       <span class="tangly-splash-name">{config.name}</span>

@@ -6,11 +6,12 @@ import { loadCollections, serializeCollections } from "../content/load-collectio
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { applyOpenApiOverride } from "../openapi/resolve-source.js";
-import { resolveEditUrl } from "./git-meta.js";
+import { gitFileDates, resolveEditUrl } from "./git-meta.js";
 import { resolveSite } from "../site/resolve-site.js";
 import { resolveJsonRefs } from "./resolve-refs.js";
 import { resolveNavigation } from "./resolve-nav.js";
-import { scanPages } from "./scan-pages.js";
+import { fileTimes, scanPages } from "./scan-pages.js";
+import type { PageOnDisk } from "./scan-pages.js";
 import { resolveSectionDefaults } from "./section-defaults.js";
 import type { Manifest, ManifestWarning, PageEntry, SidebarItem } from "./types.js";
 
@@ -173,15 +174,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       lastUpdated = disk.lastUpdated;
     }
 
-    // Structured-data dates. `dateModified` layers an explicit frontmatter
-    // override on top of the already-resolved `lastUpdated`, so hiding the
-    // footer stamp with `lastUpdated: false` also keeps the date out of the
-    // page's JSON-LD — a reader who suppressed the date did not ask for it to
-    // be published in machine-readable form instead.
-    const fmDatePublished = typeof fm.datePublished === "string" ? fm.datePublished : undefined;
-    const fmDateModified = typeof fm.dateModified === "string" ? fm.dateModified : undefined;
-    const datePublished = fmDatePublished ?? disk.created;
-    const dateModified = fmDateModified ?? lastUpdated;
+    const { datePublished, dateModified } = structuredDates(fm, disk, lastUpdated);
 
     // Reading time: page frontmatter wins.
     let readingTime: number | undefined;
@@ -237,6 +230,14 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       if (p.frontmatter?.draft && !includeDrafts) continue;
       const fm = p.frontmatter ?? { title: humanizeSlug(p.slug) };
       const blocks = extractBlocks(p.content).blocks;
+      // Routable, so rendered with JSON-LD: it needs the same dates.
+      const orphanLast =
+        typeof fm.lastUpdated === "string"
+          ? fm.lastUpdated
+          : fm.lastUpdated === false
+            ? undefined
+            : p.lastUpdated;
+      const { datePublished, dateModified } = structuredDates(fm, p, orphanLast);
       pages.set(p.slug, {
         slug: p.slug,
         file: p.file,
@@ -244,6 +245,8 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
         breadcrumbs: [],
         sidebar: navigation.rootSidebar,
         draft: Boolean(p.frontmatter?.draft),
+        ...(datePublished ? { datePublished } : {}),
+        ...(dateModified ? { dateModified } : {}),
         ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
       });
     }
@@ -278,7 +281,22 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       tabs: navigation.tabs,
       root,
     });
+    // An endpoint page has no source file of its own: it is dated by the
+    // spec it was generated from, git first and the file's times after, like
+    // any page. A remote spec has no local file, so the config that names it
+    // stands in.
+    const specDates = new Map<string, ReturnType<typeof sourceDates>>();
     for (const synth of openapi.pages) {
+      const spec = /^<openapi:(.+)#[^#]*>$/.exec(synth.file)?.[1];
+      if (spec) {
+        const source = /^https?:\/\//i.test(spec) ? configPath : resolve(root, spec);
+        if (!specDates.has(source)) specDates.set(source, sourceDates(source));
+        const dates = specDates.get(source)!;
+        const published = synth.datePublished ?? dates.datePublished;
+        const modified = synth.dateModified ?? dates.dateModified;
+        if (published) synth.datePublished = published;
+        if (modified) synth.dateModified = modified;
+      }
       pages.set(synth.slug, synth);
     }
     // Append tab-level synthesized sidebars in-place. Group-level specs mutate
@@ -333,6 +351,44 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     warnings,
     root,
     ...(collections ? { collections } : {}),
+  };
+}
+
+/**
+ * Structured-data dates for a page. Frontmatter wins, then git, then the
+ * source file's own times — so a docs folder that is not under git (an
+ * export, a vendored copy) still publishes dated articles.
+ *
+ * `dateModified` layers on top of the already-resolved `lastUpdated`, so
+ * hiding the footer stamp with `lastUpdated: false` also keeps the date out
+ * of the page's JSON-LD — a reader who suppressed the date did not ask for
+ * it to be published in machine-readable form instead.
+ */
+function structuredDates(
+  fm: Record<string, unknown>,
+  disk: Pick<PageOnDisk, "created" | "fsCreated" | "fsModified">,
+  lastUpdated: string | undefined,
+): { datePublished?: string; dateModified?: string } {
+  const fmDatePublished = typeof fm.datePublished === "string" ? fm.datePublished : undefined;
+  const fmDateModified = typeof fm.dateModified === "string" ? fm.dateModified : undefined;
+  const suppressed = fm.lastUpdated === false;
+  const datePublished = fmDatePublished ?? disk.created ?? disk.fsCreated;
+  const dateModified = fmDateModified ?? lastUpdated ?? (suppressed ? undefined : disk.fsModified);
+  return {
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
+  };
+}
+
+/** Dates for a source that is not a scanned page: git, then the file. */
+function sourceDates(file: string): { datePublished?: string; dateModified?: string } {
+  const git = gitFileDates(file);
+  const fs = fileTimes(file);
+  const datePublished = git.created ?? fs.fsCreated;
+  const dateModified = git.lastUpdated ?? fs.fsModified;
+  return {
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
   };
 }
 

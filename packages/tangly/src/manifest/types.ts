@@ -63,12 +63,14 @@ export interface PageEntry {
   lastUpdated?: string;
   /**
    * ISO date for structured-data `datePublished` — frontmatter
-   * `datePublished`, else the first git commit that added the source file.
+   * `datePublished`, else the first git commit that added the source file,
+   * else the file's own birth time (the spec file's, for an OpenAPI page).
    */
   datePublished?: string;
   /**
    * ISO date for structured-data `dateModified` — frontmatter `dateModified`,
-   * else the resolved `lastUpdated`. Never the build timestamp.
+   * else the resolved `lastUpdated`, else the file's modification time
+   * (unless `lastUpdated: false` suppressed it). Never the build timestamp.
    */
   dateModified?: string;
   /**

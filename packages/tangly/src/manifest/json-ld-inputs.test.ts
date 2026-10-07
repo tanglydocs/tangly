@@ -4,7 +4,7 @@
  * per page render, so this is where their correctness is pinned.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { afterEach, describe, expect, test } from "vitest";
 import { buildManifest, buildNavPath } from "./build-manifest.js";
@@ -196,17 +196,63 @@ describe("manifest structured-data fields", () => {
     expect(manifest.pages.get("intro")?.dateModified).toBe("2026-05-05");
   });
 
-  test("a non-git directory simply has no dates — never a build timestamp", async () => {
+  test("a non-git directory falls back to the file's own times — never the build clock", async () => {
     setup({
       "docs.json": docsJson,
       "intro.mdx": "---\ntitle: Intro\n---\nbody\n",
       "stub.mdx": "---\ntitle: Stub\n---\nbody\n",
     });
+    // A fixed past mtime: a build-clock fallback would read as "now".
+    const then = new Date("2024-03-04T05:06:07.000Z");
+    utimesSync(`${TMP}/intro.mdx`, then, then);
     const manifest = await buildManifest({ root: TMP });
     const intro = manifest.pages.get("intro")!;
-    // /tmp is not a repo, so git yields nothing and both dates are absent.
-    expect(intro.datePublished).toBeUndefined();
+    // /tmp is not a repo, so git yields nothing; the file's times stand in.
+    // Birth time may be later than a back-dated mtime, so "published" is the
+    // earlier of the two.
+    expect(intro.datePublished).toBe(then.toISOString());
+    expect(intro.dateModified).toBe(then.toISOString());
+  });
+
+  test("lastUpdated: false keeps the file time out of dateModified too", async () => {
+    setup({
+      "docs.json": docsJson,
+      "intro.mdx": "---\ntitle: Intro\nlastUpdated: false\n---\nbody\n",
+      "stub.mdx": "---\ntitle: Stub\n---\nbody\n",
+    });
+    const manifest = await buildManifest({ root: TMP });
+    const intro = manifest.pages.get("intro")!;
     expect(intro.dateModified).toBeUndefined();
+    expect(intro.datePublished).toBeDefined();
+  });
+
+  test("an OpenAPI endpoint page is dated by its spec file", async () => {
+    setup({
+      "docs.json": JSON.stringify({
+        name: "T",
+        navigation: {
+          tabs: [
+            { tab: "Guides", groups: [{ group: "Setup", pages: ["intro"] }] },
+            { tab: "Reference", openapi: "./openapi.json" },
+          ],
+        },
+      }),
+      "intro.mdx": "---\ntitle: Intro\n---\nbody\n",
+      "openapi.json": JSON.stringify({
+        openapi: "3.1.0",
+        info: { title: "T", version: "1" },
+        paths: { "/things": { get: { summary: "List things" } } },
+      }),
+    });
+    const then = new Date("2024-03-04T05:06:07.000Z");
+    utimesSync(`${TMP}/openapi.json`, then, then);
+    const manifest = await buildManifest({ root: TMP });
+    const endpoints = [...manifest.pages.values()].filter((p) => p.file.startsWith("<openapi:"));
+    expect(endpoints.length).toBeGreaterThan(0);
+    for (const endpoint of endpoints) {
+      expect(endpoint.datePublished).toBe(then.toISOString());
+      expect(endpoint.dateModified).toBe(then.toISOString());
+    }
   });
 });
 
@@ -266,6 +312,40 @@ describe("git dates", () => {
     const intro = pages.find((p) => p.slug === "intro")!;
     expect(intro.created).toContain("2020-01-02");
     expect(intro.lastUpdated).toContain("2020-01-02");
+  });
+
+  test("an OpenAPI endpoint page takes its spec's git dates, not the checkout's", async () => {
+    setup(
+      {
+        "docs.json": JSON.stringify({
+          name: "T",
+          navigation: {
+            tabs: [
+              { tab: "Guides", groups: [{ group: "Setup", pages: ["intro"] }] },
+              { tab: "Reference", openapi: "./openapi.json" },
+            ],
+          },
+        }),
+        "intro.mdx": "---\ntitle: Intro\n---\nbody\n",
+        "openapi.json": JSON.stringify({
+          openapi: "3.1.0",
+          info: { title: "T", version: "1" },
+          paths: { "/things": { get: { summary: "List things" } } },
+        }),
+      },
+      REPO,
+    );
+    git(["init", "-q"]);
+    git(["add", "."]);
+    git(["-c", "commit.gpgsign=false", "commit", "-q", "-m", "one", "--date=2020-01-02T03:04:05Z"]);
+
+    const manifest = await buildManifest({ root: REPO });
+    const endpoints = [...manifest.pages.values()].filter((p) => p.file.startsWith("<openapi:"));
+    expect(endpoints.length).toBeGreaterThan(0);
+    for (const endpoint of endpoints) {
+      expect(endpoint.datePublished).toContain("2020-01-02");
+      expect(endpoint.dateModified).toContain("2020-01-02");
+    }
   });
 
   test("a directory with no repo yields an empty map, not a throw", () => {

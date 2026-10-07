@@ -47,10 +47,10 @@ const primary = config.navbar?.primary;
         class="flex items-center gap-2 font-semibold text-[var(--tangly-color-fg)] shrink-0"
       >
         {logoLight && (
-          <img src={logoLight} alt={config.name} class="h-7 w-auto block dark:hidden" />
+          <img src={withBase(logoLight)} alt={config.name} class="h-7 w-auto block dark:hidden" />
         )}
         {logoDark && (
-          <img src={logoDark} alt={config.name} class="h-7 w-auto hidden dark:block" />
+          <img src={withBase(logoDark)} alt={config.name} class="h-7 w-auto hidden dark:block" />
         )}
         {!logoLight && !logoDark && <span>{config.name}</span>}
       </a>

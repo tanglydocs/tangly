@@ -47,6 +47,13 @@ export interface PageOnDisk {
   lastUpdated?: string;
   /** ISO timestamp from git log (first commit that added this file). */
   created?: string;
+  /**
+   * The source file's own times, for structured-data dates when git has
+   * none (an untracked or freshly exported docs folder): the earlier of
+   * birth and modification time, and the modification time.
+   */
+  fsCreated?: string;
+  fsModified?: string;
   /** Estimated reading time in minutes. */
   readingTime?: number;
 }
@@ -69,9 +76,29 @@ export async function scanPages(root: string): Promise<PageOnDisk[]> {
     const m = gitMeta.get(rel);
     if (m?.lastUpdated) p.lastUpdated = m.lastUpdated;
     if (m?.created) p.created = m.created;
+    Object.assign(p, fileTimes(p.file));
     p.readingTime = computeReadingTime(p.content);
   }
   return pages;
+}
+
+/**
+ * A file's times as ISO strings, or nothing when it cannot be read.
+ * `birthtime` is 0 on filesystems that do not record it, and a copy can carry
+ * a birth time later than its preserved mtime, so "created" is the earlier of
+ * the two real values.
+ */
+export function fileTimes(file: string): { fsCreated?: string; fsModified?: string } {
+  try {
+    const st = statSync(file);
+    const born = st.birthtimeMs > 0 ? Math.min(st.birthtimeMs, st.mtimeMs) : st.mtimeMs;
+    return {
+      fsCreated: new Date(born).toISOString(),
+      fsModified: st.mtime.toISOString(),
+    };
+  } catch {
+    return {};
+  }
 }
 
 /** `realpathSync`, falling back to the input when the path cannot be resolved. */

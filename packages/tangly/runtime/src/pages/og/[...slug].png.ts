@@ -31,8 +31,11 @@ export async function getStaticPaths() {
   // the whole site (that opts out of per-page cards). At build, skip when no
   // siteUrl exists since nothing would reference the PNGs; dev always renders
   // so cards can be previewed on demand.
+  // A `data:` static image cannot be an og:image (Seo.astro skips it), so it
+  // does not opt out of cards either — otherwise the page would have none.
   const thumbnails = manifest.config.thumbnails;
-  const generationEnabled = thumbnails?.enabled !== false && !thumbnails?.image;
+  const staticImage = thumbnails?.image && !/^data:/i.test(thumbnails.image.trim());
+  const generationEnabled = thumbnails?.enabled !== false && !staticImage;
   if (!generationEnabled) return [];
   // At build, skip when no absolute base is resolvable (env override, platform,
   // or docs.json siteUrl) — nothing would reference the PNGs. Dev always renders.
