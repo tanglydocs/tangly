@@ -63,9 +63,11 @@ const slug = page.slug.replace(/\/+$/, "");
 const pagePath = withBase(pageRouteForSlug(page.slug))?.replace(/\/+$/, "") || "/";
 const canonicalUrl = canonicalBase ? `${canonicalBase}${pagePath}` : "";
 
-/** Absolutize a relative/external path against `base` (or "" if it can't be). */
+/** Absolutize a relative/external path against `base` (or "" if it can't be).
+ * A `data:` URI is never a usable og:image — crawlers fetch a URL — so it
+ * resolves to "" and the precedence chain below falls through past it. */
 function abs(base: string, path: string | undefined): string {
-  if (!path) return "";
+  if (!path || /^data:/i.test(path.trim())) return "";
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   if (!base) return "";
   // Normalize to a root-relative path so withBase() prefixes it correctly
@@ -105,7 +107,7 @@ if (hasMetaOgImage) {
 } else if (generatedCard) {
   ogImage = generatedCard;
   isGenerated = true;
-} else if (logoLight) {
+} else if (abs(ogBase, logoLight)) {
   ogImage = abs(ogBase, logoLight);
 }
 

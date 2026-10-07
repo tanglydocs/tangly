@@ -118,10 +118,10 @@ const locale = (config.seo as { locale?: string } | undefined)?.locale ?? "en";
       <div class="flex items-center gap-6 h-[var(--tangly-topnav-row1-height,3.5rem)] px-5 sm:px-8 max-w-screen-xl mx-auto">
         <a href={logoHref} class="flex items-center gap-2 font-semibold text-[var(--tangly-color-fg)] no-underline shrink-0">
           {logoLight && (
-            <img src={logoLight} alt={config.name} class="h-7 w-auto block dark:hidden" />
+            <img src={withBase(logoLight)} alt={config.name} class="h-7 w-auto block dark:hidden" />
           )}
           {logoDark && (
-            <img src={logoDark} alt={config.name} class="h-7 w-auto hidden dark:block" />
+            <img src={withBase(logoDark)} alt={config.name} class="h-7 w-auto hidden dark:block" />
           )}
           {!logoLight && !logoDark && <span>{config.name}</span>}
         </a>

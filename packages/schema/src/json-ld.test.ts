@@ -98,6 +98,21 @@ describe("resolveOrganization", () => {
     });
   });
 
+  test("skips a data: URI logo for the next candidate that is a real file", () => {
+    const svg = "data:image/svg+xml,%3Csvg%3E%3C/svg%3E";
+    expect(org({ logo: [svg, "/images/logo-dark.png"] }).logo).toBe(`${ROOT}/images/logo-dark.png`);
+    // seo.organization.logo is a candidate too, and gets the same treatment.
+    expect(org({ organization: { logo: svg }, logo: "/images/logo.png" }).logo).toBe(
+      `${ROOT}/images/logo.png`,
+    );
+  });
+
+  test("omits the logo rather than publishing a data: URI", () => {
+    const svg = "data:image/svg+xml,%3Csvg%3E%3C/svg%3E";
+    expect(org({ logo: [svg, svg] }).logo).toBeUndefined();
+    expect(org({ organization: { logo: svg }, logo: svg }).logo).toBeUndefined();
+  });
+
   test("omits logo entirely when the project has none", () => {
     const resolved = resolveOrganization({ siteName: "Example", siteRoot: ROOT, absolutize });
     expect(resolved.logo).toBeUndefined();
@@ -129,7 +144,7 @@ describe("buildJsonLd — defaults", () => {
   });
 
   test("Organization and WebSite ids are site-scoped, not page-scoped", () => {
-    expect(node(graph, "Organization")?.["@id"]).toBe(`${ROOT}#organization`);
+    expect(node(graph, "Organization")?.["@id"]).toBe(`${ROOT}/#organization`);
     expect(node(graph, "WebSite")?.["@id"]).toBe(`${ROOT}/#website`);
   });
 
@@ -141,24 +156,50 @@ describe("buildJsonLd — defaults", () => {
 
   test("page nodes reference the site nodes rather than redeclaring them", () => {
     expect(node(graph, "WebPage")?.isPartOf).toEqual({ "@id": `${ROOT}/#website` });
-    expect(node(graph, "TechArticle")?.publisher).toEqual({ "@id": `${ROOT}#organization` });
-    expect(node(graph, "TechArticle")?.about).toEqual({ "@id": `${ROOT}#organization` });
+    expect(node(graph, "TechArticle")?.publisher).toMatchObject({ "@id": `${ROOT}/#organization` });
+    expect(node(graph, "TechArticle")?.about).toEqual({ "@id": `${ROOT}/#organization` });
     expect(node(graph, "TechArticle")?.mainEntityOfPage).toEqual({
       "@id": `${ROOT}/guides/install`,
     });
   });
 
-  test("logo is an ImageObject with its own @id", () => {
-    expect(node(graph, "Organization")?.logo).toEqual({
-      "@type": "ImageObject",
-      "@id": `${ROOT}#logo`,
-      url: `${ROOT}/images/logo.png`,
-    });
+  test("logo is a plain absolute URL", () => {
+    expect(node(graph, "Organization")?.logo).toBe(`${ROOT}/images/logo.png`);
+  });
+
+  test("the Organization @id uses the same /# form as the WebSite", () => {
+    // `https://host#organization` and `https://host/#organization` are
+    // different IRIs; the slash form is the one a site's own pages use.
+    const resolved = org({ organization: { url: "https://example.com/" } });
+    const site = { siteRoot: ROOT, name: "Example", locale: "en", organization: resolved };
+    expect(node(buildJsonLd(input({ site }))!, "Organization")?.["@id"]).toBe(
+      "https://example.com/#organization",
+    );
   });
 
   test("with no frontmatter author the organization is the author", () => {
-    expect(node(graph, "TechArticle")?.author).toEqual({ "@id": `${ROOT}#organization` });
+    expect(node(graph, "TechArticle")?.author).toEqual({
+      "@type": "Organization",
+      "@id": `${ROOT}/#organization`,
+      name: "Example",
+      logo: `${ROOT}/images/logo.png`,
+    });
     expect(node(graph, "Person")).toBeUndefined();
+  });
+
+  test("the article names its publisher and its logo inline, keyed to the node", () => {
+    // Validators read publisher.name and publisher.logo off the article
+    // without resolving references; the @id still ties it to the node above.
+    expect(node(graph, "TechArticle")?.publisher).toEqual({
+      "@type": "Organization",
+      "@id": node(graph, "Organization")?.["@id"],
+      name: "Example",
+      logo: `${ROOT}/images/logo.png`,
+    });
+  });
+
+  test("an article with no page image falls back to the publisher logo", () => {
+    expect(node(graph, "TechArticle")?.image).toBe(`${ROOT}/images/logo.png`);
   });
 
   test("WebSite carries a SearchAction when the site has search", () => {
@@ -272,6 +313,14 @@ describe("buildJsonLd — dates", () => {
     expect(node(graph, "WebPage")?.dateModified).toBe("2026-06-07T08:09:10Z");
     expect(node(graph, "WebPage")).not.toHaveProperty("datePublished");
   });
+
+  test("the article is never left without datePublished when a date is known", () => {
+    // Article validators require datePublished; a page known to have been
+    // modified on a date was published no later than that.
+    const graph = buildJsonLd(input({ dates: { modified: "2026-06-07T08:09:10Z" } }))!;
+    expect(node(graph, "TechArticle")?.datePublished).toBe("2026-06-07T08:09:10Z");
+    expect(node(graph, "TechArticle")?.dateModified).toBe("2026-06-07T08:09:10Z");
+  });
 });
 
 describe("buildJsonLd — page overrides", () => {
@@ -298,7 +347,11 @@ describe("buildJsonLd — page overrides", () => {
     const person = node(graph, "Person")!;
     expect(person["@id"]).toBe(`${ROOT}/#person-ada-lovelace`);
     expect(person.name).toBe("Ada Lovelace");
-    expect(node(graph, "TechArticle")?.author).toEqual({ "@id": person["@id"] });
+    expect(node(graph, "TechArticle")?.author).toEqual({
+      "@type": "Person",
+      "@id": person["@id"],
+      name: "Ada Lovelace",
+    });
     expect(danglingRefs(graph)).toEqual([]);
   });
 
@@ -321,7 +374,10 @@ describe("buildJsonLd — page overrides", () => {
   test("an empty author name falls back to the organization", () => {
     const graph = buildJsonLd(input({ page: { url: `${ROOT}/x`, title: "X", author: "  " } }))!;
     expect(node(graph, "Person")).toBeUndefined();
-    expect(node(graph, "TechArticle")?.author).toEqual({ "@id": `${ROOT}#organization` });
+    expect(node(graph, "TechArticle")?.author).toMatchObject({
+      "@type": "Organization",
+      "@id": `${ROOT}/#organization`,
+    });
   });
 
   test("a page image lands on the article", () => {
@@ -391,8 +447,9 @@ describe("danglingRefs", () => {
 
   test("an inline node with its own @id is not treated as a reference", () => {
     const graph = buildJsonLd(input())!;
-    // The logo ImageObject is nested and declares `#logo`, which is not a
-    // separate graph node — it must not be reported as dangling.
+    // The article's publisher and author summaries carry an @id alongside
+    // their own fields; they name a node rather than merely pointing at one,
+    // and must not be reported as dangling.
     expect(danglingRefs(graph)).toEqual([]);
   });
 });
