@@ -9,8 +9,8 @@ Notable changes per release. Each entry is authored as an [`<Update>`](/referenc
   ### Fixes
   - fix(schema): every `TechArticle` / `Article` now carries what article validators require. `author` and `publisher` are written with their `@type` and `name` (and the publisher's `logo`) beside the `@id`, `image` falls back to the logo when a page has no social image, and `datePublished` is always present when any date is known
   - fix(schema): the Organization `logo` is a plain absolute URL, and a `data:` URI is never published as one: it is skipped for `logo.dark` or omitted. The Organization `@id` is now `<org url>/#organization`, the same `/#` form as `WebSite` and the one a site's own pages use, so a docs site under the company domain names the same entity
-  - fix(manifest): pages outside git are dated by their source file's own times, and OpenAPI endpoint pages by their spec file, instead of shipping undated articles
-  - fix(theme-ui): a root-relative `logo` goes through `withBase`, so it resolves when the site is mounted under `--base` (the top nav, the loading splash and theme-pip all rendered `/images/logo.svg` at the domain root). An inline `data:` logo no longer becomes the `og:image`
+  - fix(manifest): pages outside git are dated by their source file's own times, and OpenAPI endpoint pages by their spec file (git first, then the file; a remote spec by the config that names it), instead of shipping undated articles
+  - fix(theme-ui): a root-relative `logo` goes through `withBase`, so it resolves when the site is mounted under `--base` (the top nav, the loading splash and theme-pip all rendered `/images/logo.svg` at the domain root). A `data:` URI anywhere in the `og:image` chain (frontmatter, `thumbnails.image`, `seo.metatags`, the logo fallback) is skipped for the next candidate instead of being published
 </Update>
 
 <Update label="v0.5.1" description="06 Oct 26" tags={["fix"]}>

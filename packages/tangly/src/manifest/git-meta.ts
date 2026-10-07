@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { basename, dirname } from "node:path";
 
 interface GitMetaOptions {
   /** Absolute project root. */
@@ -72,6 +73,28 @@ export function loadGitMeta(opts: GitMetaOptions): {
     /* swallow */
   }
   return { meta, repoRoot };
+}
+
+/**
+ * Git dates for one file: the commit that added it and the last that touched
+ * it. One `git log` per call, for the few sources the page scan does not
+ * cover (an OpenAPI spec, the config). Empty outside git or for an untracked
+ * file.
+ */
+export function gitFileDates(file: string): { created?: string; lastUpdated?: string } {
+  try {
+    const stdout = execFileSync(
+      "git",
+      ["log", "--diff-filter=AM", "--format=%aI", "--", basename(file)],
+      { cwd: dirname(file), encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    );
+    const dates = stdout.split("\n").filter(Boolean);
+    const lastUpdated = dates[0];
+    const created = dates.at(-1);
+    return lastUpdated && created ? { created, lastUpdated } : {};
+  } catch {
+    return {};
+  }
 }
 
 /**

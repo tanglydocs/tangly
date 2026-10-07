@@ -314,6 +314,40 @@ describe("git dates", () => {
     expect(intro.lastUpdated).toContain("2020-01-02");
   });
 
+  test("an OpenAPI endpoint page takes its spec's git dates, not the checkout's", async () => {
+    setup(
+      {
+        "docs.json": JSON.stringify({
+          name: "T",
+          navigation: {
+            tabs: [
+              { tab: "Guides", groups: [{ group: "Setup", pages: ["intro"] }] },
+              { tab: "Reference", openapi: "./openapi.json" },
+            ],
+          },
+        }),
+        "intro.mdx": "---\ntitle: Intro\n---\nbody\n",
+        "openapi.json": JSON.stringify({
+          openapi: "3.1.0",
+          info: { title: "T", version: "1" },
+          paths: { "/things": { get: { summary: "List things" } } },
+        }),
+      },
+      REPO,
+    );
+    git(["init", "-q"]);
+    git(["add", "."]);
+    git(["-c", "commit.gpgsign=false", "commit", "-q", "-m", "one", "--date=2020-01-02T03:04:05Z"]);
+
+    const manifest = await buildManifest({ root: REPO });
+    const endpoints = [...manifest.pages.values()].filter((p) => p.file.startsWith("<openapi:"));
+    expect(endpoints.length).toBeGreaterThan(0);
+    for (const endpoint of endpoints) {
+      expect(endpoint.datePublished).toContain("2020-01-02");
+      expect(endpoint.dateModified).toContain("2020-01-02");
+    }
+  });
+
   test("a directory with no repo yields an empty map, not a throw", () => {
     setup({ "intro.mdx": "x" }, REPO);
     const { meta, repoRoot } = loadGitMeta({ root: REPO });

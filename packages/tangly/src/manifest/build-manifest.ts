@@ -6,7 +6,7 @@ import { loadCollections, serializeCollections } from "../content/load-collectio
 import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { applyOpenApiOverride } from "../openapi/resolve-source.js";
-import { resolveEditUrl } from "./git-meta.js";
+import { gitFileDates, resolveEditUrl } from "./git-meta.js";
 import { resolveSite } from "../site/resolve-site.js";
 import { resolveJsonRefs } from "./resolve-refs.js";
 import { resolveNavigation } from "./resolve-nav.js";
@@ -282,16 +282,20 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       root,
     });
     // An endpoint page has no source file of its own: it is dated by the
-    // spec it was generated from. A remote spec has no local file and stays
-    // undated.
-    const specTimes = new Map<string, ReturnType<typeof fileTimes>>();
+    // spec it was generated from, git first and the file's times after, like
+    // any page. A remote spec has no local file, so the config that names it
+    // stands in.
+    const specDates = new Map<string, ReturnType<typeof sourceDates>>();
     for (const synth of openapi.pages) {
       const spec = /^<openapi:(.+)#[^#]*>$/.exec(synth.file)?.[1];
-      if (spec && !/^https?:\/\//i.test(spec)) {
-        if (!specTimes.has(spec)) specTimes.set(spec, fileTimes(resolve(root, spec)));
-        const times = specTimes.get(spec)!;
-        if (!synth.datePublished && times.fsCreated) synth.datePublished = times.fsCreated;
-        if (!synth.dateModified && times.fsModified) synth.dateModified = times.fsModified;
+      if (spec) {
+        const source = /^https?:\/\//i.test(spec) ? configPath : resolve(root, spec);
+        if (!specDates.has(source)) specDates.set(source, sourceDates(source));
+        const dates = specDates.get(source)!;
+        const published = synth.datePublished ?? dates.datePublished;
+        const modified = synth.dateModified ?? dates.dateModified;
+        if (published) synth.datePublished = published;
+        if (modified) synth.dateModified = modified;
       }
       pages.set(synth.slug, synth);
     }
@@ -370,6 +374,18 @@ function structuredDates(
   const suppressed = fm.lastUpdated === false;
   const datePublished = fmDatePublished ?? disk.created ?? disk.fsCreated;
   const dateModified = fmDateModified ?? lastUpdated ?? (suppressed ? undefined : disk.fsModified);
+  return {
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
+  };
+}
+
+/** Dates for a source that is not a scanned page: git, then the file. */
+function sourceDates(file: string): { datePublished?: string; dateModified?: string } {
+  const git = gitFileDates(file);
+  const fs = fileTimes(file);
+  const datePublished = git.created ?? fs.fsCreated;
+  const dateModified = git.lastUpdated ?? fs.fsModified;
   return {
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
