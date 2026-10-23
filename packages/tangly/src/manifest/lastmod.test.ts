@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { isShallowRepository, resolveLastmod, toW3cDate } from "./lastmod.js";
 import { buildManifest } from "./build-manifest.js";
 
@@ -53,8 +53,23 @@ describe("resolveLastmod", () => {
 
 describe("manifest lastmod (real git)", () => {
   const dirs: string[] = [];
+  // Git hooks (pre-push runs this suite) export GIT_DIR / GIT_INDEX_FILE, which
+  // would point every git call here at the enclosing repo instead of the temp
+  // one. Scrub them for the duration of each test.
+  const saved: Record<string, string | undefined> = {};
+  const GIT_VARS = ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_PREFIX"];
+  beforeEach(() => {
+    for (const k of GIT_VARS) {
+      saved[k] = process.env[k];
+      delete process.env[k];
+    }
+  });
   afterEach(() => {
     for (const d of dirs.splice(0)) rmSync(d, { recursive: true, force: true });
+    for (const k of GIT_VARS) {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    }
   });
   const git = (cwd: string, ...args: string[]) =>
     execFileSync("git", args, {
