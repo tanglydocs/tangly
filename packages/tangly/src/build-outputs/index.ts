@@ -31,7 +31,8 @@ export function generateSitemap(opts: BuildOutputsOptions): string {
     if (page.frontmatter.noindex) continue;
     const path = pagePathForSlug(page.slug, base);
     const loc = site ? `${site}${path}` : path;
-    urls.push(`  <url><loc>${escapeXml(loc)}</loc></url>`);
+    const lastmod = page.lastmod ? `<lastmod>${escapeXml(page.lastmod)}</lastmod>` : "";
+    urls.push(`  <url><loc>${escapeXml(loc)}</loc>${lastmod}</url>`);
   }
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,

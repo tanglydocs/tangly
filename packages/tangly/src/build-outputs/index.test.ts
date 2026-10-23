@@ -74,6 +74,20 @@ describe("build-outputs", () => {
     expect(xml).not.toContain("/draft");
   });
 
+  test("sitemap emits <lastmod> only for pages that have one", () => {
+    const m = fakeManifest();
+    m.pages.get("introduction")!.lastmod = "2026-01-02";
+    m.pages.get("cli")!.lastmod = "2026-01-02&<x>";
+    m.pages.get("hidden")!.lastmod = "2026-05-05";
+    m.pages.get("draft")!.lastmod = "2026-06-06";
+    const xml = generateSitemap({ manifest: m, outDir: "/tmp" });
+    expect(xml).toContain("<loc>/introduction</loc><lastmod>2026-01-02</lastmod>");
+    expect(xml).toContain("<lastmod>2026-01-02&amp;&lt;x&gt;</lastmod>");
+    expect(xml).toMatch(/<loc>\/<\/loc><\/url>/);
+    expect(xml).not.toContain("2026-05-05");
+    expect(xml).not.toContain("2026-06-06");
+  });
+
   test("sitemap uses absolute URL when siteUrl set", () => {
     const xml = generateSitemap({
       manifest,

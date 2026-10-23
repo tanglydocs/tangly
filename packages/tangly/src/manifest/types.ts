@@ -62,6 +62,12 @@ export interface PageEntry {
   /** ISO timestamp of last git commit touching this file. */
   lastUpdated?: string;
   /**
+   * Sitemap `<lastmod>` (`YYYY-MM-DD`): frontmatter `lastmod`/`updated`/
+   * `modified`, else the file's git commit date (never in a shallow clone).
+   * Absent when neither is known.
+   */
+  lastmod?: string;
+  /**
    * ISO date for structured-data `datePublished` — frontmatter
    * `datePublished`, else the first git commit that added the source file,
    * else the file's own birth time (the spec file's, for an OpenAPI page).
@@ -133,6 +139,8 @@ export interface Manifest {
   /** MDX files on disk that are not referenced in nav. */
   orphans: string[];
   warnings: ManifestWarning[];
+  /** True when the docs project is in a shallow git clone (git dates skipped). */
+  gitShallow?: boolean;
   /** Source root directory. */
   root: string;
   /** User-defined content collections (validated against Zod schemas). */

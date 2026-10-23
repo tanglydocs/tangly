@@ -7,6 +7,7 @@ import { extractBlocks } from "../embed/extract-blocks.js";
 import { buildOpenApiPages } from "../openapi/build-openapi-pages.js";
 import { applyOpenApiOverride } from "../openapi/resolve-source.js";
 import { gitFileDates, resolveEditUrl } from "./git-meta.js";
+import { isShallowRepository, resolveLastmod } from "./lastmod.js";
 import { resolveSite } from "../site/resolve-site.js";
 import { resolveJsonRefs } from "./resolve-refs.js";
 import { resolveNavigation } from "./resolve-nav.js";
@@ -117,6 +118,25 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
 
   const includeDrafts = opts.includeDrafts ?? false;
 
+  // Sitemap <lastmod>: frontmatter first, then git, but never git in a shallow
+  // clone (every file would carry the checkout's commit date).
+  const gitShallow = isShallowRepository(root);
+  const lastmodFor = (
+    file: string,
+    fm: Record<string, unknown>,
+    gitDate: string | undefined,
+  ): string | undefined => {
+    const { lastmod, invalid } = resolveLastmod(fm, gitShallow ? undefined : gitDate);
+    for (const bad of invalid) {
+      warnings.push({
+        level: "warn",
+        message: `Invalid date in frontmatter \`${bad.key}: ${bad.value}\`; ignored for sitemap <lastmod>`,
+        source: relative(root, file).split(sep).join("/"),
+      });
+    }
+    return lastmod;
+  };
+
   // Footer config drives last-updated + edit-on-source. We cache the
   // resolved editUrl per page so PageShell can render a one-click link
   // without redoing remote-URL parsing on every render.
@@ -175,6 +195,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     }
 
     const { datePublished, dateModified } = structuredDates(fm, disk, lastUpdated);
+    const lastmod = lastmodFor(disk.file, fm, disk.lastUpdated);
 
     // Reading time: page frontmatter wins.
     let readingTime: number | undefined;
@@ -212,6 +233,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
       draft: isDraft,
       hasBody: disk.content.trim() !== "",
       ...(lastUpdated ? { lastUpdated } : {}),
+      ...(lastmod ? { lastmod } : {}),
       ...(datePublished ? { datePublished } : {}),
       ...(dateModified ? { dateModified } : {}),
       ...(typeof readingTime === "number" ? { readingTime } : {}),
@@ -238,6 +260,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
             ? undefined
             : p.lastUpdated;
       const { datePublished, dateModified } = structuredDates(fm, p, orphanLast);
+      const orphanLastmod = lastmodFor(p.file, fm, p.lastUpdated);
       pages.set(p.slug, {
         slug: p.slug,
         file: p.file,
@@ -245,6 +268,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
         breadcrumbs: [],
         sidebar: navigation.rootSidebar,
         draft: Boolean(p.frontmatter?.draft),
+        ...(orphanLastmod ? { lastmod: orphanLastmod } : {}),
         ...(datePublished ? { datePublished } : {}),
         ...(dateModified ? { dateModified } : {}),
         ...(Object.keys(blocks).length > 0 ? { blocks } : {}),
@@ -350,6 +374,7 @@ export async function buildManifest(opts: BuildManifestOptions): Promise<Manifes
     orphans,
     warnings,
     root,
+    ...(gitShallow ? { gitShallow } : {}),
     ...(collections ? { collections } : {}),
   };
 }
