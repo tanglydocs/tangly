@@ -250,6 +250,18 @@ Every internal link, asset URL, sitemap entry, llms.txt URL, and Pagefind result
 
 Drafts (`draft: true` in frontmatter) are excluded. `noindex: true` pages are emitted but excluded from `sitemap.xml`, `llms.txt`, `llms-full.txt`, the per-page `.md` files, and the Pagefind index.
 
+### Sitemap lastmod
+
+Each `sitemap.xml` entry carries a `<lastmod>` (`YYYY-MM-DD`) when Tangly knows a real date, so crawlers and submission tools such as IndexNow can tell which pages changed. The source, in order:
+
+1. Frontmatter `lastmod`, then `updated`, then `modified`, the first valid date wins. Invalid dates are ignored and flagged by `tangly check`.
+2. The last git commit date of the page file.
+3. Otherwise no `<lastmod>`. Tangly never invents a date.
+
+<Warning>
+  CI checkouts are shallow by default (`fetch-depth: 1`), which gives every file the same commit date. Tangly detects a shallow clone, skips the git dates, and prints a build warning. Set `fetch-depth: 0` on `actions/checkout` (or the equivalent for your CI) to get git-derived `<lastmod>`. Frontmatter dates always work.
+</Warning>
+
 ## Markdown for agents
 
 Tangly emits a raw-Markdown twin of every page (`<slug>.md` alongside `<slug>/index.html`) so coding assistants can fetch source instead of rendered HTML; ~10× token reduction. Works on any static host with no extra config: append `.md` to any URL and you get the source.

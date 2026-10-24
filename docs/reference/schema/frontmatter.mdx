@@ -141,6 +141,10 @@ glossary: false
   ISO 8601 date overriding the git-derived last-commit date. `lastUpdated: false` suppresses this too unless you set it explicitly.
 </ParamField>
 
+<ParamField path="lastmod" type="string">
+  Date for this page's `<lastmod>` in `sitemap.xml`, emitted as `YYYY-MM-DD`. Tangly reads `lastmod`, then `updated`, then `modified`, and uses the first valid date. An invalid value is ignored (and reported by `tangly check`), falling through to the next key, then to the file's last git commit date. With no date at all, `<lastmod>` is omitted for the page. Quote the value or write it bare; both work.
+</ParamField>
+
 ```md
 ---
 title: Migrating from Mintlify

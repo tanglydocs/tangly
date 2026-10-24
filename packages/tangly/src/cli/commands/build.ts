@@ -113,6 +113,13 @@ export const buildCommand = defineCommand({
       throw err;
     }
     console.log(pc.dim(`  ${manifest.pages.size} pages, ${manifest.warnings.length} warnings`));
+    if (manifest.gitShallow) {
+      console.log(
+        pc.yellow(
+          "  ⚠ Shallow git clone: sitemap.xml <lastmod> skips git dates (every page would share one). Set `fetch-depth: 0` on your checkout step (actions/checkout) to enable them.",
+        ),
+      );
+    }
 
     const runtimeDir = getRuntimeDir();
 
