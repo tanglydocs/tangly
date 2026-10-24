@@ -5,6 +5,11 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.6.0" description="24 Oct 26" tags={["feat"]}>
+  ### Features
+  - feat(build): `sitemap.xml` now carries `<lastmod>` for every page. The date is the page's frontmatter `lastmod`, `updated` or `modified`, else its last git commit date. Pages with no known date get no `<lastmod>`. In a shallow clone the git dates are skipped and the build warns to use `fetch-depth: 0` ([#24](https://github.com/tanglydocs/tangly/pull/24))
+</Update>
+
 <Update label="v0.5.2" description="07 Oct 26" tags={["fix"]}>
   ### Fixes
   - fix(schema): every `TechArticle` / `Article` now carries what article validators require. `author` and `publisher` are written with their `@type` and `name` (and the publisher's `logo`) beside the `@id`, `image` falls back to the logo when a page has no social image, and `datePublished` is always present when any date is known
