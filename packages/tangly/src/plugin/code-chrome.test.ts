@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 // @ts-expect-error — .mjs runtime module, no declarations
 import { transformerTanglyChrome } from "../../runtime/src/lib/shiki-transformers.mjs";
@@ -69,5 +70,68 @@ describe("transformerTanglyChrome", () => {
   it("bar chrome with nothing to show leaves the pre alone", () => {
     const out = run("noCopy", { chrome: "bar" }, "");
     expect(out.tagName).toBe("pre");
+  });
+});
+
+describe("transformerTanglyChrome tab titles", () => {
+  const titleOf = (meta: string) =>
+    find(run(meta, {}, "bash"), "tangly-code-title")?.children[1]?.value;
+
+  // ```bash macOS / Linux: Mintlify keeps the whole title, and CodeGroup tabs
+  // read it back from data-filename.
+  it("keeps a multi-word title after the language", () => {
+    expect(titleOf("macOS / Linux")).toBe("macOS / Linux");
+    expect(titleOf("Windows (PowerShell)")).toBe("Windows (PowerShell)");
+  });
+
+  it("stops the title at flags, ranges and key=val pairs", () => {
+    expect(titleOf("macOS / Linux {1,3} noCopy")).toBe("macOS / Linux");
+    expect(titleOf("noCopy my file")).toBe("my file");
+    expect(titleOf("npm lines=2")).toBe("npm");
+  });
+
+  it("single-token titles are unchanged", () => {
+    expect(titleOf("package.json")).toBe("package.json");
+    expect(run("macOS / Linux", {}, "bash").children[1].properties["data-filename"]).toBe(
+      "macOS / Linux",
+    );
+  });
+});
+
+// A CodeGroup hides its per-block header chrome (tabs replace the title) but
+// must keep the Copy button reachable in both chromes. CSS can't be rendered
+// here, so pin the contract: no rule may display:none the copy button or its
+// whole header inside a group, and both the hover reveal and the touch
+// fallback must cover grouped blocks.
+describe("CodeGroup copy button CSS", () => {
+  const css = readFileSync(
+    new URL("../../../theme-ui/src/styles/code.css", import.meta.url),
+    "utf8",
+  );
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({
+    selector: m[1]!.replace(/\/\*[\s\S]*?\*\//g, "").trim(),
+    body: m[2]!,
+  }));
+
+  it("never hides the copy button or the header shell inside a group", () => {
+    for (const { selector, body } of rules) {
+      if (!selector.includes(".tangly-code-group") || !/display:\s*none/.test(body)) continue;
+      for (const sel of selector.split(",").map((s) => s.trim())) {
+        expect(sel).not.toMatch(/tangly-code-copy\s*$/);
+        expect(sel).not.toMatch(/tangly-code-header\s*$/);
+      }
+    }
+  });
+
+  it("floats the copy button over the code in a group and honours copyButton: hover", () => {
+    expect(css).toMatch(
+      /\.tangly-code-group \.tangly-code-figure > \.tangly-code-header \{[^}]*position: absolute/,
+    );
+    expect(css).toContain(
+      ':root[data-copy="hover"] .tangly-code-group .tangly-code-figure:focus-within .tangly-code-copy',
+    );
+    expect(css).toMatch(
+      /@media \(hover: none\) \{\s*:root\[data-copy="hover"\] \.tangly-code-group/,
+    );
   });
 });

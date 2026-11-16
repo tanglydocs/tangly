@@ -12,14 +12,16 @@
 
 /* Inside CodeGroup, the outer chrome (tabs + container) replaces the
  * per-block chrome. Flatten the inner figure: drop the border, the
- * margin, and hide the duplicate header (filename pill + Copy button). */
+ * margin, and the header bar (filename pill + language label). The Copy
+ * button survives: see "Copy inside a CodeGroup" below. */
 .tangly-code-group .tangly-code-figure {
   margin: 0;
   border: none;
   border-radius: 0;
   background: transparent;
 }
-.tangly-code-group .tangly-code-figure > .tangly-code-header {
+.tangly-code-group .tangly-code-figure > .tangly-code-header > .tangly-code-title,
+.tangly-code-group .tangly-code-figure > .tangly-code-header > .tangly-code-lang {
   display: none;
 }
 .dark .tangly-code-group .tangly-code-figure {
@@ -206,12 +208,59 @@
   }
 }
 
-/* Inside a CodeGroup the per-block affordance is hidden, matching what the
-   header rule above already does to the bar-chrome Copy button. Note the group
-   does not currently provide a replacement, so a grouped block has no copy
-   button in either chrome — same gap, not a new one. */
-.tangly-code-group .tangly-code-figure[data-chrome="bare"] > .tangly-code-copy {
-  display: none;
+/* Copy inside a CodeGroup. The tabs replace the title and language label, but
+   the per-block Copy button stays: the group hides inactive panels with
+   display:none, so only the visible panel's button is rendered, focusable or
+   announced, and it copies that panel's code (code-copy.ts resolves the
+   closest figure). Both chromes float it over the code, like bare chrome: bar
+   chrome keeps its button inside the (now chrome-less) header, which becomes a
+   zero-size positioning shell. */
+.tangly-code-group .tangly-code-figure > .tangly-code-header {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+.tangly-code-group .tangly-code-figure > .tangly-code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+.tangly-code-group .tangly-code-figure .tangly-code-copy {
+  background: color-mix(in oklab, var(--tangly-color-bg, #fff) 88%, transparent);
+  border-color: var(--tangly-color-border, #e5e7eb);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.tangly-code-group .tangly-code-figure .tangly-code-copy .tangly-code-copy-idle,
+.tangly-code-group .tangly-code-figure .tangly-code-copy .tangly-code-copy-done {
+  font-size: 0;
+  gap: 0;
+}
+.tangly-code-group .tangly-code-figure .tangly-code-copy .tangly-code-copy-idle::before,
+.tangly-code-group .tangly-code-figure .tangly-code-copy .tangly-code-copy-done::before {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+.tangly-code-group .tangly-code-figure > pre {
+  padding-right: 3.25rem;
+}
+:root[data-copy="hover"] .tangly-code-group .tangly-code-figure .tangly-code-copy {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+:root[data-copy="hover"] .tangly-code-group .tangly-code-figure:hover .tangly-code-copy,
+:root[data-copy="hover"] .tangly-code-group .tangly-code-figure:focus-within .tangly-code-copy {
+  opacity: 1;
+}
+@media (hover: none) {
+  :root[data-copy="hover"] .tangly-code-group .tangly-code-figure .tangly-code-copy {
+    opacity: 1;
+  }
 }
 
 /* Shiki notation transformer styles. */
