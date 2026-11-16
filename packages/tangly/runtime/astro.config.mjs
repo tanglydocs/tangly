@@ -18,6 +18,7 @@ import remarkMath from "remark-math";
 import rehypeAnnotations from "./src/lib/rehype-annotations.mjs";
 import rehypeBaseLinks from "./src/lib/rehype-base-links.mjs";
 import rehypeGlossary from "./src/lib/rehype-glossary.mjs";
+import remarkAnsi from "./src/lib/remark-ansi.mjs";
 import remarkExplicitIds from "./src/lib/remark-explicit-ids.mjs";
 import remarkH1Warn from "./src/lib/remark-h1-warn.mjs";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
@@ -174,6 +175,7 @@ export default defineConfig({
         remarkH1Warn,
         remarkExplicitIds,
         remarkMermaid,
+        remarkAnsi,
         remarkGfm,
         remarkMath,
       ],

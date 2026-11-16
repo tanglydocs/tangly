@@ -334,11 +334,20 @@
 .shiki span {
   color: var(--shiki-light);
   background-color: var(--shiki-light-bg);
+  /* Emitted per token by shiki for bold/italic/underline (ansi SGR 1/3/4 and
+   * theme font styles). Unset vars fall back to inherit, so plain tokens are
+   * unaffected. */
+  font-weight: var(--shiki-light-font-weight);
+  font-style: var(--shiki-light-font-style);
+  text-decoration: var(--shiki-light-text-decoration);
 }
 .dark .shiki,
 .dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
+  font-weight: var(--shiki-dark-font-weight);
+  font-style: var(--shiki-dark-font-style);
+  text-decoration: var(--shiki-dark-text-decoration);
 }
 
 /* Announcement / banner bar. */
