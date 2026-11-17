@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { cleanGitEnv } from "./git-env.js";
 
 /** Frontmatter keys read for a sitemap `<lastmod>`, in priority order. */
 export const LASTMOD_KEYS = ["lastmod", "updated", "modified"] as const;
@@ -71,6 +72,7 @@ export function isShallowRepository(root: string): boolean {
     return (
       execFileSync("git", ["rev-parse", "--is-shallow-repository"], {
         cwd: root,
+        env: cleanGitEnv(),
         encoding: "utf8",
         stdio: ["ignore", "pipe", "ignore"],
       }).trim() === "true"
