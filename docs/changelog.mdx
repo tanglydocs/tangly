@@ -11,6 +11,7 @@ Notable changes per release. Each entry is authored as an [`<Update>`](/referenc
   - feat(runtime): a fenced block with the `ansi` language renders as a coloured terminal output block. Write escapes as `\e[31m` (or paste real ESC bytes) and get 16, 256 and true colour, bold, dim, italic and underline, with light and dark variants. Other control sequences and OSC hyperlinks are dropped. Add a `title` for a header, and the copy button gives the plain text ([#29](https://github.com/tanglydocs/tangly/pull/29))
 
   ### Fixes
+  - fix(manifest): git lookups ignore an inherited `GIT_DIR` (and the other `GIT_*` variables), fixing wrong dates and edit URLs when a build runs inside a git hook or CI ([#30](https://github.com/tanglydocs/tangly/pull/30))
   - fix(theme-ui): `CodeGroup` blocks now get a copy button in both chromes, and multi-word tab titles are kept whole instead of being cut at the first word ([#27](https://github.com/tanglydocs/tangly/pull/27))
 </Update>
 
