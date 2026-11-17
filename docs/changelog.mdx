@@ -5,6 +5,16 @@ description: Release notes for Tangly.
 
 Notable changes per release. Each entry is authored as an [`<Update>`](/reference/components/callouts#update) block, the same component you can use in your own docs.
 
+<Update label="v0.7.0" description="17 Nov 26" tags={["feat", "fix"]}>
+  ### Features
+  - feat(plugin): every `.css` file in your project is now loaded on every page, after the theme CSS, the way Mintlify does it. Files are found recursively from the folder holding `docs.json` and ordered by relative path so the cascade is the same on every machine. Dot-directories, `node_modules` and `dist` are skipped, as are the static asset folders at the root (`public`, `static`, `assets`, `images`, `logo`) and `theme/styles/theme.css`, which already replaces the whole theme. A file that imports Tailwind itself is skipped and reported, because the theme already ships it ([#28](https://github.com/tanglydocs/tangly/pull/28))
+  - feat(runtime): a fenced block with the `ansi` language renders as a coloured terminal output block. Write escapes as `\e[31m` (or paste real ESC bytes) and get 16, 256 and true colour, bold, dim, italic and underline, with light and dark variants. Other control sequences and OSC hyperlinks are dropped. Add a `title` for a header, and the copy button gives the plain text ([#29](https://github.com/tanglydocs/tangly/pull/29))
+
+  ### Fixes
+  - fix(manifest): git lookups ignore an inherited `GIT_DIR` (and the other `GIT_*` variables), fixing wrong dates and edit URLs when a build runs inside a git hook or CI ([#30](https://github.com/tanglydocs/tangly/pull/30))
+  - fix(theme-ui): `CodeGroup` blocks now get a copy button in both chromes, and multi-word tab titles are kept whole instead of being cut at the first word ([#27](https://github.com/tanglydocs/tangly/pull/27))
+</Update>
+
 <Update label="v0.6.0" description="24 Oct 26" tags={["feat"]}>
   ### Features
   - feat(build): `sitemap.xml` now carries `<lastmod>` for every page. The date is the page's frontmatter `lastmod`, `updated` or `modified`, else its last git commit date. Pages with no known date get no `<lastmod>`. In a shallow clone the git dates are skipped and the build warns to use `fetch-depth: 0` ([#24](https://github.com/tanglydocs/tangly/pull/24))
