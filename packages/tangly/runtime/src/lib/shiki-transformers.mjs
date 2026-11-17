@@ -62,18 +62,25 @@ function parseMetaTitle(meta) {
   if (quoted) return quoted[1];
   const single = meta.match(/title='([^']+)'/);
   if (single) return single[1];
-  // Bare token: anything that isn't a shiki flag, a key=val pair, or a
-  // line-highlight range like `{1,3-5}`. First match wins.
-  // Path tokens with dots (`package.json`, `src/foo.ts`) and plain labels
-  // (`bun`, `pnpm`) both qualify.
+  // Bare title: the first run of consecutive plain tokens that aren't a shiki
+  // flag, a key=val pair, or a line-highlight range like `{1,3-5}`, joined
+  // with spaces (Mintlify keeps everything after the language as the title,
+  // so ```bash macOS / Linux is "macOS / Linux"). Path tokens with dots
+  // (`package.json`, `src/foo.ts`), plain labels (`bun`, `pnpm`) and
+  // punctuated ones (`(PowerShell)`) qualify.
   const tokens = meta.split(/\s+/).filter(Boolean);
+  const words = [];
   for (const t of tokens) {
-    if (META_FLAG_TOKENS.has(t)) continue;
-    if (t.startsWith("{")) continue;
-    if (t.startsWith("//")) continue;
-    if (/^[a-zA-Z][a-zA-Z0-9_-]*=/.test(t)) continue;
-    if (/^[A-Za-z0-9._/-]+$/.test(t)) return t;
+    const isTitleToken =
+      !META_FLAG_TOKENS.has(t) &&
+      !t.startsWith("{") &&
+      !t.startsWith("//") &&
+      !/^[a-zA-Z][a-zA-Z0-9_-]*=/.test(t) &&
+      /^[^\s{}="']+$/.test(t);
+    if (isTitleToken) words.push(t);
+    else if (words.length > 0) break;
   }
+  if (words.length > 0) return words.join(" ");
   return null;
 }
 
