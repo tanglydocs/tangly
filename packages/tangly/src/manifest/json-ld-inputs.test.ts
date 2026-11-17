@@ -8,6 +8,7 @@ import { mkdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { afterEach, describe, expect, test } from "vitest";
 import { buildManifest, buildNavPath } from "./build-manifest.js";
+import { cleanGitEnv } from "./git-env.js";
 import { loadGitMeta } from "./git-meta.js";
 import { scanPages } from "./scan-pages.js";
 import type { SidebarItem } from "./types.js";
@@ -264,13 +265,12 @@ describe("git dates", () => {
     execFileSync("git", args, {
       cwd: REPO,
       stdio: ["ignore", "ignore", "ignore"],
-      env: {
-        ...process.env,
+      env: cleanGitEnv({
         GIT_AUTHOR_NAME: "T",
         GIT_AUTHOR_EMAIL: "t@example.com",
         GIT_COMMITTER_NAME: "T",
         GIT_COMMITTER_EMAIL: "t@example.com",
-      },
+      }),
     });
   };
 

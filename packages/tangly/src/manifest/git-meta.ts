@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { basename, dirname } from "node:path";
+import { cleanGitEnv } from "./git-env.js";
 
 interface GitMetaOptions {
   /** Absolute project root. */
@@ -29,6 +30,7 @@ export function loadGitMeta(opts: GitMetaOptions): {
   try {
     repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
       cwd: opts.root,
+      env: cleanGitEnv(),
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
@@ -49,6 +51,7 @@ export function loadGitMeta(opts: GitMetaOptions): {
       ["log", "--name-only", "--pretty=format:__DATE__:%aI", "--diff-filter=AM"],
       {
         cwd: repoRoot,
+        env: cleanGitEnv(),
         encoding: "utf8",
         maxBuffer: 32 * 1024 * 1024,
         stdio: ["ignore", "pipe", "ignore"],
@@ -86,7 +89,12 @@ export function gitFileDates(file: string): { created?: string; lastUpdated?: st
     const stdout = execFileSync(
       "git",
       ["log", "--diff-filter=AM", "--format=%aI", "--", basename(file)],
-      { cwd: dirname(file), encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+      {
+        cwd: dirname(file),
+        env: cleanGitEnv(),
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      },
     );
     const dates = stdout.split("\n").filter(Boolean);
     const lastUpdated = dates[0];
@@ -128,6 +136,7 @@ export function resolveEditUrl(opts: {
       try {
         return execFileSync("git", ["remote", "get-url", "origin"], {
           cwd: root,
+          env: cleanGitEnv(),
           encoding: "utf8",
           stdio: ["ignore", "pipe", "ignore"],
         }).trim();
