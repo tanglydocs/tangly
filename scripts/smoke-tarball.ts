@@ -144,6 +144,13 @@ writeFileSync(
   "---\ntitle: Quickstart\n---\n\n# Quickstart\n",
 );
 
+// Mintlify loads every project .css file. A root file and a nested one must
+// both end up in the built stylesheet (catches a silent regression where
+// project CSS is ignored again).
+writeFileSync(join(projectDir, "custom.css"), ".smoke-root-css { color: #123abc; }\n");
+mkdirSync(join(projectDir, "styles"), { recursive: true });
+writeFileSync(join(projectDir, "styles", "extra.css"), ".smoke-nested-css { color: #abc123; }\n");
+
 step("tangly init --from <projectDir> project");
 run(tanglyBin, ["init", "--from", projectDir, projectDir], { cwd: installDir });
 
@@ -185,6 +192,23 @@ if (highlighted.length === 0) {
   );
 }
 log(`  ✓ code chrome present (${highlighted.length}/${pages.length} pages)`);
+
+// Project CSS is bundled into the shipped stylesheet(s) under dist/_astro.
+const astroDir = join(projectDir, "dist", "_astro");
+const builtCss = existsSync(astroDir)
+  ? readdirSync(astroDir)
+      .filter((f) => f.endsWith(".css"))
+      .map((f) => readFileSync(join(astroDir, f), "utf8"))
+      .join("\n")
+  : "";
+for (const cls of ["smoke-root-css", "smoke-nested-css"]) {
+  if (!builtCss.includes(`.${cls}`)) {
+    fail(
+      `project CSS rule .${cls} missing from dist/_astro/*.css — custom .css files were not loaded.`,
+    );
+  }
+}
+log("  ✓ project css bundled (root + nested)");
 
 // Structured data ships on every built page. A theme that stops rendering the
 // shared <Seo> head fragment, or a graph that loses its site nodes, is

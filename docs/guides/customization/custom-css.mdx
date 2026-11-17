@@ -1,0 +1,45 @@
+---
+title: Custom CSS
+description: Drop .css files in your project and they load on every page, the same as Mintlify.
+icon: "paintbrush"
+---
+
+## Custom CSS
+
+Like Mintlify, Tangly loads every `.css` file in your docs project on every page. No import in `docs.json` or MDX is needed. Class names you define are available in all your MDX files, and rules that target built-in elements restyle them.
+
+<FileTree>
+- my-docs/
+  - docs.json
+  - custom.css loaded
+  - global.css loaded
+  - styles/
+    - callouts.css loaded
+</FileTree>
+
+```css
+/* custom.css */
+.brand-box { border: 2px solid var(--tangly-color-primary); padding: 1rem; }
+h1 { letter-spacing: -0.02em; }
+```
+
+### Which files load
+
+- Every `.css` file under the project root, in subfolders too.
+- Order is the sorted path (`custom.css`, `global.css`, `styles/a.css`, ...). Later files win on equal specificity, so name files to control the order.
+- Project CSS comes after all theme CSS, so it wins on equal specificity.
+
+Not loaded:
+
+- `node_modules/`, `dist/`, and any dot folder (`.tangly/`, `.astro/`, `.git/`).
+- The static asset folders at the project root: `public/`, `static/`, `assets/`, `images/`, `logo/`. Those files are served as-is, so link to them yourself.
+- `theme/styles/theme.css`. It is the [full theme CSS override](/guides/themes/customizing), not an addition.
+- Any file that contains `@import "tailwindcss"`. The theme already ships Tailwind, so loading a second copy would duplicate it. Tangly skips the file and warns. Remove that import to load it.
+
+### Dev server
+
+In `tangly dev`, editing a CSS file hot-updates the page with no restart. A **new** CSS file is picked up after restarting `tangly dev`. `tangly build` includes the CSS in the bundled stylesheet.
+
+<Note>
+  If you shadow `Layout.astro` under `theme/`, keep the `import "@tanglydocs/theme/theme.css"` line. Tangly adds project CSS right after any shell that imports it.
+</Note>

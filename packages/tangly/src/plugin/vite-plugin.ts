@@ -14,6 +14,13 @@ import { applyMdxSourceCompat } from "./mdx-source-compat.js";
 import { buildManifest } from "../manifest/index.js";
 import { scanPages } from "../manifest/scan-pages.js";
 import type { Manifest } from "../manifest/types.js";
+import {
+  discoverProjectCss,
+  injectProjectCssImport,
+  partitionTailwindEntries,
+  PROJECT_CSS_ID,
+  projectCssModule,
+} from "./project-css.js";
 import { buildPublicCascade } from "./theme-resolver.js";
 
 async function collectDraftSlugs(userRoot: string): Promise<string[]> {
@@ -271,6 +278,16 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
         return { code: SNIPPET_REACT_BANNER + code, map: null };
       }
 
+      // Mintlify loads every project `.css` file on every page. Every shell
+      // that imports the theme stylesheet (theme-ui/pith/pip/readable
+      // layouts, HomeSplash, user-shadowed layouts) gets one more CSS import
+      // appended to its frontmatter, so project CSS comes after ALL theme CSS
+      // (theme.css, prose.css, code.css, ...) and wins on equal specificity.
+      if (cleanId.endsWith(".astro")) {
+        const injected = injectProjectCssImport(code);
+        return injected === code ? null : { code: injected, map: null };
+      }
+
       // Tailwind v4 only scans the sources listed in the theme's CSS entry,
       // and the user's project root isn't among them. Append an @source for
       // the snippets dir so utility classes used inside .jsx snippets emit.
@@ -291,6 +308,7 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     resolveId(id) {
+      if (id === PROJECT_CSS_ID) return `${RESOLVED_PREFIX}${PROJECT_CSS_ID}`;
       if (isVirtualId(id)) {
         return `${RESOLVED_PREFIX}${id}`;
       }
@@ -307,6 +325,15 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     async load(id) {
+      if (id === `${RESOLVED_PREFIX}${PROJECT_CSS_ID}`) {
+        const { ok, skipped } = partitionTailwindEntries(discoverProjectCss(userRoot));
+        for (const f of skipped) {
+          this.warn(
+            `[tangly] skipped ${relative(userRoot, f)}: it imports "tailwindcss" itself, and the theme already ships Tailwind. Remove that import to load the file.`,
+          );
+        }
+        return projectCssModule(ok);
+      }
       if (!id.startsWith(RESOLVED_PREFIX)) return null;
       const realId = id.slice(RESOLVED_PREFIX.length);
       if (!isVirtualId(realId)) return null;
@@ -518,6 +545,16 @@ export function tanglyVitePlugin(opts: TanglyPluginOptions): Plugin {
     },
 
     handleHotUpdate(ctx) {
+      // A project CSS file changed: drop the virtual module that @imports it
+      // (SSR and client graphs) so the next render and the HMR payload both
+      // see the new contents, and hot-update just that module.
+      if (ctx.file.endsWith(".css") && isInsideDir(ctx.file, userRoot)) {
+        const mod = ctx.server.moduleGraph.getModuleById(`${RESOLVED_PREFIX}${PROJECT_CSS_ID}`);
+        if (mod && discoverProjectCss(userRoot).includes(ctx.file)) {
+          ctx.server.moduleGraph.invalidateModule(mod);
+          return [mod];
+        }
+      }
       if (!ctx.file.startsWith(userRoot) && !existsSync(ctx.file)) return;
       // mdx files are handled by Astro/MDX naturally; we just nuke the manifest
       if (ctx.file.endsWith("docs.json") || ctx.file.endsWith(".mdx")) {
