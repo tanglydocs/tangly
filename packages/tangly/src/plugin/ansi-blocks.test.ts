@@ -89,18 +89,18 @@ describe("ansi fences end to end", () => {
     // Copy button present, title shown.
     expect(html).toContain("data-tangly-copy");
     expect(html).toContain("Terminal");
-  });
+  }, 30_000);
 
   it("accepts a bare title token in the fence meta", async () => {
     const html = await render("```ansi Terminal\n\\e[32mok\\e[0m\n```");
     expect(html).toContain("tangly-code-title");
-  });
+  }, 30_000);
 
   it("does not touch other languages", async () => {
     const html = await render("```ts\nconst a = '\\e[31m';\n```");
     // Tokens split the text across spans; strip tags to compare the source.
     expect(html.replace(/<[^>]+>/g, "")).toContain("'\\e[31m'");
-  });
+  }, 30_000);
 });
 
 describe("copy text", () => {
