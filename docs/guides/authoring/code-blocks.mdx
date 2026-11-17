@@ -135,6 +135,46 @@ Want your own sync key? Drop a `<CodeGroup>` with your tabs of choice:
 </CodeGroup>
 ````
 
+### Terminal output
+
+Paste a real CLI snapshot into an `ansi` fence and Tangly renders its colours. SGR codes are supported: the 16 standard and bright colours, 256-colour (`38;5;n`), truecolour (`38;2;r;g;b`), backgrounds, bold, dim, italic, underline, and reset. Colours follow the active code theme, so the same block stays readable in light and dark mode.
+
+Raw ESC bytes (`0x1b`) work, but they are awkward in `.mdx` files and editors. Inside an `ansi` fence you can type any of these textual escapes instead, and Tangly converts them before highlighting:
+
+| You type   | Meaning              |
+| ---------- | -------------------- |
+| `\e[`      | ESC `[`              |
+| `\x1b[`    | ESC `[`              |
+| `\u001b[`  | ESC `[`              |
+| `\033[`    | ESC `[`              |
+
+The escape is only converted when a `[` follows it. Control sequences that are not colours or text styles (cursor moves, erase line, OSC hyperlinks) are dropped, since they have no meaning in a static block.
+
+````md
+```ansi title="Terminal"
+\e[1m\e[36msquirrel audit\e[0m https://example.com
+
+\e[32m✓\e[0m 212 rules passed
+\e[33m!\e[0m 4 warnings \e[2m(see report)\e[0m
+\e[31m✗\e[0m 2 errors
+```
+````
+
+Renders as:
+
+```ansi title="Terminal"
+\e[1m\e[36msquirrel audit\e[0m https://example.com
+
+\e[32m✓\e[0m 212 rules passed
+\e[33m!\e[0m 4 warnings \e[2m(see report)\e[0m
+\e[31m✗\e[0m 2 errors
+
+\e[90mbright black\e[0m  \e[91mred\e[0m  \e[92mgreen\e[0m  \e[93myellow\e[0m  \e[94mblue\e[0m  \e[95mmagenta\e[0m  \e[96mcyan\e[0m
+\e[38;5;208m256-colour orange\e[0m  \e[38;2;120;90;250mtruecolour violet\e[0m  \e[1mbold\e[0m  \e[3mitalic\e[0m  \e[4munderline\e[0m  \e[30;43m background \e[0m
+```
+
+A fence title (`title="Terminal"`, or the bare form ```` ```ansi Terminal ````) adds the header bar, and `bare` / `noCopy` work as for any other block. The Copy button copies plain text with every escape code stripped.
+
 ### Theme override
 
 Default themes are `vitesse-light` / `vitesse-dark`, switching automatically with the user's color preference. Any [bundled Shiki theme](https://shiki.style/themes) works. Override per-project:

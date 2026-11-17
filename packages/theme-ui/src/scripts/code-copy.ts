@@ -1,4 +1,3 @@
-export {};
 // Click handler for [data-tangly-copy] buttons inside code-figures.
 // Strips Shiki/Tangly notation markers from copied text.
 
@@ -8,8 +7,17 @@ const STRIP_PATTERNS: RegExp[] = [
   /\s*\/\*\s*\[!code\s+(?:highlight|focus|--|\+\+|warning|error)(?::[\d-]+)?\]\s*\*\/\s*$/gm,
 ];
 
-function stripMarkers(text: string): string {
-  let out = text;
+// Terminal output: drop any ESC control sequence that survived rendering
+// (shiki's ansi grammar colours SGR but prints other sequences literally).
+// eslint-disable-next-line no-control-regex
+const ANSI_RE = /\u001b(?:\[[0-?]*[ -/]*[@-~]|\][^\u0007\u001b]*(?:\u0007|\u001b\\))/g;
+
+export function stripAnsi(text: string): string {
+  return text.replace(ANSI_RE, "");
+}
+
+export function stripMarkers(text: string): string {
+  let out = stripAnsi(text);
   for (const re of STRIP_PATTERNS) {
     out = out.replace(re, "");
   }
@@ -67,8 +75,11 @@ function init() {
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
+// Guarded so the pure helpers above can be imported under test (no DOM).
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 }
